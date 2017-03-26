@@ -1,0 +1,49 @@
+local E, L, V, P, G = unpack(select(2, ...));
+local DT = E:GetModule("DataTexts")
+
+local join = string.join;
+
+local GetPlayerMapPosition = GetPlayerMapPosition;
+local ToggleFrame = ToggleFrame;
+
+local displayString = ""
+local x, y = 0, 0
+local inRestrictedArea = false
+
+local function OnUpdate(self, elapsed)
+	if(inRestrictedArea) then return; end
+
+	self.timeSinceUpdate = (self.timeSinceUpdate or 0) + elapsed;
+
+	if(self.timeSinceUpdate > 0.1) then
+		x, y = GetPlayerMapPosition("player");
+		x = E:Round(100 * x, 1);
+		y = E:Round(100 * y, 1);
+
+		self.text:SetFormattedText(displayString, x, y);
+		self.timeSinceUpdate = 0;
+	end
+end
+
+local function OnEvent(self)
+	local x = GetPlayerMapPosition("player")
+	if(not x) then
+		inRestrictedArea = true;
+		self.text:SetText("N/A");
+		self:Hide();
+	else
+		inRestrictedArea = false;
+		self:Show();
+	end
+end
+
+local function OnClick()
+	ToggleFrame(WorldMapFrame);
+end
+
+local function ValueColorUpdate(hex)
+	displayString = join("", hex, "%.1f|r", " , ", hex, "%.1f|r");
+end
+E["valueColorUpdateFuncs"][ValueColorUpdate] = true;
+
+DT:RegisterDatatext("Coords", {"PLAYER_ENTERING_WORLD"}, OnEvent, OnUpdate, OnClick)
