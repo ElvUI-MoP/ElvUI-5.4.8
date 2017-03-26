@@ -226,7 +226,6 @@ local function DefaultSort(a, b)
  	aRarity = bagQualities[a]
 	bRarity = bagQualities[b]
 
-
 	if bagPetIDs[a] then
 		aRarity = 1
 	end
@@ -430,7 +429,7 @@ end
 function B:ScanBags()
 	for _, bag, slot in B.IterateBags(allBags) do
 		local bagSlot = B:Encode_BagSlot(bag, slot);
-		local itemID = ConvertLinkToID(B:GetItemLink(bag, slot));
+		local itemID, isBattlePet = ConvertLinkToID(B:GetItemLink(bag, slot));
 		if(itemID) then
 			if isBattlePet then
 				bagPetIDs[bagSlot] = itemID
