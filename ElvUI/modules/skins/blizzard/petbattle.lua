@@ -88,7 +88,7 @@ local function LoadSkin()
 			f.Enemy2.iconPoint = infoBar.IconBackdrop
 			f.Enemy3.iconPoint = infoBar.IconBackdrop
 
-			infoBar.ActualHealthBar:SetVertexColor(196/255,  30/255,  60/255)
+			infoBar.ActualHealthBar:SetVertexColor(196/255, 30/255, 60/255)
 			infoBar.ActualHealthBar:Point('BOTTOMRIGHT', infoBar.Icon, 'BOTTOMLEFT', -10, 0)
 
 			infoBar.Name:Point('BOTTOMRIGHT', infoBar.ActualHealthBar, 'TOPRIGHT', 0, 10)
@@ -134,13 +134,12 @@ local function LoadSkin()
 		for i, infoBar in pairs(infoBars) do
 			infoBar.FirstAttack:Show()
 			if infoBar.SpeedIcon:IsShown() then
-				infoBar.FirstAttack:SetVertexColor(0,1,0,1)
+				infoBar.FirstAttack:SetVertexColor(0, 1, 0, 1)
 			else
-				infoBar.FirstAttack:SetVertexColor(.8,0,.3,1)
+				infoBar.FirstAttack:SetVertexColor(.8, 0, .3, 1)
 			end
 		end
 	end)
-
 
 	-- PETS UNITFRAMES PET TYPE UPDATE
 	hooksecurefunc("PetBattleUnitFrame_UpdatePetType", function(self)
@@ -235,7 +234,6 @@ local function LoadSkin()
 	SkinPetTooltip(FloatingBattlePetTooltip)
 	SkinPetTooltip(FloatingPetBattleAbilityTooltip)
 
-
 	-- TOOLTIP DEFAULT POSITION
 	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
 		local t = PetBattlePrimaryAbilityTooltip
@@ -246,7 +244,6 @@ local function LoadSkin()
 		t:ClearAllPoints()
 		t:Point(point, E.UIParent, point, x, y)
 	end)
-
 
 	local extraInfoBars = {
 		f.Ally2,
@@ -262,10 +259,20 @@ local function LoadSkin()
 		infoBar:Size(40)
 		infoBar:CreateBackdrop()
 		infoBar:ClearAllPoints()
+	
+		infoBar.bg = CreateFrame("Frame", nil, infoBar)
+		infoBar.bg:SetFrameLevel(infoBar.bg:GetFrameLevel() - 2)
+		infoBar.bg:Point("TOPLEFT", -2, 2)
+		infoBar.bg:Point("BOTTOMRIGHT", 2, -2)
+		infoBar.bg:SetTemplate()
 
-		infoBar.healthBarWidth = 40
+		hooksecurefunc(infoBar.BorderAlive, "SetVertexColor", function(_, r, g, b)
+			infoBar.bg:SetBackdropBorderColor(r, g, b);
+		end);
+
+		infoBar.healthBarWidth = 42
 		infoBar.ActualHealthBar:ClearAllPoints()
-		infoBar.ActualHealthBar:Point("TOPLEFT", infoBar.backdrop, 'BOTTOMLEFT', E.Border, -3)
+		infoBar.ActualHealthBar:Point("TOPLEFT", infoBar.backdrop, 'BOTTOMLEFT', 0, -4)
 
 		infoBar.HealthBarBackdrop = CreateFrame("Frame", nil, infoBar)
 		infoBar.HealthBarBackdrop:SetFrameLevel(infoBar:GetFrameLevel() - 1)
@@ -275,10 +282,11 @@ local function LoadSkin()
 		infoBar.HealthBarBackdrop:Point('BOTTOMLEFT', infoBar.ActualHealthBar, 'BOTTOMLEFT', -E.Border, -E.Spacing)
 	end
 
-	f.Ally2:Point("TOPRIGHT", f.Ally2.iconPoint, "TOPLEFT", -6, -2)
-	f.Ally3:Point('TOPRIGHT', f.Ally2, 'TOPLEFT', -8, 0)
-	f.Enemy2:Point("TOPLEFT", f.Enemy2.iconPoint, "TOPRIGHT", 6, -2)
-	f.Enemy3:Point('TOPLEFT', f.Enemy2, 'TOPRIGHT', 8, 0)
+	f.Ally2:Point("TOPRIGHT", f.Ally2.iconPoint, "TOPLEFT", -10, -2)
+	f.Ally3:Point('TOPRIGHT', f.Ally2, 'TOPLEFT', -13, 0)
+
+	f.Enemy2:Point("TOPLEFT", f.Enemy2.iconPoint, "TOPRIGHT", 10, -2)
+	f.Enemy3:Point('TOPLEFT', f.Enemy2, 'TOPRIGHT', 13, 0)
 
 	-- Pet Battle Action Bar
 	local bar = CreateFrame("Frame", "ElvUIPetBattleActionBar", f)
