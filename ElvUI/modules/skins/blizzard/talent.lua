@@ -256,7 +256,6 @@ local function LoadSkin()
 
 					frame.reskinned = true
 				end
-
 			end
 			index = index + 1
 		end
