@@ -30,4 +30,5 @@
 	<Script file="pvppower.lua"/>
 	<Script file="pvpresilience.lua"/>
 	<Script file="vengeance.lua"/>
+	<Script file="customCurrency.lua"/>
 </Ui>

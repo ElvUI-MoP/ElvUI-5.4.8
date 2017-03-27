@@ -330,6 +330,7 @@ L["DataBars"] = true;
 L["Hide in Combat"] = true;
 
 --DataTexts
+L["Add Currency ID"] = true;
 L["Battleground Texts"] = "Textes des Champs de bataille"
 L["Block Combat Click"] = "Emêcher le clic en combat";
 L["Block Combat Hover"] = "Empêcher le survol en combat";
@@ -338,6 +339,8 @@ L["Blocks datatext tooltip from showing in combat."] = "Empêcher l'affichage de
 L["BottomLeftMiniPanel"] = "Minimap BottomLeft (Inside)"
 L["BottomMiniPanel"] = "Minimap Bottom (Inside)"
 L["BottomRightMiniPanel"] = "Minimap BottomRight (Inside)"
+L["Custom Currencies"] = true;
+L["Custom Currency"] = true;
 L["Datatext Panel (Left)"] = "Panneaux d'informations (Gauche)"
 L["Datatext Panel (Right)"] = "Panneaux d'informations (Droite)"
 L["DataTexts"] = "Textes d'informations"
@@ -356,11 +359,13 @@ L["right"] = "Droite"
 L["RightChatDataPanel"] = "Fenêtre de discussion à droite"
 L["RightMiniPanel"] = "Minicarte à droite"
 L["Small Panels"] = true;
-L["The display format of the money text that is shown in the gold datatext and its tooltip."] = "L'affichage du format de l'argent que vous possédez dans le texte d'informations Argent et dans son infobulle.";
+L["The display format of the money text that is shown in the gold datatext and its tooltip."] = "L'affichage du format de l'argent que vous possédez dans le texte d'informations Argent et dans son infobulle."
+L["This allows you to create a new datatext which will track the currency with the supplied currency ID. The datatext can be added to a panel immediately after creation."] = true;
 L["Time Format"] = true;
 L["TopLeftMiniPanel"] = "Minimap TopLeft (Inside)"
 L["TopMiniPanel"] = "Minimap Top (Inside)"
 L["TopRightMiniPanel"] = "Minimap TopRight (Inside)"
+L["Use Tooltip"] = true;
 L["When inside a battleground display personal scoreboard information on the main datatext bars."] = "Lorsqu'à l'intérieur d'un Champs de bataille, afficher le tableau des scores personnel dans la barre de textes d'informations principale."
 L["Word Wrap"] = "Césure des mots"
 

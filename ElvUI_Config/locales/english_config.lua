@@ -319,6 +319,7 @@ L["DataBars"] = true;
 L["Hide in Combat"] = true;
 
 --DataTexts
+L["Add Currency ID"] = true;
 L["Battleground Texts"] = true;
 L["Block Combat Click"] = true;
 L["Block Combat Hover"] = true;
@@ -326,7 +327,9 @@ L["Blocks all click events while in combat."] = true;
 L["Blocks datatext tooltip from showing in combat."] = true;
 L["BottomLeftMiniPanel"] = "Minimap BottomLeft (Inside)"
 L["BottomMiniPanel"] = "Minimap Bottom (Inside)"
-L["BottomRightMiniPanel"] = "Minimap BottomRight (Inside)"	
+L["BottomRightMiniPanel"] = "Minimap BottomRight (Inside)"
+L["Custom Currencies"] = true;
+L["Custom Currency"] = true;
 L["Datatext Panel (Left)"] = true;
 L["Datatext Panel (Right)"] = true;
 L["DataTexts"] = true;
@@ -346,10 +349,12 @@ L["RightChatDataPanel"] = "Right Chat"
 L["RightMiniPanel"] = "Minimap Right"
 L["Small Panels"] = true;
 L["The display format of the money text that is shown in the gold datatext and its tooltip."] = true;
+L["This allows you to create a new datatext which will track the currency with the supplied currency ID. The datatext can be added to a panel immediately after creation."] = true;
 L["Time Format"] = true;
 L["TopLeftMiniPanel"] = "Minimap TopLeft (Inside)"
 L["TopMiniPanel"] = "Minimap Top (Inside)"
 L["TopRightMiniPanel"] = "Minimap TopRight (Inside)"
+L["Use Tooltip"] = true;
 L["When inside a battleground display personal scoreboard information on the main datatext bars."] = true;
 L["Word Wrap"] = true;
 

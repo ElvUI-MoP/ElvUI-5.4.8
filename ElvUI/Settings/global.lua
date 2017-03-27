@@ -27,3 +27,7 @@ G["unitframe"] = {
 G["bags"] = {
 	["ignoredItems"] = {},
 }
+
+G["datatexts"] = {
+	["customCurrencies"] = {}
+}

@@ -18,6 +18,7 @@ function DT:Initialize()
 	TT:HookScript(self.tooltip, "OnShow", "SetStyle");
 
 	self:RegisterLDB();
+	self:RegisterCustomCurrencyDT()
 	self:LoadDataTexts();
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "LoadDataTexts");
