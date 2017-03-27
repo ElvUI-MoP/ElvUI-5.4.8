@@ -633,7 +633,7 @@ function TT:SetConsolidatedUnitAura(tt, unit, index)
 		if(caster) then
 			local name = UnitName(caster)
 			local _, class = UnitClass(caster)
-			local color = RAID_CLASS_COLORS[class]
+			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 			tt:AddDoubleLine(("|cFFCA3C3C%s|r %d"):format(ID, id), format("|c%s%s|r", color.colorStr, name))
 		else
 			tt:AddLine(("|cFFCA3C3C%s|r %d"):format(ID, id))

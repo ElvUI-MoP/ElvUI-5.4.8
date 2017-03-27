@@ -185,6 +185,7 @@ local rolePaths = {
 	HEALER = [[|TInterface\AddOns\ElvUI\media\textures\healer.tga:15:15:0:0:64:64:2:56:2:56|t]],
 	DAMAGER = [[|TInterface\AddOns\ElvUI\media\textures\dps.tga:15:15|t]]
 }
+
 local specialChatIcons = {
 	["[EN]".."Evermoon"] = {
 		["Insane"] = "|TInterface\\AddOns\\ElvUI\\media\\textures\\ElvUI_Chat_Logo:13:22|t",
