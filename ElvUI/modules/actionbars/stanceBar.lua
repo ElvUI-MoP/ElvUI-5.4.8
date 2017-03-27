@@ -171,7 +171,7 @@ function AB:PositionAndSizeBarShapeShift()
 		bar:SetAlpha(bar.db.alpha);
 		E:EnableMover(bar.mover:GetName());
 	else
-		bar:SetScale(0.0001);
+		bar:SetScale(0.00001);
 		bar:SetAlpha(0);
 		E:DisableMover(bar.mover:GetName());
 	end

@@ -644,40 +644,43 @@ function UF:EclipseDirection()
 end
 
 function UF:DruidPostUpdateAltPower(_, min, max)
-	local parent = self:GetParent()
-	local powerText = parent.Power.value
-	local powerTextParent = powerText:GetParent()
-	local db = parent.db
+	local frame = self:GetParent()
+	local powerValue = frame.Power.value
+	local powerValueText = powerValue:GetText()
+	local powerValueParent = powerValue:GetParent()
+	local db = frame.db
 
 	if not db then return; end
 
 	local powerTextPosition = db.power.position
 
+	if powerValueText then powerValueText = powerValueText:gsub("|cff(.*) ", "") end
+
 	if min ~= max then
 		local color = ElvUF["colors"].power["MANA"]
 		color = E:RGBToHex(color[1], color[2], color[3])
 
-		self.Text:SetParent(powerTextParent)
+		self.Text:SetParent(powerValueParent)
 
 		self.Text:ClearAllPoints()
-		if powerText:GetText() then
+		if (powerValueText ~= "" and powerValueText ~= " ") then
 			if find(powerTextPosition, "RIGHT") then
-				self.Text:Point("RIGHT", powerText, "LEFT", 3, 0)
+				self.Text:Point("RIGHT", powerValue, "LEFT", 3, 0)
 				self.Text:SetFormattedText(color.."%d%%|r |cffD7BEA5- |r", floor(min / max * 100))
 			elseif find(powerTextPosition, "LEFT") then
-				self.Text:Point("LEFT", powerText, "RIGHT", -3, 0)
+				self.Text:Point("LEFT", powerValue, "RIGHT", -3, 0)
 				self.Text:SetFormattedText("|cffD7BEA5-|r"..color.." %d%%|r", floor(min / max * 100))
 			else
-				if select(4, powerText:GetPoint()) <= 0 then
-					self.Text:Point("LEFT", powerText, "RIGHT", -3, 0)
+				if select(4, powerValue:GetPoint()) <= 0 then
+					self.Text:Point("LEFT", powerValue, "RIGHT", -3, 0)
 					self.Text:SetFormattedText("|cffD7BEA5-|r"..color.." %d%%|r", floor(min / max * 100))
 				else
-					self.Text:Point("RIGHT", powerText, "LEFT", 3, 0)
+					self.Text:Point("RIGHT", powerValue, "LEFT", 3, 0)
 					self.Text:SetFormattedText(color.."%d%%|r |cffD7BEA5- |r", floor(min / max * 100))
 				end
 			end
 		else
-			self.Text:Point(powerText:GetPoint())
+			self.Text:Point(powerValue:GetPoint())
 			self.Text:SetFormattedText(color.."%d%%|r", floor(min / max * 100))
 		end
 	else
