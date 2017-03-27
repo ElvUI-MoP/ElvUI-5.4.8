@@ -124,7 +124,9 @@ L["Threshold before text turns red and is in decimal form. Set to -1 for it to n
 L["Toggles the display of the actionbars backdrop."] = "顯示/隱藏快捷列背景框."
 L["Transparency level when not in combat, no target exists, full health, not casting, and no focus target exists."] = "當非戰鬥, 沒有目標, 滿血, 未施法且沒有焦點目標存在時的透明度"
 L["Usable"] = "可以使用"
+L["Use Position Override"] = "使用位置覆蓋"
 L["Visibility State"] = "顯示狀態"
+L["When enabled it will use the Anchor Point setting to determine growth direction, otherwise it will be determined by where the bar is positioned."] = "當啟用時會使用定位點的位置來決定按鈕增長的方向,否則將會依照快捷列的位置來決定"
 L["Width Multiplier"] = "寬度倍數"
 L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
  Example: [combat] 2;]=] ] = [=[此功能與巨集概念類似, 可根據不同情況切換至不同的快捷列設定。

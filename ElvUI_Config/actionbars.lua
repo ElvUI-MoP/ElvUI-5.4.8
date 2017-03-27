@@ -372,7 +372,14 @@ local function BuildABConfig()
 				type = "select",
 				name = L["Anchor Point"],
 				desc = L["The first button anchors itself to this point on the bar."],
-				values = points,
+				values = {
+					["TOPLEFT"] = "TOPLEFT",
+					["TOPRIGHT"] = "TOPRIGHT",
+					["BOTTOMLEFT"] = "BOTTOMLEFT",
+					["BOTTOMRIGHT"] = "BOTTOMRIGHT",
+					["BOTTOM"] = "BOTTOM",
+					["TOP"] = "TOP"
+				},
 				disabled = function() return not E.db.actionbar.stanceBar.enabled; end
 			},
 			backdrop = {
@@ -387,6 +394,13 @@ local function BuildABConfig()
 				type = "toggle",
 				name = L["Mouse Over"],
 				desc = L["The frame is not shown unless you mouse over the frame."],
+				disabled = function() return not E.db.actionbar.stanceBar.enabled; end
+			},
+			usePositionOverride = {
+				order = 7,
+				type = "toggle",
+				name = L["Use Position Override"],
+				desc = L["When enabled it will use the Anchor Point setting to determine growth direction, otherwise it will be determined by where the bar is positioned."],
 				disabled = function() return not E.db.actionbar.stanceBar.enabled; end
 			},
 			inheritGlobalFade = {
