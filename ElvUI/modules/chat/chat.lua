@@ -185,7 +185,6 @@ local rolePaths = {
 	HEALER = [[|TInterface\AddOns\ElvUI\media\textures\healer.tga:15:15:0:0:64:64:2:56:2:56|t]],
 	DAMAGER = [[|TInterface\AddOns\ElvUI\media\textures\dps.tga:15:15|t]]
 }
-
 local specialChatIcons = {
 	["[EN]".."Evermoon"] = {
 		["Insane"] = "|TInterface\\AddOns\\ElvUI\\media\\textures\\ElvUI_Chat_Logo:13:22|t",
@@ -353,6 +352,29 @@ function CH:StyleChat(frame)
 		end
 	end
 
+	local function OnArrowPressed(self, key)
+		if #self.historyLines == 0 then
+			return
+		end
+
+		if key == "DOWN" then
+			self.historyIndex = self.historyIndex - 1
+
+			if self.historyIndex < 1 then
+				self.historyIndex = #self.historyLines
+			end
+		elseif key == "UP" then
+			self.historyIndex = self.historyIndex + 1
+
+			if self.historyIndex > #self.historyLines then
+				self.historyIndex = 1
+			end
+		else
+			return
+		end
+		self:SetText(self.historyLines[self.historyIndex])
+	end
+
 	local a, b, c = select(6, editbox:GetRegions()); a:Kill(); b:Kill(); c:Kill();
 	_G[format(editbox:GetName() .. "FocusLeft", id)]:Kill();
 	_G[format(editbox:GetName() .. "FocusMid", id)]:Kill();
@@ -367,6 +389,7 @@ function CH:StyleChat(frame)
 
 	editbox.historyLines = ElvCharacterDB.ChatEditHistory;
 	editbox.historyIndex = 0;
+	editbox:HookScript("OnArrowPressed", OnArrowPressed)
 
 	for i, text in pairs(ElvCharacterDB.ChatEditHistory) do
 		editbox:AddHistoryLine(text)
@@ -374,7 +397,7 @@ function CH:StyleChat(frame)
 
 	hooksecurefunc("ChatEdit_UpdateHeader", function()
 		local type = editbox:GetAttribute("chatType")
-		if ( type == "CHANNEL" ) then
+		if(type == "CHANNEL") then
 			local id = GetChannelName(editbox:GetAttribute("channelTarget"))
 			if id == 0 then
 				editbox:SetBackdropBorderColor(unpack(E.media.bordercolor))
