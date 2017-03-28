@@ -62,7 +62,10 @@ local function LoadSkin()
 	S:HandleScrollBar(MountJournalListScrollFrameScrollBar)
 
 	for i = 1, #MountJournal.ListScrollFrame.buttons do
+		local scrollFrame = MountJournal.ListScrollFrame;
+		local offset = HybridScrollFrame_GetOffset(scrollFrame);
 		local button = _G["MountJournalListScrollFrameButton"..i]
+
 		S:HandleItemButton(button)
 
 		button.icon:Size(42)
@@ -74,13 +77,19 @@ local function LoadSkin()
 		button.stripe = button:CreateTexture(nil, "BACKGROUND");
 		button.stripe:SetTexture(0.9, 0.9, 1);
 		button.stripe:SetInside()
+
+		if((i + offset) % 2 == 1) then
+			button.stripe:SetAlpha(0.1);
+			button.stripe:Show();
+		else
+			button.stripe:Hide();
+		end
 	end
 
 	hooksecurefunc("MountJournal_UpdateMountList", function()
 		local scrollFrame = MountJournal.ListScrollFrame;
 		local offset = HybridScrollFrame_GetOffset(scrollFrame);
 		local buttons = scrollFrame.buttons;
-
 		local showMounts = true;
 
 		for i = 1, #buttons do
@@ -93,13 +102,6 @@ local function LoadSkin()
 				button.icon:SetTexture(icon);
 			else
 				button.icon:SetTexture(nil);
-			end
-			if((i + offset) % 2 == 0) then
-				button.stripe:SetTexture(0.9, 0.9, 1);
-				button.stripe:SetAlpha(0.1);
-				button.stripe:Show();
-			else
-				button.stripe:Hide();
 			end
 		end
 	end)
