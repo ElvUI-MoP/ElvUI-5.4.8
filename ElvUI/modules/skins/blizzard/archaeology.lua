@@ -194,42 +194,30 @@ local function LoadSkin()
 
 	--Summary Tab
 	ArchaeologyFrameSummarytButton:StripTextures()
+	ArchaeologyFrameSummarytButton:CreateBackdrop("Transparent")
 	ArchaeologyFrameSummarytButton:GetHighlightTexture():SetTexture(nil)
-	ArchaeologyFrameSummarytButton:Size(50)
+	ArchaeologyFrameSummarytButton:Size(45, 38)
 	ArchaeologyFrameSummarytButton:Point("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", 0, -30)
-
-	ArchaeologyFrameSummarytButton.backdrop = CreateFrame("Frame", nil, ArchaeologyFrameSummarytButton)
-	ArchaeologyFrameSummarytButton.backdrop:SetTemplate("Transparent",true)
-	ArchaeologyFrameSummarytButton.backdrop:Point("TOPLEFT", -1, -3)
-	ArchaeologyFrameSummarytButton.backdrop:Point("BOTTOMRIGHT", -5, 5)
-	ArchaeologyFrameSummarytButton.backdrop:SetFrameLevel(ArchaeologyFrameSummarytButton:GetFrameLevel())
 
 	ArchaeologyFrameSummarytButton.icon = ArchaeologyFrameSummarytButton:CreateTexture(nil, "OVERLAY");
 	ArchaeologyFrameSummarytButton.icon:SetTexture("Interface\\ARCHEOLOGY\\ARCH-RACE-TOLVIR")
 	ArchaeologyFrameSummarytButton.icon:SetTexCoord(0, 0.58, 0.100, 0.33)
-	ArchaeologyFrameSummarytButton.icon:Point("TOPLEFT", -7, -12)
-	ArchaeologyFrameSummarytButton.icon:Point("BOTTOMRIGHT", 0, 15)
-	ArchaeologyFrameSummarytButton.icon:SetAlpha(0.7)
+	ArchaeologyFrameSummarytButton.icon:Point("TOPLEFT", -5, -6)
+	ArchaeologyFrameSummarytButton.icon:Point("BOTTOMRIGHT", 5, 6)
 	ArchaeologyFrameSummarytButton.icon:SetDesaturated(false)
 
 	--Complete Tab
 	ArchaeologyFrameCompletedButton:StripTextures()
+	ArchaeologyFrameCompletedButton:CreateBackdrop("Transparent")
 	ArchaeologyFrameCompletedButton:GetHighlightTexture():SetTexture(nil)
-	ArchaeologyFrameCompletedButton:Size(50)
+	ArchaeologyFrameCompletedButton:Size(45, 38)
 	ArchaeologyFrameCompletedButton:Point("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", 0, -80)
-
-	ArchaeologyFrameCompletedButton.backdrop = CreateFrame("Frame", nil, ArchaeologyFrameCompletedButton)
-	ArchaeologyFrameCompletedButton.backdrop:SetTemplate("Transparent",true)
-	ArchaeologyFrameCompletedButton.backdrop:Point("TOPLEFT", -1, -3)
-	ArchaeologyFrameCompletedButton.backdrop:Point("BOTTOMRIGHT", -5, 5)
-	ArchaeologyFrameCompletedButton.backdrop:SetFrameLevel(ArchaeologyFrameCompletedButton:GetFrameLevel())
 
 	ArchaeologyFrameCompletedButton.icon = ArchaeologyFrameCompletedButton:CreateTexture(nil, "OVERLAY");
 	ArchaeologyFrameCompletedButton.icon:SetTexture("Interface\\ARCHEOLOGY\\ARCH-RACE-TOLVIR")
 	ArchaeologyFrameCompletedButton.icon:SetTexCoord(0, 0.58, 0.344, 0.68)
-	ArchaeologyFrameCompletedButton.icon:Point("TOPLEFT", -5, -12)
-	ArchaeologyFrameCompletedButton.icon:Point("BOTTOMRIGHT", 0, -10)
-	ArchaeologyFrameCompletedButton.icon:SetAlpha(0.7)
+	ArchaeologyFrameCompletedButton.icon:Point("TOPLEFT", -3, -7)
+	ArchaeologyFrameCompletedButton.icon:Point("BOTTOMRIGHT", 3, -18)
 	ArchaeologyFrameCompletedButton.icon:SetDesaturated(true)
 
 	--Clicked Tab Script

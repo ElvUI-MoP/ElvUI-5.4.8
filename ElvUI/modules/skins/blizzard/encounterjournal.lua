@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule('Skins')
+local S = E:GetModule("Skins")
 
 local _G = _G
 local select, unpack, pairs = select, unpack, pairs
@@ -125,42 +125,36 @@ local function LoadSkin()
 
 	--Boss/Loot Tab
 	EncounterJournalEncounterFrameInfoBossTab:StripTextures()
-	EncounterJournalEncounterFrameInfoBossTab:CreateBackdrop('Transparent')
-	EncounterJournalEncounterFrameInfoBossTab.backdrop:Point('TOPLEFT', 11, -8)
-	EncounterJournalEncounterFrameInfoBossTab.backdrop:Point('BOTTOMRIGHT', -6, 8)
-	EncounterJournalEncounterFrameInfoBossTab:SetPoint("TOPLEFT", EncounterJournalEncounterFrameInfo, "TOPRIGHT", -2, 40)
+	EncounterJournalEncounterFrameInfoBossTab:CreateBackdrop("Transparent")
+	EncounterJournalEncounterFrameInfoBossTab:Size(45, 40)
+	EncounterJournalEncounterFrameInfoBossTab:Point("TOPLEFT", EncounterJournalEncounterFrameInfo, "TOPRIGHT", 9, 40)
 
 	EncounterJournalEncounterFrameInfoBossTab.icon = EncounterJournalEncounterFrameInfoBossTab:CreateTexture(nil, "OVERLAY");
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetTexCoord(0.902, 0.996, 0.269, 0.311)
-	EncounterJournalEncounterFrameInfoBossTab.icon:SetPoint("TOPLEFT", EncounterJournalEncounterFrameInfoBossTab, "TOPLEFT", 7, -7)
-	EncounterJournalEncounterFrameInfoBossTab.icon:SetPoint("BOTTOMRIGHT", EncounterJournalEncounterFrameInfoBossTab, "BOTTOMRIGHT", -7, 7)
+	EncounterJournalEncounterFrameInfoBossTab.icon:SetInside()
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetDesaturated(false)
 
 	EncounterJournalEncounterFrameInfoLootTab:StripTextures()
-	EncounterJournalEncounterFrameInfoLootTab:CreateBackdrop('Transparent')
-	EncounterJournalEncounterFrameInfoLootTab.backdrop:Point('TOPLEFT', 11, -8)
-	EncounterJournalEncounterFrameInfoLootTab.backdrop:Point('BOTTOMRIGHT', -6, 8)
-	EncounterJournalEncounterFrameInfoLootTab:SetPoint("TOP", EncounterJournalEncounterFrameInfoBossTab, "BOTTOM", 0, 5)
+	EncounterJournalEncounterFrameInfoLootTab:CreateBackdrop("Transparent")
+	EncounterJournalEncounterFrameInfoLootTab:Size(45, 40)
+	EncounterJournalEncounterFrameInfoLootTab:Point("TOP", EncounterJournalEncounterFrameInfoBossTab, "BOTTOM", 0, -10)
 
 	EncounterJournalEncounterFrameInfoLootTab.icon = EncounterJournalEncounterFrameInfoLootTab:CreateTexture(nil, "OVERLAY");
 	EncounterJournalEncounterFrameInfoLootTab.icon:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 	EncounterJournalEncounterFrameInfoLootTab.icon:SetTexCoord(0.632, 0.726, 0.618, 0.660)
-	EncounterJournalEncounterFrameInfoLootTab.icon:SetPoint("TOPLEFT", EncounterJournalEncounterFrameInfoLootTab, "TOPLEFT", 7, -7)
-	EncounterJournalEncounterFrameInfoLootTab.icon:SetPoint("BOTTOMRIGHT", EncounterJournalEncounterFrameInfoLootTab, "BOTTOMRIGHT", -7, 7)
+	EncounterJournalEncounterFrameInfoLootTab.icon:SetInside()
 	EncounterJournalEncounterFrameInfoLootTab.icon:SetDesaturated(true)
 
 	EncounterJournalEncounterFrameInfoModelTab:StripTextures()
-	EncounterJournalEncounterFrameInfoModelTab:CreateBackdrop('Transparent')
-	EncounterJournalEncounterFrameInfoModelTab.backdrop:Point('TOPLEFT', 11, -8)
-	EncounterJournalEncounterFrameInfoModelTab.backdrop:Point('BOTTOMRIGHT', -6, 8)
-	EncounterJournalEncounterFrameInfoModelTab:SetPoint("TOP", EncounterJournalEncounterFrameInfoLootTab, "BOTTOM", 0, 5)
+	EncounterJournalEncounterFrameInfoModelTab:CreateBackdrop("Transparent")
+	EncounterJournalEncounterFrameInfoModelTab:Size(45, 40)
+	EncounterJournalEncounterFrameInfoModelTab:Point("TOP", EncounterJournalEncounterFrameInfoLootTab, "BOTTOM", 0, -10)
 
 	EncounterJournalEncounterFrameInfoModelTab.icon = EncounterJournalEncounterFrameInfoModelTab:CreateTexture(nil, "OVERLAY");
 	EncounterJournalEncounterFrameInfoModelTab.icon:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 	EncounterJournalEncounterFrameInfoModelTab.icon:SetTexCoord(0.804, 0.900, 0.662, 0.705)
-	EncounterJournalEncounterFrameInfoModelTab.icon:SetPoint("TOPLEFT", EncounterJournalEncounterFrameInfoModelTab, "TOPLEFT", 7, -7)
-	EncounterJournalEncounterFrameInfoModelTab.icon:SetPoint("BOTTOMRIGHT", EncounterJournalEncounterFrameInfoModelTab, "BOTTOMRIGHT", -7, 7)
+	EncounterJournalEncounterFrameInfoModelTab.icon:SetInside()
 	EncounterJournalEncounterFrameInfoModelTab.icon:SetDesaturated(true)
 
 	EncounterJournalEncounterFrameInfoBossTab:HookScript("OnClick", function()
