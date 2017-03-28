@@ -551,25 +551,6 @@ local function LoadSkin()
 	LFGDungeonReadyDialogCloseButton.text:SetText("-");
 	LFGDungeonReadyDialogCloseButton.text:FontTemplate(nil, 22);
 
-	--[[for i = 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
-		local reward = _G["LFGDungeonReadyDialogRewardsFrameReward" .. i];
-		local texture = _G["LFGDungeonReadyDialogRewardsFrameReward" .. i .. "Texture"];
-		local border = _G["LFGDungeonReadyDialogRewardsFrameReward" .. i .. "Border"];
-
-		if(reward and not reward.IsDone) then
-			border:Kill();
-
-			reward:CreateBackdrop();
-			reward.backdrop:Point("TOPLEFT", 7, -7);
-			reward.backdrop:Point("BOTTOMRIGHT", -7, 7);
-
-			texture:SetTexCoord(unpack(E.TexCoords));
-			texture:SetInside(reward.backdrop);
-
-			reward.IsDone = true;
-		end
-	end]]
-
 	hooksecurefunc("LFGDungeonReadyDialog_UpdateRewards", function()
 		for i = 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
 			local reward = _G["LFGDungeonReadyDialogRewardsFrameReward" .. i];
