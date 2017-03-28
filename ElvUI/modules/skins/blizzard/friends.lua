@@ -346,33 +346,6 @@ local function LoadSkin()
 	FriendsTabHeaderSoRButtonIcon:SetTexCoord(unpack(E.TexCoords))
 	FriendsTabHeaderSoRButtonIcon:SetDrawLayer("OVERLAY")
 
-	-- Raid Info Frame
-	for i = 1, 7 do
-		_G["RaidInfoScrollFrameButton"..i]:StyleButton()
-	end
-
-	LFRQueueFrameListInset:StripTextures()
-	LFRQueueFrameRoleInset:StripTextures()
-	LFRQueueFrameCommentInset:StripTextures()
-
-	RaidInfoFrame:StripTextures(true);
-	RaidInfoFrame:SetTemplate("Transparent");
-
-	RaidInfoFrame:ClearAllPoints()
-	RaidInfoFrame:Point("TOPLEFT", RaidFrame, "TOPRIGHT", 1, 0)
-
-	RaidInfoInstanceLabel:StripTextures();
-	RaidInfoIDLabel:StripTextures();
-
-	S:HandleCloseButton(RaidInfoCloseButton);
-	RaidInfoCloseButton:Point("TOPRIGHT", 2, 0)
-
-	S:HandleScrollBar(RaidInfoScrollFrameScrollBar);
-
-	S:HandleButton(RaidInfoExtendButton);
-	S:HandleButton(RaidInfoCancelButton);
-	S:HandleButton(RaidFrameRaidInfoButton);
-
 	--Bottom Tabs
 	for i = 1, 4 do
 		S:HandleTab(_G["FriendsFrameTab"..i])

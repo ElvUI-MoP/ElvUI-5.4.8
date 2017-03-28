@@ -401,6 +401,12 @@ local function LoadSkin()
 	end
 
 	-- LFR Queue Frame
+	LFRParentFrame:StripTextures();
+	LFRQueueFrame:StripTextures();
+	LFRQueueFrameListInset:StripTextures();
+	LFRQueueFrameRoleInset:StripTextures();
+	LFRQueueFrameCommentInset:StripTextures();
+
 	LFRQueueFrameSpecificListScrollFrameScrollBackgroundTopLeft:Hide()
 	LFRQueueFrameSpecificListScrollFrameScrollBackgroundBottomRight:Hide()
 
