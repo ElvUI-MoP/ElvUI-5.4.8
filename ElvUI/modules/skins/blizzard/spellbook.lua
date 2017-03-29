@@ -135,32 +135,6 @@ local function LoadSkin()
 	end
 
 	--Core Abilities Frame
-	local function SkinCoreTabs()
-		for i = 1, 4 do
-			local tab = SpellBookCoreAbilitiesFrame.SpecTabs[i]
-			if(tab and tab.isSkinned ~= true) then
-				local _, _, _, icon = GetSpecializationInfo(i)
-
-				tab:StripTextures()
-				tab:SetNormalTexture(icon)
-				tab:GetNormalTexture():ClearAllPoints()
-				tab:GetNormalTexture():SetInside()
-				tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-
-				tab:CreateBackdrop("Default")
-				tab.backdrop:SetAllPoints()
-
-				tab:StyleButton(nil, true)
-
-				if(i == 1) then
-					tab:Point("TOPLEFT", SpellBookFrame, "TOPRIGHT", -1, -75)
-				end
-
-				tab.isSkinned = true
-			end
-		end
-	end
-
 	SpellBookCoreAbilitiesFrame:Point("TOPLEFT", -80, 5)
 
 	SpellBookCoreAbilitiesFrame.SpecName:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b);
@@ -170,7 +144,6 @@ local function LoadSkin()
 		for i = 1, #SpellBookCoreAbilitiesFrame.Abilities do
 			local button = SpellBookCoreAbilitiesFrame.Abilities[i]
 			if(button and button.isSkinned ~= true) then
-
 				if(button.highlightTexture) then
 					hooksecurefunc(button.highlightTexture, "SetTexture", function(_, texOrR)
 						if(texOrR == [[Interface\Buttons\ButtonHilight-Square]]) then
@@ -188,22 +161,10 @@ local function LoadSkin()
 				button.ActiveTexture:SetAlpha(0)
 				button.FutureTexture:SetAlpha(0)
 
-				button.RequiredLevel:SetTextColor(0.6, 0.6, 0.6)
-
 				button.iconTexture:SetTexCoord(unpack(E.TexCoords))
 				button.iconTexture:SetInside()
 
 				button.Name:Point("TOPLEFT", 50, 0)
-
-				if(button.FutureTexture:IsShown()) then
-					button.iconTexture:SetDesaturated(true)
-					button.Name:SetTextColor(0.6, 0.6, 0.6)
-					button.InfoText:SetTextColor(0.6, 0.6, 0.6)
-				else
-					button.iconTexture:SetDesaturated(false)
-					button.Name:SetTextColor(1, 0.80, 0.10)
-					button.InfoText:SetTextColor(1, 1, 1)
-				end
 
 				button.bg = CreateFrame("Frame", nil, button)
 				button.bg:SetTemplate("Transparent")
@@ -213,8 +174,42 @@ local function LoadSkin()
 
 				button.isSkinned = true
 			end
+
+			if(button) then
+				if(button.FutureTexture:IsShown()) then
+					button.iconTexture:SetDesaturated(true)
+					button.Name:SetTextColor(0.6, 0.6, 0.6)
+					button.InfoText:SetTextColor(0.6, 0.6, 0.6)
+					button.RequiredLevel:SetTextColor(0.6, 0.6, 0.6)
+				else
+					button.iconTexture:SetDesaturated(false)
+					button.Name:SetTextColor(1, 0.80, 0.10)
+					button.InfoText:SetTextColor(1, 1, 1)
+					button.RequiredLevel:SetTextColor(0.8, 0.8, 0.8)
+				end
+			end
 		end
-		SkinCoreTabs()
+
+		for i = 1, #SpellBookCoreAbilitiesFrame.SpecTabs do
+			local tab = SpellBookCoreAbilitiesFrame.SpecTabs[i]
+			if(tab and tab.isSkinned ~= true) then
+				tab:StripTextures()
+				tab:CreateBackdrop("Default")
+				tab.backdrop:SetAllPoints()
+
+				tab:SetNormalTexture(select(4, GetSpecializationInfo(i)))
+				tab:GetNormalTexture():SetInside()
+				tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+
+				tab:StyleButton(nil, true)
+
+				if(i == 1) then
+					tab:Point("TOPLEFT", SpellBookFrame, "TOPRIGHT", -1, -75)
+				end
+
+				tab.isSkinned = true
+			end
+		end
 	end)
 
 	--Skill Line Tabs
