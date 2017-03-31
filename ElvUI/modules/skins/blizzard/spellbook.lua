@@ -154,7 +154,7 @@ local function LoadSkin()
 				end
 
 				button:CreateBackdrop()
-				button:Size(40)
+				button.backdrop:SetAllPoints()
 				button:StyleButton()
 
 				button.EmptySlot:SetAlpha(0)
@@ -169,7 +169,7 @@ local function LoadSkin()
 				button.bg = CreateFrame("Frame", nil, button)
 				button.bg:SetTemplate("Transparent")
 				button.bg:Point("TOPLEFT", -5, 5)
-				button.bg:Point("BOTTOMRIGHT", 380, -17)
+				button.bg:Point("BOTTOMRIGHT", 380, -20)
 				button.bg:SetFrameLevel(button.bg:GetFrameLevel() - 1)
 
 				button.isSkinned = true
@@ -192,12 +192,12 @@ local function LoadSkin()
 
 		for i = 1, #SpellBookCoreAbilitiesFrame.SpecTabs do
 			local tab = SpellBookCoreAbilitiesFrame.SpecTabs[i]
+
 			if(tab and tab.isSkinned ~= true) then
-				tab:StripTextures()
+				tab:GetRegions():Hide()
 				tab:CreateBackdrop("Default")
 				tab.backdrop:SetAllPoints()
 
-				tab:SetNormalTexture(select(4, GetSpecializationInfo(i)))
 				tab:GetNormalTexture():SetInside()
 				tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 
