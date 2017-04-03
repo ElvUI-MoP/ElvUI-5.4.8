@@ -304,30 +304,24 @@ function B:UpdateCountDisplay()
 end
 
 function B:UpdateSlot(bagID, slotID)
-	if(self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then
-		return;
-	end
+	if(self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return; end
 
 	local slot, _ = self.Bags[bagID][slotID], nil;
 	local bagType = self.Bags[bagID].type;
-
-	slot.name, slot.rarity = nil, nil;
-	local texture, count, locked, readable
-	texture, count, locked, slot.rarity, readable = GetContainerItemInfo(bagID, slotID);
-
+	local texture, count, locked, _, readable = GetContainerItemInfo(bagID, slotID);
 	local clink = GetContainerItemLink(bagID, slotID);
 
-	slot:Show();
-	if(slot.questIcon) then
-		slot.questIcon:Hide();
-	end
+	slot.name, slot.rarity = nil, nil;
 
+	slot:Show();
+	slot.questIcon:Hide();
 	slot.itemLevel:SetText("")
+
 	if(B.ProfessionColors[bagType]) then
 		slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
 	elseif(clink) then
 		local iLvl, itemEquipLoc;
-		slot.name, _, _, iLvl, _, _, _, _, itemEquipLoc = GetItemInfo(clink);
+		slot.name, _, slot.rarity, iLvl, _, _, _, _, itemEquipLoc = GetItemInfo(clink);
 
 		local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID);
 		local r, g, b;
@@ -337,7 +331,6 @@ function B:UpdateSlot(bagID, slotID)
 			slot.shadow:SetBackdropBorderColor(r, g, b)
 		end
 
-		--Item Level
 		if(iLvl and B.db.itemLevel and (itemEquipLoc ~= nil and itemEquipLoc ~= "" and itemEquipLoc ~= "INVTYPE_BAG" and itemEquipLoc ~= "INVTYPE_QUIVER" and itemEquipLoc ~= "INVTYPE_TABARD") and (slot.rarity and slot.rarity > 1)) then
 			local upgradeBonus = tonumber(clink:match(":(%d+)\124h%["));
 			local iLvlBonus = UpgradeTable[upgradeBonus] and UpgradeTable[upgradeBonus].ilevel or 0
@@ -349,12 +342,9 @@ function B:UpdateSlot(bagID, slotID)
 			end
 		end
 
-		-- color slot according to item quality
 		if(questId and not isActiveQuest) then
 			slot:SetBackdropBorderColor(1.0, 1.0, 0.0);
-			if(slot.questIcon) then
-				slot.questIcon:Show();
-			end
+			slot.questIcon:Show();
 		elseif(questId or isQuestItem) then
 			slot:SetBackdropBorderColor(1.0, 0.3, 0.3);
 		elseif(slot.rarity and slot.rarity > 1) then
