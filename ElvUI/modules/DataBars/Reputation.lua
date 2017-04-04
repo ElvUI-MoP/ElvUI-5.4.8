@@ -11,11 +11,13 @@ local InCombatLockdown = InCombatLockdown;
 local ToggleCharacter = ToggleCharacter;
 
 local backupColor = FACTION_BAR_COLORS[1];
+local FactionStandingLabelUnknown = UNKNOWN
+
 function mod:UpdateReputation(event)
 	if(not mod.db.reputation.enable) then return; end
 	local bar = self.repBar;
 
-	local ID = 100;
+	local ID, standingLabel;
 	local name, reaction, min, max, value = GetWatchedFactionInfo();
 	local numFactions = GetNumFactions();
 
@@ -45,20 +47,31 @@ function mod:UpdateReputation(event)
 			end
 		end
 
+		if ID then
+			standingLabel = _G["FACTION_STANDING_LABEL"..ID]
+		else
+			standingLabel = FactionStandingLabelUnknown
+		end
+
+		local maxMinDiff = max - min
+ 		if (maxMinDiff == 0) then
+ 			maxMinDiff = 1
+		end
+
 		if(textFormat == "PERCENT") then
-			text = format("%s: %d%% [%s]", name, ((value - min) / (max - min) * 100), _G["FACTION_STANDING_LABEL" .. ID]);
+			text = format("%s: %d%% [%s]", name, ((value - min) / (maxMinDiff) * 100), standingLabel);
 		elseif(textFormat == "CURMAX") then
-			text = format("%s: %s - %s [%s]", name, E:ShortValue(value - min), E:ShortValue(max - min), _G["FACTION_STANDING_LABEL" .. ID]);
+			text = format("%s: %s - %s [%s]", name, E:ShortValue(value - min), E:ShortValue(max - min), standingLabel);
 		elseif(textFormat == "CURPERC") then
-			text = format("%s: %s - %d%% [%s]", name, E:ShortValue(value - min), ((value - min) / (max - min) * 100), _G["FACTION_STANDING_LABEL" .. ID]);
+			text = format("%s: %s - %d%% [%s]", name, E:ShortValue(value - min), ((value - min) / (maxMinDiff) * 100),standingLabel);
 		elseif textFormat == 'CUR' then
-			text = format('%s: %s [%s]', name, E:ShortValue(value - min), _G["FACTION_STANDING_LABEL" .. ID]);
+			text = format('%s: %s [%s]', name, E:ShortValue(value - min), standingLabel);
 		elseif textFormat == 'REM' then
-			text = format('%s: %s [%s]', name, E:ShortValue((max - min) - (value-min)), _G["FACTION_STANDING_LABEL" .. ID]);
+			text = format('%s: %s [%s]', name, E:ShortValue((max - min) - (value-min)), standingLabel);
 		elseif textFormat == 'CURREM' then
-			text = format('%s: %s - %s [%s]', name, E:ShortValue(value - min), E:ShortValue((max - min) - (value-min)), _G["FACTION_STANDING_LABEL" .. ID]);
+			text = format('%s: %s - %s [%s]', name, E:ShortValue(value - min), E:ShortValue((max - min) - (value-min)), standingLabel);
 		elseif textFormat == 'CURPERCREM' then
-			text = format('%s: %s - %d%% (%s) [%s]', name, E:ShortValue(value - min), ((value - min) / (max - min) * 100), E:ShortValue((max - min) - (value-min)), _G["FACTION_STANDING_LABEL" .. ID]);
+			text = format('%s: %s - %d%% (%s) [%s]', name, E:ShortValue(value - min), ((value - min) / (maxMinDiff) * 100), E:ShortValue((max - min) - (value-min)), standingLabel);
 		end
 
 		bar.text:SetText(text)
