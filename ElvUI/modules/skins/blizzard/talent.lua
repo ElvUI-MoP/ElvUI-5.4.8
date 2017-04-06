@@ -39,7 +39,7 @@ local function LoadSkin()
 	end
 
 	PlayerTalentFrameTalentsClearInfoFrame:CreateBackdrop("Default")
-	PlayerTalentFrameTalentsClearInfoFrame:Point('TOPLEFT', PlayerTalentFrameTalents, 'BOTTOMLEFT', 28, -5)
+	PlayerTalentFrameTalentsClearInfoFrame:Point("TOPLEFT", PlayerTalentFrameTalents, "BOTTOMLEFT", 28, -5)
 	PlayerTalentFrameTalentsClearInfoFrame:Size(20)
 	PlayerTalentFrameTalentsClearInfoFrame:StyleButton()
 	PlayerTalentFrameTalentsClearInfoFrame.icon:SetTexCoord(unpack(E.TexCoords))
@@ -50,14 +50,14 @@ local function LoadSkin()
 		S:HandleTab(_G["PlayerTalentFrameTab"..i])
 
 		if i == 1 then
-			local point, anchor, anchorPoint, x = _G['PlayerTalentFrameTab'..i]:GetPoint()
+			local point, anchor, anchorPoint, x = _G["PlayerTalentFrameTab"..i]:GetPoint()
 			_G["PlayerTalentFrameTab"..i]:Point(point, anchor, anchorPoint, x, -4)
 		end
 	end
 
 	hooksecurefunc("PlayerTalentFrame_UpdateTabs", function()
 		for i = 1, 4 do
-			local point, anchor, anchorPoint, x = _G['PlayerTalentFrameTab'..i]:GetPoint()
+			local point, anchor, anchorPoint, x = _G["PlayerTalentFrameTab"..i]:GetPoint()
 			_G["PlayerTalentFrameTab"..i]:Point(point, anchor, anchorPoint, x, -4)
 		end
 	end)
@@ -113,16 +113,16 @@ local function LoadSkin()
 			icon:Point("TOPLEFT", 15, -1)
 
 			button.bg = CreateFrame("Frame", nil, button)
-			button.bg:CreateBackdrop("Overlay")
+			button.bg:CreateBackdrop("Overlay", true)
 			button.bg:SetFrameLevel(button:GetFrameLevel() -2)
 			button.bg:Point("TOPLEFT", 15, -1)
 			button.bg:Point("BOTTOMRIGHT", -10, 1)
-			button.bg.SelectedTexture = button.bg:CreateTexture(nil, 'ARTWORK')
+			button.bg.SelectedTexture = button.bg:CreateTexture(nil, "ARTWORK")
 			button.bg.SelectedTexture:Point("TOPLEFT", button, 15, -1)
 			button.bg.SelectedTexture:Point("BOTTOMRIGHT", button, -10, 1)
 
 			button.bg2 = CreateFrame("Frame", nil, button)
-			button.bg2:CreateBackdrop("Default")
+			button.bg2:CreateBackdrop("Default", true)
 			button.bg2:Point("TOPLEFT", level, -3, 4)
 			button.bg2:Point("BOTTOMRIGHT", level, 2, -1)
 
@@ -169,12 +169,12 @@ local function LoadSkin()
 	specspell2.specIcon:SetTexCoord(unpack(E.TexCoords));
 	specspell2.specIcon:SetParent(specspell2.backdrop)
 
-	PlayerTalentFrameSpecialization:CreateBackdrop()
+	PlayerTalentFrameSpecialization:CreateBackdrop("Transparent", true)
 	PlayerTalentFrameSpecialization.backdrop:Point("TOPLEFT", 234, -16)
 	PlayerTalentFrameSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
 
-	PlayerTalentFrameSpecialization:DisableDrawLayer('ARTWORK')
-	PlayerTalentFrameSpecialization:DisableDrawLayer('BORDER')
+	PlayerTalentFrameSpecialization:DisableDrawLayer("ARTWORK")
+	PlayerTalentFrameSpecialization:DisableDrawLayer("BORDER")
 
 	for i = 1, PlayerTalentFrameSpecialization:GetNumChildren() do
 		local child = select(i, PlayerTalentFrameSpecialization:GetChildren())
@@ -289,9 +289,7 @@ local function LoadSkin()
 		end
 
 		button.roleIcon:SetTexCoord(unpack(E.TexCoords));
-
 		button.roleName:SetTextColor(0.75, 0.75, 0.75);
-
 		button.ring:Hide()
 
 		button:CreateBackdrop()
@@ -315,7 +313,7 @@ local function LoadSkin()
 			local button = _G[name..i]
 			_G["PlayerTalentFrameSpecializationSpecButton"..i.."Glow"]:Kill()
 
-			local texture = button:CreateTexture(nil, 'ARTWORK')
+			local texture = button:CreateTexture(nil, "ARTWORK")
 			texture:SetTexture(1, 1, 1, 0.1)
 			button:SetHighlightTexture(texture)
 
@@ -348,7 +346,7 @@ local function LoadSkin()
 			select(i, PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
 		end
 
-		PlayerTalentFramePetSpecialization:CreateBackdrop()
+		PlayerTalentFramePetSpecialization:CreateBackdrop("Transparent", true)
 		PlayerTalentFramePetSpecialization.backdrop:Point("TOPLEFT", 234, -16)
 		PlayerTalentFramePetSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
 
@@ -356,24 +354,21 @@ local function LoadSkin()
 			local button = PlayerTalentFramePetSpecialization["specButton"..i]
 			local glow = _G["PlayerTalentFramePetSpecializationSpecButton"..i.."Glow"]
 			local _, _, _, icon = GetSpecializationInfo(i, false, true)
-			local role = GetSpecializationRole(i, false, nil);
+			local role = GetSpecializationRole(i, false, true);
 
 			if(role == "DAMAGER") then
 				button.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\dps.tga")
 				button.roleIcon:Size(19)
-			elseif(role == "TANK") then
+			else
 				button.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga")
 				button.roleIcon:Size(20)
-			elseif(role == "HEALER") then
-				button.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\healer.tga")
-				button.roleIcon:Size(20)
 			end
-			button.roleIcon:SetTexCoord(unpack(E.TexCoords));
 
+			button.roleIcon:SetTexCoord(unpack(E.TexCoords));
 			button.roleName:SetTextColor(0.75, 0.75, 0.75);
+			button.ring:Hide()
 
 			glow:Kill()
-			button.ring:Hide()
 
 			button:CreateBackdrop()
 			button.backdrop:SetOutside(button.specIcon)
