@@ -62,8 +62,6 @@ local function LoadSkin()
 	S:HandleScrollBar(MountJournalListScrollFrameScrollBar)
 
 	for i = 1, #MountJournal.ListScrollFrame.buttons do
-		local scrollFrame = MountJournal.ListScrollFrame;
-		local offset = HybridScrollFrame_GetOffset(scrollFrame);
 		local button = _G["MountJournalListScrollFrameButton"..i]
 
 		S:HandleItemButton(button)
@@ -75,15 +73,8 @@ local function LoadSkin()
 		button.selectedTexture:SetInside()
 
 		button.stripe = button:CreateTexture(nil, "BACKGROUND");
-		button.stripe:SetTexture(0.9, 0.9, 1);
+		button.stripe:SetTexture(0.9, 0.9, 1, 0.10);
 		button.stripe:SetInside()
-
-		if((i + offset) % 2 == 1) then
-			button.stripe:SetAlpha(0.1);
-			button.stripe:Show();
-		else
-			button.stripe:Hide();
-		end
 	end
 
 	hooksecurefunc("MountJournal_UpdateMountList", function()
@@ -107,6 +98,8 @@ local function LoadSkin()
 	end)
 
 	local function ColorSelectedMount()
+		local scrollFrame = MountJournal.ListScrollFrame;
+		local offset = HybridScrollFrame_GetOffset(scrollFrame);
 		for i = 1, #MountJournal.ListScrollFrame.buttons do
 			local button = _G["MountJournalListScrollFrameButton"..i]
 			local name = _G["MountJournalListScrollFrameButton"..i.."Name"]
@@ -116,6 +109,12 @@ local function LoadSkin()
 			else
 				name:SetTextColor(1, 1, 1)
 				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			end
+
+			if((i + offset) % 2 == 1) then
+				button.stripe:Show();
+			else
+				button.stripe:Hide();
 			end
 		end
 	end

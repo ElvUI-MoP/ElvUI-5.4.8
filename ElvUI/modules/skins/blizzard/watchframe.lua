@@ -72,8 +72,9 @@ local function LoadSkin()
 			end
 		end
 
-		for i = 1, 2 do
-			if(_G["WatchFrameAutoQuestPopUp"..i] and _G["WatchFrameAutoQuestPopUp"..i].isSkinned ~= true) then
+		for i = 1, WATCHFRAME_NUM_POPUPS do
+			local popUp = _G["WatchFrameAutoQuestPopUp"..i]
+			if(popUp and popUp.isSkinned ~= true) then
 
 				_G["WatchFrameAutoQuestPopUp"..i.."ScrollChildBg"]:Kill();
 				_G["WatchFrameAutoQuestPopUp"..i.."ScrollChildQuestIconBg"]:Kill();
@@ -90,10 +91,12 @@ local function LoadSkin()
 				_G["WatchFrameAutoQuestPopUp"..i.."ScrollChildBorderTopLeft"]:Kill();
 				_G["WatchFrameAutoQuestPopUp"..i.."ScrollChildBorderTopRight"]:Kill();
 
-				_G["WatchFrameAutoQuestPopUp"..i]:CreateBackdrop("Transparent", true, true);
-				_G["WatchFrameAutoQuestPopUp"..i].backdrop:SetBackdropBorderColor(0, 0.44, 0.87, 1);
+				popUp:CreateBackdrop("Transparent", true, true);
+				popUp.backdrop:Point("TOPLEFT", 0, -2)
+				popUp.backdrop:Point("BOTTOMRIGHT", 0, 2)
+				popUp.backdrop:SetBackdropBorderColor(0, 0.44, 0.87, 1);
 
-				_G["WatchFrameAutoQuestPopUp"..i].isSkinned = true
+				popUp.isSkinned = true
 			end
 		end
 	end)
