@@ -330,10 +330,12 @@ local function LoadSkin()
 
 		if(cooldown1) then
 			E:RegisterCooldown(cooldown1);
+			cooldown1:SetAllPoints()
 		end
 
 		if(cooldown2) then
 			E:RegisterCooldown(cooldown2);
+			cooldown2:SetAllPoints()
 		end
 	end
 
@@ -402,10 +404,12 @@ local function LoadSkin()
 
 		if(cooldown1) then
 			E:RegisterCooldown(cooldown1);
+			cooldown1:SetAllPoints()
 		end
 
 		if(cooldown2) then
 			E:RegisterCooldown(cooldown2);
+			cooldown2:SetAllPoints()
 		end
 	end
 end

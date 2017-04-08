@@ -31,8 +31,8 @@ local function LoadSkin()
 	MountJournal.MountCount:CreateBackdrop("Default")
 
     MountJournal.MountDisplay:CreateBackdrop("Overlay")
-    MountJournal.MountDisplay.backdrop:SetPoint("TOPLEFT", 2, -40)
-    MountJournal.MountDisplay.backdrop:SetPoint("BOTTOMRIGHT", 1, 40)
+    MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 2, -40)
+    MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 1, 30)
 
 	MountJournal.MountDisplay.ShadowOverlay:SetAllPoints(MountJournal.MountDisplay.backdrop)
 
@@ -46,13 +46,21 @@ local function LoadSkin()
 	MountJournal.MountDisplay.ModelFrame:ClearAllPoints()
 	MountJournal.MountDisplay.ModelFrame:SetInside(MountJournal.MountDisplay.backdrop)
 
-	MountJournal.MountDisplay.Name:ClearAllPoints()
-	MountJournal.MountDisplay.Name:Point("TOP", MountJournal.MountDisplay.backdrop, 0, 30)
-
 	S:HandleButton(MountJournalMountButton)
 	MountJournalMountButton:ClearAllPoints()
-	MountJournalMountButton:Point("BOTTOM", MountJournal.MountDisplay.backdrop, 0, -35)
+	MountJournalMountButton:Point("BOTTOM", MountJournal.MountDisplay.backdrop, 0, -30)
 	MountJournalMountButton:Size(160, 25)
+
+	MountJournal.bg = CreateFrame("Frame", nil, MountJournal)
+    MountJournal.bg:SetTemplate("Default", true)
+    MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, -1, 42)
+    MountJournal.bg:Point("BOTTOMRIGHT", MountJournal.MountDisplay.ModelFrame, 1, 445)
+
+	MountJournal.MountDisplay.Name:ClearAllPoints()
+	MountJournal.MountDisplay.Name:Point("CENTER",  MountJournal.bg)
+
+	MountJournal.MountDisplay.NoMounts:ClearAllPoints()
+	MountJournal.MountDisplay.NoMounts:Point("CENTER",  MountJournal.bg)
 
 	MountJournal.MountDisplay.ModelFrame.RotateLeftButton:Kill()
 	MountJournal.MountDisplay.ModelFrame.RotateRightButton:Kill()
@@ -143,6 +151,8 @@ local function LoadSkin()
 	S:HandleButton(PetJournalFilterButton)
 	PetJournalFilterButton:ClearAllPoints()
 	PetJournalFilterButton:Point("RIGHT",PetJournalSearchBox, 97, 0)
+
+	PetJournalFilterButtonText:Point("CENTER")
 
 	S:HandleScrollBar(PetJournalListScrollFrameScrollBar)
 
@@ -315,6 +325,11 @@ local function LoadSkin()
 
 	PetJournalPetCardPetInfo.levelBG:SetAlpha(0)
 	PetJournalPetCardPetInfo.qualityBorder:SetAlpha(0)
+
+	PetJournalPetCardTypeInfo:Size(65, 40)
+
+	PetJournalPetCardTypeInfoTypeIcon:SetTexCoord(0.200, 0.710, 0.746, 0.917)
+	PetJournalPetCardTypeInfoTypeIcon:SetInside(PetJournalPetCardTypeInfo)
 
 	hooksecurefunc(PetJournalPetCardPetInfoQualityBorder, "SetVertexColor", function(_, r, g, b)
 		PetJournalPetCardPetInfo.backdrop:SetBackdropBorderColor(r, g, b);
