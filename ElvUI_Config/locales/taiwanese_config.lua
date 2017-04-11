@@ -398,7 +398,6 @@ L["Automatically scale the User Interface based on your screen resolution"] = "�
 L["Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level."] = "當你的等級達到滿級時, 自動選擇貪婪或分解綠色物品."
 L["Automatically vendor gray items when visiting a vendor."] = "當訪問商人時自動出售灰色物品."
 L["Bottom Panel"] = "底部面板"
-L["Changes the transparency of all the movers."] = "改變所有定位器的透明度"
 L["Chat Bubbles Style"] = "聊天氣泡樣式"
 L["Chat Bubbles"] = "聊天氣泡"
 L["Direction the bar moves on gains/losses"] = true;

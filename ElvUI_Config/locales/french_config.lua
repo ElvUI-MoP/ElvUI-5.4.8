@@ -398,7 +398,6 @@ L["Automatically scale the User Interface based on your screen resolution"] = "R
 L["Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level."] = "Choisi automatiquement la cupidité ou le désenchantement (quand il est disponible) sur les objets inhabituels (vert). Ceci ne fonctionne que si vous êtes au niveau maximum."
 L["Automatically vendor gray items when visiting a vendor."] = "Vendre automatiquement les objets gris quand vous rendez visite à un marchand."
 L["Bottom Panel"] = "Bandeau en bas"
-L["Changes the transparency of all the movers."] = "Change la transparence des Ancres"
 L["Chat Bubbles Style"] = 'Style des bulles de discussion'
 L["Chat Bubbles"] = "Bulles de discussion";
 L["Direction the bar moves on gains/losses"] = "Direction que prend la barre quand gain / perte";

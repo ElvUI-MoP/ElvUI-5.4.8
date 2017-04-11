@@ -446,7 +446,6 @@ L["Automatically scale the User Interface based on your screen resolution"] = "�
 L["Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level."] = "녹템 주사위창이 뜨면 자동으로 차비나 마력추출을 선택합니다. 이 기능은 오로지 만렙 캐릭터에서만 동작합니다."
 L["Automatically vendor gray items when visiting a vendor."] = "상점이 열리면 잡동사니를 자동으로 판매합니다."
 L["Bottom Panel"] = "하단 패널 표시"
-L["Changes the transparency of all the movers."] = true;
 L["Chat Bubbles Style"] = "말풍선 디자인"
 L["Chat Bubbles"] = true;
 L["Direction the bar moves on gains/losses"] = "바의 증감방향을 결정합니다."

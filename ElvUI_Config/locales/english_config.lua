@@ -387,7 +387,6 @@ L["Automatically scale the User Interface based on your screen resolution"] = tr
 L["Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level."] = true;
 L["Automatically vendor gray items when visiting a vendor."] = true;
 L["Bottom Panel"] = true;
-L["Changes the transparency of all the movers."] = true;
 L["Chat Bubbles Style"] = true;
 L["Chat Bubbles"] = true;
 L["Direction the bar moves on gains/losses"] = true;

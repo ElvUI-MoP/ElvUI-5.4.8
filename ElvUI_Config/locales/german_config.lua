@@ -398,7 +398,6 @@ L["Automatically scale the User Interface based on your screen resolution"] = "A
 L["Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level."] = "Automatisch Gier oder Entzauberung auf Gegenstände von grüner Qualität wählen (sofern verfügbar). Das funktioniert nur, wenn du die maximale Stufe erreicht hast."
 L["Automatically vendor gray items when visiting a vendor."] = "Automatischer Verkauf von grauen Gegenständen bei einem Händlerbesuch."
 L["Bottom Panel"] = "Untere Leiste"
-L["Changes the transparency of all the movers."] = "Konfiguriere die Einstellungen der Transparenz der Ankerpukte"
 L["Chat Bubbles Style"] = "Sprechblasen Stil"
 L["Chat Bubbles"] = "Sprechblasen"
 L["Direction the bar moves on gains/losses"] = "Richtung in die der Balken wächst/sinkt"
