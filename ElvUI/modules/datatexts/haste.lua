@@ -3,6 +3,10 @@ local DT = E:GetModule("DataTexts");
 
 local format, join = string.format, string.join;
 
+local GetCombatRating = GetCombatRating
+local GetCombatRatingBonus = GetCombatRatingBonus
+local UnitAttackSpeed = UnitAttackSpeed
+local UnitRangedDamage = UnitRangedDamage
 local ATTACK_SPEED = ATTACK_SPEED;
 local CR_HASTE_MELEE = CR_HASTE_MELEE;
 local CR_HASTE_RANGED = CR_HASTE_RANGED;
