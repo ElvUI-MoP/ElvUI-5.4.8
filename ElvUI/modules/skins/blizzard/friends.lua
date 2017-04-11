@@ -149,11 +149,6 @@ local function LoadSkin()
 
 		button.stripe = button:CreateTexture(nil, "BACKGROUND");
 		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame");
-		if(i % 2 == 1) then
-			button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998);
-		else
-			button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921);
-		end
 		button.stripe:SetInside()
 
 		level:ClearAllPoints();
@@ -172,7 +167,6 @@ local function LoadSkin()
 
 	hooksecurefunc("WhoList_Update", function()
 		local whoOffset = FauxScrollFrame_GetOffset(WhoListScrollFrame);
-
 		local playerZone = GetRealZoneText();
 		local playerGuild = GetGuildInfo("player");
 		local playerRace = UnitRace("player");
@@ -212,6 +206,12 @@ local function LoadSkin()
 				variableText:SetText(columnTable[UIDropDownMenu_GetSelectedID(WhoFrameDropDown)]);
 			else
 				button.icon:Hide();
+			end
+
+			if((i + whoOffset) % 2 == 1) then
+				button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998);
+			else
+				button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921);
 			end
 		end
 	end);
@@ -371,7 +371,8 @@ local function LoadSkin()
 	for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do locclasses[v] = k end
 
 	local updFunc = function()
-	if(GetNumFriends() < 1) then return end
+		if(GetNumFriends() < 1) then return end
+
 		local off, name, level, class, _, connected, _, _, tmp, tmpcol = FauxScrollFrame_GetOffset(FriendsFrameFriendsScrollFrame)
 		for i = 1, GetNumFriends() do
 			name, level, class, _, connected = GetFriendInfo(i)
