@@ -323,7 +323,6 @@ local function LoadSkin()
 
 			button:CreateBackdrop()
 			button.backdrop:Point("TOPLEFT", 10, 0)
-			button.backdrop:Point("BOTTOMRIGHT", 10, 0)
 
 			button:GetHighlightTexture():SetInside(button.backdrop)
 		end
