@@ -170,7 +170,7 @@ local function LoadSkin()
 	specspell2.specIcon:SetParent(specspell2.backdrop)
 
 	PlayerTalentFrameSpecialization:CreateBackdrop("Transparent", true)
-	PlayerTalentFrameSpecialization.backdrop:Point("TOPLEFT", 234, -16)
+	PlayerTalentFrameSpecialization.backdrop:Point("TOPLEFT", 235, -16)
 	PlayerTalentFrameSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
 
 	PlayerTalentFrameSpecialization:DisableDrawLayer("ARTWORK")
@@ -236,7 +236,8 @@ local function LoadSkin()
 				frame.subText:SetTextColor(1, 1, 1)
 
 				if(not frame.reskinned) then
-					frame:CreateBackdrop()
+					frame:SetTemplate()
+					frame:StyleButton(nil, true)
 					frame:Size(45)
 
 					frame.ring:Hide()
@@ -247,10 +248,9 @@ local function LoadSkin()
 
 					frame.bg = CreateFrame("Frame", nil, frame)
 					frame.bg:SetTemplate("Transparent", true)
-					frame.bg:Point("TOPLEFT", 0, 1)
-					frame.bg:Point("BOTTOMRIGHT", 137, -1)
+					frame.bg:Point("TOPLEFT", 44, 0)
+					frame.bg:Point("BOTTOMRIGHT", 137, 0)
 
-					frame.icon:SetParent(frame.bg)
 					frame.name:SetParent(frame.bg)
 					frame.subText:SetParent(frame.bg)
 
@@ -297,7 +297,7 @@ local function LoadSkin()
 		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2);
 
 		button.specIcon:SetTexture(icon)
-		button.specIcon:Size(61)
+		button.specIcon:Size(58)
 		button.specIcon:SetTexCoord(unpack(E.TexCoords));
 		button.specIcon:Point("LEFT", button, 10, 0)
 		button.specIcon:SetParent(button.backdrop)
@@ -322,8 +322,8 @@ local function LoadSkin()
 			button.selectedTex:SetAlpha(0)
 
 			button:CreateBackdrop()
-			button.backdrop:Point("TOPLEFT", 8, 2)
-			button.backdrop:Point("BOTTOMRIGHT", 10, -2)
+			button.backdrop:Point("TOPLEFT", 10, 0)
+			button.backdrop:Point("BOTTOMRIGHT", 10, 0)
 
 			button:GetHighlightTexture():SetInside(button.backdrop)
 		end
@@ -375,7 +375,7 @@ local function LoadSkin()
 			button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2);
 
 			button.specIcon:SetTexture(icon)
-			button.specIcon:Size(61)
+			button.specIcon:Size(58)
 			button.specIcon:SetTexCoord(unpack(E.TexCoords));
 			button.specIcon:Point("LEFT", button, 10, 0)
 			button.specIcon:SetParent(button.backdrop)

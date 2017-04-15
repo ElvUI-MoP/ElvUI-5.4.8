@@ -52,9 +52,9 @@ local function LoadSkin()
 	MountJournalMountButton:Size(160, 25)
 
 	MountJournal.bg = CreateFrame("Frame", nil, MountJournal)
-    MountJournal.bg:SetTemplate("Default", true)
-    MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, -1, 42)
-    MountJournal.bg:Point("BOTTOMRIGHT", MountJournal.MountDisplay.ModelFrame, 1, 445)
+	MountJournal.bg:SetTemplate("Default", true)
+	MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, -1, 42)
+	MountJournal.bg:Point("BOTTOMRIGHT", MountJournal.MountDisplay.ModelFrame, 1, 445)
 
 	MountJournal.MountDisplay.Name:ClearAllPoints()
 	MountJournal.MountDisplay.Name:Point("CENTER",  MountJournal.bg)

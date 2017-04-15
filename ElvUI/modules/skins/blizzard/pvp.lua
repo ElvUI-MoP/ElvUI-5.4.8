@@ -189,6 +189,9 @@ local function LoadSkin()
 	ConquestFrame:StripTextures();
 	ConquestFrame.ShadowOverlay:StripTextures();
 
+	ConquestFrame.NoSeason:StripTextures()
+	ConquestFrame.NoSeason:CreateBackdrop()
+
 	ConquestPointsBar:StripTextures();
 	ConquestPointsBar:CreateBackdrop("Default");
 	ConquestPointsBar.backdrop:Point("TOPLEFT", ConquestPointsBar.progress, "TOPLEFT", -1, 1);
