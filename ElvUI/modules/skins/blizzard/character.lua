@@ -375,6 +375,7 @@ local function LoadSkin()
 
 	S:HandleCheckBox(ReputationDetailMainScreenCheckBox)
 	S:HandleCheckBox(ReputationDetailInactiveCheckBox)
+	S:HandleCheckBox(ReputationDetailLFGBonusReputationCheckBox)
 
 	S:HandleCheckBox(ReputationDetailAtWarCheckBox)
 	ReputationDetailAtWarCheckBox:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-SwordCheck")
