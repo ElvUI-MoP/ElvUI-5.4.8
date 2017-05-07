@@ -569,22 +569,13 @@ E.Options.args.general = {
 						["disabled"] = L["Disabled"]
 					}
 				},
-				classColorMentionsSpeech = {
-					order = 3,
-					type = "toggle",
-					name = L["Class Color Mentions"],
-					desc = L["Use class color for the names of players when they are mentioned."],
-					get = function(info) return E.private.general.classColorMentionsSpeech; end,
-					set = function(info, value) E.private.general.classColorMentionsSpeech = value; E:StaticPopup_Show("PRIVATE_RL"); end,
-					disabled = function() return E.private.general.chatBubbles == "disabled"; end
-				},
 				spacer = {
-					order = 4,
+					order = 3,
 					type = "description",
 					name = "",
 				},
 				font = {
-					order = 5,
+					order = 4,
 					type = "select",
 					name = L["Font"],
 					dialogControl = "LSM30_Font",
@@ -594,7 +585,7 @@ E.Options.args.general = {
 					disabled = function() return E.private.general.chatBubbles == "disabled"; end
 				},
 				fontSize = {
-					order = 6,
+					order = 5,
 					type = "range",
 					name = L["Font Size"],
 					get = function(info) return E.private.general.chatBubbleFontSize; end,
@@ -603,7 +594,7 @@ E.Options.args.general = {
 					disabled = function() return E.private.general.chatBubbles == "disabled"; end
 				},
 				fontOutline = {
-					order = 7,
+					order = 6,
 					type = "select",
 					name = L["Font Outline"],
 					get = function(info) return E.private.general.chatBubbleFontOutline end,
