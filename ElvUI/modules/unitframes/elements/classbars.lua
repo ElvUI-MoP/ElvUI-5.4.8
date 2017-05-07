@@ -562,7 +562,7 @@ function UF:Construct_DeathKnightResourceBar(frame)
 	runes:CreateBackdrop("Default", nil, nil, self.thinBorders);
 
 	for i = 1, self["classMaxResourceBar"][E.myclass] do
-		runes[i] = CreateFrame("StatusBar", nil, runes);
+		runes[i] = CreateFrame("StatusBar", frame:GetName().."ClassBarButton"..i, runes)
 		self["statusbars"][runes[i]] = true;
 		runes[i]:SetStatusBarTexture(E["media"].blankTex);
 		runes[i]:GetStatusBarTexture():SetHorizTile(false);
@@ -607,17 +607,17 @@ end
 
 function UF:Construct_DruidAltManaBar(frame)
 	local dpower = CreateFrame("Frame", nil, frame)
-	dpower:SetAllPoints(frame.EclipseBar.backdrop)
-	dpower:SetTemplate("Default")
-	dpower:SetFrameLevel(dpower:GetFrameLevel() + 1)
-	dpower.colorPower = true
+	dpower:SetInside(frame.EclipseBar.backdrop)
+	dpower:CreateBackdrop("Default", nil, nil, self.thinBorders);
+	dpower:SetFrameLevel(dpower:GetFrameLevel() + 10)
+	dpower.colorPower = true;
 	dpower.PostUpdateVisibility = UF.DruidManaPostUpdateVisibility
 	dpower.PostUpdatePower = UF.DruidPostUpdateAltPower
 
 	dpower.ManaBar = CreateFrame("StatusBar", nil, dpower)
-	UF["statusbars"][dpower.ManaBar] = true
 	dpower.ManaBar:SetStatusBarTexture(E["media"].blankTex)
-	dpower.ManaBar:SetInside(dpower)
+	UF['statusbars'][dpower.ManaBar] = true
+	dpower.ManaBar:SetAllPoints(dpower)
 
 	dpower.bg = dpower:CreateTexture(nil, "BORDER")
 	dpower.bg:SetAllPoints(dpower.ManaBar)
