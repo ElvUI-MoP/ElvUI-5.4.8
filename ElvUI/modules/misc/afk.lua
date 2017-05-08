@@ -20,6 +20,7 @@ local GetGuildInfo = GetGuildInfo;
 local GetBattlefieldStatus = GetBattlefieldStatus;
 local UnitIsAFK = UnitIsAFK;
 local SetCVar = SetCVar;
+local UnitCastingInfo = UnitCastingInfo
 local IsShiftKeyDown = IsShiftKeyDown;
 local GetColoredName = GetColoredName;
 local Chat_GetChatCategory = Chat_GetChatCategory;
