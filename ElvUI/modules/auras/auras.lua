@@ -5,7 +5,7 @@ local LSM = LibStub("LibSharedMedia-3.0");
 local GetTime = GetTime
 local select, unpack = select, unpack
 local floor = math.floor
-local format, find, join = string.format, string.find, string.join
+local format = string.format
 
 local CreateFrame = CreateFrame
 local RegisterStateDriver = RegisterStateDriver
@@ -92,6 +92,7 @@ end
 function A:CreateIcon(button)
 	local font = LSM:Fetch("font", self.db.font)
 
+	-- button:SetFrameLevel(4)
 	button.texture = button:CreateTexture(nil, "BORDER")
 	button.texture:SetInside()
 	button.texture:SetTexCoord(unpack(E.TexCoords))
@@ -101,7 +102,7 @@ function A:CreateIcon(button)
 	button.count:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
 
 	button.time = button:CreateFontString(nil, "ARTWORK")
-	button.time:Point("TOP", button, 'BOTTOM', 1 + self.db.timeXOffset, 0 + self.db.timeYOffset)
+	button.time:Point("TOP", button, "BOTTOM", 1 + self.db.timeXOffset, 0 + self.db.timeYOffset)
 	button.time:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
 
 	button.highlight = button:CreateTexture(nil, "HIGHLIGHT")
@@ -138,23 +139,25 @@ function A:CreateIcon(button)
 		if MasqueGroupBuffs and E.private.auras.masque.buffs then
 			MasqueGroupBuffs:AddButton(button, ButtonData)
 			button.__MSQ_BaseFrame:SetFrameLevel(2)
+			MasqueGroupBuffs:ReSkin()
 		else
-			button:SetTemplate('Default')
+			button:SetTemplate("Default")
 		end
 	elseif auraType == "HARMFUL" then
 		if MasqueGroupDebuffs and E.private.auras.masque.debuffs then
 			MasqueGroupDebuffs:AddButton(button, ButtonData)
 			button.__MSQ_BaseFrame:SetFrameLevel(2)
+			MasqueGroupDebuffs:ReSkin()
 		else
-			button:SetTemplate('Default')
+			button:SetTemplate("Default")
 		end
 	end
 end
 
 function A:UpdateAura(button, index)
-	local filter = button:GetParent():GetAttribute('filter')
+	local filter = button:GetParent():GetAttribute("filter")
 	local unit = button:GetParent():GetAttribute("unit")
-	local name, rank, texture, count, dtype, duration, expirationTime, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff = UnitAura(unit, index, filter)
+	local name, _, texture, count, dtype, duration, expirationTime = UnitAura(unit, index, filter)
 
 	if(name) then
 		if(duration > 0 and expirationTime) then
@@ -231,10 +234,10 @@ end
 function A:UpdateHeader(header)
 	if(not E.private.auras.enable) then return end
 	local db = self.db.debuffs
-	if header:GetAttribute('filter') == 'HELPFUL' then
+	if header:GetAttribute("filter") == "HELPFUL" then
 		db = self.db.buffs
 		header:SetAttribute("consolidateTo", self.db.consolidatedBuffs.enable == true and E.private.general.minimap.enable == true and 1 or 0)
-		header:SetAttribute('weaponTemplate', ("ElvUIAuraTemplate%d"):format(db.size))
+		header:SetAttribute("weaponTemplate", ("ElvUIAuraTemplate%d"):format(db.size))
 	end
 
 	header:SetAttribute("separateOwn", db.seperateOwn)
@@ -272,7 +275,7 @@ function A:UpdateHeader(header)
 		if(child.time) then
 			local font = LSM:Fetch("font", self.db.font)
 			child.time:ClearAllPoints()
-			child.time:Point("TOP", child, 'BOTTOM', 1 + self.db.timeXOffset, 0 + self.db.timeYOffset)
+			child.time:Point("TOP", child, "BOTTOM", 1 + self.db.timeXOffset, 0 + self.db.timeYOffset)
 			child.time:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
 
 			child.count:ClearAllPoints()
@@ -280,7 +283,6 @@ function A:UpdateHeader(header)
 			child.count:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
 		end
 
-		--Blizzard bug fix, icons arent being hidden when you reduce the amount of maximum buttons
 		if(index > (db.maxWraps * db.wrapAfter) and child:IsShown()) then
 			child:Hide()
 		end
@@ -307,7 +309,7 @@ function A:CreateAuraHeader(filter)
 	RegisterAttributeDriver(header, "unit", "[vehicleui] vehicle; player")
 
 	if(filter == "HELPFUL") then
-		header:SetAttribute('consolidateDuration', -1)
+		header:SetAttribute("consolidateDuration", -1)
 		header:SetAttribute("includeWeapons", 1)
 	end
 
