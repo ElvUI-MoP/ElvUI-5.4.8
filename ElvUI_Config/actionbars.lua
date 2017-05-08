@@ -681,6 +681,35 @@ E.Options.args.actionbar = {
 				}
 			}
 		},
+		masque = {
+			order = 14,
+			type = "group",
+			guiInline = true,
+			name = L["Masque Support"],
+			get = function(info) return E.private.actionbar.masque[info[#info]] end,
+			set = function(info, value) E.private.actionbar.masque[info[#info]] = value; E:StaticPopup_Show("PRIVATE_RL") end,
+			disabled = function() return not E.private.actionbar.enable end,
+			args = {
+				actionbars = {
+					order = 1,
+					type = "toggle",
+					name = L["ActionBars"],
+					desc = L["Allow Masque to handle the skinning of this element."]
+				},
+				petBar = {
+					order = 1,
+					type = "toggle",
+					name = L["Pet Bar"],
+					desc = L["Allow Masque to handle the skinning of this element."]
+				},
+				stanceBar = {
+					order = 1,
+					type = "toggle",
+					name = L["Stance Bar"],
+					desc = L["Allow Masque to handle the skinning of this element."]
+				}
+			}
+		},
 		microbar = {
 			type = "group",
 			name = L["Micro Bar"],

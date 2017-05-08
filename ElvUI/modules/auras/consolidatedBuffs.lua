@@ -13,6 +13,9 @@ local GetRaidBuffTrayAuraInfo = GetRaidBuffTrayAuraInfo
 local CooldownFrame_SetTimer = CooldownFrame_SetTimer
 local NUM_LE_RAID_BUFF_TYPES = NUM_LE_RAID_BUFF_TYPES
 
+local Masque = LibStub("Masque", true)
+local MasqueGroup = Masque and Masque:Group("ElvUI", "Consolidated Buffs")
+
 A.DefaultIcons = {
 	[1] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",	-- Stats
 	[2] = "Interface\\Icons\\Spell_Holy_WordFortitude",				-- Stamina
@@ -103,7 +106,6 @@ end
 
 function A:CreateButton()
 	local button = CreateFrame("Button", nil, ElvUI_ConsolidatedBuffs)
-	button:SetTemplate("Default")
 
 	button.t = button:CreateTexture(nil, "OVERLAY")
 	button.t:SetTexCoord(unpack(E.TexCoords))
@@ -117,6 +119,31 @@ function A:CreateButton()
 
 	button.timer = button.cd:CreateFontString(nil, "OVERLAY")
 	button.timer:Point("CENTER")
+
+	local ButtonData = {
+		FloatingBG = nil,
+		Icon = button.t,
+		Cooldown = button.cd,
+		Flash = nil,
+		Pushed = nil,
+		Normal = nil,
+		Disabled = nil,
+		Checked = nil,
+		Border = nil,
+		AutoCastable = nil,
+		Highlight = nil,
+		HotKey = nil,
+		Count = nil,
+		Name = nil,
+		Duration = false,
+		AutoCast = nil,
+	}
+
+	if MasqueGroup and E.private.auras.masque.consolidatedBuffs then
+		MasqueGroup:AddButton(button, ButtonData)
+	elseif not E.private.auras.masque.consolidatedBuffs then
+		button:SetTemplate('Default')
+	end
 
 	return button
 end
@@ -207,10 +234,16 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 			E:GetModule("Auras"):DisableCB()
 		end
 	end
+
+	if MasqueGroup and E.private.auras.masque.consolidatedBuffs and E.db.auras.consolidatedBuffs.enable then MasqueGroup:ReSkin() end
 end
 
 function A:Construct_ConsolidatedBuffs()
 	local frame = CreateFrame("Frame", "ElvUI_ConsolidatedBuffs", Minimap)
+
+	if not Masque or not E.private.auras.masque.consolidatedBuffs then
+		frame:SetTemplate('Default')
+	end
 
 	frame:Width(E.ConsolidatedBuffsWidth)
 	if E.db.auras.consolidatedBuffs.position == "LEFT" then
@@ -225,6 +258,10 @@ function A:Construct_ConsolidatedBuffs()
 	for i=1, NUM_LE_RAID_BUFF_TYPES do
 		frame[i] = self:CreateButton(i)
 		frame[i]:SetID(i)
+	end
+
+	if Masque and MasqueGroup then
+		A.CBMasqueGroup = MasqueGroup
 	end
 
 	self:Update_ConsolidatedBuffsSettings()

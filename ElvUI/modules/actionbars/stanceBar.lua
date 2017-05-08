@@ -19,6 +19,9 @@ local GetBindingKey = GetBindingKey;
 local C_PetBattlesIsInBattle = C_PetBattles.IsInBattle
 local NUM_STANCE_SLOTS = NUM_STANCE_SLOTS;
 
+local Masque = LibStub("Masque", true)
+local MasqueGroup = Masque and Masque:Group("ElvUI", "Stance Bar")
+
 local bar = CreateFrame('Frame', 'ElvUI_StanceBar', E.UIParent, 'SecureHandlerStateTemplate');
 
 function AB:UPDATE_SHAPESHIFT_COOLDOWN()
@@ -54,40 +57,48 @@ function AB:StyleShapeShift()
 				texture = "Interface\\Icons\\Spell_Nature_WispSplode"
 			end
 
-			if (type(texture) == "string" and (lower(texture) == "interface\\icons\\spell_nature_wispsplode" or lower(texture) == "interface\\icons\\ability_rogue_envelopingshadows")) and self.db.stanceBar.style == 'darkenInactive' then
-				_, _, texture = GetSpellInfo(name)
-			end
-
-			icon:SetTexture(texture);
-
-			if texture then
-				cooldown:SetAlpha(1);
-			else
-				cooldown:SetAlpha(0);
-			end
-
-			if isActive then
-				StanceBarFrame.lastSelected = button:GetID();
-				if numForms == 1 then
-					button.checked:SetTexture(1, 1, 1, 0.5) 
-					button:SetChecked(true);
-				else
-					button.checked:SetTexture(1, 1, 1, 0.5)
-					button:SetChecked(self.db.stanceBar.style ~= 'darkenInactive');
+			if not button.useMasque then
+				if (type(texture) == "string" and (lower(texture) == "interface\\icons\\spell_nature_wispsplode" or lower(texture) == "interface\\icons\\ability_rogue_envelopingshadows")) and self.db.stanceBar.style == 'darkenInactive' then
+					_, _, texture = GetSpellInfo(name)
 				end
-			else
-				if numForms == 1 or stance == 0 then
-					button:SetChecked(false);
+
+				if texture then
+					cooldown:SetAlpha(1);
 				else
-					button:SetChecked(self.db.stanceBar.style == 'darkenInactive');
-					button.checked:SetAlpha(1)
-					if self.db.stanceBar.style == 'darkenInactive' then
-						button.checked:SetTexture(0, 0, 0, 0.5)
+					cooldown:SetAlpha(0);
+				end
+
+				if isActive then
+					StanceBarFrame.lastSelected = button:GetID();
+					if numForms == 1 then
+						button.checked:SetTexture(1, 1, 1, 0.5) 
+						button:SetChecked(true);
 					else
 						button.checked:SetTexture(1, 1, 1, 0.5)
+						button:SetChecked(self.db.stanceBar.style ~= 'darkenInactive');
+					end
+				else
+					if numForms == 1 or stance == 0 then
+						button:SetChecked(false);
+					else
+						button:SetChecked(self.db.stanceBar.style == 'darkenInactive');
+						button.checked:SetAlpha(1)
+						if self.db.stanceBar.style == 'darkenInactive' then
+							button.checked:SetTexture(0, 0, 0, 0.5)
+						else
+							button.checked:SetTexture(1, 1, 1, 0.5)
+						end
 					end
 				end
+			else
+				if isActive then
+					button:SetChecked(true)
+				else
+					button:SetChecked(false)
+				end
 			end
+			
+			icon:SetTexture(texture);
 
 			if isCastable then
 				icon:SetVertexColor(1.0, 1.0, 1.0);
@@ -248,7 +259,7 @@ function AB:PositionAndSizeBarShapeShift()
 		end
 
 		if i > numButtons then
-			button:SetScale(0.00001);
+			button:SetScale(0.0001);
 			button:SetAlpha(0);
 		else
 			button:SetScale(1);
@@ -256,9 +267,11 @@ function AB:PositionAndSizeBarShapeShift()
 		end
 
 		if(not button.FlyoutUpdateFunc) then
-			self:StyleButton(button, nil, true);
+			self:StyleButton(button, nil, MasqueGroup and E.private.actionbar.masque.stanceBar and true or nil);
 		end
 	end
+
+	if MasqueGroup and E.private.actionbar.masque.stanceBar then MasqueGroup:ReSkin() end
 end
 
 function AB:AdjustMaxStanceButtons(event)
@@ -273,6 +286,9 @@ function AB:AdjustMaxStanceButtons(event)
 		if not bar.buttons[i] then
 			bar.buttons[i] = CreateFrame("CheckButton", format(bar:GetName().."Button%d", i), bar, "StanceButtonTemplate")
 			bar.buttons[i]:SetID(i)
+			if MasqueGroup and E.private.actionbar.masque.stanceBar then
+				MasqueGroup:AddButton(bar.buttons[i])
+			end
 			self:HookScript(bar.buttons[i], "OnEnter", "Button_OnEnter");
 			self:HookScript(bar.buttons[i], "OnLeave", "Button_OnLeave");
 			initialCreate = true;

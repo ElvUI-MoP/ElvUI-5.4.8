@@ -63,6 +63,7 @@ Pour désactiver, laisser le champs vide. Pour plus d'information, merci de visi
 --ActionBars
 L["Action Paging"] = "Pagination d'action"
 L["ActionBars"] = "Barres d'actions"
+L["Allow Masque to handle the skinning of this element."] = "Autoriser Masque à gérer l'habillage de cet élement."
 L["Alpha"] = "Alpha"
 L["Anchor Point"] = "Point d'ancrage" --also in unitframes
 L["Automatic"] = "Auto"
@@ -101,6 +102,7 @@ L["Keybind Mode"] = "Mode raccourcis"
 L["Keybind Text"] = "Texte des raccourcis"
 L["Low Threshold"] = "Seuil minimal"
 L["Macro Text"] = "Texte sur Macro"
+L["Masque Support"] = "Support de Maque"
 L["Minutes"] = "Minutes"
 L["Mouse Over"] = "Au survol"
 L["Multiply the backdrops height or width by this value. This is usefull if you wish to have more than one bar behind a backdrop."] = "Multiplie la hauteur ou la largeur de l'arrière-plan par cette valeur. Très utile si vous souhaitez avoir une barre de plus en arrière-plan."

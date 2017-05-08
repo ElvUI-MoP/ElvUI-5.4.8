@@ -20,6 +20,9 @@ local PetActionBar_ShowGrid = PetActionBar_ShowGrid
 local PetActionBar_UpdateCooldowns = PetActionBar_UpdateCooldowns
 local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
 
+local Masque = LibStub("Masque", true)
+local MasqueGroup = Masque and Masque:Group("ElvUI", "Pet Bar")
+
 local bar = CreateFrame('Frame', 'ElvUI_BarPet', E.UIParent, 'SecureHandlerStateTemplate');
 bar:SetFrameStrata("LOW");
 
@@ -92,7 +95,9 @@ function AB:UpdatePet()
 			button:SetChecked(0);
 		end
 
-		checked:SetAlpha(0.3);
+		if not button.useMasque then
+			checked:SetAlpha(0.3);
+		end
 	end
 end
 
@@ -251,9 +256,9 @@ function AB:PositionAndSizeBarPet()
 			button:SetAlpha(bar.db.alpha);
 		end
 
-		self:StyleButton(button);
+		self:StyleButton(button, nil, MasqueGroup and E.private.actionbar.masque.petBar and true or nil);
 		
-		if not button.CheckFixed then
+		if not button.useMasque and not button.CheckFixed then
 			hooksecurefunc(button:GetCheckedTexture(), 'SetAlpha', function(self, value)
 				if value == 1 then
 					self:SetAlpha(0.3)
@@ -262,9 +267,12 @@ function AB:PositionAndSizeBarPet()
 			button.CheckFixed = true;
 		end
 	end
+
 	RegisterStateDriver(bar, "show", self.db['barPet'].visibility);
 
 	bar:GetScript("OnSizeChanged")(bar)
+
+	if MasqueGroup and E.private.actionbar.masque.petBar then MasqueGroup:ReSkin() end
 end
 
 function AB:UpdatePetBindings()
@@ -314,4 +322,11 @@ function AB:CreateBarPet()
 	E:CreateMover(bar, 'ElvBar_Pet', L['Pet Bar'], nil, nil, nil,'ALL, ACTIONBARS');
 	self:PositionAndSizeBarPet();
 	self:UpdatePetBindings();
+
+	if MasqueGroup and E.private.actionbar.masque.petBar then
+		for i = 1, NUM_PET_ACTION_SLOTS do
+			local button = _G["PetActionButton"..i]
+			MasqueGroup:AddButton(button)
+		end
+	end
 end
