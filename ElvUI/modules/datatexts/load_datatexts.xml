@@ -7,6 +7,7 @@
 	<Script file="combattime.lua"/>
 	<Script file="coordinates.lua"/>
 	<Script file="crit.lua"/>
+	<Script file="Currencies.lua"/>
 	<Script file="dps.lua"/>
 	<Script file="durability.lua"/>
 	<Script file="friends.lua"/>

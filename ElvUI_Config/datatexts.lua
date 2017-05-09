@@ -110,6 +110,17 @@ local function CreateCustomCurrencyOptions(currencyID)
 						E.global.datatexts.customCurrencies[currencyID].USE_TOOLTIP = value
 						DT:UpdateCustomCurrencySettings(currency.NAME, "USE_TOOLTIP", value)
 					end,
+				},
+				displayInMainTooltip = {
+					order = 6,
+					type = "toggle",
+					name = L["Display In Main Tooltip"],
+					desc = L["If enabled, then this currency will be displayed in the main Currencies datatext tooltip."],
+					get = function(info) return E.global.datatexts.customCurrencies[currencyID].DISPLAY_IN_MAIN_TOOLTIP end,
+					set = function(info, value)
+						E.global.datatexts.customCurrencies[currencyID].DISPLAY_IN_MAIN_TOOLTIP = value
+						DT:UpdateCustomCurrencySettings(currency.NAME, "DISPLAY_IN_MAIN_TOOLTIP", value)
+					end
 				}
 			}
 		}
@@ -399,8 +410,41 @@ E.Options.args.datatexts = {
 				}
 			}
 		},
-		customCurrency = {
+		currencies = {
 			order = 6,
+			type = "group",
+			name = "Currencies", --Name of datatext, which isn't localized
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = "Currencies"
+				},
+				displayedCurrency = {
+					order = 2,
+					type = "select",
+					name = L["Displayed Currency"],
+					get = function(info) return E.db.datatexts.currencies.displayedCurrency end,
+					set = function(info, value) E.db.datatexts.currencies.displayedCurrency = value; DT:LoadDataTexts() end,
+					values = function() return DT:Currencies_GetCurrencyList() end
+				},
+				displayStyle = {
+					order = 3,
+					type = "select",
+					name = L["Currency Format"],
+					get = function(info) return E.db.datatexts.currencies.displayStyle end,
+					set = function(info, value) E.db.datatexts.currencies.displayStyle = value; DT:LoadDataTexts() end,
+					disabled = function() return (E.db.datatexts.currencies.displayedCurrency == "GOLD") end,
+					values = {
+						["ICON"] = L["Icons Only"],
+						["ICON_TEXT"] = L["Icons and Text"],
+						["ICON_TEXT_ABBR"] = L["Icons and Text (Short)"]
+					}
+				}
+			}
+		},
+		customCurrency = {
+			order = 7,
 			type = "group",
 			name = L["Custom Currency"],
 			args = {

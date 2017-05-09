@@ -2727,6 +2727,11 @@ P["datatexts"] = {
 	["noCombatClick"] = false,
 	["noCombatHover"] = false,
 
+	["currencies"] = {
+		["displayedCurrency"] = "GOLD",
+		["displayStyle"] = "ICON"
+	},
+
 	["minimapPanels"] = true,
 	["leftChatPanel"] = true,
 	["rightChatPanel"] = true,
