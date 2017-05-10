@@ -240,6 +240,7 @@ L["Focus Frame"] = "Фокус" --Also used in UnitFrames
 L["FocusTarget Frame"] = "Цель фокуса" --Also used in UnitFrames
 L["GM Ticket Frame"] = "Запрос ГМу"
 L["Left Chat"] = "Левый чат"
+L["Level Up Display"] = "Уровень"
 L["Loot / Alert Frames"] = "Розыгрыш/оповещения"
 L["Loot Frame"] = "Окно добычи"
 L["Loss Control Icon"] = "Иконка потери контроля"

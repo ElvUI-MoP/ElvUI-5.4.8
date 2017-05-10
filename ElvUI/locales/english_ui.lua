@@ -241,6 +241,7 @@ L["Focus Frame"] = true; --Also used in UnitFrames
 L["FocusTarget Frame"] = true; --Also used in UnitFrames
 L["GM Ticket Frame"] = true;
 L["Left Chat"] = true;
+L["Level Up Display"] = true;
 L["Loot / Alert Frames"] = true;
 L["Loot Frame"] = true;
 L["Loss Control Icon"] = true;

@@ -14,6 +14,7 @@ function B:Initialize()
 	self:MoveWatchFrame();
 	self:SkinBlizzTimers();
 	self:ErrorFrameSize()
+	self:Handle_LevelUpDisplay()
 
  	if(not IsAddOnLoaded("SimplePowerBar")) then
  		self:PositionAltPowerBar();

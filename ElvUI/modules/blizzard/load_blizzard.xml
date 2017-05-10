@@ -11,4 +11,5 @@
 	<Script file='capturebar.lua'/>
 	<Script file='altpower.lua'/>
 	<Script file='errorframe.lua'/>
+	<Script file='LevelUp.lua'/>
 </Ui>

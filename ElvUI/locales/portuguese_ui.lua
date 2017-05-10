@@ -240,6 +240,7 @@ L["Focus Frame"] = "Quadro do Foco"
 L["FocusTarget Frame"] = "Quadro do Alvo do Foco"
 L["GM Ticket Frame"] = "Quadro de Consulta com GM"
 L["Left Chat"] = "Bate-papo esquerdo"
+L["Level Up Display"] = true;
 L["Loot / Alert Frames"] = "Quadro de Saque / Alerta"
 L["Loot Frame"] = true;
 L["Loss Control Icon"] = "Ícone de Perda de Controle"

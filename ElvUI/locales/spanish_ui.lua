@@ -240,6 +240,7 @@ L["Focus Frame"] = "Marco de Foco"
 L["FocusTarget Frame"] = "Marco de Objetivo del Foco"
 L["GM Ticket Frame"] = "Marco de Consultas para el MJ"
 L["Left Chat"] = "Chat Izquierdo"
+L["Level Up Display"] = true;
 L["Loot / Alert Frames"] = "Marcos de Botín / Alerta"
 L["Loot Frame"] = "Marco de Botín"
 L["Loss Control Icon"] = "Icono de Pérdida de Control"

@@ -240,6 +240,7 @@ L["Focus Frame"] = "Fokusfenster" --Also used in UnitFrames
 L["FocusTarget Frame"] = "Fokus-Ziel Fenster" --Also used in UnitFrames
 L["GM Ticket Frame"] = "GM-Ticket-Fenster"
 L["Left Chat"] = "Linker Chat"
+L["Level Up Display"] = "Level Up Anzeige"
 L["Loot / Alert Frames"] = "Beute-/Alarmfenster"
 L["Loot Frame"] = "Beute-Fenster"
 L["Loss Control Icon"] = "Kontrollverlustsymbol"

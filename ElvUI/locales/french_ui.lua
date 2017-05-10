@@ -240,6 +240,7 @@ L["Focus Frame"] = "Cadre Focus" --Also used in UnitFrames
 L["FocusTarget Frame"] = "Cadre de la cible de votre Focus" --Also used in UnitFrames
 L["GM Ticket Frame"] = "Cadre du ticket MJ"
 L["Left Chat"] = "Chat gauche"
+L["Level Up Display"] = true;
 L["Loot / Alert Frames"] = "Cadres de butin / Alerte"
 L["Loot Frame"] = "Cadre de butin";
 L["Loss Control Icon"] = "Icône de la perte de contrôle"
