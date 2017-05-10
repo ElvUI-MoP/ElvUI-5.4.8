@@ -2,6 +2,12 @@ local E, L, V, P, G = unpack(select(2, ...));
 local M = E:NewModule("Minimap", "AceEvent-3.0");
 E.Minimap = M;
 
+local Astrolabe, AstrolabeMapMonitor
+if DongleStub then
+	Astrolabe = DongleStub("Astrolabe-1.0")
+	AstrolabeMapMonitor = DongleStub("AstrolabeMapMonitor")
+end
+
 local _G = _G;
 local unpack = unpack;
 local format = string.format;
@@ -612,6 +618,7 @@ function M:Initialize()
 	fm:SetMovable(true);
 	fm:SetScript("OnDragStart", function(self) self:StartMoving(); end);
 	fm:SetScript("OnDragStop", function(self) self:StopMovingOrSizing(); end);
+	if AstrolabeMapMonitor then AstrolabeMapMonitor:MonitorWorldMap(fm) end
 	fm:Hide();
 	E.FrameLocks["FarmModeMap"] = true;
 
@@ -636,6 +643,7 @@ function M:Initialize()
 		if(IsAddOnLoaded("GatherMate2")) then
 			LibStub("AceAddon-3.0"):GetAddon("GatherMate2"):GetModule("Display"):ReparentMinimapPins(FarmModeMap);
 		end
+		if Astrolabe then Astrolabe:SetTargetMinimap(FarmModeMap) end
 	end);
 
 	FarmModeMap:SetScript("OnHide", function() 
@@ -657,6 +665,7 @@ function M:Initialize()
 		if(IsAddOnLoaded("GatherMate2")) then
 			LibStub("AceAddon-3.0"):GetAddon("GatherMate2"):GetModule("Display"):ReparentMinimapPins(Minimap);
 		end
+		if Astrolabe then Astrolabe:SetTargetMinimap(Minimap) end
 	end);
 
 	UIParent:HookScript("OnShow", function()
