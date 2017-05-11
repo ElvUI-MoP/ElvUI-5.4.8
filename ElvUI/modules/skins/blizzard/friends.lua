@@ -346,6 +346,24 @@ local function LoadSkin()
 	FriendsTabHeaderSoRButtonIcon:SetTexCoord(unpack(E.TexCoords))
 	FriendsTabHeaderSoRButtonIcon:SetDrawLayer("OVERLAY")
 
+	--Recruit a Friend
+	RecruitAFriendFrame:StripTextures()
+	RecruitAFriendFrame:SetTemplate("Transparent")
+
+	S:HandleCloseButton(RecruitAFriendFrameCloseButton)
+	S:HandleButton(RecruitAFriendFrameSendButton)
+	S:HandleEditBox(RecruitAFriendNameEditBox)
+
+	RecruitAFriendNoteFrame:StripTextures()
+	S:HandleEditBox(RecruitAFriendNoteFrame)
+
+	FriendsTabHeaderRecruitAFriendButton:SetTemplate("Default")
+	FriendsTabHeaderRecruitAFriendButton:StyleButton()
+
+	FriendsTabHeaderRecruitAFriendButtonIcon:SetInside()
+	FriendsTabHeaderRecruitAFriendButtonIcon:SetTexCoord(unpack(E.TexCoords))
+	FriendsTabHeaderRecruitAFriendButtonIcon:SetDrawLayer("OVERLAY")
+
 	--Bottom Tabs
 	for i = 1, 4 do
 		S:HandleTab(_G["FriendsFrameTab"..i])
