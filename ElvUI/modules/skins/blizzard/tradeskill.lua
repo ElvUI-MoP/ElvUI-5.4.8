@@ -78,7 +78,7 @@ local function LoadSkin()
 		TradeSkillDescription:Point("TOPLEFT", 8, -75);
 
 		TradeSkillSkillIcon:Size(47);
-		TradeSkillSkillIcon:Point("TOPLEFT", 10, -20);
+		TradeSkillSkillIcon:Point("TOPLEFT", 5, -1);
 
 		TradeSkillCancelButton:ClearAllPoints();
 		TradeSkillCancelButton:Point("TOPRIGHT", TradeSkillDetailScrollFrame, "BOTTOMRIGHT", 23, -3);
