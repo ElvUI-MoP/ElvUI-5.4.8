@@ -303,7 +303,7 @@ local function LoadSkin()
 		button.level:Point("TOPLEFT", 58, -10);
 		button.level:SetParent(button.backdrop);
 
-		button.timeLeft:Point("LEFT", button.name, "RIGHT", -10 ,0);
+		button.timeLeft:Point("LEFT", button.name, "RIGHT", -50, 0);
 		button.timeLeft:SetParent(button.backdrop);
 
 		button.comment:SetParent(button.backdrop);
