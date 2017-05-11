@@ -19,19 +19,33 @@ local function LoadSkin()
 
 	WatchFrameLines:StripTextures();
 
-	WatchFrame:Width(205)
+	if GetCVarBool("watchFrameWidth") == 1 then
+		WatchFrame:Width(306)
+	else
+		WatchFrame:Width(205)
+	end
 
 	hooksecurefunc("WatchFrame_Expand", function()
 		WatchFrameCollapseExpandButton.text:SetText("-");
 
-		WatchFrame:Width(205)
+		if GetCVarBool("watchFrameWidth") == 1 then
+			WatchFrame:Width(306)
+		else
+			WatchFrame:Width(205)
+		end
 	end)
 
 	hooksecurefunc("WatchFrame_Collapse", function()
 		WatchFrameCollapseExpandButton.text:SetText("+");
 
-		WatchFrame:Width(205)
+		if GetCVarBool("watchFrameWidth") == 1 then
+			WatchFrame:Width(306)
+		else
+			WatchFrame:Width(205)
+		end
 	end)
+
+	WatchFrame_SetWidth(GetCVar("watchFrameWidth"));
 
 	hooksecurefunc("WatchFrame_Update", function()
 		local questIndex;
