@@ -15,10 +15,12 @@ local FactionStandingLabelUnknown = UNKNOWN
 
 function mod:UpdateReputation(event)
 	if(not mod.db.reputation.enable) then return; end
+
 	local bar = self.repBar;
 
-	local ID, standingLabel;
-	local name, reaction, min, max, value = GetWatchedFactionInfo();
+	local ID
+	local isFriend, friendText, standingLabel
+	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo()
 	local numFactions = GetNumFactions();
 
 	if not name or (event == "PLAYER_REGEN_DISABLED" and self.db.reputation.hideInCombat) then
@@ -41,9 +43,15 @@ function mod:UpdateReputation(event)
 		bar.statusBar:SetValue(value);
 
 		for i = 1, numFactions do
-			local factionName, _, standingID = GetFactionInfo(i);
+			local factionName, _, standingID, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(i);
+			local friendID, _, _, _, _, _, friendTextLevel = GetFriendshipReputation(factionID);
 			if(factionName == name) then
-				ID = standingID;
+				if friendID ~= nil then
+					isFriend = true
+					friendText = friendTextLevel
+				else
+					ID = standingID
+				end
 			end
 		end
 
@@ -59,19 +67,19 @@ function mod:UpdateReputation(event)
 		end
 
 		if(textFormat == "PERCENT") then
-			text = format("%s: %d%% [%s]", name, ((value - min) / (maxMinDiff) * 100), standingLabel);
+			text = format("%s: %d%% [%s]", name, ((value - min) / (maxMinDiff) * 100), isFriend and friendText or standingLabel);
 		elseif(textFormat == "CURMAX") then
-			text = format("%s: %s - %s [%s]", name, E:ShortValue(value - min), E:ShortValue(max - min), standingLabel);
+			text = format("%s: %s - %s [%s]", name, E:ShortValue(value - min), E:ShortValue(max - min), isFriend and friendText or standingLabel);
 		elseif(textFormat == "CURPERC") then
-			text = format("%s: %s - %d%% [%s]", name, E:ShortValue(value - min), ((value - min) / (maxMinDiff) * 100),standingLabel);
+			text = format("%s: %s - %d%% [%s]", name, E:ShortValue(value - min), ((value - min) / (maxMinDiff) * 100), isFriend and friendText or standingLabel);
 		elseif textFormat == 'CUR' then
-			text = format('%s: %s [%s]', name, E:ShortValue(value - min), standingLabel);
+			text = format('%s: %s [%s]', name, E:ShortValue(value - min), isFriend and friendText or standingLabel);
 		elseif textFormat == 'REM' then
-			text = format('%s: %s [%s]', name, E:ShortValue((max - min) - (value-min)), standingLabel);
+			text = format('%s: %s [%s]', name, E:ShortValue((max - min) - (value-min)), isFriend and friendText or standingLabel);
 		elseif textFormat == 'CURREM' then
-			text = format('%s: %s - %s [%s]', name, E:ShortValue(value - min), E:ShortValue((max - min) - (value-min)), standingLabel);
+			text = format('%s: %s - %s [%s]', name, E:ShortValue(value - min), E:ShortValue((max - min) - (value-min)), isFriend and friendText or standingLabel);
 		elseif textFormat == 'CURPERCREM' then
-			text = format('%s: %s - %d%% (%s) [%s]', name, E:ShortValue(value - min), ((value - min) / (maxMinDiff) * 100), E:ShortValue((max - min) - (value-min)), standingLabel);
+			text = format('%s: %s - %d%% (%s) [%s]', name, E:ShortValue(value - min), ((value - min) / (maxMinDiff) * 100), E:ShortValue((max - min) - (value-min)), isFriend and friendText or standingLabel);
 		end
 
 		bar.text:SetText(text)
@@ -85,12 +93,13 @@ function mod:ReputationBar_OnEnter()
 	GameTooltip:ClearLines();
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR", 0, -4);
 
-	local name, reaction, min, max, value = GetWatchedFactionInfo();
+	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo()
+	local friendID, _, _, _, _, _, friendTextLevel = GetFriendshipReputation(factionID);
 	if(name) then
 		GameTooltip:AddLine(name);
 		GameTooltip:AddLine(" ");
 
-		GameTooltip:AddDoubleLine(STANDING .. ":", _G["FACTION_STANDING_LABEL" .. reaction], 1, 1, 1);
+		GameTooltip:AddDoubleLine(STANDING .. ":", friendID and friendTextLevel or _G["FACTION_STANDING_LABEL" .. reaction], 1, 1, 1);
 		GameTooltip:AddDoubleLine(REPUTATION .. ":", format("%d / %d (%d%%)", value - min, max - min, (value - min) / ((max - min == 0) and max or (max - min)) * 100), 1, 1, 1);
 	end
 	GameTooltip:Show();
