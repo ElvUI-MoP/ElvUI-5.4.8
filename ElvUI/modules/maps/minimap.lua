@@ -294,7 +294,7 @@ function M:UpdateSettings()
 
 	if(Minimap.location) then
 		Minimap.location:Width(E.MinimapSize);
-		
+
 		if(E.db.general.minimap.locationText ~= "SHOW" or not E.private.general.minimap.enable) then
 			Minimap.location:Hide();
 		else
@@ -445,7 +445,7 @@ function M:UpdateSettings()
 			MiniMapWorldMapButton:SetScale(scale);
 			MiniMapWorldMapButton:Show();
 		end
-	
+
 		--Skin WorldMap Button
 		local worldMapButton = MiniMapWorldMapButton;
 		local worldMapButtonIcon = worldMapButton:GetNormalTexture();
@@ -455,7 +455,7 @@ function M:UpdateSettings()
 		worldMapButton:CreateBackdrop();
 		worldMapButton:SetFrameStrata("MEDIUM");
 		worldMapButton:Size(30);
-		
+
 		worldMapButtonIcon:SetTexture("INTERFACE\\ICONS\\INV_Misc_Map02");
 		worldMapButtonIcon:SetTexCoord(unpack(E.TexCoords));
 		worldMapButtonIcon:SetOutside()
