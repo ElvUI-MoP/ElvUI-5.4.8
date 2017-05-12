@@ -11,17 +11,19 @@ local GetSocketTypes = GetSocketTypes;
 local function LoadSkin()
 	if(E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.socket ~= true) then return; end
 
-	ItemSocketingFrame:StripTextures();
-	ItemSocketingFrame:CreateBackdrop("Transparent");
-	ItemSocketingFrame.backdrop:Point("TOPLEFT", 11, -12);
-	ItemSocketingFrame.backdrop:Point("BOTTOMRIGHT", -4, 27);
+	ItemSocketingFrame:StripTextures()
+	ItemSocketingFrame:SetTemplate("Transparent")
 
-	ItemSocketingFramePortrait:Kill();
+	ItemSocketingScrollFrame:StripTextures()
+	ItemSocketingScrollFrame:CreateBackdrop("Transparent")
 
-	S:HandleCloseButton(ItemSocketingCloseButton);
+	ItemSocketingFrameInset:Kill()
+	ItemSocketingFramePortrait:Kill()
 
-	ItemSocketingScrollFrame:StripTextures();
-	ItemSocketingScrollFrame:CreateBackdrop("Transparent");
+	S:HandleButton(ItemSocketingSocketButton)
+	ItemSocketingSocketButton:Point("BOTTOMRIGHT", -5, 5)
+
+	S:HandleCloseButton(ItemSocketingFrameCloseButton)
 
 	S:HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2);
 
@@ -49,8 +51,6 @@ local function LoadSkin()
 			button:SetBackdropBorderColor(color.r, color.g, color.b);
 		end
 	end);
-
-	S:HandleButton(ItemSocketingSocketButton);
 end
 
 S:AddCallbackForAddon("Blizzard_ItemSocketingUI", "ItemSocket", LoadSkin);
