@@ -557,40 +557,34 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 				name = L["yOffset"],
 				min = -300, max = 300, step = 1
 			},
-			spacing = {
-				order = 7,
-				type = "range",
-				name = L["Spacing"],
-				min = 0, max = 40, step = 1
-			},
 			anchorPoint = {
-				order = 8,
+				order = 7,
 				type = "select",
 				name = L["Anchor Point"],
 				desc = L["What point to anchor to the frame you set to attach to."],
 				values = positionValues
 			},
 			fontSize = {
-				order = 9,
+				order = 8,
 				type = "range",
 				name = L["Font Size"],
 				min = 6, max = 22, step = 1
 			},
 			clickThrough = {
-				order = 10,
+				order = 9,
 				type = "toggle",
 				name = L["Click Through"],
 				desc = L["Ignore mouse events."]
 			},
 			sortMethod = {
-				order = 11,
+				order = 10,
 				type = "select",
 				name = L["Sort By"],
 				desc = L["Method to sort by."],
 				values = auraSortValues
 			},
 			sortDirection = {
-				order = 12,
+				order = 11,
 				type = "select",
 				name = L["Sort Direction"],
 				desc = L["Ascending or Descending order."],
