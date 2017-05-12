@@ -104,8 +104,8 @@ function A:Button_OnLeave()
 	GameTooltip:Hide()
 end
 
-function A:CreateButton()
-	local button = CreateFrame("Button", nil, ElvUI_ConsolidatedBuffs)
+function A:CreateButton(i)
+	local button = CreateFrame("Button", "ElvUIConsolidatedBuff"..i, ElvUI_ConsolidatedBuffs)
 
 	button.t = button:CreateTexture(nil, "OVERLAY")
 	button.t:SetTexCoord(unpack(E.TexCoords))
