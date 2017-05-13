@@ -1018,4 +1018,4 @@ local function LoadSkin()
 	end);
 end
 
-S:AddCallback("Misc", LoadSkin);
+S:AddCallback("SkinMisc", LoadSkin)

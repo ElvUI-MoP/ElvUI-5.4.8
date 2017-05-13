@@ -218,4 +218,8 @@ function mod:Initialize()
 	self:SecureHook("LFRBrowseFrameListButton_SetData")
 end
 
-E:RegisterInitialModule(mod:GetName())
+local function InitializeCallback()
+	mod:Initialize()
+end
+
+E:RegisterModule(mod:GetName(), InitializeCallback)

@@ -675,4 +675,8 @@ function M:Initialize()
 	end);
 end
 
-E:RegisterInitialModule(M:GetName());
+local function InitializeCallback()
+	M:Initialize()
+end
+
+E:RegisterInitialModule(M:GetName(), InitializeCallback)

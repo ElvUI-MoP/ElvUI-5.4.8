@@ -1375,4 +1375,8 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 	end
 end
 
-E:RegisterInitialModule(UF:GetName());
+local function InitializeCallback()
+	UF:Initialize()
+end
+
+E:RegisterInitialModule(UF:GetName(), InitializeCallback)

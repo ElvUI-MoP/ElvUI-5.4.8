@@ -162,4 +162,4 @@ local function LoadSkin()
 	end)
 end
 
-S:AddCallback("WorldMap", LoadSkin);
+S:AddCallback("SkinWorldMap", LoadSkin)

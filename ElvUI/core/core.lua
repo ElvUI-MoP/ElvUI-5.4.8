@@ -52,6 +52,8 @@ E["texts"] = {};
 E["snapBars"] = {};
 E["RegisteredModules"] = {};
 E['RegisteredInitialModules'] = {};
+E["ModuleCallbacks"] = {["CallPriority"] = {}}
+E["InitialModuleCallbacks"] = {["CallPriority"] = {}}
 E['valueColorUpdateFuncs'] = {};
 E.TexCoords = {.08, .92, .08, .92};
 E.FrameLocks = {};
@@ -150,23 +152,10 @@ E.ClassRole = {
 
 E.noop = function() end;
 
-local colorizedName;
-local length = len("ElvUI")
-for i = 1, length do
-	local letter = sub("ElvUI", i, i);
-	if(i == 1) then
-		colorizedName = format("|cff00dd91%s", letter);
-	elseif(i == 2) then
-		colorizedName = format("%s|r|cfffffff3%s", colorizedName, letter);
-	elseif(i == length) then
-		colorizedName = format("%s%s|r|cff00dd91:|r", colorizedName, letter);
-	else
-		colorizedName = colorizedName .. letter;
-	end
-end
-
+local hexvaluecolor
 function E:Print(...)
-	print(colorizedName, ...);
+	hexvaluecolor = self["media"].hexvaluecolor or "|cff00b3ff"
+	print(hexvaluecolor..'ElvUI:|r', ...)
 end
 
 E.PriestColors = {
@@ -966,19 +955,56 @@ function E:ResetUI(...)
 	self:ResetMovers(...);
 end
 
-function E:RegisterModule(name)
-	if(self.initialized) then
-		self:GetModule(name):Initialize();
+function E:RegisterModule(name, loadFunc)
+	if (loadFunc and type(loadFunc) == "function") then
+		if self.initialized then
+			loadFunc()
+		else
+			if self.ModuleCallbacks[name] then
+				E:Print("Invalid argument #1 to E:RegisterModule (module name:", name, "is already registered, please use a unique name)")
+				return
+			end
+
+			self.ModuleCallbacks[name] = true
+			self.ModuleCallbacks["CallPriority"][#self.ModuleCallbacks["CallPriority"] + 1] = name
+
+			E:RegisterCallback(name, loadFunc, E:GetModule(name))
+		end
 	else
-		self["RegisteredModules"][#self["RegisteredModules"] + 1] = name;
+		if self.initialized then
+			self:GetModule(name):Initialize()
+		else
+			self['RegisteredModules'][#self['RegisteredModules'] + 1] = name
+		end
 	end
 end
 
-function E:RegisterInitialModule(name)
-	self["RegisteredInitialModules"][#self["RegisteredInitialModules"] + 1] = name;
+function E:RegisterInitialModule(name, loadFunc)
+	if (loadFunc and type(loadFunc) == "function") then
+		if self.InitialModuleCallbacks[name] then
+
+			E:Print("Invalid argument #1 to E:RegisterInitialModule (module name:", name, "is already registered, please use a unique name)")
+			return
+		end
+
+		self.InitialModuleCallbacks[name] = true
+		self.InitialModuleCallbacks["CallPriority"][#self.InitialModuleCallbacks["CallPriority"] + 1] = name
+
+		E:RegisterCallback(name, loadFunc, E:GetModule(name))
+	else
+		self['RegisteredInitialModules'][#self['RegisteredInitialModules'] + 1] = name
+	end
 end
 
 function E:InitializeInitialModules()
+	--Fire callbacks for any module using the new system
+	for index, moduleName in ipairs(self.InitialModuleCallbacks["CallPriority"]) do
+		self.InitialModuleCallbacks[moduleName] = nil;
+		self.InitialModuleCallbacks["CallPriority"][index] = nil
+		E.callbacks:Fire(moduleName)
+	end
+
+	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E["RegisteredInitialModules"]) do
 		local module = self:GetModule(module, true);
 		if(module and module.Initialize) then
@@ -996,7 +1022,15 @@ function E:RefreshModulesDB()
 	UF.db = self.db.unitframe;
 end
 
-function E:InitializeModules()	
+function E:InitializeModules()
+	--Fire callbacks for any module using the new system
+	for index, moduleName in ipairs(self.ModuleCallbacks["CallPriority"]) do
+		self.ModuleCallbacks[moduleName] = nil;
+		self.ModuleCallbacks["CallPriority"][index] = nil
+		E.callbacks:Fire(moduleName)
+	end
+
+	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E["RegisteredModules"]) do
 		local module = self:GetModule(module);
 		if(module.Initialize) then
