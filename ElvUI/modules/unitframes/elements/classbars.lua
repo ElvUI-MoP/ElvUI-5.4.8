@@ -53,7 +53,7 @@ function UF:Configure_ClassBar(frame)
 
 	local c = self.db.colors.classResources.bgColor;
 	bars.backdrop.ignoreUpdates = true;
-	bars.backdrop:SetBackdropColor(c.r, c.g, c.b);
+	bars.backdrop.backdropTexture:SetVertexColor(c.r, c.g, c.b)
 	if(not E.PixelMode) then
 		c = E.db.general.bordercolor;
 		if(self.thinBorders) then
@@ -136,7 +136,7 @@ function UF:Configure_ClassBar(frame)
 
 			if(i <= frame.MAX_CLASS_BAR) then
 				bars[i].backdrop.ignoreUpdates = true;
-				bars[i].backdrop:SetBackdropColor(c.r, c.g, c.b);
+				bars[i].backdrop.backdropTexture:SetVertexColor(c.r, c.g, c.b)
 				if(not E.PixelMode) then
 					c = E.db.general.bordercolor;
 					bars[i].backdrop:SetBackdropBorderColor(c.r, c.g, c.b);

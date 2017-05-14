@@ -57,7 +57,7 @@ local function SkinScrollBar(frame, thumbTrim)
 				frame.thumbbg:Point("TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 2, -thumbTrim)
 				frame.thumbbg:Point("BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -2, thumbTrim)
 				frame.thumbbg:SetTemplate("Default", true, true)
-				frame.thumbbg:SetBackdropColor(0.3, 0.3, 0.3)
+				frame.thumbbg.backdropTexture:SetVertexColor(0.6, 0.6, 0.6)
 				if frame.trackbg then
 					frame.thumbbg:SetFrameLevel(frame.trackbg:GetFrameLevel() + 1)
 				end
