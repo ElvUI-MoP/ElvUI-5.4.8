@@ -202,8 +202,8 @@ function S:HandleRotateButton(btn)
 	btn:SetTemplate("Default");
 	btn:Size(btn:GetWidth() - 14, btn:GetHeight() - 14);
 
-	btn:GetNormalTexture():SetTexCoord(0.27, 0.73, 0.27, 0.68);
-	btn:GetPushedTexture():SetTexCoord(0.27, 0.73, 0.27, 0.68);
+	btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
+	btn:GetPushedTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
 
 	btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3);
 
@@ -245,7 +245,7 @@ function S:HandleDropDownBox(frame, width)
 	if(button) then
 		button:ClearAllPoints();
 		button:Point("RIGHT", frame, "RIGHT", -10, 3);
-		hooksecurefunc(button, "SetPoint", function(_, _, _, _, _, _, noReset)
+		hooksecurefunc(button, "SetPoint", function(self, _, _, _, _, _, noReset)
 			if(not noReset) then
 				self:ClearAllPoints();
 				self:SetPoint("RIGHT", frame, "RIGHT", E:Scale(-10), E:Scale(3), true);
