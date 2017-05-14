@@ -9,6 +9,7 @@ local UnitName = UnitName;
 local IsFishingLoot = IsFishingLoot;
 local GetLootRollItemInfo = GetLootRollItemInfo
 local GetItemQualityColor = GetItemQualityColor
+local SquareButton_SetIcon = SquareButton_SetIcon
 local C_LootHistory_GetNumItems = C_LootHistory.GetNumItems
 local LOOTFRAME_NUMBUTTONS = LOOTFRAME_NUMBUTTONS;
 local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES
@@ -35,9 +36,9 @@ local function LoadSkin()
 	LootHistoryFrame.ResizeButton.icon = LootHistoryFrame.ResizeButton:CreateTexture(nil, "ARTWORK");
 	LootHistoryFrame.ResizeButton.icon:Size(20, 17);
 	LootHistoryFrame.ResizeButton.icon:Point("CENTER");
-	LootHistoryFrame.ResizeButton.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures.blp]]);
+	LootHistoryFrame.ResizeButton.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
 
-	S:SquareButton_SetIcon(LootHistoryFrame.ResizeButton, "DOWN");
+	SquareButton_SetIcon(LootHistoryFrame.ResizeButton, "DOWN");
 
 	S:HandleScrollBar(LootHistoryFrameScrollFrameScrollBar)
 
@@ -167,11 +168,11 @@ local function LoadSkin()
 	end
 
 	S:HandleNextPrevButton(LootFrameUpButton);
-	S:SquareButton_SetIcon(LootFrameUpButton, "UP");
+	SquareButton_SetIcon(LootFrameUpButton, "UP");
 	LootFrameUpButton:Point("BOTTOMLEFT", 25, 20)
 
 	S:HandleNextPrevButton(LootFrameDownButton);
-	S:SquareButton_SetIcon(LootFrameDownButton, "DOWN");
+	SquareButton_SetIcon(LootFrameDownButton, "DOWN");
 	LootFrameDownButton:Point("BOTTOMLEFT", 143, 20)
 
 	LootFrame:HookScript("OnShow", function(self)

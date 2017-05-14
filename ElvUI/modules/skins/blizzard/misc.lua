@@ -8,6 +8,7 @@ local find = string.find;
 local UnitIsUnit = UnitIsUnit;
 local IsAddOnLoaded = IsAddOnLoaded;
 local IsShiftKeyDown = IsShiftKeyDown;
+local SquareButton_SetIcon = SquareButton_SetIcon
 local UIDROPDOWNMENU_MAXLEVELS = UIDROPDOWNMENU_MAXLEVELS;
 
 local function LoadSkin()
@@ -413,15 +414,15 @@ local function LoadSkin()
 	CompactRaidFrameManagerToggleButton.icon = CompactRaidFrameManagerToggleButton:CreateTexture(nil, "ARTWORK");
 	CompactRaidFrameManagerToggleButton.icon:Size(14);
 	CompactRaidFrameManagerToggleButton.icon:Point("CENTER");
-	CompactRaidFrameManagerToggleButton.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures.blp]]);
-	S:SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "RIGHT");
+	CompactRaidFrameManagerToggleButton.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
+	SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "RIGHT");
 
 	hooksecurefunc("CompactRaidFrameManager_Expand", function()
-		S:SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "LEFT");
+		SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "LEFT");
 	end)
 
 	hooksecurefunc("CompactRaidFrameManager_Collapse", function()
-		S:SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "RIGHT");
+		SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "RIGHT");
 	end)
 
 	-- Options/Interface Buttons Position
@@ -883,7 +884,7 @@ local function LoadSkin()
 	ChatConfigCombatSettingsFiltersCopyFilterButton:Point("RIGHT", ChatConfigCombatSettingsFiltersAddFilterButton, "LEFT", -1, 0);
 
 	S:HandleNextPrevButton(ChatConfigMoveFilterUpButton, true);
-	S:SquareButton_SetIcon(ChatConfigMoveFilterUpButton, "UP");
+	SquareButton_SetIcon(ChatConfigMoveFilterUpButton, "UP");
 	ChatConfigMoveFilterUpButton:Size(26);
 	ChatConfigMoveFilterUpButton:Point("TOPLEFT", ChatConfigCombatSettingsFilters, "BOTTOMLEFT", 3, -1);
 

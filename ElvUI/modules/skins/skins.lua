@@ -6,6 +6,7 @@ local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs
 local find = string.find;
 local tinsert, wipe = table.insert, table.wipe;
 
+local SquareButton_SetIcon = SquareButton_SetIcon
 local CreateFrame = CreateFrame;
 local SetDesaturation = SetDesaturation;
 local hooksecurefunc = hooksecurefunc;
@@ -18,21 +19,6 @@ S.nonAddonsToLoad = {};
 S.allowBypass = {};
 S.addonCallbacks = {};
 S.nonAddonCallbacks = {["CallPriority"] = {}};
-
-S.SQUARE_BUTTON_TEXCOORDS = {
-	["UP"]		= {0.45312500, 0.64062500, 0.01562500, 0.20312500};
-	["DOWN"]	= {0.45312500, 0.64062500, 0.20312500, 0.01562500};
-	["LEFT"]	= {0.23437500, 0.42187500, 0.01562500, 0.20312500};
-	["RIGHT"]	= {0.42187500, 0.23437500, 0.01562500, 0.20312500};
-	["DELETE"]	= {0.01562500, 0.20312500, 0.01562500, 0.20312500}
-};
-
-function S:SquareButton_SetIcon(self, name)
-	local coords = S.SQUARE_BUTTON_TEXCOORDS[strupper(name)];
-	if(coords) then
-		self.icon:SetTexCoord(coords[1], coords[2], coords[3], coords[4]);
-	end
-end
 
 function S:SetModifiedBackdrop()
 	if(self.backdrop) then self = self.backdrop; end
@@ -87,14 +73,14 @@ function S:HandleScrollBar(frame, thumbTrim)
 		_G[name .. "ScrollUpButton"]:StripTextures();
 		if(not _G[name .. "ScrollUpButton"].icon) then
 			S:HandleNextPrevButton(_G[name .. "ScrollUpButton"]);
-			S:SquareButton_SetIcon(_G[name .. "ScrollUpButton"], "UP");
+			SquareButton_SetIcon(_G[name .. "ScrollUpButton"], "UP");
 			_G[name .. "ScrollUpButton"]:Size(_G[name .. "ScrollUpButton"]:GetWidth() + 7, _G[name .. "ScrollUpButton"]:GetHeight() + 7);
 		end
 
 		_G[name .. "ScrollDownButton"]:StripTextures();
 		if(not _G[name .. "ScrollDownButton"].icon) then
 			S:HandleNextPrevButton(_G[name .. "ScrollDownButton"]);
-			S:SquareButton_SetIcon(_G[name .. "ScrollDownButton"], "DOWN");
+			SquareButton_SetIcon(_G[name .. "ScrollDownButton"], "DOWN");
 			_G[name .. "ScrollDownButton"]:Size(_G[name .. "ScrollDownButton"]:GetWidth() + 7, _G[name .. "ScrollDownButton"]:GetHeight() + 7);
 		end
 
@@ -153,63 +139,63 @@ function S:HandleTab(tab)
 	tab.backdrop:Point("BOTTOMRIGHT", -10, 3);
 end
 
-function S:HandleNextPrevButton(btn, buttonOverride)
-	local inverseDirection = btn:GetName() and (find(btn:GetName():lower(), "left") or find(btn:GetName():lower(), "prev") or find(btn:GetName():lower(), "decrement") or find(btn:GetName():lower(), "promote"));
+function S:HandleNextPrevButton(btn, useVertical, inverseDirection)
+	local inverseDirection = inverseDirection or btn:GetName() and (find(btn:GetName():lower(), "left") or find(btn:GetName():lower(), "prev") or find(btn:GetName():lower(), "decrement") or find(btn:GetName():lower(), "back"))
 
-	btn:StripTextures();
-	btn:SetNormalTexture(nil);
-	btn:SetPushedTexture(nil);
-	btn:SetHighlightTexture(nil);
-	btn:SetDisabledTexture(nil);
+	btn:StripTextures()
+	btn:SetNormalTexture(nil)
+	btn:SetPushedTexture(nil)
+	btn:SetHighlightTexture(nil)
+	btn:SetDisabledTexture(nil)
 
-	if(not btn.icon) then
-		btn.icon = btn:CreateTexture(nil, "ARTWORK");
-		btn.icon:Size(13);
-		btn.icon:SetPoint("CENTER");
-		btn.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures.blp]]);
-		btn.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500);
+	if not btn.icon then
+		btn.icon = btn:CreateTexture(nil, "ARTWORK")
+		btn.icon:Size(13)
+		btn.icon:Point("CENTER")
+		btn.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
+		btn.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
-		btn:SetScript("OnMouseDown", function(self)
-			if(btn:IsEnabled() == 1) then
-				self.icon:SetPoint("CENTER", -1, -1);
+		btn:HookScript("OnMouseDown", function(self)
+			if self:IsEnabled() then
+				self.icon:Point("CENTER", -1, -1);
 			end
-		end);
+		end)
 
-		btn:SetScript("OnMouseUp", function(self)
-			self.icon:SetPoint("CENTER", 0, 0);
-		end);
+		btn:HookScript("OnMouseUp", function(self)
+			self.icon:Point("CENTER", 0, 0);
+		end)
 
-		btn:SetScript("OnDisable", function(self)
+		btn:HookScript("OnDisable", function(self)
 			SetDesaturation(self.icon, true);
 			self.icon:SetAlpha(0.5);
-		end);
+		end)
 
-		btn:SetScript("OnEnable", function(self)
+		btn:HookScript("OnEnable", function(self)
 			SetDesaturation(self.icon, false);
 			self.icon:SetAlpha(1.0);
-		end);
+		end)
 
-		if(btn:IsEnabled() == 0) then
-			btn:GetScript("OnDisable")(btn);
+		if not btn:IsEnabled() then
+			btn:GetScript("OnDisable")(btn)
 		end
 	end
 
-	if(buttonOverride) then
-		if(inverseDirection) then
-			S:SquareButton_SetIcon(btn, "UP");
+	if useVertical then
+		if inverseDirection then
+			SquareButton_SetIcon(btn, "UP")
 		else
-			S:SquareButton_SetIcon(btn, "DOWN");
+			SquareButton_SetIcon(btn, "DOWN")
 		end
 	else
-		if(inverseDirection) then
-			S:SquareButton_SetIcon(btn, "LEFT");
+		if inverseDirection then
+			SquareButton_SetIcon(btn, "LEFT")
 		else
-			S:SquareButton_SetIcon(btn, "RIGHT");
+			SquareButton_SetIcon(btn, "RIGHT")
 		end
 	end
 
-	S:HandleButton(btn);
-	btn:Size(btn:GetWidth() - 7, btn:GetHeight() - 7);
+	S:HandleButton(btn)
+	btn:Size(btn:GetWidth() - 7, btn:GetHeight() - 7)
 end
 
 function S:HandleRotateButton(btn)

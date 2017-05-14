@@ -65,15 +65,15 @@ local function LoadSkin()
 			popout.icon = popout:CreateTexture(nil, "ARTWORK");
 			popout.icon:Size(14);
 			popout.icon:Point("CENTER");
-			popout.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures.blp]]);
+			popout.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
 
 			if(slot.verticalFlyout) then
 				popout:Size(27, 11);
-				S:SquareButton_SetIcon(popout, "DOWN");
+				SquareButton_SetIcon(popout, "DOWN");
 				popout:Point("TOP", slot, "BOTTOM", 0, 5);
 			else
 				popout:Size(11, 27);
-				S:SquareButton_SetIcon(popout, "RIGHT");
+				SquareButton_SetIcon(popout, "RIGHT");
 				popout:Point("LEFT", slot, "RIGHT", -5, 0);
 			end
 		end
