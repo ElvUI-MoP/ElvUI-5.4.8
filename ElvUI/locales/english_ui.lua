@@ -35,6 +35,7 @@ L["Hold Control + Right Click:"] = true;
 L["Hold Shift + Drag:"] = true;
 L["Purchase Bags"] = true;
 L["Reset Position"] = true;
+L["Sort Bags"] = true;
 L["Temporary Move"] = true;
 L["Toggle Bags"] = true;
 L["Vendor Grays"] = true;

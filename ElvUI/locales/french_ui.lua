@@ -35,6 +35,7 @@ L["Hold Control + Right Click:"] = "Contrôle enfoncé + Clique droit"
 L["Hold Shift + Drag:"] = "Majuscule enfoncée + Déplacer"
 L["Purchase Bags"] = "Acheter des sacs";
 L["Reset Position"] = "Réinitialiser la position"
+L["Sort Bags"] = "Trier les sacs"
 L["Temporary Move"] = "Déplacer temporairement";
 L["Toggle Bags"] = "Afficher les sacs"
 L["Vendor Grays"] = "Vendre les objets gris"
