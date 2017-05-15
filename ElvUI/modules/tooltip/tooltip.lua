@@ -500,7 +500,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 			if (UnitIsUnit(groupUnit.."target", unit)) and (not UnitIsUnit(groupUnit,"player")) then
 				local _, class = UnitClass(groupUnit);
 				local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-				tinsert(targetList, format("|c%s%s|r", color.colorStr, UnitName(groupUnit)))
+				tinsert(targetList, format("%s%s", E:RGBToHex(color.r, color.g, color.b), UnitName(groupUnit)))
 			end
 		end
 		local numList = #targetList
@@ -634,7 +634,7 @@ function TT:SetConsolidatedUnitAura(tt, unit, index)
 			local name = UnitName(caster)
 			local _, class = UnitClass(caster)
 			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-			tt:AddDoubleLine(("|cFFCA3C3C%s|r %d"):format(ID, id), format("|c%s%s|r", color.colorStr, name))
+			tt:AddDoubleLine(("|cFFCA3C3C%s|r %d"):format(ID, id), format("%s%s", E:RGBToHex(color.r, color.g, color.b), name))
 		else
 			tt:AddLine(("|cFFCA3C3C%s|r %d"):format(ID, id))
 		end
