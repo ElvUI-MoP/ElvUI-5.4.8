@@ -2,7 +2,7 @@ local E, L, DF = unpack(select(2, ...))
 local B = E:GetModule('Blizzard');
 
 function B:PositionVehicleFrame()
-	local function VehicleSeatIndicator_SetPosition(_,_, parent)
+	local function VehicleSeatIndicator_SetPosition(_, _, parent)
 		if((parent == "MinimapCluster") or (parent == _G["MinimapCluster"])) then
 			VehicleSeatIndicator:ClearAllPoints();
 

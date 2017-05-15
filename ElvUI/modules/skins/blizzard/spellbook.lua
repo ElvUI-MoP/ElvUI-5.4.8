@@ -34,7 +34,6 @@ local function LoadSkin()
 		local button = _G["SpellButton"..i]
 		local icon = _G["SpellButton"..i.."IconTexture"]
 		local cooldown = _G["SpellButton"..i.."Cooldown"]
-		
 
 		for i = 1, button:GetNumRegions() do
 			local region = select(i, button:GetRegions())
@@ -68,7 +67,7 @@ local function LoadSkin()
 		local spellSubName = _G[name .. "SubSpellName"]
 		local spellLevel = _G[name .. "RequiredLevelString"]
 		local highlight = _G[name .. "Highlight"]
-		
+
 		if(highlight) then
 			highlight:SetTexture(1, 1, 1, 0.3)
 		end

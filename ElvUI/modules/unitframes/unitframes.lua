@@ -477,7 +477,7 @@ function UF:CreateAndUpdateUFGroup(group, numGroup)
 	for i = 1, numGroup do
 		local unit = group..i;
 		local frameName = E:StringTitle(unit);
-		frameName = frameName:gsub("t(arget)", "T%1");		
+		frameName = frameName:gsub("t(arget)", "T%1");
 		if(not self[unit]) then
 			self["groupunits"][unit] = group;	
 			self[unit] = ElvUF:Spawn(unit, "ElvUF_"..frameName);

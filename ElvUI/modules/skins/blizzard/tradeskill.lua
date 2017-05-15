@@ -163,7 +163,7 @@ local function LoadSkin()
 		icon.backdrop:SetFrameLevel(reagent:GetFrameLevel() - 1);
 		icon.backdrop:SetTemplate("Default");
 		icon.backdrop:SetOutside(icon);
-		
+
 		icon:SetParent(icon.backdrop);
 		count:SetParent(icon.backdrop);
 		count:SetDrawLayer("OVERLAY");

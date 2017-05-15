@@ -49,7 +49,7 @@ local function LoadSkin()
 
 	HelpFrameKnowledgebaseErrorFrame:StripTextures(true)
 	HelpFrameKnowledgebaseErrorFrame:CreateBackdrop("Default")
-	
+
 	HelpFrameReportBugScrollFrame:StripTextures()
 	HelpFrameReportBugScrollFrame:CreateBackdrop("Transparent")
 	HelpFrameReportBugScrollFrame.backdrop:Point("TOPLEFT", -4, 4)

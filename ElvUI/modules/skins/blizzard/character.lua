@@ -300,7 +300,7 @@ local function LoadSkin()
 				end
 				tab:CreateBackdrop("Default")
 				tab.backdrop:Point("TOPLEFT", 1, -2)
-				tab.backdrop:Point("BOTTOMRIGHT", 1, -2)	
+				tab.backdrop:Point("BOTTOMRIGHT", 1, -2)
 			end
 		end
 	end
@@ -390,8 +390,8 @@ local function LoadSkin()
 
 			if(button) then
 				button.highlight:Kill()
-				button.categoryMiddle:Kill()	
-				button.categoryLeft:Kill()	
+				button.categoryMiddle:Kill()
+				button.categoryLeft:Kill()
 				button.categoryRight:Kill()
 
 				button.icon:SetTexCoord(unpack(E.TexCoords))

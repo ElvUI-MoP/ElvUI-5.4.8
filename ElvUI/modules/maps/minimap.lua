@@ -515,7 +515,7 @@ function M:Initialize()
 	self:UpdateSettings();
 	if(not E.private.general.minimap.enable) then 
 		Minimap:SetMaskTexture("Textures\\MinimapMask");
-		return; 
+		return;
 	end
 
 	--Support for other mods

@@ -225,7 +225,7 @@ function M:LOOT_OPENED(_, autoloot)
 
 			if(texture and texture:find('INV_Misc_Coin')) then
 				item = item:gsub("\n", ", ")
-			end	
+			end
 
 			if(quantity and (quantity > 1)) then
 				slot.count:SetText(quantity)

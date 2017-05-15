@@ -1,6 +1,3 @@
---[[
-	Credit to Jaslm, most of this code is his from the addon ColorPickerPlus
-]]
 local E, L, DF = unpack(select(2, ...))
 local B = E:GetModule('Blizzard');
 local S = E:GetModule('Skins');

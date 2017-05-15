@@ -125,7 +125,7 @@ function mod:SetTargetFrame(frame)
 		frame.isTarget = true
 		frame.unit = "target"
 		frame.guid = UnitGUID("target")
-		
+
 		if self.db.units[frame.UnitType].healthbar.enable ~= true then
 			frame.Name:ClearAllPoints()
 			frame.Level:ClearAllPoints()

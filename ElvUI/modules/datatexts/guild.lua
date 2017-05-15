@@ -291,7 +291,7 @@ local function OnEnter(self, _, noUpdate)
 			DT.tooltip:AddDoubleLine(format(levelNameStatusString, levelc.r*255, levelc.g*255, levelc.b*255, info[3], split("-", info[1]), groupedTable[grouped], info[8]), info[4], classc.r,classc.g,classc.b, zonec.r,zonec.g,zonec.b)
 		end
 		shown = shown + 1
-	end	
+	end
 
 	DT.tooltip:Show()
 

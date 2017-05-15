@@ -12,7 +12,7 @@ local function OnEvent(self, event, unit)
 
 	expertise = format("%.2f%%", expertise);
 	offhandExpertise = format("%.2f%%", offhandExpertise);
-	
+
 	if(offhandSpeed) then
 		text = expertise.." / "..offhandExpertise;
 	else
@@ -25,7 +25,7 @@ end
 
 local function OnEnter(self)
 	DT:SetupTooltip(self)
-	
+
 	local expertisePercent, offhandExpertisePercent = GetExpertise();
 	expertisePercent = format("%.2f", expertisePercent);
 	offhandExpertisePercent = format("%.2f", offhandExpertisePercent);

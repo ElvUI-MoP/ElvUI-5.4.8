@@ -438,7 +438,7 @@ function CH:StyleChat(frame)
 			self:SetAlpha(0)
 		end
 
-	end)	
+	end)
 
 	CreatedFrames = id
 	frame.styled = true
@@ -734,7 +734,7 @@ function CH:PositionChat(override)
 end
 
 local function UpdateChatTabColor(_, r, g, b)
-	for i=1, CreatedFrames do
+	for i = 1, CreatedFrames do
 		_G['ChatFrame'..i..'TabText']:SetTextColor(r, g, b)
 	end
 end
@@ -1609,7 +1609,7 @@ function CH:UpdateChatKeywords()
 
 	for i=1, #{split(',', keywords)} do
 		local stringValue = select(i, split(',', keywords));
-		
+
 		if stringValue ~= '' then
 			CH.Keywords[stringValue] = true;
 		end
@@ -1638,7 +1638,7 @@ function CH:UpdateFading()
 	end
 end
 
-function CH:DisplayChatHistory()	
+function CH:DisplayChatHistory()
 	local temp, data = {}
 	for id, _ in pairs(ElvCharacterDB.ChatLog) do
 		tinsert(temp, tonumber(id))
@@ -1827,7 +1827,7 @@ function CH:Initialize()
 	end
 
 	self:UpdateChatKeywords()
-	
+
 	self:UpdateFading()
 	E.Chat = self
 	self:SecureHook('ChatEdit_OnEnterPressed')
@@ -2004,7 +2004,7 @@ function CH:Initialize()
 	CopyChatFrameEditBox:SetScript("OnTextChanged", function(_, userInput)
 		if userInput then return end
 		local _, max = CopyChatScrollFrameScrollBar:GetMinMaxValues()
-		for i=1, max do
+		for i = 1, max do
 			ScrollFrameTemplate_OnMouseWheel(CopyChatScrollFrame, -1)
 		end
 	end)

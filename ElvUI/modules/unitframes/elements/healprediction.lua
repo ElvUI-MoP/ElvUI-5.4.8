@@ -64,7 +64,7 @@ function UF:Configure_HealComm(frame)
 		healPrediction.otherBar:SetStatusBarColor(c.others.r, c.others.g, c.others.b, c.others.a)
 		healPrediction.absorbBar:SetStatusBarColor(c.absorbs.r, c.absorbs.g, c.absorbs.b, c.absorbs.a)
 		healPrediction.healAbsorbBar:SetStatusBarColor(c.healAbsorbs.r, c.healAbsorbs.g, c.healAbsorbs.b, c.healAbsorbs.a)
-	
+
 		healPrediction.maxOverflow = (1 + (c.maxOverflow or 0))
 	else
 		if(frame:IsElementEnabled("HealPrediction")) then

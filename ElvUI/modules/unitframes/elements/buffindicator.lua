@@ -64,7 +64,7 @@ function UF:UpdateAuraWatch(frame, petOverride, db)
 	local buffs = {};
 	local auras = frame.AuraWatch;
 	local db = db and db.buffIndicator or frame.db.buffIndicator;
-	
+
 	if(not db.enable) then
 		auras:Hide();
 		return;
@@ -85,7 +85,7 @@ function UF:UpdateAuraWatch(frame, petOverride, db)
 			tinsert(buffs, value);
 		end
 	end
-	
+
 	if(auras.icons) then
 		for i = 1, #auras.icons do
 			local matchFound = false;

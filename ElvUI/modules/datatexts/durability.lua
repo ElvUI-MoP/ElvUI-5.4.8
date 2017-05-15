@@ -36,7 +36,7 @@ local function OnEvent(self)
 	for _, value in pairs(slots) do
 		local slot = GetInventorySlotInfo(value);
 		current, max = GetInventoryItemDurability(slot);
-	
+
 		if(current) then
 			invDurability[value] = (current / max) * 100;
 

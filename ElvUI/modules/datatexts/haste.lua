@@ -35,7 +35,7 @@ end
 
 local function OnEnter(self)
 	DT:SetupTooltip(self);
-	
+
 	local text, tooltip;
 	if(E.Role == "Caster") then
 		text = SPELL_HASTE;
@@ -58,7 +58,7 @@ local function OnEnter(self)
 		text = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, ATTACK_SPEED).." "..string;
 		tooltip = format(CR_HASTE_RATING_TOOLTIP, GetCombatRating(CR_HASTE_MELEE), GetCombatRatingBonus(CR_HASTE_MELEE));
 	end
-	
+
 	DT.tooltip:AddLine(text, 1, 1, 1);
 	DT.tooltip:AddLine(tooltip, nil, nil, nil, true);
 	DT.tooltip:Show();
@@ -66,7 +66,7 @@ end
 
 local function ValueColorUpdate(hex)
 	displayNumberString = join("", "%s: ", hex, "%d|r");
-	
+
 	if(lastPanel ~= nil)then
 		OnEvent(lastPanel);
 	end
