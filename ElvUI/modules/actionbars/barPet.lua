@@ -194,7 +194,7 @@ function AB:PositionAndSizeBarPet()
 				self:HookScript(bar, 'OnEnter', 'PetOnEnter');
 				self:HookScript(bar, 'OnLeave', 'PetOnLeave');	
 			end
-			
+
 			if(not self.hooks[button]) then
 				self:HookScript(button, 'OnEnter', 'PetOnEnter');
 				self:HookScript(button, 'OnLeave', 'PetOnLeave');

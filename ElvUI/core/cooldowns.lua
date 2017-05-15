@@ -134,5 +134,5 @@ function E:UpdateCooldownSettings()
 	TimeColors[1] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that have hours remaining
 
 	color = self.db.cooldown.daysColor
-	TimeColors[0] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that have days remaining	
+	TimeColors[0] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that have days remaining
 end

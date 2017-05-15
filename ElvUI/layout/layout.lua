@@ -139,7 +139,7 @@ function LO:SetChatTabStyle()
 		RightChatTab:SetTemplate("Transparent")
 	else
 		LeftChatTab:SetTemplate("Default", true)
-		RightChatTab:SetTemplate("Default", true)	
+		RightChatTab:SetTemplate("Default", true)
 	end
 end
 

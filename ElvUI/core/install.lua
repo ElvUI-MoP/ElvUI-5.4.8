@@ -70,7 +70,7 @@ local function SetupChat()
 		elseif i == 2 then
 			FCF_SetWindowName(frame, GUILD_EVENT_LOG)
 		elseif i == 3 then 
-			FCF_SetWindowName(frame, LOOT.." / "..TRADE) 
+			FCF_SetWindowName(frame, LOOT.." / "..TRADE)
 		end
 	end
 

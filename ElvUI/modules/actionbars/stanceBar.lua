@@ -97,7 +97,7 @@ function AB:StyleShapeShift()
 					button:SetChecked(false)
 				end
 			end
-			
+
 			icon:SetTexture(texture);
 
 			if isCastable then

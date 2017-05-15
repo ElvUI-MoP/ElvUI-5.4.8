@@ -103,7 +103,7 @@ function E:PostAlertMove(screenQuadrant)
 		AlertFrame_FixAnchors();
 	end
 end
---[[
+
 function B:AlertFrame_SetLootAnchors(alertAnchor)
 	if(MissingLootFrame:IsShown()) then
 		MissingLootFrame:ClearAllPoints()
@@ -116,7 +116,7 @@ function B:AlertFrame_SetLootAnchors(alertAnchor)
 		GroupLootContainer:ClearAllPoints()
 		GroupLootContainer:Point(POSITION, alertAnchor, ANCHOR_POINT)
 	end
-end]]
+end
 
 function B:AlertFrame_SetAchievementAnchors()
 	local alertAnchor;
@@ -212,7 +212,7 @@ end
 
 function B:AlertMovers()
 	self:SecureHook("AlertFrame_FixAnchors", E.PostAlertMove)
-	--self:SecureHook('AlertFrame_SetLootAnchors')
+	self:SecureHook('AlertFrame_SetLootAnchors')
 	self:SecureHook("AlertFrame_SetLootWonAnchors")
 	self:SecureHook("AlertFrame_SetMoneyWonAnchors")
 	self:SecureHook("AlertFrame_SetAchievementAnchors")

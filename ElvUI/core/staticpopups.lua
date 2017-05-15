@@ -131,7 +131,7 @@ E.PopupDialogs["PIXELPERFECT_CHANGED"] = {
 	OnAccept = E.noop,
 	timeout = 0,
 	whileDead = 1,
-	hideOnEscape = false	
+	hideOnEscape = false
 };
 
 E.PopupDialogs["CONFIGAURA_SET"] = {
@@ -961,7 +961,7 @@ end
 
 function E:Contruct_StaticPopups()
 	E.StaticPopupFrames = {};
-	
+
 	local S = self:GetModule("Skins");
 	for index = 1, MAX_STATIC_POPUPS do
 		E.StaticPopupFrames[index] = CreateFrame("Frame", "ElvUI_StaticPopup" .. index, E.UIParent, "StaticPopupTemplate");

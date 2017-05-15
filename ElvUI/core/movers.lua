@@ -111,10 +111,10 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag)
 
 		f:Point(point, anchor, secondaryPoint, x, y)
 	end
-	
+
 	local function OnDragStart(self)
 		if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
-		
+
 		if E.db['general'].stickyFrames then
 			Sticky:StartMoving(self, E['snapBars'], f.snapOffset, f.snapOffset, f.snapOffset, f.snapOffset)
 		else

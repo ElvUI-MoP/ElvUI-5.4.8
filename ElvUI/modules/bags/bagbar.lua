@@ -93,8 +93,8 @@ function B:SizeAndPositionBagBar()
 end
 
 function B:LoadBagBar()
-	if not E.private.bags.bagBar then 
-		return 
+	if not E.private.bags.bagBar then
+		return
 	end
 
 	local ElvUIBags = CreateFrame("Frame", "ElvUIBags", E.UIParent);
@@ -123,7 +123,7 @@ function B:LoadBagBar()
 		b.SetParent = E.dummy;
 		b:HookScript('OnEnter', OnEnter);
 		b:HookScript('OnLeave', OnLeave);
-		
+
 		self:SkinBag(b);
 		tinsert(ElvUIBags.buttons, b);
 	end

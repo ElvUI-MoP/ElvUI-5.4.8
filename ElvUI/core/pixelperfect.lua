@@ -69,7 +69,7 @@ function E:UIScale(event)
 			SetCVar("uiScale", scale);
 			WorldMapFrame.hasTaint = true;
 		end
-		
+
 		--SetCVar for UI scale only accepts value as low as 0.64, so scale UIParent if needed
 		if(scale < 0.64) then
 			UIParent:SetScale(scale)
@@ -109,8 +109,8 @@ function E:UIScale(event)
 		end
 
 		self.UIParent:ClearAllPoints();
-		self.UIParent:Point("CENTER");	
-		
+		self.UIParent:Point("CENTER");
+
 		self.diffGetLeft = E:Round(abs(UIParent:GetLeft() - self.UIParent:GetLeft()));
 		self.diffGetRight = E:Round(abs(UIParent:GetRight() - self.UIParent:GetRight()));
 		self.diffGetTop = E:Round(abs(UIParent:GetTop() - self.UIParent:GetTop()));

@@ -376,7 +376,7 @@ function E:CreateMoverPopup()
 		EditBox_ClearFocus(self)
 		self:SetText(E:Round(xOffset.currentValue))
 	end)
-	
+
 	xOffset.text = xOffset:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
 	xOffset.text:SetPoint('RIGHT', xOffset, 'LEFT', -4, 0)
 	xOffset.text:SetText('X:')	
@@ -417,7 +417,7 @@ function E:CreateMoverPopup()
 	yOffset.text:SetText('Y:')	
 	yOffset:SetPoint('BOTTOMLEFT', nudgeFrame, 'CENTER', 16, 8)
 	nudgeFrame.yOffset = yOffset
-	S:HandleEditBox(yOffset)	
+	S:HandleEditBox(yOffset)
 
 	local resetButton = CreateFrame("Button", nudgeFrame:GetName()..'ResetButton', nudgeFrame, "UIPanelButtonTemplate")
 	resetButton:SetText(RESET)
