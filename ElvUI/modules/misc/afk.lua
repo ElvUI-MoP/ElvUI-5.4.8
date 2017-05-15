@@ -292,16 +292,16 @@ function AFK:Initialize()
 		size, offsetX, offsetY = 90, 15, 10
 		nameOffsetX, nameOffsetY = 20, -5
 	end
+
 	self.AFKMode.bottom.faction = self.AFKMode.bottom:CreateTexture(nil, "OVERLAY");
-	self.AFKMode.bottom.faction:Point("BOTTOMLEFT", self.AFKMode.bottom, "BOTTOMLEFT", -20, -16);
-	--self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\"..factionGroup.."-Logo");
+	self.AFKMode.bottom.faction:Point("BOTTOMLEFT", self.AFKMode.bottom, "BOTTOMLEFT", offsetX, offsetY)
 	self.AFKMode.bottom.faction:SetTexture("Interface\\Timer\\"..factionGroup.."-Logo")
-	self.AFKMode.bottom.faction:Size(140);
+	self.AFKMode.bottom.faction:Size(size);
 
 	self.AFKMode.bottom.name = self.AFKMode.bottom:CreateFontString(nil, "OVERLAY");
 	self.AFKMode.bottom.name:FontTemplate(nil, 20);
 	self.AFKMode.bottom.name:SetFormattedText("%s - %s", E.myname, E.myrealm);
-	self.AFKMode.bottom.name:Point("TOPLEFT", self.AFKMode.bottom.faction, "TOPRIGHT", -10, -28);
+	self.AFKMode.bottom.name:Point("TOPLEFT", self.AFKMode.bottom.faction, "TOPRIGHT", nameOffsetX, nameOffsetY)
 	self.AFKMode.bottom.name:SetTextColor(classColor.r, classColor.g, classColor.b);
 
 	self.AFKMode.bottom.guild = self.AFKMode.bottom:CreateFontString(nil, "OVERLAY");

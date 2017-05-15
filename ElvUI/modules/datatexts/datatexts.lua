@@ -8,6 +8,7 @@ local pairs, type, error = pairs, type, error;
 local len = string.len;
 
 local CreateFrame = CreateFrame;
+local UnitGUID = UnitGUID
 local InCombatLockdown = InCombatLockdown;
 local IsInInstance = IsInInstance;
 
@@ -164,7 +165,14 @@ function DT:AssignPanelToDataText(panel, data)
 
 	if(data["events"]) then
 		for _, event in pairs(data["events"]) do
-			panel:RegisterEvent(event);
+			if event == "UNIT_AURA" or event == "UNIT_RESISTANCES" or event == "UNIT_STATS" or event == "UNIT_ATTACK_POWER"
+				or event == "UNIT_RANGED_ATTACK_POWER" or event == "UNIT_TARGET" or event == "UNIT_SPELL_HASTE" then
+				panel:RegisterUnitEvent(event, "player")
+			elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+				panel:RegisterUnitEvent(event, UnitGUID("player"), UnitGUID("pet"))
+			else
+				panel:RegisterEvent(event)
+			end
 		end
 	end
 
@@ -210,6 +218,7 @@ function DT:LoadDataTexts()
 	if(ElvConfigToggle) then
 		ElvConfigToggle.text:FontTemplate(fontTemplate, self.db.fontSize, self.db.fontOutline);
 	end
+
 	for panelName, panel in pairs(DT.RegisteredPanels) do
 		for i = 1, panel.numPoints do
 			local pointIndex = DT.PointLocation[i];
@@ -254,17 +263,6 @@ function DT:LoadDataTexts()
 	end
 end
 
---[[
-	DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onEnterFunc, onLeaveFunc)
-
-	name - name of the datatext (required)
-	events - must be a table with string values of event names to register 
-	eventFunc - function that gets fired when an event gets triggered
-	updateFunc - onUpdate script target function
-	click - function to fire when clicking the datatext
-	onEnterFunc - function to fire OnEnter
-	onLeaveFunc - function to fire OnLeave, if not provided one will be set for you that hides the tooltip.
-]]
 function DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onEnterFunc, onLeaveFunc)
 	if(name) then
 		DT.RegisteredDataTexts[name] = {};
