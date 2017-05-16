@@ -10,6 +10,7 @@ local floor = floor;
 local format, find, match, strrep, len, sub, gsub = string.format, string.find, string.match, strrep, string.len, string.sub, string.gsub;
 
 local CreateFrame = CreateFrame;
+local C_PetBattles_IsInBattle = C_PetBattles.IsInBattle
 local GetCVar, GetCVarBool = GetCVar, GetCVarBool
 local IsAddOnLoaded = IsAddOnLoaded;
 local GetSpellInfo = GetSpellInfo;
@@ -30,7 +31,8 @@ local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT;
 
-E.myclass = select(2, UnitClass("player")); -- Constants
+-- Constants
+E.myclass = select(2, UnitClass("player"));
 E.myspec = GetSpecialization()
 E.myrace = select(2, UnitRace("player"));
 E.myfaction = select(2, UnitFactionGroup("player"));
@@ -910,14 +912,66 @@ function E:RemoveNonPetBattleFrames()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "AddNonPetBattleFrames")
 end
 
-function E:AddNonPetBattleFrames(event)
+function E:AddNonPetBattleFrames()
 	if InCombatLockdown() then return end
-	for object, _ in pairs(E.FrameLocks) do
+
+	for object, data in pairs(E.FrameLocks) do
 		local obj = _G[object] or object
-		obj:SetParent(UIParent)
+		local parent, strata
+		if type(data) == "table" then
+			parent, strata = data.parent, data.strata
+		elseif data == true then
+			parent = UIParent
+		end
+		obj:SetParent(parent)
+		if strata then
+			obj:SetFrameStrata(strata)
+		end
 	end
 
 	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
+end
+
+function E:RegisterPetBattleHideFrames(object, originalParent, originalStrata)
+	if not object or not originalParent then
+		E:Print("Error. Usage: RegisterPetBattleHideFrames(object, originalParent, originalStrata)")
+		return
+	end
+
+	local object = _G[object] or object
+
+	if C_PetBattles_IsInBattle() then
+		object:SetParent(E.HiddenFrame)
+	end
+	E.FrameLocks[object] = {
+		["parent"] = originalParent,
+		["strata"] = originalStrata or nil,
+	}
+end
+
+function E:UnregisterPetBattleHideFrames(object)
+	if not object then
+		E:Print("Error. Usage: UnregisterPetBattleHideFrames(object)")
+		return
+	end
+
+	local object = _G[object] or object
+
+	if not E.FrameLocks[object] then
+		return
+	end
+
+	local originalParent = E.FrameLocks[object].parent
+	if originalParent then
+		object:SetParent(originalParent)
+	end
+
+	local originalStrata = E.FrameLocks[object].strata
+	if originalStrata then
+		object:SetFrameStrata(originalStrata)
+	end
+
+	E.FrameLocks[object] = nil
 end
 
 function E:EnterVehicleHideFrames(_, unit)
