@@ -116,6 +116,7 @@ local function SetupChat()
 	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_XP_GAIN")
 	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_HONOR_GAIN")
 	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_GUILD_XP_GAIN")
+	ChatFrame_AddMessageGroup(ChatFrame3, "CURRENCY")
 	ChatFrame_AddChannel(ChatFrame1, GENERAL)
 	ChatFrame_RemoveChannel(ChatFrame1, L['Trade'])
 	ChatFrame_AddChannel(ChatFrame3, L['Trade'])
@@ -184,8 +185,11 @@ local function SetupCVars()
 	SetCVar("UberTooltips", 1)
 	SetCVar("threatWarning", 3)
 	SetCVar('alwaysShowActionBars', 1)
-	SetCVar('lockActionBars', 1)
-	SetCVar('SpamFilter', 0)
+	SetCVar("lockActionBars", 1)
+	SetCVar("SpamFilter", 0)
+
+	InterfaceOptionsActionBarsPanelPickupActionKeyDropDown:SetValue("SHIFT")
+	InterfaceOptionsActionBarsPanelPickupActionKeyDropDown:RefreshValue()
 
 	InstallStepComplete.message = L["CVars Set"]
 	InstallStepComplete:Show()
@@ -257,6 +261,8 @@ function E:SetupResolution(noDataReset)
 		if not noDataReset then
 			E.db.chat.panelWidth = 400
 			E.db.chat.panelHeight = 180
+			E.db.chat.panelWidthRight = 400
+			E.db.chat.panelHeightRight = 180
 
 			E.db.bags.bagWidth = 394;
 			E.db.bags.bankWidth = 394;
@@ -278,7 +284,7 @@ function E:SetupResolution(noDataReset)
 		if not noDataReset then
 			E:CopyTable(E.db.unitframe.units, P.unitframe.units)
 
-			E.db.unitframe.fontSize = 11
+			E.db.unitframe.fontSize = 10
 
 			E.db.unitframe.units.player.width = 200;
 			E.db.unitframe.units.player.castbar.width = 200;
@@ -390,7 +396,7 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.unitframe.units.raid.buffs.useFilter = "TurtleBuffs"
 			E.db.unitframe.units.raid.buffs.sizeOverride = 22
 			E.db.unitframe.units.raid.buffs.useBlacklist = false
-			E.db.unitframe.units.raid.buffs.enable = true			
+			E.db.unitframe.units.raid.buffs.enable = true
 			E.db.unitframe.units.raid.growthDirection = "LEFT_UP"
 
 			E.db.unitframe.units.party.growthDirection = "LEFT_UP"
@@ -428,8 +434,12 @@ function E:SetupLayout(layout, noDataReset)
 
 			E.db.unitframe.units.party.health.frequentUpdates = true
 			E.db.unitframe.units.raid.health.frequentUpdates = true
-
 			E.db.unitframe.units.raid40.health.frequentUpdates = true
+
+			E.db.unitframe.units.party.healPrediction = true
+			E.db.unitframe.units.raid.healPrediction = true
+			E.db.unitframe.units.raid40.healPrediction = true
+
 			E.db.unitframe.units.player.castbar.insideInfoPanel = false;
 			E.db.actionbar.bar2.enabled = true
 			if not E.db.lowresolutionset then
@@ -450,7 +460,6 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.movers.ElvAB_5 = "BOTTOM,ElvUIParent,BOTTOM,-312,4"
 			E.db.movers.ElvUF_PartyMover = "BOTTOMRIGHT,ElvUIParent,BOTTOMLEFT,"..xOffset..",450"
 			E.db.movers.ElvUF_RaidMover = "BOTTOMRIGHT,ElvUIParent,BOTTOMLEFT,"..xOffset..",450"
-
 			E.db.movers.ElvUF_Raid40Mover = "BOTTOMRIGHT,ElvUIParent,BOTTOMLEFT,"..xOffset..",450"
 
 			if not E.db.lowresolutionset then
@@ -459,12 +468,14 @@ function E:SetupLayout(layout, noDataReset)
 				E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,0,176"
 				E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,0,132"
 				E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,310,432"
+				E.db.movers["BossButton"] = "BOTTOM,ElvUIParent,BOTTOM,0,275"
 			else
 				E.db.movers.ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-102,182"
 				E.db.movers.ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,102,182"
 				E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,102,120"
 				E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-102,120"
 				E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,310,332"
+				E.db.movers["BossButton"] = "TOP,ElvUIParent,TOP,0,-138"
 			end
 		else
 			E.db.movers.ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,332,4"
@@ -479,12 +490,14 @@ function E:SetupLayout(layout, noDataReset)
 				E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,0,186"
 				E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,0,145"
 				E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,310,432"
+				E.db.movers["BossButton"] = "BOTTOM,ElvUIParent,BOTTOM,0,275"
 			else
 				E.db.movers.ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-118,182"
 				E.db.movers.ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,118,182"
 				E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,118,120"
 				E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-118,120"
 				E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,310,332"
+				E.db.movers["BossButton"] = "TOP,ElvUIParent,TOP,0,-138"
 			end
 		end
 	elseif E.db.lowresolutionset then
@@ -502,6 +515,8 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-118,84"
 			E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,310,332"	
 		end
+
+		E.db.movers["BossButton"] = "TOP,ElvUIParent,TOP,0,-138"
 	end
 
 	if layout ~= 'healer' and not E.db.lowresolutionset then
@@ -548,11 +563,13 @@ function E:SetupLayout(layout, noDataReset)
 					E.db.movers.ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,278,110"
 					E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,0,110"
 					E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,0,150"
+					E.db.movers["BossButton"] = "BOTTOM,ElvUIParent,BOTTOM,0,195"
 				else
 					E.db.movers.ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-307,110"
 					E.db.movers.ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,307,110"
 					E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,0,110"
 					E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,0,150"
+					E.db.movers["BossButton"] = "BOTTOM,ElvUIParent,BOTTOM,0,195"
 				end
 			else
 				yOffset = 76
@@ -571,6 +588,8 @@ function E:SetupLayout(layout, noDataReset)
 				E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-118,120"
 				E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,310,332"
 			end
+
+			E.db.movers["BossButton"] = "TOP,ElvUIParent,TOP,0,-138"
 		end
 
 		if E.PixelMode then
@@ -583,13 +602,14 @@ function E:SetupLayout(layout, noDataReset)
 		E.db.movers.ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,307,76"
 		E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,0,76"
 		E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,0,115"
+		E.db.movers["BossButton"] = "BOTTOM,ElvUIParent,BOTTOM,0,158"
 	end
 
 	if not noDataReset then
 		E:CopyTable(E.db.datatexts.panels, P.datatexts.panels)
 		if layout == 'tank' then
-			E.db.datatexts.panels.LeftChatDataPanel.left = "Armor";
-			E.db.datatexts.panels.LeftChatDataPanel.right = "Avoidance";
+			E.db.datatexts.panels.LeftChatDataPanel.left = "Avoidance";
+			E.db.datatexts.panels.LeftChatDataPanel.right = "Vengeance";
 		elseif layout == 'healer' or layout == 'dpsCaster' then
 			E.db.datatexts.panels.LeftChatDataPanel.left = "Spell/Heal Power";
 			E.db.datatexts.panels.LeftChatDataPanel.right = "Haste";
