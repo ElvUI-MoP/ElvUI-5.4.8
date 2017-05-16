@@ -6,7 +6,7 @@ local CreateFrame = CreateFrame
 function UF:Construct_Stagger(frame)
 	local stagger = CreateFrame("Statusbar", nil, frame)
 	UF["statusbars"][stagger] = true
-	stagger:CreateBackdrop("Default", nil, nil, self.thinBorders)
+	stagger:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 	stagger:SetOrientation("VERTICAL")
 	stagger.PostUpdate = UF.PostUpdateStagger
 	stagger:SetFrameStrata("LOW")
@@ -19,6 +19,9 @@ function UF:Configure_Stagger(frame)
 	local db = frame.db
 
 	frame.STAGGER_WIDTH = stagger and frame.STAGGER_SHOWN and (db.stagger.width + (frame.BORDER*2)) or 0;
+
+	local color = E.db.unitframe.colors.borderColor
+	stagger.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 
 	if(db.stagger.enable) then
 		if(not frame:IsElementEnabled("Stagger")) then
