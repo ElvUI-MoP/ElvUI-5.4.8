@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...));
 
 local _G = _G;
 local format = format;
@@ -284,7 +284,7 @@ function E:SetupResolution(noDataReset)
 		if not noDataReset then
 			E:CopyTable(E.db.unitframe.units, P.unitframe.units)
 
-			E.db.unitframe.fontSize = 10
+			E.db.unitframe.fontSize = 11
 
 			E.db.unitframe.units.player.width = 200;
 			E.db.unitframe.units.player.castbar.width = 200;
