@@ -97,6 +97,7 @@ local function LoadSkin()
 	QuestInfoItemHighlight:SetTemplate("Default", nil, true);
 	QuestInfoItemHighlight:SetBackdropBorderColor(1, 1, 0);
 	QuestInfoItemHighlight:SetBackdropColor(0, 0, 0, 0);
+	QuestInfoItemHighlight.backdropTexture:SetAlpha(0)
 	QuestInfoItemHighlight:Size(142, 40);
 
 	hooksecurefunc("QuestInfoItem_OnClick", function(self)
