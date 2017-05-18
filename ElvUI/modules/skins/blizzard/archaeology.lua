@@ -89,7 +89,7 @@ local function LoadSkin()
 	ArchaeologyFrameArtifactPageIcon:SetTexCoord(unpack(E.TexCoords))
 	ArchaeologyFrameArtifactPageIcon:SetParent(ArchaeologyFrameArtifactPageIcon.backdrop)
 	ArchaeologyFrameArtifactPageIcon:SetDrawLayer("OVERLAY")
-	ArchaeologyFrameArtifactPageIcon:Point("TOPLEFT", ArchaeologyFrameArtifactPage, "TOPLEFT", -42, -47)
+	ArchaeologyFrameArtifactPageIcon:Point("TOPLEFT", ArchaeologyFrameArtifactPage, "TOPLEFT", -40, -50)
 
 	ArchaeologyFrameArtifactPage.glow:Kill()
 
@@ -153,14 +153,16 @@ local function LoadSkin()
 			artifact:SetTemplate("Transparent");
 			artifact:StyleButton()
 
+			icon.bg = CreateFrame("Frame", nil, artifact)
+			icon.bg:SetTemplate()
+			icon.bg:Point("TOPLEFT", icon, -1, 1)
+			icon.bg:Point("BOTTOMRIGHT", icon, 1, -1)
+			icon.bg:SetFrameLevel(icon.bg:GetFrameLevel() + 2)
+
 			icon:SetTexCoord(unpack(E.TexCoords))
 			icon:SetDrawLayer("OVERLAY")
-			icon:Size(icon:GetWidth() - 2, icon:GetHeight() - 2)
-
-			artifact.bg1 = CreateFrame("Frame", nil, artifact)
-			artifact.bg1:CreateBackdrop()
-			artifact.bg1:SetInside(icon)
-			icon:SetParent(artifact.bg1)
+			icon:Size(42)
+			icon:SetParent(icon.bg)
 		end
 	end
 

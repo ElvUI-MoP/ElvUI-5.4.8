@@ -152,19 +152,19 @@ local function LoadSkin()
 
 		reagent:SetTemplate("Transparent", true);
 		reagent:StyleButton(nil, true);
-		reagent:Size(reagent:GetWidth(), reagent:GetHeight() + 1);
+		reagent:Size(146, 42);
+
+		icon.backdrop = CreateFrame("Frame", nil, reagent)
+		icon.backdrop:SetTemplate()
+		icon.backdrop:Point("TOPLEFT", icon, -1, 1)
+		icon.backdrop:Point("BOTTOMRIGHT", icon, 1, -1)
 
 		icon:SetTexCoord(unpack(E.TexCoords));
 		icon:SetDrawLayer("OVERLAY");
-		icon:Size(38);
-		icon:Point("TOPLEFT", 2, -2);
-
-		icon.backdrop = CreateFrame("Frame", nil, reagent);
-		icon.backdrop:SetFrameLevel(reagent:GetFrameLevel() - 1);
-		icon.backdrop:SetTemplate("Default");
-		icon.backdrop:SetOutside(icon);
-
+		icon:Size(40);
+		icon:Point("TOPLEFT", 1, -1);
 		icon:SetParent(icon.backdrop);
+
 		count:SetParent(icon.backdrop);
 		count:SetDrawLayer("OVERLAY");
 
@@ -173,7 +173,7 @@ local function LoadSkin()
 		nameFrame:Kill();
 	end
 
-	TradeSkillReagent1:Point("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", -2, -3);
+	TradeSkillReagent1:Point("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", -3, -3);
 	TradeSkillReagent2:Point("LEFT", TradeSkillReagent1, "RIGHT", 3, 0);
 	TradeSkillReagent4:Point("LEFT", TradeSkillReagent3, "RIGHT", 3, 0);
 	TradeSkillReagent6:Point("LEFT", TradeSkillReagent5, "RIGHT", 3, 0);
