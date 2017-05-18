@@ -14,11 +14,11 @@ local function SetFont(obj, font, size, style, r, g, b, sr, sg, sb, sox, soy)
 end
 
 function E:UpdateBlizzardFonts()
-	local NORMAL			= self["media"].normFont;
-	local COMBAT			= LSM:Fetch("font", self.private.general.dmgfont);
-	local NUMBER			= self["media"].normFont;
-	local NAMEFONT			= LSM:Fetch("font", self.private.general.namefont);
-	local MONOCHROME		= "";
+	local NORMAL		= self["media"].normFont;
+	local COMBAT		= LSM:Fetch("font", self.private.general.dmgfont);
+	local NUMBER		= self["media"].normFont;
+	local NAMEFONT		= LSM:Fetch("font", self.private.general.namefont);
+	local MONOCHROME	= "";
 
 	UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 12
 	CHAT_FONT_HEIGHTS = {10, 12, 13, 14, 15, 16, 17, 18, 19, 20}
@@ -44,8 +44,7 @@ function E:UpdateBlizzardFonts()
 		SetCVar("CombatHealing",0)
 
 		-- set an invisible font for xp, honor kill, etc
-		local INVISIBLE = [=[Interface\Addons\ElvUI\media\fonts\Invisible.ttf]=]
-		COMBAT = INVISIBLE
+		COMBAT = [=[Interface\Addons\ElvUI\media\fonts\Invisible.ttf]=]
 	end
 
 	if(self.private.general.replaceBlizzFonts) then

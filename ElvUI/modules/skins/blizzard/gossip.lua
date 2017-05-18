@@ -63,8 +63,9 @@ local function LoadSkin()
 	end)
 
 	NPCFriendshipStatusBar:StripTextures()
-	NPCFriendshipStatusBar:SetStatusBarTexture(E.media.normTex)
-	NPCFriendshipStatusBar:CreateBackdrop('Default')
+	NPCFriendshipStatusBar:CreateBackdrop("Default")
+	NPCFriendshipStatusBar:SetStatusBarTexture(E["media"].normTex)
+	NPCFriendshipStatusBar:Point("TOPLEFT", 50, -41)
 end
 
 S:AddCallback("Gossip", LoadSkin);

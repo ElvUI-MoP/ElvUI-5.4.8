@@ -21,9 +21,9 @@ function E:UIScale(event)
 
 	local minScale = self.global.general.minUiScale or 0.64;
 	if(self.global.general.autoScale) then
-		scale = max(minScale, min(1.00, 768/self.screenheight));
+		scale = max(minScale, min(1.15, 768/self.screenheight));
 	else
-		scale = max(minScale, min(1.00, self.global.uiScale or UIParent:GetScale() or 768/self.screenheight));
+		scale = max(minScale, min(1.15, self.global.uiScale or UIParent:GetScale() or 768/self.screenheight));
 	end
 
 	if self.screenwidth < 1600 then
@@ -58,7 +58,7 @@ function E:UIScale(event)
 		self.eyefinity = width;
 	end
 
-	self.mult = 768/match(GetCVar("gxResolution"), "%d+x(%d+)")/scale;
+	self.mult = 768/match(self.resolution, "%d+x(%d+)")/scale;
 	self.Spacing = self.PixelMode and 0 or self.mult;
 	self.Border = (self.PixelMode and self.mult or self.mult*2);
 
@@ -76,7 +76,7 @@ function E:UIScale(event)
 		end
 	end
 
-	if (event == 'PLAYER_LOGIN' or event == 'UPDATE_FLOATING_CHAT_WINDOWS') then
+	if (event == 'PLAYER_LOGIN' or event == 'UI_SCALE_CHANGED') then
 		if IsMacClient() then
 			self.global.screenheight = floor(GetScreenHeight()*100+.5)/100
 			self.global.screenwidth = floor(GetScreenWidth()*100+.5)/100
@@ -94,7 +94,7 @@ function E:UIScale(event)
 				local w = self.eyefinity / ratio;
 
 				width = w;
-				height = h;	
+				height = h;
 			end
 
 			self.UIParent:SetSize(width, height);
@@ -121,9 +121,9 @@ function E:UIScale(event)
 			change = abs((E:Round(UIParent:GetScale(), 5) * 100) - (E:Round(scale, 5) * 100))
 		end
 
-		if event == 'UPDATE_FLOATING_CHAT_WINDOWS' and change and change > 1 and self.global.general.autoScale then
+		if event == 'UI_SCALE_CHANGED' and change and change > 1 and self.global.general.autoScale then
 			E:StaticPopup_Show('FAILED_UISCALE')
-		elseif event == 'UPDATE_FLOATING_CHAT_WINDOWS' and change and change > 1 then
+		elseif event == 'UI_SCALE_CHANGED' and change and change > 1 then
 			E:StaticPopup_Show('CONFIG_RL')	
 		end
 
