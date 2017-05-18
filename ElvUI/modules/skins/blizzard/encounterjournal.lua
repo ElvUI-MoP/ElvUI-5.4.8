@@ -10,7 +10,7 @@ local function LoadSkin()
 	local EJ = EncounterJournal
 
 	EJ:StripTextures(true)
-	EJ:CreateBackdrop("Transparent")
+	EJ:SetTemplate("Transparent")
 
 	EJ.inset:StripTextures(true)
 
@@ -102,8 +102,9 @@ local function LoadSkin()
 	S:HandleButton(EncounterInfo.difficulty)
 	EncounterInfo.difficulty:SetFrameLevel(EncounterInfo.difficulty:GetFrameLevel() + 1)
 	EncounterInfo.difficulty:Width(100)
-	EncounterJournalEncounterFrameInfoResetButton:StripTextures()
+	EncounterInfo.difficulty:Point("TOPRIGHT", -5, -7)
 
+	EncounterJournalEncounterFrameInfoResetButton:StripTextures()
 	S:HandleButton(EncounterJournalEncounterFrameInfoResetButton)
 	EncounterJournalEncounterFrameInfoResetButtonTexture:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 	EncounterJournalEncounterFrameInfoResetButtonTexture:SetTexCoord(0.90625000, 0.94726563, 0.00097656, 0.02050781)
@@ -119,15 +120,16 @@ local function LoadSkin()
 	end
 
 	EncounterInfo.lootScroll.filter:StripTextures()
+	EncounterInfo.lootScroll.filter:Point("TOPLEFT", EncounterJournalEncounterFrameInfo, "TOPRIGHT", -351, -7)
 	S:HandleButton(EncounterInfo.lootScroll.filter)
 
 	EncounterInfo.detailsScroll.child.description:SetTextColor(1, 1, 1)
 
 	--Boss/Loot Tab
 	EncounterJournalEncounterFrameInfoBossTab:StripTextures()
-	EncounterJournalEncounterFrameInfoBossTab:CreateBackdrop("Transparent")
+	EncounterJournalEncounterFrameInfoBossTab:SetTemplate("Transparent")
 	EncounterJournalEncounterFrameInfoBossTab:Size(45, 40)
-	EncounterJournalEncounterFrameInfoBossTab:Point("TOPLEFT", EncounterJournalEncounterFrameInfo, "TOPRIGHT", 9, 40)
+	EncounterJournalEncounterFrameInfoBossTab:Point("TOPLEFT", EncounterJournalEncounterFrameInfo, "TOPRIGHT", 7, 40)
 
 	EncounterJournalEncounterFrameInfoBossTab.icon = EncounterJournalEncounterFrameInfoBossTab:CreateTexture(nil, "OVERLAY");
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
@@ -136,7 +138,7 @@ local function LoadSkin()
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetDesaturated(false)
 
 	EncounterJournalEncounterFrameInfoLootTab:StripTextures()
-	EncounterJournalEncounterFrameInfoLootTab:CreateBackdrop("Transparent")
+	EncounterJournalEncounterFrameInfoLootTab:SetTemplate("Transparent")
 	EncounterJournalEncounterFrameInfoLootTab:Size(45, 40)
 	EncounterJournalEncounterFrameInfoLootTab:Point("TOP", EncounterJournalEncounterFrameInfoBossTab, "BOTTOM", 0, -10)
 
@@ -147,7 +149,7 @@ local function LoadSkin()
 	EncounterJournalEncounterFrameInfoLootTab.icon:SetDesaturated(true)
 
 	EncounterJournalEncounterFrameInfoModelTab:StripTextures()
-	EncounterJournalEncounterFrameInfoModelTab:CreateBackdrop("Transparent")
+	EncounterJournalEncounterFrameInfoModelTab:SetTemplate("Transparent")
 	EncounterJournalEncounterFrameInfoModelTab:Size(45, 40)
 	EncounterJournalEncounterFrameInfoModelTab:Point("TOP", EncounterJournalEncounterFrameInfoLootTab, "BOTTOM", 0, -10)
 
@@ -243,25 +245,33 @@ local function LoadSkin()
 	for i = 1, #items do
 		local item = items[i]
 
+		item:CreateBackdrop("Default")
+		item.backdrop:Point("TOPLEFT", 0, -4)
+		item.backdrop:Point("BOTTOMRIGHT", -2, E.PixelMode and 1 or -1)
+
 		item.boss:SetTextColor(1, 1, 1)
 		item.boss:ClearAllPoints()
-		item.boss:Point("BOTTOMLEFT", 4, 7)
+		item.boss:Point("BOTTOMLEFT", 4, 4)
+		item.boss:SetParent(item.backdrop)
+
 		item.slot:SetTextColor(1, 1, 1)
+		item.slot:SetParent(item.backdrop)
+
 		item.armorType:SetTextColor(1, 1, 1)
 		item.armorType:ClearAllPoints()
 		item.armorType:Point("BOTTOMRIGHT", item.name, "TOPLEFT", 264, -25)
+		item.armorType:SetParent(item.backdrop)
 
 		item.bossTexture:SetAlpha(0)
 		item.bosslessTexture:SetAlpha(0)
 
-		item.icon:SetSize(41, 41)
-		item.icon:Point("TOPLEFT", 2, -2)
-
+		item.icon:Size(38)
+		item.icon:Point("TOPLEFT", E.PixelMode and 1 or 2, -(E.PixelMode and 5 or 6))
 		S:HandleIcon(item.icon)
 		item.icon:SetDrawLayer("OVERLAY")
+		item.icon:SetParent(item.backdrop)
 
-		item:SetTemplate("Default");
-		item:StyleButton()
+		item.name:SetParent(item.backdrop)
 
 		if i == 1 then
 			item:ClearAllPoints()
