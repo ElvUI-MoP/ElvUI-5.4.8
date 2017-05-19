@@ -178,9 +178,9 @@ local function LoadSkin(event)
 
 	local function SkinStatusBar(bar)
 		bar:StripTextures();
+		bar:CreateBackdrop("Default");
 		bar:SetStatusBarTexture(E["media"].normTex);
 		bar:SetStatusBarColor(0.11, 0.50, 1.00);
-		bar:CreateBackdrop("Default");
 		E:RegisterStatusBar(bar);
 
 		local barName = bar:GetName();
@@ -272,12 +272,14 @@ local function LoadSkin(event)
 		if(frame) then
 			if(not frame.skinned) then
 				frame:StripTextures();
+				frame:SetTemplate("Default");
+
 				frame:SetStatusBarTexture(E["media"].normTex);
-				E:RegisterStatusBar(frame);
 				frame:SetStatusBarColor(0.11, 0.50, 1.00);
 				frame:GetStatusBarTexture():SetInside();
+				E:RegisterStatusBar(frame);
+
 				frame:Height(frame:GetHeight() + (E.Border + E.Spacing));
-				frame:SetTemplate("Default");
 				frame.text:ClearAllPoints();
 				frame.text:Point("CENTER", frame, "CENTER", 0, -1);
 				frame.text:SetJustifyH("CENTER");

@@ -19,7 +19,12 @@ local function LoadSkin()
 	ItemTextPageText.SetTextColor = E.noop
 
 	S:HandleNextPrevButton(ItemTextPrevPageButton)
+	ItemTextPrevPageButton:Point("CENTER", ItemTextFrame, "TOPLEFT", 35, -41)
+
 	S:HandleNextPrevButton(ItemTextNextPageButton)
+	ItemTextNextPageButton:Point("CENTER", ItemTextFrame, "TOPRIGHT", -42, -41)
+
+	ItemTextCurrentPage:Point("TOP", 0, -35)
 
 	S:HandleScrollBar(ItemTextScrollFrameScrollBar)
 

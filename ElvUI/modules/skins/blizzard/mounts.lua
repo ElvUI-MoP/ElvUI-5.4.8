@@ -45,7 +45,7 @@ local function LoadSkin()
 
 	MountJournal.MountDisplay.ModelFrame:ClearAllPoints()
 	MountJournal.MountDisplay.ModelFrame:SetInside(MountJournal.MountDisplay.backdrop)
-	MountJournal.MountDisplay.ModelFrame:Point("TOPLEFT", MountJournal.MountDisplay.backdrop, 3, -3)
+	MountJournal.MountDisplay.ModelFrame:Point("TOPLEFT", MountJournal.MountDisplay.backdrop, 2, -3)
 	MountJournal.MountDisplay.ModelFrame:Point("BOTTOMRIGHT", MountJournal.MountDisplay.backdrop, -3, 3)
 
 	S:HandleButton(MountJournalMountButton)
@@ -55,7 +55,7 @@ local function LoadSkin()
 
 	MountJournal.bg = CreateFrame("Frame", nil, MountJournal)
 	MountJournal.bg:CreateBackdrop("Default", true)
-	MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, E.PixelMode and -2 or -1, 41)
+	MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, E.PixelMode and -1 or 0, E.PixelMode and 43 or 42)
 	MountJournal.bg:Point("BOTTOMRIGHT", MountJournal.MountDisplay.ModelFrame, E.PixelMode and 2 or 1, 445)
 
 	MountJournal.MountDisplay.Name:ClearAllPoints()

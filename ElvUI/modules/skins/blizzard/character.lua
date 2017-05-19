@@ -22,6 +22,7 @@ local function LoadSkin()
 	CharacterModelFrame:CreateBackdrop("Default")
 	CharacterModelFrame.backdrop:Point("TOPLEFT", -1, 1)
 	CharacterModelFrame.backdrop:Point("BOTTOMRIGHT", 1, -2)
+	CharacterModelFrameBackgroundOverlay:SetTexture(0, 0, 0, 0.5)
 
 	S:HandleCloseButton(CharacterFrameCloseButton)
 

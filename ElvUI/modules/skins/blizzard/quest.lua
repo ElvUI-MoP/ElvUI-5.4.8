@@ -124,10 +124,15 @@ local function LoadSkin()
 	QuestLogFrameShowMapButton:Size(QuestLogFrameShowMapButton:GetWidth() - 30, QuestLogFrameShowMapButton:GetHeight(), - 40)
 
 	S:HandleButton(QuestLogFrameAbandonButton)
-	S:HandleButton(QuestLogFramePushQuestButton)
-	S:HandleButton(QuestLogFrameTrackButton)
-	S:HandleButton(QuestLogFrameCancelButton)
+	QuestLogFrameAbandonButton:Point("LEFT", 1, 1)
 
+	S:HandleButton(QuestLogFrameTrackButton)
+	QuestLogFrameTrackButton:Point("RIGHT", 1, 1)
+
+	S:HandleButton(QuestLogFrameCancelButton)
+	QuestLogFrameCancelButton:Point("BOTTOMRIGHT", -9, 4)
+
+	S:HandleButton(QuestLogFramePushQuestButton)
 	QuestLogFramePushQuestButton:Point("LEFT", QuestLogFrameAbandonButton, "RIGHT", 2, 0)
 	QuestLogFramePushQuestButton:Point("RIGHT", QuestLogFrameTrackButton, "LEFT", -2, 0)
 
@@ -315,11 +320,15 @@ local function LoadSkin()
 
 	QuestNPCModel:StripTextures()
 	QuestNPCModel:CreateBackdrop("Transparent")
+	QuestNPCModel.backdrop:Point("BOTTOMRIGHT", 2, -2)
 	QuestNPCModel:Point("TOPLEFT", QuestLogDetailFrame, "TOPRIGHT", 4, -34)
 
 	QuestNPCModelTextFrame:StripTextures()
 	QuestNPCModelTextFrame:CreateBackdrop("Default")
-	QuestNPCModelTextFrame.backdrop:Point("TOPLEFT", QuestNPCModel.backdrop, "BOTTOMLEFT", 0, -2)
+	QuestNPCModelTextFrame.backdrop:Point("TOPLEFT", E.PixelMode and -1 or -2, 16)
+	QuestNPCModelTextFrame.backdrop:Point("BOTTOMRIGHT", 2, -2)
+
+	QuestNPCModelNameText:Point("TOPLEFT", QuestNPCModelNameplate, 22, -20)
 
 	hooksecurefunc("QuestFrame_ShowQuestPortrait", function(parentFrame, portrait, text, name, x, y)
 		QuestNPCModel:ClearAllPoints();

@@ -214,8 +214,8 @@ function M:UpdateSettings()
 	E.MinimapHeight = E.MinimapSize;
 
 	if(E.db.auras.consolidatedBuffs.enable) then
-		local numBuffs = E.db.auras.consolidatedBuffs.filter and 6 or 8
-		E.ConsolidatedBuffsWidth = (E.MinimapHeight + ((numBuffs*E.Border - E.Spacing*3) - 1) + E.Border*2) / (numBuffs);
+		local numBuffs = E.db.auras.consolidatedBuffs.filter and 5 or 7
+		E.ConsolidatedBuffsWidth = (E.MinimapHeight + (numBuffs*E.Border) + E.Border*2 - (E.Spacing*numBuffs)) / (numBuffs + 1)
 	else
 		E.ConsolidatedBuffsWidth = 0;
 	end
