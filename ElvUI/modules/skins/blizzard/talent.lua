@@ -297,9 +297,9 @@ local function LoadSkin()
 		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2);
 
 		button.specIcon:SetTexture(icon)
-		button.specIcon:Size(58)
+		button.specIcon:Size(60)
 		button.specIcon:SetTexCoord(unpack(E.TexCoords));
-		button.specIcon:Point("LEFT", button, 10, 0)
+		button.specIcon:Point("LEFT", button, 0, 0)
 		button.specIcon:SetParent(button.backdrop)
 
 		button.SelectedTexture = button:CreateTexture(nil, "ARTWORK")
@@ -322,7 +322,6 @@ local function LoadSkin()
 			button.selectedTex:SetAlpha(0)
 
 			button:CreateBackdrop()
-			button.backdrop:Point("TOPLEFT", 10, 0)
 
 			button:GetHighlightTexture():SetInside(button.backdrop)
 		end

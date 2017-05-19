@@ -240,13 +240,14 @@ local function LoadSkin()
 			object.HighlightBar:SetTexture(nil)
 
 			object:CreateBackdrop("Default")
-			object.backdrop:SetOutside(object.icon)
+			object.backdrop:Point("TOPLEFT", object.icon, -1, 1)
+			object.backdrop:Point("BOTTOMRIGHT", object.icon, 1, -1)
 
 			object.icon:SetTexCoord(unpack(E.TexCoords))
 			object.icon:SetParent(object.backdrop)
 			object.icon:SetPoint("LEFT", object, "LEFT", 1, 0)
 			object.icon.SetPoint = E.noop
-			object.icon:Size(42)
+			object.icon:Size(40)
 			object.icon.SetSize = E.noop
 		end
 	end)

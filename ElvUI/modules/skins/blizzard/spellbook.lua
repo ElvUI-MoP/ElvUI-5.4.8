@@ -169,7 +169,7 @@ local function LoadSkin()
 				button.bg:SetTemplate("Transparent")
 				button.bg:Point("TOPLEFT", -5, 5)
 				button.bg:Point("BOTTOMRIGHT", 380, -20)
-				button.bg:SetFrameLevel(button.bg:GetFrameLevel() - 1)
+				button.bg:SetFrameLevel(button.bg:GetFrameLevel() - 2)
 
 				button.isSkinned = true
 			end

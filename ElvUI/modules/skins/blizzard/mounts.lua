@@ -30,21 +30,23 @@ local function LoadSkin()
 	MountJournal.MountCount:StripTextures()
 	MountJournal.MountCount:CreateBackdrop("Default")
 
-    MountJournal.MountDisplay:CreateBackdrop("Overlay")
+    MountJournal.MountDisplay:CreateBackdrop("Default")
     MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 2, -40)
     MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 1, 30)
 
-	MountJournal.MountDisplay.ShadowOverlay:SetAllPoints(MountJournal.MountDisplay.backdrop)
+	MountJournal.MountDisplay.ShadowOverlay:SetInside(MountJournal.MountDisplay.backdrop)
 
-	MountJournal.MountDisplay.YesMountsTex:SetAllPoints(MountJournal.MountDisplay.backdrop)
+	MountJournal.MountDisplay.YesMountsTex:SetInside(MountJournal.MountDisplay.backdrop)
 	MountJournal.MountDisplay.YesMountsTex:SetTexCoord(0.01, 0.78, 0, 1)
 	MountJournal.MountDisplay.YesMountsTex:SetDesaturated(true)
 
-	MountJournal.MountDisplay.NoMountsTex:SetAllPoints(MountJournal.MountDisplay.backdrop)
+	MountJournal.MountDisplay.NoMountsTex:SetInside(MountJournal.MountDisplay.backdrop)
 	MountJournal.MountDisplay.NoMountsTex:SetDesaturated(true)
 
 	MountJournal.MountDisplay.ModelFrame:ClearAllPoints()
 	MountJournal.MountDisplay.ModelFrame:SetInside(MountJournal.MountDisplay.backdrop)
+	MountJournal.MountDisplay.ModelFrame:Point("TOPLEFT", MountJournal.MountDisplay.backdrop, 3, -3)
+	MountJournal.MountDisplay.ModelFrame:Point("BOTTOMRIGHT", MountJournal.MountDisplay.backdrop, -3, 3)
 
 	S:HandleButton(MountJournalMountButton)
 	MountJournalMountButton:ClearAllPoints()
@@ -52,9 +54,9 @@ local function LoadSkin()
 	MountJournalMountButton:Size(160, 25)
 
 	MountJournal.bg = CreateFrame("Frame", nil, MountJournal)
-	MountJournal.bg:SetTemplate("Default", true)
-	MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, -1, 42)
-	MountJournal.bg:Point("BOTTOMRIGHT", MountJournal.MountDisplay.ModelFrame, 1, 445)
+	MountJournal.bg:CreateBackdrop("Default", true)
+	MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, E.PixelMode and -2 or -1, 41)
+	MountJournal.bg:Point("BOTTOMRIGHT", MountJournal.MountDisplay.ModelFrame, E.PixelMode and 2 or 1, 445)
 
 	MountJournal.MountDisplay.Name:ClearAllPoints()
 	MountJournal.MountDisplay.Name:Point("CENTER",  MountJournal.bg)
@@ -74,7 +76,7 @@ local function LoadSkin()
 
 		S:HandleItemButton(button)
 
-		button.icon:Size(42)
+		button.icon:Size(40)
 		button.icon:SetTexCoord(unpack(E.TexCoords));
 
 		button.selectedTexture:SetTexture(1, 1, 1, 0.30)
@@ -116,7 +118,7 @@ local function LoadSkin()
 				button.backdrop:SetBackdropBorderColor(1, 1, 0)
 			else
 				name:SetTextColor(1, 1, 1)
-				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 			end
 
 			if((i + offset) % 2 == 1) then
@@ -161,7 +163,6 @@ local function LoadSkin()
 
 		S:HandleItemButton(button)
 
-		button:SetTemplate("Default", true)
 		button.dragButton.levelBG:SetAlpha(0)
 		button.dragButton.favorite:SetParent(button.backdrop)
 
@@ -169,7 +170,7 @@ local function LoadSkin()
 		button.dragButton.level:SetParent(button.backdrop)
 		button.dragButton.level:FontTemplate(nil, 12, "OUTLINE");
 
-		button.icon:Size(42)
+		button.icon:Size(40)
 		button.icon:SetTexCoord(unpack(E.TexCoords));
 
 		button.selectedTexture:SetTexture(1, 1, 1, 0.30)
@@ -199,7 +200,7 @@ local function LoadSkin()
 					name:SetTextColor(1, 1, 1);
 				end
 			else
-				button.backdrop:SetBackdropBorderColor(0, 0, 0)
+				button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				name:SetTextColor(0.6, 0.6, 0.6);
 			end
 		end
