@@ -11,24 +11,22 @@ local CooldownFrame_SetTimer = CooldownFrame_SetTimer;
 local MAX_TOTEMS = MAX_TOTEMS;
 
 function TOTEMS:Update()
-	local displayedTotems = 0;
+	local _, button, startTime, duration, icon
+
 	for i = 1, MAX_TOTEMS do
-		local haveTotem, _, startTime, duration, icon = GetTotemInfo(i);
-		if(haveTotem and icon and icon ~= "") then
+		button = _G["TotemFrameTotem"..i];
+		_, _, startTime, duration, icon = GetTotemInfo(i);
+
+		if button:IsShown() then
 			self.bar[i]:Show();
 			self.bar[i].iconTexture:SetTexture(icon);
-			displayedTotems = displayedTotems + 1;
 			CooldownFrame_SetTimer(self.bar[i].cooldown, startTime, duration, 1);
 
-			for d = 1, MAX_TOTEMS do
-				if(_G["TotemFrameTotem" .. d .. "IconTexture"]:GetTexture() == icon) then
-					_G["TotemFrameTotem" .. d]:ClearAllPoints();
-					_G["TotemFrameTotem" .. d]:SetParent(self.bar[i].holder);
-					_G["TotemFrameTotem" .. d]:SetAllPoints(self.bar[i].holder);
-				end
-			end
+			button:ClearAllPoints();
+			button:SetParent(self.bar[i].holder);
+			button:SetAllPoints(self.bar[i].holder);
 		else
-			self.bar[i]:Hide();
+			self.bar[i]:Hide()
 		end
 	end
 end
@@ -95,7 +93,6 @@ function TOTEMS:Initialize()
 	self.db = E.db.general.totems;
 
 	local bar = CreateFrame("Frame", "ElvUI_TotemBar", E.UIParent);
-	bar = CreateFrame("Frame", "ElvUI_TotemBar", E.UIParent);
 	bar:Point("TOPLEFT", LeftChatPanel, "TOPRIGHT", 14, 0);
 	self.bar = bar;
 

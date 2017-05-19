@@ -31,13 +31,24 @@ local RaidIconCoordinate = {
 mod.CreatedPlates = {}
 mod.VisiblePlates = {}
 
-mod.Healers = {}
-mod.HealerSpecs = {
-	[L["Restoration"]] = true,
-	[L["Holy"]] = true,
-	[L["Discipline"]] = true,
-	[L["Mistweaver"]] = true
-};
+local healerSpecIDs = {
+	105,	-- Druid Restoration
+	270,	-- Monk Mistweaver
+	65,		-- Paladin Holy
+	256,	-- Priest Discipline
+	257,	-- Priest Holy
+	264,	-- Shaman Restoration
+}
+
+mod.HealerSpecs = {}
+mod.Healers = {};
+
+for _, specID in pairs(healerSpecIDs) do
+	local _, name = GetSpecializationInfoByID(specID)
+	if name and not mod.HealerSpecs[name] then
+		mod.HealerSpecs[name] = true
+	end
+end
 
 function mod:CheckFilter(frame)
 	local db = E.global.nameplates["filter"][frame.UnitName]

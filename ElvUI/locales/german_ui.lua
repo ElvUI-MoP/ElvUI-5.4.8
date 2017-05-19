@@ -282,12 +282,6 @@ Options:
   Strg + Rechtsklick - Setzt den Anker auf Ursprungsposition zurück.
 ]=]
 
---NamePlates
-L["Discipline"] = "Disziplin"
-L["Holy"] = "Heilig"
-L["Mistweaver"] = "Nebelwirker"
-L["Restoration"] = "Wiederherstellung"
-
 --Plugin Installer
 L["ElvUI Plugin Installation"] = true;
 L["In Progress"] = "In Bearbeitung"

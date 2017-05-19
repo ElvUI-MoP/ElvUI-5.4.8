@@ -282,12 +282,6 @@ Options:
   Ctrl + RightClick - Resets mover position to default.
 ]=]
 
---NamePlates
-L["Discipline"] = "Discipline"
-L["Holy"] = "Sacré"
-L["Mistweaver"] = "Tisse-Brume"
-L["Restoration"] = "Restauration"
-
 --Plugin Installer
 L["ElvUI Plugin Installation"] = true;
 L["In Progress"] = true;

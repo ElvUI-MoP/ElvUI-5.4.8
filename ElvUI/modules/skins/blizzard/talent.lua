@@ -375,7 +375,7 @@ local function LoadSkin()
 			button.specIcon:SetTexture(icon)
 			button.specIcon:Size(58)
 			button.specIcon:SetTexCoord(unpack(E.TexCoords));
-			button.specIcon:Point("LEFT", button, 10, 0)
+			button.specIcon:Point("LEFT", button, 0, 0)
 			button.specIcon:SetParent(button.backdrop)
 
 			button.SelectedTexture = button:CreateTexture(nil, "ARTWORK")
