@@ -53,7 +53,7 @@ local function LoadSkin()
 	S:HandleDropDownBox(HonorFrameTypeDropDown);
 	HonorFrameTypeDropDown:Width(200);
 	HonorFrameTypeDropDown:ClearAllPoints();
-	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 175, 315);
+	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 163, 315);
 
 	HonorFrame.Inset:StripTextures();
 
@@ -61,10 +61,10 @@ local function LoadSkin()
 	HonorFrameSpecificFrameScrollBar:Point("TOPLEFT", HonorFrameSpecificFrame, "TOPRIGHT", 0, -13);
 
 	S:HandleButton(HonorFrameSoloQueueButton, true);
-	HonorFrameSoloQueueButton:Point("BOTTOMLEFT", 7, 0);
+	HonorFrameSoloQueueButton:Point("BOTTOMLEFT", 19, 0);
 
 	S:HandleButton(HonorFrameGroupQueueButton, true);
-	HonorFrameGroupQueueButton:Point("BOTTOMRIGHT", -28, 0);
+	HonorFrameGroupQueueButton:Point("BOTTOMRIGHT", -19, 0);
 
 	hooksecurefunc("HonorFrameBonusFrame_Update", function()
 		local englishFaction = UnitFactionGroup("player");

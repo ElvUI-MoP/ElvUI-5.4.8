@@ -288,8 +288,8 @@ local function LoadSkin()
 
 		button.bg = CreateFrame("Frame", nil, button);
 		button.bg:SetTemplate("Default", true);
-		button.bg:Point("TOPLEFT", button.class, 2, -2);
-		button.bg:Point("BOTTOMRIGHT", button.class, -2, 2);
+		button.bg:Point("TOPLEFT", button.class, 1, -1);
+		button.bg:Point("BOTTOMRIGHT", button.class, -1, 1);
 
 		button.class:SetTexture("Interface\\WorldStateFrame\\Icons-Classes");
 		button.class:SetParent(button.bg);
