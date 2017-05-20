@@ -93,6 +93,7 @@ local function LoadSkin()
 
 	local function FixSkin()
 		WorldMapFrame:StripTextures()
+
 		if(WORLDMAP_SETTINGS.size == WORLDMAP_FULLMAP_SIZE) then
 			LargeSkin()
 		elseif(WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE) then
@@ -117,6 +118,8 @@ local function LoadSkin()
 
 		WorldMapFrameAreaDescription:FontTemplate(nil, 40, "OUTLINE")
 		WorldMapFrameAreaDescription:SetShadowOffset(2, -2)
+
+		WorldMapFrameAreaPetLevels:FontTemplate(nil, 25, "OUTLINE");
 
 		WorldMapZoneInfo:FontTemplate(nil, 27, "OUTLINE")
 		WorldMapZoneInfo:SetShadowOffset(2, -2)
