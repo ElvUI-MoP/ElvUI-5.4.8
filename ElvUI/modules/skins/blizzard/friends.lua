@@ -3,7 +3,7 @@ local S = E:GetModule("Skins")
 
 local _G = _G;
 local pairs, unpack = pairs, unpack;
-local format, len, upper, gsub = string.format, string.len, string.upper, string.gsub;
+local format = string.format
 
 local hooksecurefunc = hooksecurefunc;
 local GetWhoInfo = GetWhoInfo;
@@ -370,50 +370,47 @@ local function LoadSkin()
 	end
 
 	--Friend List Class Colors
-	local cc = {
-		["HUNTER"] = "ABD473",
-		["WARLOCK"] = "9482C9",
-		["PRIEST"] = "FFFFFF",
-		["PALADIN"] = "F58CBA",
-		["MAGE"] = "69CCF0",
-		["ROGUE"] = "FFF569",
-		["DRUID"] = "FF7D0A",
-		["SHAMAN"] = "1783D1",
-		["WARRIOR"] = "C79C6E",
-		["DEATHKNIGHT"] = "C41F3B",
-		["MONK"] = "00FF96"
-	}
+	local function ColorFriendsList()
+		local friendOffset = _G["HybridScrollFrame_GetOffset"](_G["FriendsFrameFriendsScrollFrame"])
+		if not friendOffset then return end
+		if friendOffset < 0 then friendOffset = 0 end
 
-	local locclasses = {}
-	for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do locclasses[v] = k end
-	for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do locclasses[v] = k end
+		local button = "FriendsFrameFriendsScrollFrameButton"
+		local _, numBNetOnline = BNGetNumFriends()
+		local onlineFriends = GetNumFriends()
 
-	local updFunc = function()
-		if(GetNumFriends() < 1) then return end
+		if onlineFriends > 0 then
+			for i = 1, onlineFriends, 1 do
+				j = i + numBNetOnline
+				local name, level, class, _, connected = GetFriendInfo(i)
 
-		local off, name, level, class, _, connected, _, _, tmp, tmpcol = FauxScrollFrame_GetOffset(FriendsFrameFriendsScrollFrame)
-		for i = 1, GetNumFriends() do
-			name, level, class, _, connected = GetFriendInfo(i)
-			if(connected) then
-				local friend = _G["FriendsFrameFriendsScrollFrameButton"..(i-off)]
-				if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
-					tmpcol = cc[(locclasses[class] or ""):gsub(" ",""):upper()]
-					if((tmpcol or ""):len() > 0) then
-						tmp = format("|cff%s%s%s, ", tmpcol, name, FONT_COLOR_CODE_CLOSE)
-						tmp = tmp..format("|cff%s%s%d%s ", tmpcol, LEVEL.." ", level, FONT_COLOR_CODE_CLOSE)
-						tmp = tmp..format("|cff%s%s%s ", tmpcol, class, FONT_COLOR_CODE_CLOSE)
-						friend.name:SetText(tmp)
+				for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+					if class == v then class = k end
+				end
+
+				if GetLocale() ~= "enUS" then
+					for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+						if class == v then class = k end
+					end
+				end
+
+				local classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
+				if not classc then return end
+
+				if connected then
+					local nameString = _G[button .. (j - friendOffset) .. "Name"]
+					local r, g, b = GetQuestDifficultyColor(level).r, GetQuestDifficultyColor(level).g, GetQuestDifficultyColor(level).b
+					local Diff = format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
+					if(nameString and name) then
+						nameString:SetText(name .. "|cFFFFFFFF - " .. LEVEL .. "|r " .. Diff .. level)
+						nameString:SetTextColor(classc.r, classc.g, classc.b)
 					end
 				end
 			end
 		end
 	end
-
-	FriendsFrameFriendsScrollFrameScrollBar:HookScript("OnValueChanged", updFunc)
-
-	for k,v in pairs({"FriendsList_Update", "FriendsFrame_UpdateFriends", "FriendsFramePendingScrollFrame_AdjustScroll"}) do
-		hooksecurefunc(v, updFunc)
-	end
+	hooksecurefunc("FriendsList_Update", ColorFriendsList)
+	hooksecurefunc("HybridScrollFrame_Update", ColorFriendsList)
 end
 
 S:AddCallback("Friends", LoadSkin);
