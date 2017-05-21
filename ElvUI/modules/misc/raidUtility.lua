@@ -23,7 +23,7 @@ E.RaidUtility = RU
 --Check if We are Raid Leader or Raid Officer
 local function CheckRaidStatus()
 	local inInstance, instanceType = IsInInstance()
-	if ((IsInGroup() and not IsInRaid()) or UnitIsGroupLeader('player') or UnitIsGroupAssistant("player")) and not (inInstance and (instanceType == "pvp" or instanceType == "arena")) then
+	if ((IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and not (inInstance and (instanceType == "pvp" or instanceType == "arena")) then
 		return true
 	else
 		return false
@@ -32,7 +32,7 @@ end
 
 --Change border when mouse is inside the button
 local function ButtonEnter(self)
-	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))	
+	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
 end
 
 --Change border back to normal when mouse leaves button
@@ -53,7 +53,7 @@ function RU:CreateUtilButton(name, parent, template, width, height, point, relat
 	if(text) then
 		local t = b:CreateFontString(nil, "OVERLAY", b)
 		t:FontTemplate()
-		t:Point("CENTER")
+		t:Point("CENTER", b, "CENTER", 0, -1)
 		t:SetJustifyH("CENTER")
 		t:SetText(text)
 		b:SetFontString(t)
@@ -95,11 +95,12 @@ function RU:Initialize()
 	--Create main frame
 	local RaidUtilityPanel = CreateFrame("Frame", "RaidUtilityPanel", E.UIParent, "SecureHandlerClickTemplate")
 	RaidUtilityPanel:SetTemplate("Transparent")
-	RaidUtilityPanel:Size(230, 145)
+	RaidUtilityPanel:Size(230, 125)
 	RaidUtilityPanel:Point("TOP", E.UIParent, "TOP", -400, 1)
 	RaidUtilityPanel:SetFrameLevel(3)
 	RaidUtilityPanel.toggled = false
 	RaidUtilityPanel:SetFrameStrata("HIGH")
+	E.FrameLocks["RaidUtilityPanel"] = true
 
 	--Show Button
 	self:CreateUtilButton("RaidUtility_ShowButton", E.UIParent, "UIMenuButtonStretchTemplate, SecureHandlerClickTemplate", 136, 18, "TOP", E.UIParent, "TOP", -400, 2, RAID_CONTROL, nil)
@@ -140,6 +141,8 @@ function RU:Initialize()
 		self:StartMoving()
 	end)
 
+	E.FrameLocks["RaidUtility_ShowButton"] = true
+
 	RaidUtility_ShowButton:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
 		local point = self:GetPoint()
@@ -177,20 +180,8 @@ function RU:Initialize()
 		end
 	end)
 
-	--MainTank Button
-	self:CreateUtilButton("MainTankButton", RaidUtilityPanel, "SecureActionButtonTemplate, UIMenuButtonStretchTemplate", (DisbandRaidButton:GetWidth() / 2) - 2, 18, "TOPLEFT", RoleCheckButton, "BOTTOMLEFT", 0, -5, MAINTANK, nil)
-	MainTankButton:SetAttribute("type", "maintank")
-	MainTankButton:SetAttribute("unit", "target")
-	MainTankButton:SetAttribute("action", "toggle")
-
-	--MainAssist Button
-	self:CreateUtilButton("MainAssistButton", RaidUtilityPanel, "SecureActionButtonTemplate, UIMenuButtonStretchTemplate", (DisbandRaidButton:GetWidth() / 2) - 2, 18, "TOPRIGHT", RoleCheckButton, "BOTTOMRIGHT", 0, -5, MAINASSIST, nil)
-	MainAssistButton:SetAttribute("type", "mainassist")
-	MainAssistButton:SetAttribute("unit", "target")
-	MainAssistButton:SetAttribute("action", "toggle")
-
 	--Ready Check button
-	self:CreateUtilButton("ReadyCheckButton", RaidUtilityPanel, "UIMenuButtonStretchTemplate", RoleCheckButton:GetWidth() * 0.75, 18, "TOPLEFT", MainTankButton, "BOTTOMLEFT", 0, -5, READY_CHECK, nil)
+	self:CreateUtilButton("ReadyCheckButton", RaidUtilityPanel, "UIMenuButtonStretchTemplate", RoleCheckButton:GetWidth() * 0.75, 18, "TOPLEFT", RoleCheckButton, "BOTTOMLEFT", 0, -5, READY_CHECK, nil)
 	ReadyCheckButton:SetScript("OnMouseUp", function()
 		if(CheckRaidStatus()) then
 			DoReadyCheck()
@@ -228,7 +219,7 @@ function RU:Initialize()
 	if(CompactRaidFrameManager) then
 		--Reposition/Resize and Reuse the World Marker Button
 		CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:ClearAllPoints()
-		CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:Point("TOPRIGHT", RoleCheckButton, "BOTTOMRIGHT", 0, -28)
+		CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:Point("TOPRIGHT", RoleCheckButton, "BOTTOMRIGHT", 0, -5)
 		CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetParent("RaidUtilityPanel")
 		CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:Height(18)
 		CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:Width(RoleCheckButton:GetWidth() * 0.22)
@@ -249,8 +240,6 @@ function RU:Initialize()
 		local buttons = {
 			"CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton",
 			"DisbandRaidButton",
-			"MainTankButton",
-			"MainAssistButton",
 			"RoleCheckButton",
 			"ReadyCheckButton",
 			"RaidControlButton",
@@ -262,7 +251,7 @@ function RU:Initialize()
 		for i, button in pairs(buttons) do
 			local f = _G[button]
 			_G[button.."Left"]:SetAlpha(0)
-			_G[button.."Middle"]:SetAlpha(0)	
+			_G[button.."Middle"]:SetAlpha(0)
 			_G[button.."Right"]:SetAlpha(0)
 			f:SetHighlightTexture("")
 			f:SetDisabledTexture("")
