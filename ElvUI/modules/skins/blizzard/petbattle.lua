@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule('Skins')
+local S = E:GetModule("Skins")
 
 local pairs, unpack = pairs, unpack
 
@@ -49,12 +49,12 @@ local function LoadSkin()
 
 		infoBar.PetTypeFrame = CreateFrame("Frame", nil, infoBar)
 		infoBar.PetTypeFrame:Size(100, 23)
-		infoBar.PetTypeFrame.text = infoBar.PetTypeFrame:CreateFontString(nil, 'OVERLAY')
+		infoBar.PetTypeFrame.text = infoBar.PetTypeFrame:CreateFontString(nil, "OVERLAY")
 		infoBar.PetTypeFrame.text:FontTemplate()
 		infoBar.PetTypeFrame.text:SetText("")
 
 		infoBar.ActualHealthBar:ClearAllPoints()
-		infoBar.ActualHealthBar:SetTexture(E.media.normTex)
+		infoBar.ActualHealthBar:SetTexture(E["media"].normTex)
 		E:RegisterStatusBar(infoBar.ActualHealthBar)
 
 		infoBar.Name:ClearAllPoints()
@@ -64,16 +64,16 @@ local function LoadSkin()
 		infoBar.FirstAttack:SetTexture("Interface\\PetBattles\\PetBattle-StatIcons")
 
 		if(index == 1) then
-			infoBar.HealthBarBackdrop:Point('TOPLEFT', infoBar.ActualHealthBar, 'TOPLEFT', -E.Border, E.Border)
-			infoBar.HealthBarBackdrop:Point('BOTTOMLEFT', infoBar.ActualHealthBar, 'BOTTOMLEFT', -E.Border, -E.Border)
+			infoBar.HealthBarBackdrop:Point("TOPLEFT", infoBar.ActualHealthBar, "TOPLEFT", -E.Border, E.Border)
+			infoBar.HealthBarBackdrop:Point("BOTTOMLEFT", infoBar.ActualHealthBar, "BOTTOMLEFT", -E.Border, -E.Border)
 
 			f.Ally2.iconPoint = infoBar.IconBackdrop
 			f.Ally3.iconPoint = infoBar.IconBackdrop
 
 			infoBar.ActualHealthBar:SetVertexColor(171/255, 214/255, 116/255)
-			infoBar.ActualHealthBar:Point('BOTTOMLEFT', infoBar.Icon, 'BOTTOMRIGHT', 10, 0)
+			infoBar.ActualHealthBar:Point("BOTTOMLEFT", infoBar.Icon, "BOTTOMRIGHT", 10, 0)
 
-			infoBar.Name:Point('BOTTOMLEFT', infoBar.ActualHealthBar, 'TOPLEFT', 0, 10)
+			infoBar.Name:Point("BOTTOMLEFT", infoBar.ActualHealthBar, "TOPLEFT", 0, 10)
 
 			infoBar.PetTypeFrame:Point("BOTTOMRIGHT", infoBar.HealthBarBackdrop, "TOPRIGHT", 0, 4)
 			infoBar.PetTypeFrame.text:Point("RIGHT")
@@ -82,16 +82,16 @@ local function LoadSkin()
 			infoBar.FirstAttack:SetTexCoord(infoBar.SpeedIcon:GetTexCoord())
 			infoBar.FirstAttack:SetVertexColor(0.1, 0.1, 0.1 ,1)
 		else
-			infoBar.HealthBarBackdrop:Point('TOPRIGHT', infoBar.ActualHealthBar, 'TOPRIGHT', E.Border, E.Border)
-			infoBar.HealthBarBackdrop:Point('BOTTOMRIGHT', infoBar.ActualHealthBar, 'BOTTOMRIGHT', E.Border, -E.Border)
+			infoBar.HealthBarBackdrop:Point("TOPRIGHT", infoBar.ActualHealthBar, "TOPRIGHT", E.Border, E.Border)
+			infoBar.HealthBarBackdrop:Point("BOTTOMRIGHT", infoBar.ActualHealthBar, "BOTTOMRIGHT", E.Border, -E.Border)
 
 			f.Enemy2.iconPoint = infoBar.IconBackdrop
 			f.Enemy3.iconPoint = infoBar.IconBackdrop
 
 			infoBar.ActualHealthBar:SetVertexColor(196/255, 30/255, 60/255)
-			infoBar.ActualHealthBar:Point('BOTTOMRIGHT', infoBar.Icon, 'BOTTOMLEFT', -10, 0)
+			infoBar.ActualHealthBar:Point("BOTTOMRIGHT", infoBar.Icon, "BOTTOMLEFT", -10, 0)
 
-			infoBar.Name:Point('BOTTOMRIGHT', infoBar.ActualHealthBar, 'TOPRIGHT', 0, 10)
+			infoBar.Name:Point("BOTTOMRIGHT", infoBar.ActualHealthBar, "TOPRIGHT", 0, 10)
 
 			infoBar.PetTypeFrame:Point("BOTTOMLEFT",infoBar.HealthBarBackdrop, "TOPLEFT", 2, 4)
 			infoBar.PetTypeFrame.text:Point("LEFT")
@@ -102,7 +102,7 @@ local function LoadSkin()
 		end
 
 		infoBar.HealthText:ClearAllPoints()
-		infoBar.HealthText:Point('CENTER', infoBar.HealthBarBackdrop, 'CENTER')
+		infoBar.HealthText:Point("CENTER", infoBar.HealthBarBackdrop, "CENTER")
 
 		infoBar.PetType:ClearAllPoints()
 		infoBar.PetType:SetAllPoints(infoBar.PetTypeFrame)
@@ -113,11 +113,11 @@ local function LoadSkin()
 		infoBar.Level:FontTemplate(nil, 22, "OUTLINE")
 		infoBar.Level:SetTextColor(1, 1, 1)
 		infoBar.Level:ClearAllPoints()
-		infoBar.Level:Point('BOTTOMLEFT', infoBar.Icon, 'BOTTOMLEFT', 2, 2)
+		infoBar.Level:Point("BOTTOMLEFT", infoBar.Icon, "BOTTOMLEFT", 2, 2)
 
 		if(infoBar.SpeedIcon) then
 			infoBar.SpeedIcon:ClearAllPoints()
-			infoBar.SpeedIcon:Point("CENTER") -- to set
+			infoBar.SpeedIcon:Point("CENTER")
 			infoBar.SpeedIcon:SetAlpha(0)
 			infoBar.SpeedUnderlay:SetAlpha(0)
 		end
@@ -259,34 +259,34 @@ local function LoadSkin()
 		infoBar:Size(40)
 		infoBar:CreateBackdrop()
 		infoBar:ClearAllPoints()
-	
+
 		infoBar.bg = CreateFrame("Frame", nil, infoBar)
-		infoBar.bg:SetFrameLevel(infoBar.bg:GetFrameLevel() - 2)
-		infoBar.bg:Point("TOPLEFT", -2, 2)
-		infoBar.bg:Point("BOTTOMRIGHT", 2, -2)
 		infoBar.bg:SetTemplate()
+		infoBar.bg:Point("TOPLEFT", E.PixelMode and -2 or -3, E.PixelMode and 2 or 3)
+		infoBar.bg:Point("BOTTOMRIGHT", E.PixelMode and 2 or 3, -(E.PixelMode and 2 or 3))
+		infoBar.bg:SetFrameLevel(infoBar.bg:GetFrameLevel() - 2)
 
 		hooksecurefunc(infoBar.BorderAlive, "SetVertexColor", function(_, r, g, b)
 			infoBar.bg:SetBackdropBorderColor(r, g, b);
 		end);
 
-		infoBar.healthBarWidth = 42
+		infoBar.healthBarWidth = E.PixelMode and 42 or 44
 		infoBar.ActualHealthBar:ClearAllPoints()
-		infoBar.ActualHealthBar:Point("TOPLEFT", infoBar.backdrop, 'BOTTOMLEFT', 0, -4)
+		infoBar.ActualHealthBar:Point("TOPLEFT", infoBar.backdrop, "BOTTOMLEFT", 0, -4)
 
 		infoBar.HealthBarBackdrop = CreateFrame("Frame", nil, infoBar)
 		infoBar.HealthBarBackdrop:SetFrameLevel(infoBar:GetFrameLevel() - 1)
 		infoBar.HealthBarBackdrop:SetTemplate("Default")
 		infoBar.HealthBarBackdrop:Width(infoBar.healthBarWidth + (E.Border*2))
-		infoBar.HealthBarBackdrop:Point('TOPLEFT', infoBar.ActualHealthBar, 'TOPLEFT', -E.Border, E.Border)
-		infoBar.HealthBarBackdrop:Point('BOTTOMLEFT', infoBar.ActualHealthBar, 'BOTTOMLEFT', -E.Border, -E.Spacing)
+		infoBar.HealthBarBackdrop:Point("TOPLEFT", infoBar.ActualHealthBar, "TOPLEFT", E.PixelMode and -E.Border or 0, E.PixelMode and E.Border or 0)
+		infoBar.HealthBarBackdrop:Point("BOTTOMRIGHT", infoBar.ActualHealthBar, "BOTTOMRIGHT", E.PixelMode and 1 or 0, E.PixelMode and -E.Spacing or 1)
 	end
 
 	f.Ally2:Point("TOPRIGHT", f.Ally2.iconPoint, "TOPLEFT", -10, -2)
-	f.Ally3:Point('TOPRIGHT', f.Ally2, 'TOPLEFT', -13, 0)
+	f.Ally3:Point("TOPRIGHT", f.Ally2, "TOPLEFT", -13, 0)
 
 	f.Enemy2:Point("TOPLEFT", f.Enemy2.iconPoint, "TOPRIGHT", 10, -2)
-	f.Enemy3:Point('TOPLEFT', f.Enemy2, 'TOPRIGHT', 13, 0)
+	f.Enemy3:Point("TOPLEFT", f.Enemy2, "TOPRIGHT", 13, 0)
 
 	-- Pet Battle Action Bar
 	local bar = CreateFrame("Frame", "ElvUIPetBattleActionBar", f)
@@ -295,18 +295,18 @@ local function LoadSkin()
 	bar:SetTemplate("Transparent")
 	bar:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 4)
 	bar:SetFrameLevel(0)
-	bar:SetFrameStrata('BACKGROUND')
+	bar:SetFrameStrata("BACKGROUND")
 	if(bar.backdropTexture) then
-		bar.backdropTexture:SetDrawLayer('BACKGROUND', 0)
+		bar.backdropTexture:SetDrawLayer("BACKGROUND", 0)
 	end
-	bar:SetScript('OnShow', function(self)
+	bar:SetScript("OnShow", function(self)
 		if(not self.initialShow) then
 			self.initialShow = true;
 			return;
 		end
 
 		if(self.backdropTexture) then
-			self.backdropTexture:SetDrawLayer('BACKGROUND', 1)
+			self.backdropTexture:SetDrawLayer("BACKGROUND", 1)
 		end
 	end)
 
@@ -341,7 +341,7 @@ local function LoadSkin()
 	bf.xpBar:Point("BOTTOM", bf.TurnTimer.SkipButton, "TOP", 0, E.PixelMode and 0 or 3)
 	bf.xpBar:SetScript("OnShow", function(self)
 		self:StripTextures()
-		self:SetStatusBarTexture(E.media.normTex) 
+		self:SetStatusBarTexture(E["media"].normTex) 
 	end)
 	E:RegisterStatusBar(bf.xpBar)
 
@@ -352,14 +352,14 @@ local function LoadSkin()
 		self:SetNormalTexture("")
 		self.Icon:SetTexCoord(unpack(E.TexCoords))
 		self.Icon:SetParent(self.backdrop)
-		self.Icon:SetDrawLayer('BORDER')
+		self.Icon:SetDrawLayer("BORDER")
 		self.checked = true
 		self:StyleButton()
 		self.SelectedHighlight:SetAlpha(0)
 		self.pushed:SetInside(self.backdrop)
 		self.hover:SetInside(self.backdrop)
-		self:SetFrameStrata('LOW')
-		self.backdrop:SetFrameStrata('LOW')
+		self:SetFrameStrata("LOW")
+		self.backdrop:SetFrameStrata("LOW")
 	end
 
 	hooksecurefunc("PetBattleFrame_UpdateActionBarLayout", function(self)
@@ -394,7 +394,7 @@ local function LoadSkin()
 		local pet = bf.PetSelectionFrame["Pet"..i]
 
 		pet:CreateBackdrop()
-		pet.backdrop:SetOutside(pet.HealthBarBG)
+		pet.backdrop:SetAllPoints(pet.HealthBarBG)
 
 		pet.bg = CreateFrame("Frame", nil, pet)
 		pet.bg:CreateBackdrop()
@@ -404,21 +404,21 @@ local function LoadSkin()
 		pet.bg2 = CreateFrame("Frame", nil, pet)
 		pet.bg2:CreateBackdrop("Transparent")
 		pet.bg2:Point("TOPLEFT", pet.Icon, 0, 0)
-		pet.bg2:Point("BOTTOMRIGHT", pet.Icon, 130, 0)
+		pet.bg2:Point("BOTTOMRIGHT", pet.Icon, E.PixelMode and 130 or 131, 0)
 
 		pet.HealthBarBG:SetAlpha(0)
 		pet.HealthBarBG:ClearAllPoints()
-		pet.HealthBarBG:Point("BOTTOMLEFT", pet.Icon, 30, 0)
+		pet.HealthBarBG:Point("BOTTOMLEFT", pet.Icon, E.PixelMode and 31 or 32, 0)
 
 		pet.ActualHealthBar:ClearAllPoints()
-		pet.ActualHealthBar:Point("BOTTOMLEFT", pet.Icon, 30, 0)
-		pet.ActualHealthBar:SetTexture(E.media.normTex)
+		pet.ActualHealthBar:Point("BOTTOMLEFT", pet.Icon, E.PixelMode and 31 or 32, 0)
+		pet.ActualHealthBar:SetTexture(E["media"].normTex)
 		E:RegisterStatusBar(pet.ActualHealthBar)
 
-		pet.MouseoverHighlight:SetTexture(1, 1, 1, 0.30)
+		pet.MouseoverHighlight:SetTexture(1, 1, 1, 0.40)
 		pet.MouseoverHighlight:ClearAllPoints()
-		pet.MouseoverHighlight:Point("TOPLEFT", pet.Icon, 30, 0)
-		pet.MouseoverHighlight:Point("BOTTOMRIGHT", pet.Icon, 130, 11)
+		pet.MouseoverHighlight:Point("TOPLEFT", pet.Icon, E.PixelMode and 31 or 32, 0)
+		pet.MouseoverHighlight:Point("BOTTOMRIGHT", pet.Icon, 131, E.PixelMode and 11 or 12)
 
 		pet.Icon:SetTexCoord(unpack(E.TexCoords))
 
@@ -432,15 +432,15 @@ local function LoadSkin()
 		pet.Level:FontTemplate(nil, 12, "OUTLINE")
 		pet.Level:SetTextColor(1, 1, 1)
 
-		pet.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
+		pet.SelectedTexture:SetTexture(0.1, 0.9, 0.5, 0.20)
 		pet.SelectedTexture:ClearAllPoints()
-		pet.SelectedTexture:Point("TOPLEFT", pet.Icon, 30, 0)
-		pet.SelectedTexture:Point("BOTTOMRIGHT", pet.Icon, 130, 11)
+		pet.SelectedTexture:Point("TOPLEFT", pet.Icon, E.PixelMode and 31 or 32, 0)
+		pet.SelectedTexture:Point("BOTTOMRIGHT", pet.Icon, 131, E.PixelMode and 11 or 12)
 
 		pet.PetModel:CreateBackdrop("Transparent")
-		pet.PetModel:Size(160, 150)
+		pet.PetModel:Size(E.PixelMode and 159 or 160, 150)
 		pet.PetModel:ClearAllPoints()
-		pet.PetModel:Point("TOPLEFT", pet.Icon, 0, 153)
+		pet.PetModel:Point("TOPLEFT", pet.Icon, 0, E.PixelMode and 154 or 157)
 
 		pet.HealthDivider:SetAlpha(0)
 		pet.Framing:SetAlpha(0)

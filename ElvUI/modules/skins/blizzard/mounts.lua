@@ -218,7 +218,11 @@ local function LoadSkin()
 
 	PetJournalLoadoutBorder:StripTextures()
 
-	PetJournalLoadoutBorderSlotHeaderText:Point("CENTER", PetJournalLoadoutBorderTop, "TOP", 0, 7)
+	PetJournalLoadoutBorderSlotHeaderText:Point("CENTER", PetJournalLoadoutBorderTop, "TOP", 0, 11)
+
+	PetJournalLoadoutPet1:Point("TOP", 0, 3)
+	PetJournalLoadoutPet2:Point("TOP", 0, -108)
+	PetJournalLoadoutPet3:Point("TOP", 0, -219)
 
 	for i = 1, 3 do
 		local loadoutPet = _G["PetJournalLoadoutPet"..i]
@@ -231,8 +235,10 @@ local function LoadSkin()
 
 		loadoutPet:StripTextures()
 		loadoutPet:CreateBackdrop("Transparent")
-		loadoutPet.backdrop:SetAllPoints()
-		loadoutPet.petTypeIcon:SetPoint("BOTTOMLEFT", 2, 2)
+		loadoutPet.backdrop:Point("TOPLEFT", -2, 2)
+		loadoutPet.backdrop:Point("BOTTOMRIGHT", 5, 0)
+
+		loadoutPet.petTypeIcon:SetPoint("BOTTOMLEFT", 5, 5)
 		loadoutPet.dragButton:SetOutside(loadoutPetIcon)
 		loadoutPet.dragButton:SetFrameLevel(loadoutPet.dragButton:GetFrameLevel() + 1)
 		loadoutPet.dragButton:StyleButton()
