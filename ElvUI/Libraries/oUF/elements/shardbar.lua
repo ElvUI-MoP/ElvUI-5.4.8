@@ -21,16 +21,16 @@ oUF.colors.ShardBar = {
 local Update = function(self, event, unit, powerType)
 	local wsb = self.ShardBar
 	if(wsb.PreUpdate) then wsb:PreUpdate(unit) end
-	
+
 	if UnitHasVehicleUI("player") then
 		wsb:Hide()
 	else
 		wsb:Show()
 	end
-	
+
 	local spec = GetSpecialization()
 	if spec then
-		if not wsb:IsShown() then 
+		if not wsb:IsShown() then
 			wsb:Show()
 		end
 
@@ -48,7 +48,7 @@ local Update = function(self, event, unit, powerType)
 			local numEmbers = power / MAX_POWER_PER_EMBER
 			local numBars = floor(maxPower / MAX_POWER_PER_EMBER)
 			wsb.number = numBars
-			
+
 			-- bar unavailable
 			if numBars == 3 then
 				wsb[4]:Hide()
@@ -64,14 +64,14 @@ local Update = function(self, event, unit, powerType)
 			local numShards = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
 			local maxShards = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
 			wsb.number = maxShards
-			
+
 			-- bar unavailable
 			if maxShards == 3 then
 				wsb[4]:Hide()
 			else
 				wsb[4]:Show()
 			end
-			
+
 			for i = 1, maxShards do
 				wsb[i]:SetMinMaxValues(0, 1)
 				if i <= numShards then
@@ -83,17 +83,17 @@ local Update = function(self, event, unit, powerType)
 		elseif spec == SPEC_WARLOCK_DEMONOLOGY then
 			local power = UnitPower("player", SPELL_POWER_DEMONIC_FURY)
 			local maxPower = UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY)
-			
+
 			wsb.number = 1
 			wsb[2]:Hide()
 			wsb[3]:Hide()
 			wsb[4]:Hide()
-			
+
 			wsb[1]:SetMinMaxValues(0, maxPower)
 			wsb[1]:SetValue(power)
 		end
 	else
-		if wsb:IsShown() then 
+		if wsb:IsShown() then
 			wsb:Hide()
 		end
 	end
@@ -119,7 +119,7 @@ local function Enable(self)
 
 		self:RegisterEvent('UNIT_POWER', Path)
 		self:RegisterEvent("PLAYER_TALENT_UPDATE", Path)
-		
+
 		for i = 1, 4 do
 			if not wsb[i]:GetStatusBarTexture() then
 				Point:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
@@ -127,13 +127,13 @@ local function Enable(self)
 
 			wsb[i]:SetFrameLevel(wsb:GetFrameLevel() + 1)
 			wsb[i]:GetStatusBarTexture():SetHorizTile(false)
-			
+
 			if wsb[i].bg then
 				wsb[i].bg:SetAlpha(0.2)
 				wsb[i].bg:SetAllPoints()
 			end
 		end
-		
+
 		wsb.number = 4
 
 		return true

@@ -48,7 +48,6 @@ local mediaList = lib.MediaList
 local mediaTable = lib.MediaTable
 local overrideMedia = lib.OverrideMedia
 
-
 -- create mediatype constants
 lib.MediaType.BACKGROUND	= "background"			-- background textures
 lib.MediaType.BORDER		= "border"				-- border textures
@@ -90,55 +89,54 @@ if not lib.MediaTable.font then lib.MediaTable.font = {} end
 local SML_MT_font = lib.MediaTable.font
 if locale == "koKR" then
 	LOCALE_MASK = lib.LOCALE_BIT_koKR
---
+
 	SML_MT_font["굵은 글꼴"]		= [[Fonts\2002B.TTF]]
 	SML_MT_font["기본 글꼴"]		= [[Fonts\2002.TTF]]
 	SML_MT_font["데미지 글꼴"]		= [[Fonts\K_Damage.TTF]]
 	SML_MT_font["퀘스트 글꼴"]		= [[Fonts\K_Pagetext.TTF]]
---
+
 	lib.DefaultMedia["font"] = "기본 글꼴" -- someone from koKR please adjust if needed
---
+
 elseif locale == "zhCN" then
 	LOCALE_MASK = lib.LOCALE_BIT_zhCN
---
+
 	SML_MT_font["伤害数字"]		= [[Fonts\ARKai_C.ttf]]
 	SML_MT_font["默认"]			= [[Fonts\ARKai_T.ttf]]
 	SML_MT_font["聊天"]			= [[Fonts\ARHei.ttf]]
---
+
 	lib.DefaultMedia["font"] = "默认" -- someone from zhCN please adjust if needed
---
+
 elseif locale == "zhTW" then
 	LOCALE_MASK = lib.LOCALE_BIT_zhTW
---
+
 	SML_MT_font["提示訊息"]		= [[Fonts\bHEI00M.ttf]]
 	SML_MT_font["聊天"]			= [[Fonts\bHEI01B.ttf]]
 	SML_MT_font["傷害數字"]		= [[Fonts\bKAI00M.ttf]]
 	SML_MT_font["預設"]			= [[Fonts\bLEI00D.ttf]]
---
+
 	lib.DefaultMedia["font"] = "預設" -- someone from zhTW please adjust if needed
 
 elseif locale == "ruRU" then
 	LOCALE_MASK = lib.LOCALE_BIT_ruRU
---
+
 	SML_MT_font["Arial Narrow"]			= [[Fonts\ARIALN.TTF]]
 	SML_MT_font["Friz Quadrata TT"]		= [[Fonts\FRIZQT__.TTF]]
 	SML_MT_font["Morpheus"]				= [[Fonts\MORPHEUS.TTF]]
 	SML_MT_font["Nimrod MT"]			= [[Fonts\NIM_____.ttf]]
 	SML_MT_font["Skurri"]				= [[Fonts\SKURRI.TTF]]
---
+
 	lib.DefaultMedia.font = "Friz Quadrata TT"
---
+
 else
 	LOCALE_MASK = lib.LOCALE_BIT_western
 	locale_is_western = true
---
+
 	SML_MT_font["Arial Narrow"]			= [[Fonts\ARIALN.TTF]]
 	SML_MT_font["Friz Quadrata TT"]		= [[Fonts\FRIZQT__.TTF]]
 	SML_MT_font["Morpheus"]				= [[Fonts\MORPHEUS.TTF]]
 	SML_MT_font["Skurri"]				= [[Fonts\SKURRI.TTF]]
---
+
 	lib.DefaultMedia.font = "Friz Quadrata TT"
---
 end
 
 -- STATUSBAR

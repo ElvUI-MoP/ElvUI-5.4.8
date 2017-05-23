@@ -109,8 +109,6 @@ local function SerializeValue(v, res, nres)
 	return nres
 end
 
-
-
 local serializeTbl = { "^1" }	-- "^1" = Hi, I'm data serialized by AceSerializer protocol rev 1
 
 --- Serialize the data passed into the function.
@@ -255,7 +253,6 @@ function AceSerializer:Deserialize(str)
 
 	return pcall(DeserializeValue, iter)
 end
-
 
 ----------------------------------------
 -- Base library stuff

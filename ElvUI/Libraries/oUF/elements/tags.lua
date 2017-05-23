@@ -564,7 +564,7 @@ local Tag = function(self, fs, tagstr)
 	end
 
 	fs.parent = self
-	
+
 	for escapeSequence, replacement in pairs(escapeSequences) do
 		while tagstr:find(escapeSequence) do
 			tagstr = tagstr:gsub(escapeSequence, replacement)

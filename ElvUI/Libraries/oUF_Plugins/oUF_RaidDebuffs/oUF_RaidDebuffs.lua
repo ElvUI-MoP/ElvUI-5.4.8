@@ -261,7 +261,7 @@ local function Update(self, event, unit)
 	local _priority, priority = 0, 0
 	local _stackThreshold = 0
 
-	local isCharmed = UnitIsCharmed(unit)		
+	local isCharmed = UnitIsCharmed(unit)
 
 	local canAttack = UnitCanAttack("player", unit)
 
@@ -335,7 +335,7 @@ local function Disable(self)
 	self:UnregisterEvent("CHARACTER_POINTS_CHANGED", CheckSpec)
 	if(playerClass == "DRUID") then
 		self:UnregisterEvent("SPELLS_CHANGED", CheckSymbiosis)
-	end	
+	end
 end
 
 oUF:AddElement("RaidDebuffs", Update, Enable, Disable)

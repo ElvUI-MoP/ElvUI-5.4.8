@@ -352,5 +352,3 @@ lib.eventFrame:SetScript('OnEvent', function(_, event)
 		end
 	end
 end)
-
-

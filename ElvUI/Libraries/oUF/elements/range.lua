@@ -22,7 +22,6 @@ local OnRangeFrame
 
 local friendlySpells, resSpells, longEnemySpells, enemySpells, petSpells = {}, {}, {}, {}, {}
 
-
 local function AddSpell(table, spellID)
 	local name = GetSpellInfo(spellID)
 	if name then
@@ -119,7 +118,7 @@ local function friendlyIsInRange(unit)
 	if CheckInteractDistance(unit, 1) then
 		return true
 	end
-	
+
 	if UnitIsDeadOrGhost(unit) and #resSpells > 0 then
 		for _, name in ipairs(resSpells) do
 			if IsSpellInRange(name, unit) == 1 then

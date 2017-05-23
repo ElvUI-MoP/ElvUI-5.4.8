@@ -63,7 +63,7 @@ local Enable = function(self, unit)
 		-- The quest log uses PARTY_MEMBER_{ENABLE,DISABLE} to handle updating of
 		-- party members overlapping quests. This will probably be enough to handle
 		-- model updating.
-		--
+
 		-- DISABLE isn"t used as it fires when we most likely don"t have the
 		-- information we want.
 		if(unit == "party") then

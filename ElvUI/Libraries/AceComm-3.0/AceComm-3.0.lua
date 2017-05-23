@@ -99,7 +99,7 @@ function AceComm:SendCommMessage(prefix, text, distribution, target, prio, callb
 			return callbackFn(callbackArg, sent, textlen)
 		end
 	end
-	
+
 	local forceMultipart
 	if match(text, "^[\001-\009]") then -- 4.1+: see if the first character is a control character
 		-- we need to escape the first character with a \004
@@ -135,7 +135,6 @@ function AceComm:SendCommMessage(prefix, text, distribution, target, prio, callb
 	end
 end
 
-
 ----------------------------------------
 -- Message receiving
 ----------------------------------------
@@ -151,10 +150,10 @@ do
 			end
 			return t
 		end
-		
+
 		return {}
 	end
-	
+
 	local function lostdatawarning(prefix,sender,where)
 		DEFAULT_CHAT_FRAME:AddMessage(MAJOR..": Warning: lost network data regarding '"..tostring(prefix).."' from '"..tostring(sender).."' (in "..where..")")
 	end
@@ -162,14 +161,14 @@ do
 	function AceComm:OnReceiveMultipartFirst(prefix, message, distribution, sender)
 		local key = prefix.."\t"..distribution.."\t"..sender	-- a unique stream is defined by the prefix + distribution + sender
 		local spool = AceComm.multipart_spool
-		
+
 		--[[
 		if spool[key] then 
 			lostdatawarning(prefix,sender,"First")
 			-- continue and overwrite
 		end
 		--]]
-		
+
 		spool[key] = message  -- plain string for now
 	end
 
@@ -177,7 +176,7 @@ do
 		local key = prefix.."\t"..distribution.."\t"..sender	-- a unique stream is defined by the prefix + distribution + sender
 		local spool = AceComm.multipart_spool
 		local olddata = spool[key]
-		
+
 		if not olddata then
 			--lostdatawarning(prefix,sender,"Next")
 			return
@@ -198,14 +197,14 @@ do
 		local key = prefix.."\t"..distribution.."\t"..sender	-- a unique stream is defined by the prefix + distribution + sender
 		local spool = AceComm.multipart_spool
 		local olddata = spool[key]
-		
+
 		if not olddata then
 			--lostdatawarning(prefix,sender,"End")
 			return
 		end
 
 		spool[key] = nil
-		
+
 		if type(olddata) == "table" then
 			-- if we've received a "next", the spooled data will be a table for rapid & garbage-free tconcat
 			tinsert(olddata, message)
@@ -217,11 +216,6 @@ do
 		end
 	end
 end
-
-
-
-
-
 
 ----------------------------------------
 -- Embed CallbackHandler
@@ -266,7 +260,6 @@ AceComm.frame = AceComm.frame or CreateFrame("Frame", "AceComm30Frame")
 AceComm.frame:SetScript("OnEvent", OnEvent)
 AceComm.frame:UnregisterAllEvents()
 AceComm.frame:RegisterEvent("CHAT_MSG_ADDON")
-
 
 ----------------------------------------
 -- Base library stuff

@@ -126,7 +126,7 @@ local Enable = function(self, unit)
 
 		-- oUF leaves the vehicle events registered on the player frame, so
 		-- buffs and such are correctly updated when entering/exiting vehicles.
-		--
+
 		-- This however makes the code also show/hide the RuneFrame.
 		RuneFrame.Show = RuneFrame.Hide
 		RuneFrame:Hide()

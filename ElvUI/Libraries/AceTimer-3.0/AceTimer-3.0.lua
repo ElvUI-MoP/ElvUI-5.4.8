@@ -190,7 +190,6 @@ function AceTimer:TimeLeft(id)
 	return timer:GetDuration() - timer:GetElapsed()
 end
 
-
 -- ---------------------------------------------------------------------
 -- Upgrading
 

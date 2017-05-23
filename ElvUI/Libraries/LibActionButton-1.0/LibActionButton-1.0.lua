@@ -97,7 +97,6 @@ local ShowOverlayGlow, HideOverlayGlow, GetOverlayGlow, OverlayGlowAnimOutFinish
 
 local InitializeEventHandler, OnEvent, ForAllButtons, OnUpdate
 
-
 --[[
 local SPELL_POWER_HOLY_POWER = SPELL_POWER_HOLY_POWER;
 local HAND_OF_LIGHT = GetSpellInfo(90174);
@@ -528,7 +527,7 @@ function Generic:OnUpdate(elapsed)
 	self.lastupdate = (self.lastupdate or 0) + elapsed;
 	if (self.lastupdate < .2) then return end
 	self.lastupdate = 0
-	
+
 	local isDragKeyDown
 	if GetModifiedClick("PICKUPACTION") == 'ALT' then
 		isDragKeyDown = IsAltKeyDown()
@@ -537,7 +536,7 @@ function Generic:OnUpdate(elapsed)
 	elseif GetModifiedClick("PICKUPACTION") == 'SHIFT' then
 		isDragKeyDown = IsShiftKeyDown()
 	end
-	
+
 	if isDragKeyDown and (self.clickState == 'AnyDown' or self.clickState == nil) then
 		self.clickState = 'AnyUp'
 		self:RegisterForClicks(self.clickState)

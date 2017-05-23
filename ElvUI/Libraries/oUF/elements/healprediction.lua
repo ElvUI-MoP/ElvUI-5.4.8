@@ -38,7 +38,6 @@ local function Update(self, event, unit)
 			overAbsorb = true
 		end
 
-
 		if(allIncomingHeal > myCurrentHealAbsorb) then
 			totalAbsorb = max(0, maxHealth - (health - myCurrentHealAbsorb + allIncomingHeal))
 		else

@@ -27,7 +27,7 @@ local function Update(self, event, unit)
 			pb[i]:SetAlpha(.2)
 		end
 	end
-	
+
 	local spec = GetSpecialization()
 	local level = UnitLevel("player")
 
@@ -39,11 +39,11 @@ local function Update(self, event, unit)
 		self:UnregisterEvent("UNIT_DISPLAYPOWER", Update)
 		self:UnregisterEvent("UNIT_POWER", Update)
 		pb:Hide()
-	end	
+	end
 
 	if(pb.PostUpdate) then
 		pb:PostUpdate()
-	end	
+	end
 end
 
 local ForceUpdate = function(element)
@@ -55,7 +55,7 @@ local function Enable(self, unit)
 	if pb and unit == "player" then
 		pb.__owner = self
 		pb.ForceUpdate = ForceUpdate
-		
+
 		self:RegisterEvent("PLAYER_ENTERING_WORLD", Update)
 		self:RegisterEvent("PLAYER_LEVEL_UP", Update)
 		self:RegisterEvent("PLAYER_TALENT_UPDATE", Update)
@@ -66,12 +66,12 @@ local function Enable(self, unit)
 			if not pb[i]:GetStatusBarTexture() then
 				pb[i]:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
 			end
-			
+
 			pb[i]:SetStatusBarColor(unpack(oUF.colors.shadowOrbs))
 			pb[i]:SetFrameLevel(pb:GetFrameLevel() + 1)
 			pb[i]:GetStatusBarTexture():SetHorizTile(false)
 		end
-		
+
 		return true
 	end
 end

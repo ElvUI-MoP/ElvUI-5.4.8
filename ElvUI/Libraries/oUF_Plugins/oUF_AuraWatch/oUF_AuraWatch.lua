@@ -161,7 +161,7 @@ local function formatTime(s, threshold)
 	elseif s >= threshold then
 		return floor(s)
 	end
-	
+
 	return format("%.1f", s)
 end
 
@@ -190,7 +190,6 @@ local function updateText(self, elapsed)
 		end
 	end
 end
-
 
 local function resetIcon(icon, frame, count, duration, remaining)
 	if icon.onlyShowMissing then

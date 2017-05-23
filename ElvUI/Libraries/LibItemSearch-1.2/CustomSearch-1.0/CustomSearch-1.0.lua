@@ -95,7 +95,6 @@ function Lib:Match(search)
 	return not failed
 end
 
-
 --[[ Filtering ]]--
 
 function Lib:Filter(tag, operator, search)
@@ -127,13 +126,12 @@ function Lib:UseFilter(filter, operator, search)
 	end
 end
 
-
 --[[ Utilities ]]--
 
 function Lib:Find(search, ...)
 	for i = 1, select('#', ...) do
 		local text = select(i, ...)
-		
+
 		if text and self:Clean(text):find(search) then
 			return true
 		end
@@ -172,7 +170,6 @@ function Lib:Compare(op, a, b)
 
 	return a == b
 end
-
 
 --[[ Localization ]]--
 

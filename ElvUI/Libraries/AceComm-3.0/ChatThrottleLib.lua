@@ -53,8 +53,6 @@ local ChatThrottleLib = _G.ChatThrottleLib
 
 ChatThrottleLib.version = CTL_VERSION
 
-
-
 ------------------ TWEAKABLES -----------------
 
 ChatThrottleLib.MAX_CPS = 800			  -- 2000 seems to be safe if NOTHING ELSE is happening. let's call it 800.
@@ -63,7 +61,6 @@ ChatThrottleLib.MSG_OVERHEAD = 40		-- Guesstimate overhead for sending a message
 ChatThrottleLib.BURST = 4000				-- WoW's server buffer seems to be about 32KB. 8KB should be safe, but seen disconnects on _some_ servers. Using 4KB now.
 
 ChatThrottleLib.MIN_FPS = 20				-- Reduce output CPS to half (and don't burst) if FPS drops below this value
-
 
 local setmetatable = setmetatable
 local table_remove = table.remove
@@ -77,7 +74,6 @@ local GetFramerate = GetFramerate
 local strlower = string.lower
 local unpack,type,pairs,wipe = unpack,type,pairs,wipe
 local UnitInRaid,UnitInParty = UnitInRaid,UnitInParty
-
 
 -----------------------------------------------------------------------
 -- Double-linked ring implementation
@@ -115,8 +111,6 @@ function Ring:Remove(obj)
 	end
 end
 
-
-
 -----------------------------------------------------------------------
 -- Recycling bin for pipes 
 -- A pipe is a plain integer-indexed queue of messages
@@ -139,9 +133,6 @@ local function NewPipe()
 	return {}
 end
 
-
-
-
 -----------------------------------------------------------------------
 -- Recycling bin for messages
 
@@ -163,11 +154,9 @@ local function NewMsg()
 	return {}
 end
 
-
 -----------------------------------------------------------------------
 -- ChatThrottleLib:Init
 -- Initialize queues, set up frame for OnUpdate, etc
-
 
 function ChatThrottleLib:Init()	
 
@@ -190,7 +179,6 @@ function ChatThrottleLib:Init()
 	if not self.nTotalSent then
 		self.nTotalSent = 0 -- v5
 	end
-
 
 	-- Set up a frame to get OnUpdate events
 	if not self.Frame then
@@ -220,7 +208,6 @@ function ChatThrottleLib:Init()
 	self.nBypass = 0
 end
 
-
 -----------------------------------------------------------------------
 -- ChatThrottleLib.Hook_SendChatMessage / .Hook_SendAddonMessage
 
@@ -245,8 +232,6 @@ function ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destinati
 	self.avail = self.avail - size
 	self.nBypass = self.nBypass + size	-- just a statistic
 end
-
-
 
 -----------------------------------------------------------------------
 -- ChatThrottleLib:UpdateAvail
@@ -277,7 +262,6 @@ function ChatThrottleLib:UpdateAvail()
 
 	return avail
 end
-
 
 -----------------------------------------------------------------------
 -- Despooling logic
@@ -321,7 +305,6 @@ function ChatThrottleLib:Despool(Prio)
 	end
 end
 
-
 function ChatThrottleLib.OnEvent(this,event)
 	-- v11: We know that the rate limiter is touchy after login. Assume that it's touchy after zoning, too.
 	local self = ChatThrottleLib
@@ -330,7 +313,6 @@ function ChatThrottleLib.OnEvent(this,event)
 		self.avail = 0
 	end
 end
-
 
 function ChatThrottleLib.OnUpdate(this,delay)
 	local self = ChatThrottleLib
@@ -382,9 +364,6 @@ function ChatThrottleLib.OnUpdate(this,delay)
 	end
 
 end
-
-
-
 
 -----------------------------------------------------------------------
 -- Spooling logic
@@ -450,7 +429,6 @@ function ChatThrottleLib:SendChatMessage(prio, prefix,   text, chattype, languag
 	self:Enqueue(prio, queueName or (prefix..(chattype or "SAY")..(destination or "")), msg)
 end
 
-
 function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
 	if not self or not prio or not prefix or not text or not chattype or not self.Prio[prio] then
 		error('Usage: ChatThrottleLib:SendAddonMessage("{BULK||NORMAL||ALERT}", "prefix", "text", "chattype"[, "target"])', 2)
@@ -503,9 +481,6 @@ function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, 
 	self:Enqueue(prio, queueName or (prefix..chattype..(target or "")), msg)
 end
 
-
-
-
 -----------------------------------------------------------------------
 -- Get the ball rolling!
 
@@ -520,5 +495,3 @@ if(WOWB_VER) then
 	ChatThrottleLib.Frame:RegisterEvent("CHAT_MSG_SAY")
 end
 ]]
-
-

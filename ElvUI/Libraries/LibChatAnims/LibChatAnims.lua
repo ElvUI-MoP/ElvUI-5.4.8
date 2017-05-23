@@ -188,4 +188,3 @@ FCF_StopAlertFlash = function(chatFrame)
 	FCFTab_UpdateAlpha(chatFrame)
 	FCFDockOverflowButton_UpdatePulseState(GENERAL_CHAT_DOCK.overflowButton)
 end
-

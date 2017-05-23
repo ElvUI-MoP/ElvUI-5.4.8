@@ -60,7 +60,6 @@ function AceConsole:Print(...)
 	end
 end
 
-
 --- Formatted (using format()) print to DEFAULT_CHAT_FRAME or given ChatFrame (anything with an .AddMessage function)
 -- @paramsig [chatframe ,] "format"[, ...]
 -- @param chatframe Custom ChatFrame to print to (or any frame with an .AddMessage function)
@@ -74,9 +73,6 @@ function AceConsole:Printf(...)
 		return Print(self, DEFAULT_CHAT_FRAME, format(...))
 	end
 end
-
-
-
 
 --- Register a simple chat command
 -- @param command Chat command to be registered WITHOUT leading "/"
@@ -122,7 +118,6 @@ end
 -- @return Iterator (pairs) over all commands
 function AceConsole:IterateChatCommands() return pairs(AceConsole.commands) end
 
-
 local function nils(n, ...)
 	if n>1 then
 		return nil, nils(n-1, ...)
@@ -132,7 +127,6 @@ local function nils(n, ...)
 		return ...
 	end
 end
-
 
 --- Retreive one or more space-separated arguments from a string.
 -- Treats quoted strings and itemlinks as non-spaced.
@@ -207,7 +201,6 @@ function AceConsole:GetArgs(str, numargs, startpos)
 	-- search aborted, we hit end of string. return it all as one argument. (yes, even if it's an unterminated quote or hyperlink)
 	return strsub(str, startpos), nils(numargs-1, 1e9)
 end
-
 
 --- embedding and embed handling
 

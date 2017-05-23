@@ -37,7 +37,6 @@ function AceEvent.events:OnUnused(target, eventname)
 	AceEvent.frame:UnregisterEvent(eventname)
 end
 
-
 -- APIs and registry for IPC messages, using CallbackHandler lib
 if not AceEvent.messages then
 	AceEvent.messages = CallbackHandler:New(AceEvent, 
@@ -92,7 +91,6 @@ local mixins = {
 -- @paramsig message, ...
 -- @param message The message to send
 -- @param ... Any arguments to the message
-
 
 -- Embeds AceEvent into the target object making the functions from the mixins list available on target:..
 -- @param target target object to embed AceEvent in

@@ -384,7 +384,6 @@ end
 AceDB.frame:RegisterEvent("PLAYER_LOGOUT")
 AceDB.frame:SetScript("OnEvent", logoutHandler)
 
-
 --[[-------------------------------------------------------------------------
 	AceDB Object Method Definitions
 ---------------------------------------------------------------------------]]

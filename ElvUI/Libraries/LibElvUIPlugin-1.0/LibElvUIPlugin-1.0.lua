@@ -135,7 +135,7 @@ end
 
 local function SendPluginVersionCheck(self)
 	lib:SendPluginVersionCheck(lib:GenerateVersionCheckMessage())
-	
+
 	if self["ElvUIPluginSendMSGTimer"] then
 		self:CancelTimer(self["ElvUIPluginSendMSGTimer"])
 		self["ElvUIPluginSendMSGTimer"] = nil
@@ -164,7 +164,7 @@ function lib:VersionCheck(event, prefix, message, channel, sender)
 	else
 		E.SendPluginVersionCheck = E.SendPluginVersionCheck or SendPluginVersionCheck
 		E["ElvUIPluginSendMSGTimer"] = E:ScheduleTimer("SendPluginVersionCheck", 2)
-	end 
+	end
 end
 
 function lib:GeneratePluginList()
