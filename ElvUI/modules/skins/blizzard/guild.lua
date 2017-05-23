@@ -129,12 +129,12 @@ local function LoadSkin()
 		local icon = _G["GuildRosterContainerButton"..i.."Icon"];
 
 		button:CreateBackdrop("Default", true);
-		button.backdrop:SetInside(icon);
+		button.backdrop:SetAllPoints(icon);
 		button:StyleButton();
 
 		icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes");
 		icon:SetParent(button.backdrop);
-		icon:Size(20);
+		icon:Size(18);
 
 		_G["GuildRosterContainerButton"..i.."BarTexture"]:SetTexture(E["media"].normTex);
 		S:HandleButton(_G["GuildRosterContainerButton"..i.."HeaderButton"], true);
