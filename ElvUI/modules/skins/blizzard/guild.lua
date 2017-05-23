@@ -44,10 +44,10 @@ local function LoadSkin()
 	GuildXPBar.progress:SetTexture(E["media"].normTex)
 
 	--Faction Bar
+	GuildFactionFrame:SetTemplate("Default")
+
 	GuildFactionBar:StripTextures()
-	GuildFactionBar:CreateBackdrop("Default")
-	GuildFactionBar.backdrop:Point("TOPLEFT", GuildFactionBar.progress, "TOPLEFT", -1, 1)
-	GuildFactionBar.backdrop:Point("BOTTOMRIGHT", GuildFactionBar, "BOTTOMRIGHT", -1, 1)
+	GuildFactionBar:SetAllPoints(GuildFactionFrame)
 	GuildFactionBar.progress:SetTexture(E["media"].normTex)
 
 	--Guild Latest/Next Perks/Updates
@@ -290,7 +290,7 @@ local function LoadSkin()
 
 		button:StripTextures();
 		button:CreateBackdrop("Transparent");
-		button.backdrop:SetInside();
+		button.backdrop:SetAllPoints();
 		button:StyleButton();
 
 		button.bg = CreateFrame("Frame", nil, button);
@@ -314,6 +314,8 @@ local function LoadSkin()
 		button.timeLeft:SetParent(button.backdrop);
 
 		button.comment:SetParent(button.backdrop);
+		button.comment:Point("BOTTOMRIGHT", 0, 0)
+
 		button.fullComment:SetParent(button.backdrop);
 
 		button.tankTex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga");

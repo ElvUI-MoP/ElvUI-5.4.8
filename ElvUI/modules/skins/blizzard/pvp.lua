@@ -53,7 +53,7 @@ local function LoadSkin()
 	S:HandleDropDownBox(HonorFrameTypeDropDown);
 	HonorFrameTypeDropDown:Width(200);
 	HonorFrameTypeDropDown:ClearAllPoints();
-	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 163, 315);
+	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 163, 318);
 
 	HonorFrame.Inset:StripTextures();
 
@@ -62,9 +62,11 @@ local function LoadSkin()
 
 	S:HandleButton(HonorFrameSoloQueueButton, true);
 	HonorFrameSoloQueueButton:Point("BOTTOMLEFT", 19, 0);
+	HonorFrameSoloQueueButton:Height(20)
 
 	S:HandleButton(HonorFrameGroupQueueButton, true);
 	HonorFrameGroupQueueButton:Point("BOTTOMRIGHT", -19, 0);
+	HonorFrameGroupQueueButton:Height(20)
 
 	hooksecurefunc("HonorFrameBonusFrame_Update", function()
 		local englishFaction = UnitFactionGroup("player");
@@ -164,7 +166,7 @@ local function LoadSkin()
 
 	HonorFrameSpecificFrame:CreateBackdrop("Transparent");
 	HonorFrameSpecificFrame.backdrop:Point("TOPLEFT", -3, 1);
-	HonorFrameSpecificFrame.backdrop:Point("BOTTOMRIGHT", -2, -2);
+	HonorFrameSpecificFrame.backdrop:Point("BOTTOMRIGHT", -5, -3);
 
 	for i = 1, 9 do
 		local button = _G["HonorFrameSpecificFrameButton"..i];
@@ -174,13 +176,15 @@ local function LoadSkin()
 		button:StripTextures();
 		button:CreateBackdrop();
 		button.backdrop:SetOutside(icon);
+
 		button:StyleButton(nil, true);
-		button:Width(305);
+		button:Width(300);
 
 		selected:SetTexture(0, 0.7, 1, 0.20);
+		selected:SetInside()
 
-		icon:Point("TOPLEFT", 2, 0);
-		icon:Size(38);
+		icon:Point("TOPLEFT", E.PixelMode and 3 or 5, E.PixelMode and -2 or -3);
+		icon:Size(E.PixelMode and 36 or 32);
 		icon:SetParent(button.backdrop);
 	end
 
@@ -191,6 +195,7 @@ local function LoadSkin()
 
 	ConquestFrame.NoSeason:StripTextures()
 	ConquestFrame.NoSeason:CreateBackdrop()
+	ConquestFrame.NoSeason:Point("BOTTOMRIGHT", E.PixelMode and 0 or -1, E.PixelMode and 5 or 6)
 
 	ConquestPointsBar:StripTextures();
 	ConquestPointsBar:CreateBackdrop("Default");
@@ -214,6 +219,7 @@ local function LoadSkin()
 	ConquestFrame.RatedBGReward.Amount:Point("LEFT", ConquestFrame.RatedBGReward.Icon, -27, 0)
 
 	S:HandleButton(ConquestJoinButton, true);
+	ConquestJoinButton:Point("BOTTOM", 0, 8)
 
 	local function handleButton(button)
 		button:StripTextures();
@@ -242,8 +248,8 @@ local function LoadSkin()
 	S:HandleScrollBar(WarGamesFrameScrollFrameScrollBar);
 
 	WarGamesFrameScrollFrame:CreateBackdrop("Transparent");
-	WarGamesFrameScrollFrame.backdrop:Point("TOPLEFT", 0, 1);
-	WarGamesFrameScrollFrame.backdrop:Point("BOTTOMRIGHT", -2, -3);
+	WarGamesFrameScrollFrame.backdrop:Point("TOPLEFT", -2, 2);
+	WarGamesFrameScrollFrame.backdrop:Point("BOTTOMRIGHT", -5, -4);
 
 	for i = 1, 8 do
 		local warGamesEntry = _G["WarGamesFrameScrollFrameButton"..i].Entry;
@@ -255,12 +261,13 @@ local function LoadSkin()
 		warGamesEntry:CreateBackdrop();
 		warGamesEntry.backdrop:SetOutside(warGamesIcon);
 		warGamesEntry:StyleButton(nil, true);
-		warGamesEntry:Width(305);
+		warGamesEntry:Width(300);
 
 		warGamesSelected:SetTexture(0, 0.7, 1, 0.20);
+		warGamesSelected:SetInside()
 
-		warGamesIcon:Point("TOPLEFT", 2, 0);
-		warGamesIcon:Size(38);
+		warGamesIcon:Point("TOPLEFT", E.PixelMode and 2 or 5, -(E.PixelMode and 2 or 4));
+		warGamesIcon:Size(E.PixelMode and 36 or 32);
 		warGamesIcon:SetParent(warGamesEntry.backdrop);
 
 		warGamesHeader:SetNormalTexture("Interface\\Buttons\\UI-PlusMinus-Buttons");
