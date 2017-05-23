@@ -315,16 +315,16 @@ local function LoadSkin()
 
 	AuctionsScrollFrame:Height(336)
 	AuctionFrameAuctions.bg1 = CreateFrame("Frame", nil, AuctionFrameAuctions)
-	AuctionFrameAuctions.bg1:SetTemplate("Default")
+	AuctionFrameAuctions.bg1:SetTemplate("Default", true)
 	AuctionFrameAuctions.bg1:Point("TOPLEFT", 15, -70)
 	AuctionFrameAuctions.bg1:Point("BOTTOMRIGHT", -545, 35)
-	AuctionFrameAuctions.bg1:SetFrameLevel(AuctionFrameAuctions.bg1:GetFrameLevel() - 3)
+	--AuctionFrameAuctions.bg1:SetFrameLevel(AuctionFrameAuctions.bg1:GetFrameLevel() - 3)
 
 	AuctionFrameAuctions.bg2 = CreateFrame("Frame", nil, AuctionFrameAuctions)
-	AuctionFrameAuctions.bg2:SetTemplate("Default")
+	AuctionFrameAuctions.bg2:SetTemplate("Default", true)
 	AuctionFrameAuctions.bg2:Point("TOPLEFT", AuctionFrameAuctions.bg1, "TOPRIGHT", 3, 0)
 	AuctionFrameAuctions.bg2:Point("BOTTOMRIGHT", AuctionFrame, -8, 35)
-	AuctionFrameAuctions.bg2:SetFrameLevel(AuctionFrameAuctions.bg2:GetFrameLevel() - 3)
+	--AuctionFrameAuctions.bg2:SetFrameLevel(AuctionFrameAuctions.bg2:GetFrameLevel() - 3)
 end
 
 S:AddCallbackForAddon("Blizzard_AuctionUI", "AuctionHouse", LoadSkin);

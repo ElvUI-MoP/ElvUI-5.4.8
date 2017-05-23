@@ -408,6 +408,8 @@ local function LoadSkin()
 		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords));
 	end
 
+	LFRParentFrameSideTab1:Point("TOPLEFT", LFRParentFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -35)
+
 	-- LFR Queue Frame
 	LFRParentFrame:StripTextures();
 	LFRQueueFrame:StripTextures();
@@ -496,7 +498,7 @@ local function LoadSkin()
 		end
 	end
 
-	RaidBrowserFrame:CreateBackdrop("Transparent")
+	RaidBrowserFrame:SetTemplate("Transparent")
 
 	for i = 1, 7 do
 		local button = "LFRBrowseFrameColumnHeader"..i;
