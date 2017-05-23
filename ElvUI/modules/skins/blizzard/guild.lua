@@ -87,6 +87,14 @@ local function LoadSkin()
 
 	S:HandleScrollBar(GuildRewardsContainerScrollBar, 5)
 
+	for i = 1, 8 do
+		local Rewards = _G["GuildRewardsContainerButton"..i];
+		local Perks =  _G["GuildPerksContainerButton"..i];
+
+		Perks.icon:Size(E.PixelMode and 40 or 38);
+		Rewards.icon:Size(E.PixelMode and 43 or 40);
+	end
+
 	for _, Object in pairs({"Rewards", "Perks"}) do
 		for i = 1, 8 do
 			local Button = _G["Guild"..Object.."ContainerButton"..i];
@@ -101,12 +109,11 @@ local function LoadSkin()
 
 			Button.icon:SetTexCoord(unpack(E.TexCoords));
 			Button.icon:Point("TOPLEFT", 2, -2);
-			Button.icon:Size(43);
 			Button.icon:SetParent(Button.backdrop);
 
 			if(Object == "Rewards") then
 				SubText:SetTextColor(1, 0.80, 0.10);
-				Button.backdrop:SetScript("OnUpdate", function(self)
+				Button.backdrop:HookScript("OnUpdate", function(self)
 					local _, itemID = GetGuildRewardInfo(Button.index);
 					if(itemID) then
 						local quality = select(3, GetItemInfo(itemID));

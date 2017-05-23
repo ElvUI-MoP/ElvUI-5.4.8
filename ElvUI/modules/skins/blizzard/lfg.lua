@@ -10,7 +10,7 @@ local function LoadSkin()
 
 	-- PVE Frame
 	PVEFrame:StripTextures()
-	PVEFrame:CreateBackdrop("Transparent")
+	PVEFrame:SetTemplate("Transparent")
 
 	PVEFrame.shadows:Hide()
 
@@ -28,16 +28,16 @@ local function LoadSkin()
 
 		button.ring:Hide()
 		button.bg:SetTexture("")
-		button.bg:SetAllPoints()
 
 		button:SetTemplate("Default");
 		button:StyleButton()
+
 		button:CreateBackdrop("Default");
 		button.backdrop:SetOutside(button.icon);
 		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2);
 
 		button.icon:SetTexCoord(unpack(E.TexCoords))
-		button.icon:Size(58)
+		button.icon:Size(E.PixelMode and 58 or 56)
 		button.icon:Point("LEFT", button, 1, 0);
 		button.icon:SetParent(button.backdrop);
 	end
@@ -46,7 +46,7 @@ local function LoadSkin()
 		S:HandleTab(_G["PVEFrameTab"..i])
 	end
 
-	PVEFrameTab1:SetPoint("BOTTOMLEFT", PVEFrame, 19, -31)
+	PVEFrameTab1:SetPoint("BOTTOMLEFT", PVEFrame, 19, -30)
 
 	S:HandleCloseButton(PVEFrameCloseButton)
 
@@ -67,7 +67,9 @@ local function LoadSkin()
 	LFDQueueFrameRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend");
 	LFDQueueFrameRoleButtonTank.texture:SetTexCoord(unpack(E.TexCoords));
 	LFDQueueFrameRoleButtonTank.texture:SetInside(LFDQueueFrameRoleButtonTank.backdrop);
+	LFDQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 334)
 	S:HandleCheckBox(LFDQueueFrameRoleButtonTank.checkButton, true)
+
 
 	LFDQueueFrameRoleButtonHealer:StripTextures();
 	LFDQueueFrameRoleButtonHealer:CreateBackdrop();
@@ -94,12 +96,14 @@ local function LoadSkin()
 	LFDQueueFrameRoleButtonLeader.texture:SetTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer");
 	LFDQueueFrameRoleButtonLeader.texture:SetTexCoord(unpack(E.TexCoords));
 	LFDQueueFrameRoleButtonLeader.texture:SetInside(LFDQueueFrameRoleButtonLeader.backdrop);
+	LFDQueueFrameRoleButtonLeader:Point("LEFT", LFDQueueFrameRoleButtonDPS, "RIGHT", 55, 0)
 	S:HandleCheckBox(LFDQueueFrameRoleButtonLeader.checkButton, true)
 
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:StripTextures()
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop()
+	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
+	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(0, 0, 0);
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture = LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY");
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexCoord(unpack(E.TexCoords))
@@ -156,7 +160,7 @@ local function LoadSkin()
 				if(role3) then role3:SetParent(button.backdrop); end
 
 				button:HookScript("OnUpdate", function(self)
-					button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+					button.backdrop:SetBackdropBorderColor(0, 0, 0);
 					name:SetTextColor(1, 1, 1);
 					if(button.dungeonID) then
 						local Link = GetLFGDungeonRewardLink(button.dungeonID, i);
@@ -204,9 +208,11 @@ local function LoadSkin()
 	ScenarioQueueFrameSpecificScrollFrame:StripTextures()
 
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:StripTextures()
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop()
+	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
+	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(0, 0, 0);
+
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture = ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY");
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexCoord(unpack(E.TexCoords))
@@ -256,7 +262,7 @@ local function LoadSkin()
 					border:SetAlpha(0)
 
 					button:HookScript("OnUpdate", function(self)
-						button.bg:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+						button.bg:SetBackdropBorderColor(0, 0, 0);
 						name:SetTextColor(1, 1, 1);
 						if(button.dungeonID) then
 							local Link = GetLFGDungeonRewardLink(button.dungeonID, i);
@@ -319,6 +325,7 @@ local function LoadSkin()
 	RaidFinderQueueFrameRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend");
 	RaidFinderQueueFrameRoleButtonTank.texture:SetTexCoord(unpack(E.TexCoords));
 	RaidFinderQueueFrameRoleButtonTank.texture:SetInside(RaidFinderQueueFrameRoleButtonTank.backdrop);
+	RaidFinderQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 336)
 	S:HandleCheckBox(RaidFinderQueueFrameRoleButtonTank.checkButton, true)
 
 	RaidFinderQueueFrameRoleButtonHealer:StripTextures();
@@ -346,6 +353,7 @@ local function LoadSkin()
 	RaidFinderQueueFrameRoleButtonLeader.texture:SetTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer");
 	RaidFinderQueueFrameRoleButtonLeader.texture:SetTexCoord(unpack(E.TexCoords));
 	RaidFinderQueueFrameRoleButtonLeader.texture:SetInside(RaidFinderQueueFrameRoleButtonLeader.backdrop);
+	RaidFinderQueueFrameRoleButtonLeader:Point("LEFT", RaidFinderQueueFrameRoleButtonDPS, "RIGHT", 55, 0)
 	S:HandleCheckBox(RaidFinderQueueFrameRoleButtonLeader.checkButton, true)
 
 	S:HandleButton(_G[RaidFinderQueueFrame.PartyBackfill:GetName().."BackfillButton"])

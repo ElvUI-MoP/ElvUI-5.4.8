@@ -96,11 +96,14 @@ local function LoadSkin()
 	end
 
 	for i = 1, 8 do
+		local tab = _G["GuildBankTab"..i]
 		local button = _G["GuildBankTab"..i.."Button"]
 		local texture = _G["GuildBankTab"..i.."ButtonIconTexture"]
-		_G["GuildBankTab"..i]:StripTextures(true)
+
+		tab:StripTextures(true)
 
 		button:StripTextures()
+		button:SetTemplate()
 		button:StyleButton(nil, true)
 
 		texture:SetInside()
@@ -157,7 +160,7 @@ local function LoadSkin()
 	GuildBankFrameTab1:ClearAllPoints()
 	GuildBankFrameTab1:Point("BOTTOMLEFT", GuildBankFrame, "BOTTOMLEFT", 0, -30)
 
-	GuildBankTab1:Point("TOPLEFT", GuildBankFrame, "TOPRIGHT", -3, -36)
+	GuildBankTab1:Point("TOPLEFT", GuildBankFrame, "TOPRIGHT", E.PixelMode and -3 or -1, -36)
 	GuildBankTab2:Point("TOPLEFT", GuildBankTab1, "BOTTOMLEFT", 0, 7)
 	GuildBankTab3:Point("TOPLEFT", GuildBankTab2, "BOTTOMLEFT", 0, 7)
 	GuildBankTab4:Point("TOPLEFT", GuildBankTab3, "BOTTOMLEFT", 0, 7)

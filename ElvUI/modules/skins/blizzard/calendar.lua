@@ -155,10 +155,10 @@ local function LoadSkin()
 			local tcoords = CLASS_ICON_TCOORDS[class]
 			local buttonIcon = button:GetNormalTexture()
 			buttonIcon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
-			buttonIcon:SetTexCoord(tcoords[1] + 0.015, tcoords[2] - 0.02, tcoords[3] + 0.018, tcoords[4] - 0.02) --F U C K I N G H A X
+			buttonIcon:SetTexCoord(tcoords[1] + 0.015, tcoords[2] - 0.02, tcoords[3] + 0.018, tcoords[4] - 0.02)
 		end
 
-		CalendarClassButton1:Point("TOPLEFT", CalendarClassButtonContainer, "TOPLEFT", 2, 0)
+		CalendarClassButton1:Point("TOPLEFT", E.PixelMode and 2 or 5, 0)
 
 		CalendarClassTotalsButton:StripTextures()
 		CalendarClassTotalsButton:CreateBackdrop("Default")
