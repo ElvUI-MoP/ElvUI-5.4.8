@@ -221,6 +221,7 @@ local function LoadSkin()
 			object.text.SetFont = E.noop
 			object:StyleButton()
 			object.SelectedBar:SetTexture(0, 0.7, 1, 0.75)
+			object.SelectedBar:SetInside()
 		end
 	end)
 
@@ -235,10 +236,11 @@ local function LoadSkin()
 			object.BgBottom:SetTexture(nil)
 			object.BgMiddle:SetTexture(nil)
 
-			object:StyleButton()
 			object.Check:SetTexture(nil)
 			object.SelectedBar:SetTexture(0, 0.7, 1, 0.75)
-			object.HighlightBar:SetTexture(nil)
+			object.SelectedBar:SetInside()
+			object.HighlightBar:SetTexture(1, 1, 1, 0.30)
+			object.HighlightBar:SetInside()
 
 			object:CreateBackdrop("Default")
 			object.backdrop:Point("TOPLEFT", object.icon, -1, 1)

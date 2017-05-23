@@ -3,7 +3,7 @@ local S = E:GetModule("Skins")
 
 local _G = _G;
 local pairs, unpack = pairs, unpack;
-local format, len, upper, gsub = string.format, string.len, string.upper, string.gsub;
+local format = string.format
 
 local hooksecurefunc = hooksecurefunc;
 local GetWhoInfo = GetWhoInfo;
@@ -367,52 +367,6 @@ local function LoadSkin()
 	--Bottom Tabs
 	for i = 1, 4 do
 		S:HandleTab(_G["FriendsFrameTab"..i])
-	end
-
-	--Friend List Class Colors
-	local cc = {
-		["HUNTER"] = "ABD473",
-		["WARLOCK"] = "9482C9",
-		["PRIEST"] = "FFFFFF",
-		["PALADIN"] = "F58CBA",
-		["MAGE"] = "69CCF0",
-		["ROGUE"] = "FFF569",
-		["DRUID"] = "FF7D0A",
-		["SHAMAN"] = "1783D1",
-		["WARRIOR"] = "C79C6E",
-		["DEATHKNIGHT"] = "C41F3B",
-		["MONK"] = "00FF96"
-	}
-
-	local locclasses = {}
-	for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do locclasses[v] = k end
-	for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do locclasses[v] = k end
-
-	local updFunc = function()
-		if(GetNumFriends() < 1) then return end
-
-		local off, name, level, class, _, connected, _, _, tmp, tmpcol = FauxScrollFrame_GetOffset(FriendsFrameFriendsScrollFrame)
-		for i = 1, GetNumFriends() do
-			name, level, class, _, connected = GetFriendInfo(i)
-			if(connected) then
-				local friend = _G["FriendsFrameFriendsScrollFrameButton"..(i-off)]
-				if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
-					tmpcol = cc[(locclasses[class] or ""):gsub(" ",""):upper()]
-					if((tmpcol or ""):len() > 0) then
-						tmp = format("|cff%s%s%s, ", tmpcol, name, FONT_COLOR_CODE_CLOSE)
-						tmp = tmp..format("|cff%s%s%d%s ", tmpcol, LEVEL.." ", level, FONT_COLOR_CODE_CLOSE)
-						tmp = tmp..format("|cff%s%s%s ", tmpcol, class, FONT_COLOR_CODE_CLOSE)
-						friend.name:SetText(tmp)
-					end
-				end
-			end
-		end
-	end
-
-	FriendsFrameFriendsScrollFrameScrollBar:HookScript("OnValueChanged", updFunc)
-
-	for k,v in pairs({"FriendsList_Update", "FriendsFrame_UpdateFriends", "FriendsFramePendingScrollFrame_AdjustScroll"}) do
-		hooksecurefunc(v, updFunc)
 	end
 end
 
