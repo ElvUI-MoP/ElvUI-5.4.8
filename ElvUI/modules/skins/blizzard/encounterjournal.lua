@@ -266,9 +266,10 @@ local function LoadSkin()
 		item.bosslessTexture:SetAlpha(0)
 
 		item.icon:Size(38)
-		item.icon:Point("TOPLEFT", E.PixelMode and 1 or 2, -(E.PixelMode and 5 or 6))
 		if i == 1 then
 			item.icon:Point("TOPLEFT", E.PixelMode and 2 or 3, -(E.PixelMode and 5 or 6))
+		else
+			item.icon:Point("TOPLEFT", E.PixelMode and 1 or 2, -(E.PixelMode and 5 or 6))
 		end
 		S:HandleIcon(item.icon)
 		item.icon:SetDrawLayer("OVERLAY")

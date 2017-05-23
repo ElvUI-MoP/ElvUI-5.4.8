@@ -23,21 +23,32 @@ local function LoadSkin()
 		local money = _G["ClassTrainerScrollFrameButton"..i.."MoneyFrame"]
 
 		button:StripTextures()
-		button:SetTemplate("Default")
 		button:CreateBackdrop()
-		button.backdrop:SetOutside(icon)
-		button:StyleButton()
+		button.backdrop:SetInside()
 
 		button.selectedTex:SetTexture(1, 1, 1, 0.3)
-		button.selectedTex:SetInside()
-
-		icon:SetTexCoord(unpack(E.TexCoords))
-		icon:Point("TOPLEFT", 0, -1)
-		icon:Size(44)
-		icon:SetParent(button.backdrop)
+		button.selectedTex:SetInside(button.backdrop)
+		button.selectedTex:SetParent(button.backdrop)
 
 		money:SetScale(0.88)
-		money:Point("TOPRIGHT", 10, -3)
+		money:Point("TOPRIGHT", 9, -6)
+		money:SetParent(button.backdrop)
+
+		button.name:SetParent(button.backdrop)
+		button.subText:SetParent(button.backdrop)
+
+		button.bg = CreateFrame("Frame", nil, button)
+		button.bg:SetTemplate("Default")
+		button.bg:SetOutside(icon)
+
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:Size(E.PixelMode and 43 or 34)
+		if i == 1 then
+			icon:Point("TOPLEFT", E.PixelMode and 2 or 7, E.PixelMode and -2 or -6)
+		else
+			icon:Point("TOPLEFT", E.PixelMode and 2 or 6, E.PixelMode and -2 or -6)
+		end
+		icon:SetParent(button.bg)
 	end
 
 	ClassTrainerTrainButton:StripTextures()
@@ -55,24 +66,24 @@ local function LoadSkin()
 	ClassTrainerFrame:Height(ClassTrainerFrame:GetHeight() + 42)
 
 	ClassTrainerFrameSkillStepButton:StripTextures()
-	ClassTrainerFrameSkillStepButton:CreateBackdrop()
+	ClassTrainerFrameSkillStepButton:SetTemplate()
 	ClassTrainerFrameSkillStepButton:StyleButton()
 
 	ClassTrainerFrameSkillStepButton.icon:SetTexCoord(unpack(E.TexCoords))
-	ClassTrainerFrameSkillStepButton.icon:Point("TOPLEFT", 1, 0)
-	ClassTrainerFrameSkillStepButton.icon:Size(40)
+	ClassTrainerFrameSkillStepButton.icon:Point("TOPLEFT", E.PixelMode and 0 or 4, -(E.PixelMode and 1 or 4))
+	ClassTrainerFrameSkillStepButton.icon:Size(E.PixelMode and 38 or 32)
 
 	ClassTrainerFrameSkillStepButton.selectedTex:SetTexture(1, 1, 1, 0.3)
 	ClassTrainerFrameSkillStepButton.selectedTex:SetInside()
 
-	ClassTrainerFrameSkillStepButtonMoneyFrame:SetScale(0.90)
-	ClassTrainerFrameSkillStepButtonMoneyFrame:Point("TOPRIGHT", 10, -3)
-
 	ClassTrainerFrameSkillStepButton.bg = CreateFrame("Frame", nil, ClassTrainerFrameSkillStepButton)
-	ClassTrainerFrameSkillStepButton.bg:CreateBackdrop()
-	ClassTrainerFrameSkillStepButton.bg:SetInside(ClassTrainerFrameSkillStepButton.icon)
+	ClassTrainerFrameSkillStepButton.bg:SetTemplate()
+	ClassTrainerFrameSkillStepButton.bg:SetOutside(ClassTrainerFrameSkillStepButton.icon)
 
 	ClassTrainerFrameSkillStepButton.icon:SetParent(ClassTrainerFrameSkillStepButton.bg)
+
+	ClassTrainerFrameSkillStepButtonMoneyFrame:SetScale(0.90)
+	ClassTrainerFrameSkillStepButtonMoneyFrame:Point("TOPRIGHT", 10, -3)
 
 	ClassTrainerStatusBar:StripTextures()
 	ClassTrainerStatusBar:CreateBackdrop("Default")
