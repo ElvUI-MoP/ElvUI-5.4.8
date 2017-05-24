@@ -138,6 +138,7 @@ local function LoadSkin()
 	--NavBar
 	HelpFrameKnowledgebaseNavBarOverlay:Kill()
 	HelpFrameKnowledgebaseNavBar:StripTextures()
+	HelpFrameKnowledgebaseNavBar:SetTemplate()
 
 	local function navButtonFrameLevel(self)
 		for i = 1, #self.navList do

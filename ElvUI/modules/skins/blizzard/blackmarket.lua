@@ -8,14 +8,6 @@ local C_BlackMarket_GetNumItems = C_BlackMarket.GetNumItems
 local C_BlackMarket_GetItemInfoByIndex = C_BlackMarket.GetItemInfoByIndex
 local C_BlackMarket_GetHotItem = C_BlackMarket.GetHotItem
 
-local function SkinTab(tab)
-	tab.Left:SetAlpha(0)
-	if(tab.Middle) then
-		tab.Middle:SetAlpha(0)
-	end
-	tab.Right:SetAlpha(0)
-end
-
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.bmah ~= true then return end
 
@@ -26,18 +18,18 @@ local function LoadSkin()
 	BlackMarketFrame.Inset:CreateBackdrop()
 	BlackMarketFrame.Inset.backdrop:SetAllPoints()
 
+	BlackMarketFrame.ColumnName:StripTextures()
+	BlackMarketFrame.ColumnLevel:StripTextures()
+	BlackMarketFrame.ColumnType:StripTextures()
+	BlackMarketFrame.ColumnDuration:StripTextures()
+	BlackMarketFrame.ColumnHighBidder:StripTextures()
+	BlackMarketFrame.ColumnCurrentBid:StripTextures()
+
 	BlackMarketFrame.MoneyFrameBorder:StripTextures()
 
 	S:HandleCloseButton(BlackMarketFrame.CloseButton)
 
 	S:HandleScrollBar(BlackMarketScrollFrameScrollBar, 4)
-
-	SkinTab(BlackMarketFrame.ColumnName)
-	SkinTab(BlackMarketFrame.ColumnLevel)
-	SkinTab(BlackMarketFrame.ColumnType)
-	SkinTab(BlackMarketFrame.ColumnDuration)
-	SkinTab(BlackMarketFrame.ColumnHighBidder)
-	SkinTab(BlackMarketFrame.ColumnCurrentBid)
 
 	S:HandleEditBox(BlackMarketBidPriceGold)
 	BlackMarketBidPriceGold.backdrop:Point("TOPLEFT", -2, 0)
@@ -60,8 +52,8 @@ local function LoadSkin()
 				button:StripTextures("BACKGROUND")
 				button:StyleButton()
 
-				button.Item:Size(33)
-				button.Item:Point("TOPLEFT", -3, -2)
+				button.Item:Size(E.PixelMode and 33 or 30)
+				button.Item:Point("TOPLEFT", -3, -(E.PixelMode and 2 or 3))
 
 				button.Selection:SetTexture(1, 1, 1, 0.30)
 				button.Selection:SetInside()
