@@ -19,7 +19,6 @@ local function LoadSkin()
 		f.ActiveAlly,
 		f.ActiveEnemy
 	}
-	S:HandleCloseButton(FloatingBattlePetTooltip.CloseButton)
 
 	-- TOP FRAMES
 	f:StripTextures()
@@ -233,6 +232,8 @@ local function LoadSkin()
 	SkinPetTooltip(BattlePetTooltip)
 	SkinPetTooltip(FloatingBattlePetTooltip)
 	SkinPetTooltip(FloatingPetBattleAbilityTooltip)
+	S:HandleCloseButton(FloatingBattlePetTooltip.CloseButton)
+	S:HandleCloseButton(FloatingPetBattleAbilityTooltip.CloseButton)
 
 	-- TOOLTIP DEFAULT POSITION
 	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
