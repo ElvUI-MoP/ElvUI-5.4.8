@@ -28,7 +28,7 @@ local function LoadSkin()
 	MountJournal.RightInset:StripTextures()
 
 	MountJournal.MountCount:StripTextures()
-	MountJournal.MountCount:CreateBackdrop("Default")
+	MountJournal.MountCount:SetTemplate("Default")
 
     MountJournal.MountDisplay:CreateBackdrop("Default")
     MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 2, -40)
@@ -143,7 +143,7 @@ local function LoadSkin()
 	PetJournalTutorialButton:Kill()
 
 	PetJournal.PetCount:StripTextures()
-	PetJournal.PetCount:CreateBackdrop("Default")
+	PetJournal.PetCount:SetTemplate("Default")
 
 	S:HandleButton(PetJournalSummonButton)
 	S:HandleButton(PetJournalFindBattle)
