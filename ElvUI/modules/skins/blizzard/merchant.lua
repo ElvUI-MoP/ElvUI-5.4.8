@@ -40,7 +40,7 @@ local function LoadSkin()
 		S:HandleTab(_G["MerchantFrameTab"..i])
 	end
 
-	for i = 1, 12 do
+	for i = 1, MERCHANT_ITEMS_PER_PAGE do
 		local item = _G["MerchantItem" .. i];
 		local itemButton = _G["MerchantItem" .. i .. "ItemButton"];
 		local iconTexture = _G["MerchantItem" .. i .. "ItemButtonIconTexture"];
@@ -112,7 +112,7 @@ local function LoadSkin()
 		local numMerchantItems = GetMerchantNumItems();
 		local index;
 		local itemButton, itemName;
-		for i = 1, BUYBACK_ITEMS_PER_PAGE do
+		for i = 1, MERCHANT_ITEMS_PER_PAGE do
 			index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i);
 			itemButton = _G["MerchantItem" .. i .. "ItemButton"];
 			itemName = _G["MerchantItem" .. i .. "Name"];
