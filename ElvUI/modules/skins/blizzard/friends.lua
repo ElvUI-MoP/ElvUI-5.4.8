@@ -44,6 +44,7 @@ local function LoadSkin()
 		_G["FriendsFrameFriendsScrollFrameButton"..i.."SummonButtonIcon"]:SetTexCoord(unpack(E.TexCoords))
 		_G["FriendsFrameFriendsScrollFrameButton"..i.."SummonButtonNormalTexture"]:SetAlpha(0)
 		_G["FriendsFrameFriendsScrollFrameButton"..i.."SummonButton"]:StyleButton()
+		_G["FriendsFrameFriendsScrollFrameButton"..i.."Background"]:SetInside()
 		_G["FriendsFrameFriendsScrollFrameButton"..i]:StyleButton()
 	end
 
