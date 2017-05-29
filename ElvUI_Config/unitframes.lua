@@ -455,7 +455,7 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				order = 2,
 				type = "range",
 				name = L["Width"],
-				min = 1, max = 150, step = 1,
+				min = 15, max = 150, step = 1,
 				disabled = function() return not E.db.unitframe.units[groupName]["portrait"]["enable"] or E.db.unitframe.units[groupName]["portrait"]["overlay"]; end
 			},
 			overlay = {

@@ -12,32 +12,34 @@ local Update = function(self, event, unit)
 	if(not unit or not UnitIsUnit(self.unit, unit)) then return; end
 
 	local portrait = self.Portrait;
+	local modelUpdated = false
 	if(portrait.PreUpdate) then portrait:PreUpdate(unit); end
 
 	if(portrait:IsObjectType("Model")) then
 		local guid = UnitGUID(unit);
 		if(not UnitExists(unit) or not UnitIsConnected(unit) or not UnitIsVisible(unit)) then
-			portrait:SetModelScale(4.25);
-			portrait:SetCamera(0);
-			portrait:SetPosition(0, 0, -1.5);
-			portrait:SetModel("Interface\\Buttons\\talktomequestionmark.mdx");
-			portrait.guid = nil;
+			portrait:SetCamDistanceScale(0.25)
+			portrait:SetPortraitZoom(0)
+			portrait:SetPosition(0, 0, 0.5)
+			portrait:ClearModel()
+			portrait:SetModel("Interface\\Buttons\\talktomequestionmark.m2")
+			portrait.guid = nil
+			modelUpdated = true
 		elseif(portrait.guid ~= guid or event == "UNIT_MODEL_CHANGED") then
-			portrait:ClearModel();
-			portrait:SetUnit(unit);
-			portrait:SetModelScale(1);
-			portrait:SetCamera(0);
-			portrait:SetPosition(0, 0, 0);
-			portrait.guid = guid;
-		else
-			portrait:SetCamera(0);
+			portrait:SetCamDistanceScale(1)
+			portrait:SetPortraitZoom(1)
+			portrait:SetPosition(0, 0, 0)
+			portrait:ClearModel()
+			portrait:SetUnit(unit)
+			portrait.guid = guid
+			modelUpdated = true
 		end
 	else
 		SetPortraitTexture(portrait, unit);
 	end
 
 	if(portrait.PostUpdate) then
-		return portrait:PostUpdate(unit);
+		return portrait:PostUpdate(unit, event, modelUpdated)
 	end
 end
 
