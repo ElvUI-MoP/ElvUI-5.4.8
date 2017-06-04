@@ -317,7 +317,7 @@ function CH:StyleChat(frame)
 			local MIN_REPEAT_CHARACTERS = E.db.chat.numAllowedCombatRepeat
 			if (len(text) > MIN_REPEAT_CHARACTERS) then
 			local repeatChar = true;
-			for i=1, MIN_REPEAT_CHARACTERS, 1 do 
+			for i = 1, MIN_REPEAT_CHARACTERS, 1 do 
 				if ( sub(text,(0-i), (0-i)) ~= sub(text,(-1-i),(-1-i)) ) then
 					repeatChar = false;
 					break;
@@ -647,7 +647,7 @@ function CH:PositionChat(override)
 	local fadeUndockedTabs = E.db["chat"].fadeUndockedTabs
 	local fadeTabsNoBackdrop = E.db["chat"].fadeTabsNoBackdrop
 
-	for i=1, CreatedFrames do
+	for i = 1, CreatedFrames do
 		local BASE_OFFSET = 57 + E.Spacing*3;
 
 		chat = _G[format("ChatFrame%d", i)]
@@ -2018,9 +2018,9 @@ function CH:Initialize()
 
 	--Disable Blizzard
 	InterfaceOptionsSocialPanelTimestampsButton:SetAlpha(0)
-	InterfaceOptionsSocialPanelTimestampsButton:SetScale(0.000001)
+	InterfaceOptionsSocialPanelTimestampsButton:SetScale(0.0001)
 	InterfaceOptionsSocialPanelTimestamps:SetAlpha(0)
-	InterfaceOptionsSocialPanelTimestamps:SetScale(0.000001)
+	InterfaceOptionsSocialPanelTimestamps:SetScale(0.0001)
 
 	InterfaceOptionsSocialPanelChatStyle:EnableMouse(false)
 	InterfaceOptionsSocialPanelChatStyleButton:Hide()

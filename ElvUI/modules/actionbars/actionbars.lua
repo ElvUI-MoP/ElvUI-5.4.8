@@ -788,14 +788,14 @@ function AB:DisableBlizzard()
 	InterfaceOptionsActionBarsPanelPickupActionKeyDropDownButton:SetScale(0.0001);
 	InterfaceOptionsActionBarsPanelPickupActionKeyDropDownButton:SetAlpha(0);
 
-	InterfaceOptionsActionBarsPanelPickupActionKeyDropDown:SetScale(0.00001);
+	InterfaceOptionsActionBarsPanelPickupActionKeyDropDown:SetScale(0.0001);
 	InterfaceOptionsActionBarsPanelPickupActionKeyDropDown:SetAlpha(0);
 
 	InterfaceOptionsActionBarsPanelLockActionBars:SetScale(0.0001);
 	InterfaceOptionsActionBarsPanelLockActionBars:SetAlpha(0);
 
 	InterfaceOptionsStatusTextPanelXP:SetAlpha(0);
-	InterfaceOptionsStatusTextPanelXP:SetScale(0.00001);
+	InterfaceOptionsStatusTextPanelXP:SetScale(0.0001);
 
 	self:SecureHook("BlizzardOptionsPanel_OnEvent");
 

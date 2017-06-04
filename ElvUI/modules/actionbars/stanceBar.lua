@@ -170,7 +170,7 @@ function AB:PositionAndSizeBarShapeShift()
  		widthMult = 1
  		heightMult = 1
  	end
- 
+
  	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult-1)) + ((self.db["stanceBar"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
  	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult-1)) + ((self.db["stanceBar"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
  	bar:Width(barWidth);
@@ -182,7 +182,7 @@ function AB:PositionAndSizeBarShapeShift()
 		bar:SetAlpha(bar.db.alpha);
 		E:EnableMover(bar.mover:GetName());
 	else
-		bar:SetScale(0.00001);
+		bar:SetScale(0.0001);
 		bar:SetAlpha(0);
 		E:DisableMover(bar.mover:GetName());
 	end
@@ -208,7 +208,7 @@ function AB:PositionAndSizeBarShapeShift()
 
 	local button, lastButton, lastColumnButton;
 	local firstButtonSpacing = (self.db["stanceBar"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)
-	for i=1, NUM_STANCE_SLOTS do
+	for i = 1, NUM_STANCE_SLOTS do
 		button = _G["ElvUI_StanceBarButton"..i];
 		lastButton = _G["ElvUI_StanceBarButton"..i-1];
 		lastColumnButton = _G["ElvUI_StanceBarButton"..i-buttonsPerRow];
@@ -277,7 +277,7 @@ end
 function AB:AdjustMaxStanceButtons(event)
 	if InCombatLockdown() then return; end
 
-	for i=1, #bar.buttons do
+	for i = 1, #bar.buttons do
 		bar.buttons[i]:Hide()
 	end
 	local initialCreate = false;
@@ -323,7 +323,7 @@ function AB:UpdateStanceBindings()
 	for i = 1, NUM_STANCE_SLOTS do
 		if self.db.hotkeytext then
 			_G["ElvUI_StanceBarButton"..i.."HotKey"]:Show()
-			_G["ElvUI_StanceBarButton"..i.."HotKey"]:SetText(GetBindingKey("CLICK ElvUI_StanceBarButton"..i..":LeftButton"))	
+			_G["ElvUI_StanceBarButton"..i.."HotKey"]:SetText(GetBindingKey("CLICK ElvUI_StanceBarButton"..i..":LeftButton"))
 			self:FixKeybindText(_G["ElvUI_StanceBarButton"..i])
 		else
 			_G["ElvUI_StanceBarButton"..i.."HotKey"]:Hide()
@@ -331,13 +331,12 @@ function AB:UpdateStanceBindings()
 	end
 end
 
-
 function AB:CreateBarShapeShift()
 	bar:CreateBackdrop('Default');
 	bar.backdrop:SetAllPoints();
 	bar:Point('TOPLEFT', E.UIParent, 'TOPLEFT', 4, -4);
 	bar.buttons = {};
-	bar:SetAttribute("_onstate-show", [[		
+	bar:SetAttribute("_onstate-show", [[
 		if newstate == "hide" then
 			self:Hide();
 		else
