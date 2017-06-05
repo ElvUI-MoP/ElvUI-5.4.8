@@ -19,33 +19,17 @@ local function LoadSkin()
 
 	WatchFrameLines:StripTextures();
 
-	if GetCVarBool("watchFrameWidth") == 1 then
-		WatchFrame:Width(306)
-	else
-		WatchFrame:Width(205)
-	end
-
 	hooksecurefunc("WatchFrame_Expand", function()
 		WatchFrameCollapseExpandButton.text:SetText("-");
 
-		if GetCVarBool("watchFrameWidth") == 1 then
-			WatchFrame:Width(306)
-		else
-			WatchFrame:Width(205)
-		end
+		WatchFrame:Width(WATCHFRAME_EXPANDEDWIDTH)
 	end)
 
 	hooksecurefunc("WatchFrame_Collapse", function()
 		WatchFrameCollapseExpandButton.text:SetText("+");
 
-		if GetCVarBool("watchFrameWidth") == 1 then
-			WatchFrame:Width(306)
-		else
-			WatchFrame:Width(205)
-		end
+		WatchFrame:Width(WATCHFRAME_EXPANDEDWIDTH)
 	end)
-
-	WatchFrame_SetWidth(GetCVar("watchFrameWidth"));
 
 	hooksecurefunc("WatchFrame_Update", function()
 		local questIndex;
@@ -88,8 +72,8 @@ local function LoadSkin()
 
 		for i = 1, WATCHFRAME_NUM_POPUPS do
 			local popUp = _G["WatchFrameAutoQuestPopUp"..i]
-			if(popUp and popUp.isSkinned ~= true) then
 
+			if(popUp and popUp.isSkinned ~= true) then
 				_G["WatchFrameAutoQuestPopUp"..i.."ScrollChildBg"]:Kill();
 				_G["WatchFrameAutoQuestPopUp"..i.."ScrollChildQuestIconBg"]:Kill();
 				_G["WatchFrameAutoQuestPopUp"..i.."ScrollChildFlash"]:Kill();

@@ -896,7 +896,9 @@ local function SetupFlyoutButton()
 				MasqueGroup:RemoveButton(_G["SpellFlyoutButton"..i])
 				MasqueGroup:AddButton(_G["SpellFlyoutButton"..i])
 			else
-				_G["SpellFlyoutButton"..i]:CreateBackdrop("Default")
+				_G["SpellFlyoutButton"..i]:SetTemplate("Default")
+				_G["SpellFlyoutButton"..i]:SetBackdropColor(0, 0, 0, 0)
+				_G["SpellFlyoutButton"..i].backdropTexture:SetAlpha(0)
 			end
 		end
 	end
