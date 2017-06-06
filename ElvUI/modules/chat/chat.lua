@@ -87,7 +87,8 @@ local cvars = {
 	["whisperMode"] = true,
 }
 
-local PLAYER_REALM = gsub(E.myrealm,'[%s%-]','')
+local PLAYER_REALM = gsub(E.myrealm,"[%s%-]","")
+local PLAYER_NAME = E.myname.."-"..PLAYER_REALM
 
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS;
@@ -922,6 +923,18 @@ function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, a
 	return arg2;
 end
 
+local function GetChatIcons(sender)
+	if(specialChatIcons[PLAYER_REALM] and specialChatIcons[PLAYER_REALM][E.myname] ~= true) then
+		for realm, _ in pairs(specialChatIcons) do
+			for character, texture in pairs(specialChatIcons[realm]) do
+				if sender == character.."-"..realm then
+					return texture
+				end
+			end
+		end
+	end
+end
+
 function CH:ChatFrame_MessageEventHandler(event, ...)
 	if ( strsub(event, 1, 8) == "CHAT_MSG" ) then
 		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14 = ...;
@@ -1150,58 +1163,35 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 			end
 
 			-- Add AFK/DND flags
-			local pflag;
-			if(strlen(arg6) > 0) then
-				if ( arg6 == "GM" ) then
+			local pflag = GetChatIcons(arg2);
+			if(arg6 ~= "") then
+				if (arg6 == "GM") then
 					--If it was a whisper, dispatch it to the GMChat addon.
-					if ( type == "WHISPER" ) then
+					if (type == "WHISPER") then
 						return;
 					end
 					--Add Blizzard Icon, this was sent by a GM
 					pflag = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz:12:20:0:0:32:16:4:28:0:16|t ";
-				elseif ( arg6 == "DEV" ) then
+				elseif (arg6 == "DEV") then
 					--Add Blizzard Icon, this was sent by a Dev
 					pflag = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz:12:20:0:0:32:16:4:28:0:16|t ";
+				elseif (arg6 == "DND" or arg6 == "AFK") then
+					pflag = (pflag or "").._G["CHAT_FLAG_"..arg6];
 				else
 					pflag = _G["CHAT_FLAG_"..arg6];
 				end
 			else
-				if specialChatIcons[PLAYER_REALM] then
-					for character, texture in pairs(specialChatIcons[PLAYER_REALM]) do
-						if arg2 == character then
-							pflag = texture
-						end
-					end
-
-					for realm, _ in pairs(specialChatIcons) do
-						if realm ~= PLAYER_REALM then
-							for character, texture in pairs(specialChatIcons[realm]) do
-								if arg2 == character.."-"..realm then
-									pflag = texture
-								end
-							end
-						end
-					end
-				else
-					for realm, _ in pairs(specialChatIcons) do
-						for character, texture in pairs(specialChatIcons[realm]) do
-							if arg2 == character.."-"..realm then
-								pflag = texture
-							end
-						end
-					end
-				end
-
 				if(pflag == true) then
-					pflag = nil
+					pflag = ""
 				end
 
-				if(not pflag and lfgRoles[arg2] and (type == "PARTY_LEADER" or type == "PARTY" or type == "RAID" or type == "RAID_LEADER" or type == "INSTANCE_CHAT" or type == "INSTANCE_CHAT_LEADER")) then
-					pflag = lfgRoles[arg2]
+				if(lfgRoles[arg2] and (type == "PARTY_LEADER" or type == "PARTY" or type == "RAID" or type == "RAID_LEADER" or type == "INSTANCE_CHAT" or type == "INSTANCE_CHAT_LEADER")) then
+					pflag = lfgRoles[arg2]..(pflag or "")
  				end
-
-				pflag = pflag or ""
 			end
+
+			pflag = pflag or ""
+
 			if ( type == "WHISPER_INFORM" and GMChatFrame_IsGM and GMChatFrame_IsGM(arg2) ) then
 				return;
 			end
@@ -1772,20 +1762,22 @@ end
 function CH:CheckLFGRoles()
 	local isInGroup, isInRaid = IsInGroup(), IsInRaid()
 	local unit = isInRaid and "raid" or "party"
-
+	local name, realm
 	twipe(lfgRoles)
 	if(not isInGroup or not self.db.lfgIcons) then return end
 
 	local role = UnitGroupRolesAssigned("player")
 	if(role) then
-		lfgRoles[E.myname] = rolePaths[role]
+		lfgRoles[PLAYER_NAME] = rolePaths[role]
 	end
 
 	for i = 1, GetNumGroupMembers() do
 		if(UnitExists(unit..i) and not UnitIsUnit(unit..i, "player")) then
 			role = UnitGroupRolesAssigned(unit..i)
-			local name = GetUnitName(unit..i, true)
+			name, realm = UnitName(unit..i)
+
 			if(role and name) then
+				name = (realm and realm ~= "") and name.."-"..realm or name .."-"..PLAYER_REALM
 				lfgRoles[name] = rolePaths[role]
 			end
 		end
