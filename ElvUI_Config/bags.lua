@@ -291,7 +291,7 @@ E.Options.args.bags = {
 					type = "range",
 					name = L["Button Spacing"],
 					desc = L["The spacing between buttons."],
-					min = 1, max = 10, step = 1,
+					min = -1, max = 10, step = 1,
 					disabled = function() return not E.private.bags.bagBar end
 				},
  				backdropSpacing = {

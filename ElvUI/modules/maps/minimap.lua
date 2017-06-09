@@ -510,6 +510,13 @@ function M:UpdateSettings()
 	end
 end
 
+local function MinimapPostDrag()
+	MinimapCluster:ClearAllPoints()
+	MinimapCluster:SetAllPoints(Minimap)
+	MinimapBackdrop:ClearAllPoints()
+	MinimapBackdrop:SetAllPoints(Minimap)
+end
+
 function M:Initialize()
 	menuFrame:SetTemplate("Transparent", true);
 	self:UpdateSettings();
@@ -576,6 +583,7 @@ function M:Initialize()
 	MiniMapInstanceDifficulty:SetParent(Minimap);
 	GuildInstanceDifficulty:SetParent(Minimap);
 	MiniMapChallengeMode:SetParent(Minimap);
+	HelpOpenTicketButton:SetParent(Minimap)
 
 	Minimap:SetArchBlobRingScalar(0);
 	Minimap:SetQuestBlobRingScalar(0);
@@ -588,7 +596,7 @@ function M:Initialize()
 		FeedbackUIButton:Kill();
 	end
 
-	E:CreateMover(MMHolder, "MinimapMover", L["Minimap"]);
+	E:CreateMover(MMHolder, "MinimapMover", L["Minimap"], nil, nil, MinimapPostDrag)
 
 	Minimap:EnableMouseWheel(true);
 	Minimap:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel);
@@ -600,11 +608,6 @@ function M:Initialize()
 	self:RegisterEvent("ZONE_CHANGED_INDOORS", "Update_ZoneText");
 	self:RegisterEvent("ADDON_LOADED");
 	self:UpdateSettings();
-
-	MinimapCluster:ClearAllPoints();
-	MinimapCluster:SetAllPoints(Minimap);
-	MinimapBackdrop:ClearAllPoints();
-	MinimapBackdrop:SetAllPoints(Minimap);
 
 	local fm = CreateFrame("Minimap", "FarmModeMap", E.UIParent);
 	fm:Size(E.db.farmSize);
@@ -622,7 +625,7 @@ function M:Initialize()
 	fm:Hide();
 	E.FrameLocks["FarmModeMap"] = true;
 
-	FarmModeMap:SetScript("OnShow", function() 	
+	FarmModeMap:SetScript("OnShow", function()
 		if(BuffsMover and not E:HasMoverBeenMoved("BuffsMover")) then
 			BuffsMover:ClearAllPoints();
 			BuffsMover:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3);
@@ -646,7 +649,7 @@ function M:Initialize()
 		if Astrolabe then Astrolabe:SetTargetMinimap(FarmModeMap) end
 	end);
 
-	FarmModeMap:SetScript("OnHide", function() 
+	FarmModeMap:SetScript("OnHide", function()
 		if(BuffsMover and not E:HasMoverBeenMoved("BuffsMover")) then
 			E:ResetMovers(L["Player Buffs"]);
 		end

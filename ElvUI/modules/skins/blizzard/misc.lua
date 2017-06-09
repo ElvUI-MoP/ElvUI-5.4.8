@@ -840,14 +840,14 @@ local function LoadSkin()
 	for i = 1, #ChatMenus do
 		if(_G[ChatMenus[i]] == _G["ChatMenu"]) then
 			_G[ChatMenus[i]]:HookScript("OnShow", function(self)
-				self:SetTemplate("Default", true);
+				self:SetTemplate("Transparent", true);
 				self:SetBackdropColor(unpack(E["media"].backdropfadecolor));
 				self:ClearAllPoints();
 				self:Point("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 30);
 			end);
 		else
 			_G[ChatMenus[i]]:HookScript("OnShow", function(self)
-				self:SetTemplate("Default", true);
+				self:SetTemplate("Transparent", true);
 				self:SetBackdropColor(unpack(E["media"].backdropfadecolor));
 			end);
 		end

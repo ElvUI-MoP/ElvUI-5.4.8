@@ -129,21 +129,23 @@ local function LoadSkin()
 				end
 			end
 
-			for i = 1, 80 do
-				local button = _G["VoidStorageStorageButton"..i]
-				local itemID = GetVoidItemInfo(i);
+			E:Delay(0.02, function()
+				for i = 1, 80 do
+					local button = _G["VoidStorageStorageButton"..i]
+					local itemID = GetVoidItemInfo(i);
 
-				if(itemID) then
-					local quality = select(3, GetItemInfo(itemID))
-					if(quality and quality > 1) then
-						button:SetBackdropBorderColor(GetItemQualityColor(quality));
+					if(itemID) then
+						local quality = select(3, GetItemInfo(itemID))
+						if(quality and quality > 1) then
+							button:SetBackdropBorderColor(GetItemQualityColor(quality));
+						else
+							button:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+						end
 					else
-						button:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+						button:SetTemplate("Default", true)
 					end
-				else
-					button:SetTemplate("Default", true)
 				end
-			end
+			end)
 		end
 	end)
 end
