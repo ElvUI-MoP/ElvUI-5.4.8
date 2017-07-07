@@ -71,7 +71,7 @@ local function LoadSkin()
 	GuildBankCashFlowLabel:Point("LEFT", GuildBankTabLimitBackground, "LEFT", -80, -8)
 	GuildBankCashFlowMoneyFrame:Point("RIGHT", GuildBankTabLimitBackground, "RIGHT", 10, -8)
 
-	GuildBankWithdrawMoneyFrame:Point("LEFT", GuildBankMoneyLimitLabel, "RIGHT", -100, 0)
+	GuildBankWithdrawMoneyFrame:Point("LEFT", GuildBankMoneyLimitLabel, "RIGHT", -100, -5)
 
 	for i = 1, NUM_GUILDBANK_COLUMNS do
 		_G["GuildBankColumn"..i]:StripTextures()

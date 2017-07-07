@@ -13,35 +13,38 @@ local function LoadSkin()
 	GuildControlUI:StripTextures()
 	GuildControlUI:SetTemplate("Transparent")
 
+	GuildControlUIHbar:StripTextures()
+
 	GuildControlUIRankBankFrameInset:StripTextures()
 	GuildControlUIRankBankFrameInset:SetTemplate("Transparent", true)
 
 	GuildControlUIRankBankFrameInsetScrollFrame:StripTextures()
 	S:HandleScrollBar(GuildControlUIRankBankFrameInsetScrollFrameScrollBar);
 
-	GuildControlUIHbar:StripTextures()
-
 	local function SkinGuildRanks()
 		for i = 1, GuildControlGetNumRanks() do
 			local rankFrame = _G["GuildControlUIRankOrderFrameRank"..i]
-			if(rankFrame) then
+
+			if rankFrame and not rankFrame.isSkinned then
 				S:HandleButton(rankFrame.downButton)
 				S:HandleButton(rankFrame.upButton)
 				S:HandleButton(rankFrame.deleteButton)
 
-				if(not rankFrame.nameBox.backdrop) then
-					S:HandleEditBox(rankFrame.nameBox)
-				end
+				S:HandleEditBox(rankFrame.nameBox)
 
 				rankFrame.nameBox.backdrop:Point("TOPLEFT", -2, -4)
 				rankFrame.nameBox.backdrop:Point("BOTTOMRIGHT", -4, 4)
+
+				rankFrame.isSkinned = true
 			end
 		end
 	end
 	hooksecurefunc("GuildControlUI_RankOrder_Update", SkinGuildRanks)
 
 	GuildControlUIRankOrderFrameNewButton:HookScript("OnClick", function()
-		E.Delay(1, SkinGuildRanks)
+		E:Delay(0.35, function()
+			SkinGuildRanks()
+		end)
 	end)
 
 	S:HandleDropDownBox(GuildControlUINavigationDropDown)
@@ -88,7 +91,7 @@ local function LoadSkin()
 
 			frame.bg4 = frame:CreateTexture(nil, "BACKGROUND")
 			frame.bg4:SetDrawLayer("BACKGROUND", 1)
-			frame.bg4:SetTexture(0 ,0 ,0)
+			frame.bg4:SetTexture(0, 0, 0)
 			frame.bg4:Point("TOPLEFT", frame.backdrop, "TOPLEFT", E.mult, -E.mult)
 			frame.bg4:Point("BOTTOMRIGHT", frame.backdrop, "BOTTOMRIGHT", -E.mult, E.mult)
 		else
@@ -139,8 +142,7 @@ local function LoadSkin()
 	GuildControlUIRankBankFrameRankDropDownButton:Width(20)
 
 	S:HandleCloseButton(GuildControlUICloseButton)
-	GuildControlUICloseButton:ClearAllPoints()
-	GuildControlUICloseButton:SetPoint("TOPRIGHT", GuildControlUI, "TOPRIGHT", 2, 2)
+	GuildControlUICloseButton:Point("TOPRIGHT", GuildControlUI, "TOPRIGHT", 2, 2)
 end
 
 S:AddCallbackForAddon("Blizzard_GuildControlUI", "GuildControl", LoadSkin);

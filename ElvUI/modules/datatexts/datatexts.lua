@@ -283,7 +283,7 @@ function DT:LoadDataTexts()
 	end
 end
 
-function DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onEnterFunc, onLeaveFunc)
+function DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onEnterFunc, onLeaveFunc, localizedName)
 	if(name) then
 		DT.RegisteredDataTexts[name] = {};
 	else
@@ -313,6 +313,10 @@ function DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onE
 
 	if(onLeaveFunc and type(onLeaveFunc) == "function") then
 		DT.RegisteredDataTexts[name]["onLeave"] = onLeaveFunc;
+	end
+
+	if localizedName and type(localizedName) == "string" then
+		DT.RegisteredDataTexts[name]["localizedName"] = localizedName
 	end
 end
 

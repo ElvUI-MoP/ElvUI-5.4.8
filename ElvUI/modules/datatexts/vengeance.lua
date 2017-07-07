@@ -9,6 +9,7 @@ local self = lastPanel;
 
 local vengeance = GetSpellInfo(93098) or GetSpellInfo(76691)
 local value, tooltip, tooltiptext
+
 tooltip = CreateFrame("GameTooltip", "VengeanceTooltip", E.UIParent, "GameTooltipTemplate")
 tooltiptext = _G[tooltip:GetName().."TextLeft2"]
 tooltip:SetOwner(E.UIParent, "ANCHOR_NONE")
@@ -44,4 +45,4 @@ local function ValueColorUpdate(hex)
 end
 E["valueColorUpdateFuncs"][ValueColorUpdate] = true
 
-DT:RegisterDatatext("Vengeance", {"UNIT_AURA", "PLAYER_ENTERING_WORLD", "CLOSE_WORLD_MAP"}, OnEvent)
+DT:RegisterDatatext("Vengeance", {"UNIT_AURA", "PLAYER_ENTERING_WORLD", "CLOSE_WORLD_MAP"}, OnEvent, nil, nil, nil, nil, L["Vengeance"])

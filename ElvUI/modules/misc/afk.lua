@@ -4,11 +4,11 @@ local AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0");
 local CH = E:GetModule("Chat");
 
 local _G = _G;
-local GetTime = GetTime;
 local tostring = tostring;
 local floor = math.floor;
 local format, strsub, gsub = string.format, string.sub, string.gsub
 
+local GetTime = GetTime;
 local CreateFrame = CreateFrame;
 local InCombatLockdown = InCombatLockdown;
 local CinematicFrame = CinematicFrame;
@@ -204,6 +204,7 @@ local function Chat_OnMouseWheel(self, delta)
 	end
 end
 
+--[[
 local function Chat_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13)
 	local coloredName = GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
 	local type = strsub(event, 10);
@@ -242,6 +243,7 @@ local function Chat_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg
 
 	self:AddMessage(CH:ConcatenateTimeStamp(body), info.r, info.g, info.b, info.id, false, accessID, typeID);
 end
+]]
 
 function AFK:Initialize()
 	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass];

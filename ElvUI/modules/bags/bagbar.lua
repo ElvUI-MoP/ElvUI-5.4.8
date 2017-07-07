@@ -117,7 +117,7 @@ function B:LoadBagBar()
 	tinsert(ElvUIBags.buttons, MainMenuBarBackpackButton);
 	self:SkinBag(MainMenuBarBackpackButton);
 
-	for i=0, NUM_BAG_FRAMES-1 do
+	for i = 0, NUM_BAG_FRAMES - 1 do
 		local b = _G["CharacterBag"..i.."Slot"];
 		b:SetParent(ElvUIBags);
 		b.SetParent = E.dummy;

@@ -19,6 +19,7 @@ local WorldFrame = WorldFrame
 local WorldGetNumChildren, WorldGetChildren = WorldFrame.GetNumChildren, WorldFrame.GetChildren
 
 local numChildren = 0
+local isTarget = false
 local FSPAT = "%s*" .. ((_G.FOREIGN_SERVER_LABEL:gsub("^%s", "")):gsub("[%*()]", "%%%1")) .. "$"
 
 local RaidIconCoordinate = {
@@ -128,8 +129,10 @@ function mod:SetFrameScale(frame, scale)
 end
 
 function mod:SetTargetFrame(frame)
+	if isTarget then return end
+
 	local targetExists = UnitExists("target") == 1
-	if targetExists and frame:GetParent():IsShown() and frame:GetParent():GetAlpha() == 1 and not frame.isTarget then
+	if targetExists and frame:GetParent():IsShown() and frame:GetParent():GetAlpha() == 1 then
 		if self.db.useTargetScale then
 			self:SetFrameScale(frame, (frame.CustomScale and frame.CustomScale * self.db.targetScale) or self.db.targetScale)
 		end
@@ -159,6 +162,7 @@ function mod:SetTargetFrame(frame)
 		end
 		frame.isTarget = nil
 		frame.unit = nil
+		frame.guid = nil
 		if self.db.units[frame.UnitType].healthbar.enable ~= true then
 			self:UpdateAllFrame(frame)
 		end
@@ -179,6 +183,16 @@ function mod:SetTargetFrame(frame)
 	mod:UpdateElement_HealthColor(frame)
 	mod:UpdateElement_Glow(frame)
 	mod:UpdateElement_CPoints(frame)
+
+	return frame.isTarget
+end
+
+function mod:GetNumVisiblePlates()
+	local i = 0
+	for _ in pairs(mod.VisiblePlates) do
+		i = i + 1
+	end
+	return i
 end
 
 function mod:StyleFrame(parent, noBackdrop, point)
@@ -347,6 +361,7 @@ function mod:GetUnitInfo(frame)
 end
 
 function mod:OnShow()
+	isTarget = false
 	mod.VisiblePlates[self.UnitFrame] = true
 
 	self.UnitFrame.UnitName = gsub(self.UnitFrame.oldName:GetText(), FSPAT, "")
@@ -450,22 +465,23 @@ end
 
 function mod:UpdateElement_All(frame, noTargetFrame)
 	if self.db.units[frame.UnitType].healthbar.enable or frame.isTarget then
-		mod:UpdateElement_Health(frame)
-		mod:UpdateElement_HealthColor(frame)
-		mod:UpdateElement_Auras(frame)
+		self:UpdateElement_Health(frame)
+		self:UpdateElement_HealthColor(frame)
+		self:UpdateElement_Auras(frame)
 	end
-	mod:UpdateElement_RaidIcon(frame)
-	mod:UpdateElement_HealerIcon(frame)
-	mod:UpdateElement_Name(frame)
-	mod:UpdateElement_Level(frame)
-	mod:UpdateElement_Elite(frame)
+	self:UpdateElement_RaidIcon(frame)
+	self:UpdateElement_HealerIcon(frame)
+	self:UpdateElement_Name(frame)
+	self:UpdateElement_Level(frame)
+	self:UpdateElement_Elite(frame)
 
 	if not noTargetFrame then
-		mod:ScheduleTimer("SetTargetFrame", 0.01, frame)
+		mod:ScheduleTimer("ForEachPlate", 0.25, "SetTargetFrame")
 	end
 end
 
 function mod:OnCreated(frame)
+	isTarget = false
 	local barFrame, nameFrame = frame:GetChildren()
 	local HealthBar, CastBar = barFrame:GetChildren()
 	local Threat, Border, Highlight, Level, BossIcon, RaidIcon, EliteIcon = barFrame:GetRegions()
@@ -558,9 +574,17 @@ function mod:OnUpdate(elapsed)
 		numChildren = count
 	end
 
+	local i = 0
 	for frame in pairs(mod.VisiblePlates) do
-		if not frame.isTarget and frame:GetParent():GetAlpha() ~= 1 then
+		i = i + 1
+
+		local getTarget = mod:SetTargetFrame(frame)
+		if not getTarget then
 			frame:GetParent():SetAlpha(1)
+		end
+
+		if i == mod:GetNumVisiblePlates() then
+			isTarget = true
 		end
 	end
 end
@@ -660,7 +684,7 @@ function mod:PLAYER_ENTERING_WORLD()
 end
 
 function mod:PLAYER_TARGET_CHANGED()
-	mod:ScheduleTimer("ForEachPlate", 0.01, "SetTargetFrame")
+	isTarget = false
 end
 
 function mod:UNIT_AURA(_, unit)

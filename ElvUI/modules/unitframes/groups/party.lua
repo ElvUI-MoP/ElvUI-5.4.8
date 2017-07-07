@@ -84,11 +84,11 @@ function UF:Update_PartyHeader(header, db)
 		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195);
 
 		E:CreateMover(headerHolder, headerHolder:GetName() .. "Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY,ARENA");
-		headerHolder.positioned = true;
 
 		headerHolder:RegisterEvent("PLAYER_ENTERING_WORLD");
 		headerHolder:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 		headerHolder:SetScript("OnEvent", UF["PartySmartVisibility"]);
+		headerHolder.positioned = true;
 	end
 
 	UF.PartySmartVisibility(headerHolder);
@@ -99,10 +99,11 @@ function UF:PartySmartVisibility(event)
 		self.blockVisibilityChanges = false;
 		return;
 	end
-	local inInstance, instanceType = IsInInstance();
+
 	if(event == "PLAYER_REGEN_ENABLED") then self:UnregisterEvent("PLAYER_REGEN_ENABLED"); end
 
 	if(not InCombatLockdown()) then
+		local inInstance, instanceType = IsInInstance();
 		if(inInstance and (instanceType == "raid" or instanceType == "pvp")) then
 			UnregisterStateDriver(self, "visibility");
 			self:Hide();

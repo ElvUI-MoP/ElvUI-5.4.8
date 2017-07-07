@@ -70,7 +70,6 @@ local function LoadSkin()
 	LFDQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 334)
 	S:HandleCheckBox(LFDQueueFrameRoleButtonTank.checkButton, true)
 
-
 	LFDQueueFrameRoleButtonHealer:StripTextures();
 	LFDQueueFrameRoleButtonHealer:CreateBackdrop();
 	LFDQueueFrameRoleButtonHealer:Size(50);

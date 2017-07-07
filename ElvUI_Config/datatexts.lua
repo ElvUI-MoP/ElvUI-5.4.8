@@ -4,8 +4,8 @@ local DT = E:GetModule("DataTexts");
 local datatexts = {};
 
 function DT:PanelLayoutOptions()
-	for name, _ in pairs(DT.RegisteredDataTexts) do
-		datatexts[name] = name;
+	for name, data in pairs(DT.RegisteredDataTexts) do
+		datatexts[name] = data.localizedName or L[name]
 	end
 	datatexts[""] = NONE;
 
@@ -375,12 +375,12 @@ E.Options.args.datatexts = {
 		time = {
 			order = 5,
 			type = "group",
-			name = "Time",
+			name = L["Time"],
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = "Time"
+					name = L["Time"],
 				},
 				timeFormat = {
 					order = 2,
@@ -405,7 +405,7 @@ E.Options.args.datatexts = {
 						["%d/%m/%y "] = "27/03/16",
 						["%m/%d/%y "] = "03/27/16",
 						["%y/%m/%d "] = "16/03/27",
-						["%d.%m.%y "] = "27.03.32"
+						["%d.%m.%y "] = "27.03.16"
 					}
 				}
 			}
@@ -413,12 +413,12 @@ E.Options.args.datatexts = {
 		currencies = {
 			order = 6,
 			type = "group",
-			name = "Currencies", --Name of datatext, which isn't localized
+			name = CURRENCY,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = "Currencies"
+					name = CURRENCY,
 				},
 				displayedCurrency = {
 					order = 2,

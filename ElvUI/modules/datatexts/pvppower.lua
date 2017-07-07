@@ -43,4 +43,4 @@ local function ValueColorUpdate(hex)
 end
 E["valueColorUpdateFuncs"][ValueColorUpdate] = true
 
-DT:RegisterDatatext("PvP Power", {"PVP_POWER_UPDATE"}, OnEvent, nil, nil, OnEnter)
+DT:RegisterDatatext("PvP Power", {"PVP_POWER_UPDATE"}, OnEvent, nil, nil, OnEnter, nil, STAT_PVP_POWER)

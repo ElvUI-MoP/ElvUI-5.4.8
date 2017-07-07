@@ -7,6 +7,7 @@ local GetCombatRatingBonus = GetCombatRatingBonus;
 local CR_HIT_MELEE = CR_HIT_MELEE;
 local CR_HIT_RANGED = CR_HIT_RANGED;
 local CR_HIT_SPELL = CR_HIT_SPELL;
+local STAT_HIT_CHANCE = STAT_HIT_CHANCE
 
 local hitRatingBonus;
 local displayString = "";
@@ -101,4 +102,4 @@ local function ValueColorUpdate(hex)
 end
 E["valueColorUpdateFuncs"][ValueColorUpdate] = true
 
-DT:RegisterDatatext("Hit Rating", {"COMBAT_RATING_UPDATE"}, OnEvent, nil, nil, OnEnter)
+DT:RegisterDatatext("Hit Rating", {"COMBAT_RATING_UPDATE"}, OnEvent, nil, nil, OnEnter, nil, STAT_HIT_CHANCE)

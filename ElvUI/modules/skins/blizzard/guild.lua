@@ -454,41 +454,29 @@ local function LoadSkin()
 	S:HandleCheckBox(GuildRecruitmentLevelAnyButton)
 	S:HandleCheckBox(GuildRecruitmentLevelMaxButton)
 
-	S:HandleCheckBox(GuildRecruitmentTankButton:GetChildren())
-	GuildRecruitmentTankButton:GetChildren():SetFrameLevel(GuildRecruitmentTankButton:GetChildren():GetFrameLevel() + 2);
+	local roleIcons = {
+		"GuildRecruitmentTankButton",
+		"GuildRecruitmentHealerButton",
+		"GuildRecruitmentDamagerButton"
+	}
 
-	S:HandleCheckBox(GuildRecruitmentHealerButton:GetChildren())
-	GuildRecruitmentHealerButton:GetChildren():SetFrameLevel(GuildRecruitmentHealerButton:GetChildren():GetFrameLevel() + 2);
+	for i = 1, #roleIcons do
+		S:HandleCheckBox(_G[roleIcons[i]]:GetChildren())
+		_G[roleIcons[i]]:GetChildren():SetFrameLevel(_G[roleIcons[i]]:GetChildren():GetFrameLevel() + 2)
 
-	S:HandleCheckBox(GuildRecruitmentDamagerButton:GetChildren())
-	GuildRecruitmentDamagerButton:GetChildren():SetFrameLevel(GuildRecruitmentDamagerButton:GetChildren():GetFrameLevel() + 2);
+		_G[roleIcons[i]]:StripTextures()
+		_G[roleIcons[i]]:CreateBackdrop()
+		_G[roleIcons[i]].backdrop:Point("TOPLEFT", 2, -2)
+		_G[roleIcons[i]].backdrop:Point("BOTTOMRIGHT", -2, 2)
 
-	GuildRecruitmentTankButton:StripTextures()
-	GuildRecruitmentTankButton:CreateBackdrop();
-	GuildRecruitmentTankButton.backdrop:Point("TOPLEFT", 2, -2)
-	GuildRecruitmentTankButton.backdrop:Point("BOTTOMRIGHT", -2, 2)
-	GuildRecruitmentTankButton.icon = GuildRecruitmentTankButton:CreateTexture(nil, "OVERLAY");
-	GuildRecruitmentTankButton.icon:SetTexture("Interface\\Icons\\Ability_Defend");
-	GuildRecruitmentTankButton.icon:SetTexCoord(unpack(E.TexCoords))
-	GuildRecruitmentTankButton.icon:SetInside(GuildRecruitmentTankButton.backdrop)
+		_G[roleIcons[i]].icon = _G[roleIcons[i]]:CreateTexture(nil, "ARTWORK")
+		_G[roleIcons[i]].icon:SetTexCoord(unpack(E.TexCoords))
+		_G[roleIcons[i]].icon:SetInside(_G[roleIcons[i]].backdrop)
+	end
 
-	GuildRecruitmentHealerButton:StripTextures()
-	GuildRecruitmentHealerButton:CreateBackdrop();
-	GuildRecruitmentHealerButton.backdrop:Point("TOPLEFT", 2, -2)
-	GuildRecruitmentHealerButton.backdrop:Point("BOTTOMRIGHT", -2, 2)
-	GuildRecruitmentHealerButton.icon = GuildRecruitmentHealerButton:CreateTexture(nil, "OVERLAY");
-	GuildRecruitmentHealerButton.icon:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH");
-	GuildRecruitmentHealerButton.icon:SetTexCoord(unpack(E.TexCoords))
-	GuildRecruitmentHealerButton.icon:SetInside(GuildRecruitmentHealerButton.backdrop)
-
-	GuildRecruitmentDamagerButton:StripTextures()
-	GuildRecruitmentDamagerButton:CreateBackdrop();
-	GuildRecruitmentDamagerButton.backdrop:Point("TOPLEFT", 2, -2)
-	GuildRecruitmentDamagerButton.backdrop:Point("BOTTOMRIGHT", -2, 2)
-	GuildRecruitmentDamagerButton.icon = GuildRecruitmentDamagerButton:CreateTexture(nil, "OVERLAY");
-	GuildRecruitmentDamagerButton.icon:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01");
-	GuildRecruitmentDamagerButton.icon:SetTexCoord(unpack(E.TexCoords))
-	GuildRecruitmentDamagerButton.icon:SetInside(GuildRecruitmentDamagerButton.backdrop)
+	GuildRecruitmentTankButton.icon:SetTexture("Interface\\Icons\\Ability_Defend")
+	GuildRecruitmentHealerButton.icon:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	GuildRecruitmentDamagerButton.icon:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 end
 
 S:AddCallbackForAddon("Blizzard_GuildUI", "Guild", LoadSkin);

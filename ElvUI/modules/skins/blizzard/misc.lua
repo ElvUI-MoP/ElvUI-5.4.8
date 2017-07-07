@@ -243,56 +243,51 @@ local function LoadSkin()
 	end)
 
 	-- Role Check Popup
-	RolePollPopup:SetTemplate("Transparent");
+	RolePollPopup:SetTemplate("Transparent")
 
-	S:HandleCloseButton(RolePollPopupCloseButton);
+	S:HandleCloseButton(RolePollPopupCloseButton)
 
-	S:HandleButton(RolePollPopupAcceptButton);
+	S:HandleButton(RolePollPopupAcceptButton)
 
-	RolePollPopupRoleButtonTank:StripTextures();
-	RolePollPopupRoleButtonTank:CreateBackdrop();
-	RolePollPopupRoleButtonTank.backdrop:Point("TOPLEFT", 7, -7);
-	RolePollPopupRoleButtonTank.backdrop:Point("BOTTOMRIGHT", -7, 7);
-	RolePollPopupRoleButtonTank:Point("TOPLEFT", 32, -35);
-	RolePollPopupRoleButtonTank.icon = RolePollPopupRoleButtonTank:CreateTexture(nil, "OVERLAY");
-	RolePollPopupRoleButtonTank.icon:SetTexture("Interface\\Icons\\Ability_Defend");
-	RolePollPopupRoleButtonTank.icon:SetTexCoord(unpack(E.TexCoords));
-	RolePollPopupRoleButtonTank.icon:SetInside(RolePollPopupRoleButtonTank.backdrop);
+	local roleCheckIcons = {
+		"RolePollPopupRoleButtonTank",
+		"RolePollPopupRoleButtonHealer",
+		"RolePollPopupRoleButtonDPS"
+	}
 
-	RolePollPopupRoleButtonHealer:StripTextures();
-	RolePollPopupRoleButtonHealer:CreateBackdrop();
-	RolePollPopupRoleButtonHealer.backdrop:Point("TOPLEFT", 7, -7);
-	RolePollPopupRoleButtonHealer.backdrop:Point("BOTTOMRIGHT", -7, 7);
-	RolePollPopupRoleButtonHealer.icon = RolePollPopupRoleButtonHealer:CreateTexture(nil, "OVERLAY");
-	RolePollPopupRoleButtonHealer.icon:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH");
-	RolePollPopupRoleButtonHealer.icon:SetTexCoord(unpack(E.TexCoords));
-	RolePollPopupRoleButtonHealer.icon:SetInside(RolePollPopupRoleButtonHealer.backdrop);
+	for i = 1, #roleCheckIcons do
+		_G[roleCheckIcons[i]]:StripTextures()
+		_G[roleCheckIcons[i]]:CreateBackdrop()
+		_G[roleCheckIcons[i]].backdrop:Point("TOPLEFT", 7, -7)
+		_G[roleCheckIcons[i]].backdrop:Point("BOTTOMRIGHT", -7, 7)
 
-	RolePollPopupRoleButtonDPS:StripTextures();
-	RolePollPopupRoleButtonDPS:CreateBackdrop();
-	RolePollPopupRoleButtonDPS.backdrop:Point("TOPLEFT", 7, -7);
-	RolePollPopupRoleButtonDPS.backdrop:Point("BOTTOMRIGHT", -7, 7);
-	RolePollPopupRoleButtonDPS.icon = RolePollPopupRoleButtonDPS:CreateTexture(nil, "OVERLAY");
-	RolePollPopupRoleButtonDPS.icon:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01");
-	RolePollPopupRoleButtonDPS.icon:SetTexCoord(unpack(E.TexCoords));
-	RolePollPopupRoleButtonDPS.icon:SetInside(RolePollPopupRoleButtonDPS.backdrop);
+		_G[roleCheckIcons[i]].icon = _G[roleCheckIcons[i]]:CreateTexture(nil, "ARTWORK")
+		_G[roleCheckIcons[i]].icon:SetTexCoord(unpack(E.TexCoords))
+		_G[roleCheckIcons[i]].icon:SetInside(_G[roleCheckIcons[i]].backdrop)
+	end
+
+	RolePollPopupRoleButtonTank:Point("TOPLEFT", 32, -35)
+
+	RolePollPopupRoleButtonTank.icon:SetTexture("Interface\\Icons\\Ability_Defend")
+	RolePollPopupRoleButtonHealer.icon:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	RolePollPopupRoleButtonDPS.icon:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 
 	hooksecurefunc("RolePollPopup_Show", function(self)
-		local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player");
-		if(canBeTank) then
-			RolePollPopupRoleButtonTank.icon:SetDesaturated(false);
+		local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
+		if canBeTank then
+			RolePollPopupRoleButtonTank.icon:SetDesaturated(false)
 		else
-			RolePollPopupRoleButtonTank.icon:SetDesaturated(true);
+			RolePollPopupRoleButtonTank.icon:SetDesaturated(true)
 		end
-		if(canBeHealer) then
-			RolePollPopupRoleButtonHealer.icon:SetDesaturated(false);
+		if canBeHealer then
+			RolePollPopupRoleButtonHealer.icon:SetDesaturated(false)
 		else
-			RolePollPopupRoleButtonHealer.icon:SetDesaturated(true);
+			RolePollPopupRoleButtonHealer.icon:SetDesaturated(true)
 		end
-		if(canBeDamager) then
-			RolePollPopupRoleButtonDPS.icon:SetDesaturated(false);
+		if canBeDamager then
+			RolePollPopupRoleButtonDPS.icon:SetDesaturated(false)
 		else
-			RolePollPopupRoleButtonDPS.icon:SetDesaturated(true);
+			RolePollPopupRoleButtonDPS.icon:SetDesaturated(true)
 		end
 	end)
 

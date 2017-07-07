@@ -72,8 +72,8 @@ end
 function M:UpdateCoords()
 	if(not WorldMapFrame:IsShown()) then return; end
 	local x, y = GetPlayerMapPosition("player");
-	x = E:Round(100 * x, 2);
-	y = E:Round(100 * y, 2);
+	x = x and E:Round(100 * x, 2) or 0
+	y = y and E:Round(100 * y, 2) or 0
 
 	if(x ~= 0 and y ~= 0) then
 		CoordsHolder.playerCoords:SetText(PLAYER .. ":   " .. format("%.2f, %.2f", x, y));
@@ -110,6 +110,7 @@ function M:PositionCoords()
 
 	CoordsHolder.playerCoords:ClearAllPoints();
 	CoordsHolder.playerCoords:Point(position, WorldMapDetailFrame, position, x + xOffset, y + yOffset);
+
 	CoordsHolder.mouseCoords:ClearAllPoints();
 	CoordsHolder.mouseCoords:Point(position, CoordsHolder.playerCoords, INVERTED_POINTS[position], 0, y);
 end
@@ -119,14 +120,17 @@ function M:Initialize()
 		local CoordsHolder = CreateFrame("Frame", "CoordsHolder", WorldMapFrame);
 		CoordsHolder:SetFrameLevel(WorldMapDetailFrame:GetFrameLevel() + 1)
 		CoordsHolder:SetFrameStrata(WorldMapDetailFrame:GetFrameStrata());
+
 		CoordsHolder.playerCoords = CoordsHolder:CreateFontString(nil, "OVERLAY");
-		CoordsHolder.mouseCoords = CoordsHolder:CreateFontString(nil, "OVERLAY");
 		CoordsHolder.playerCoords:SetTextColor(1, 1 ,0);
-		CoordsHolder.mouseCoords:SetTextColor(1, 1 ,0);
 		CoordsHolder.playerCoords:SetFontObject(NumberFontNormal);
-		CoordsHolder.mouseCoords:SetFontObject(NumberFontNormal);
 		CoordsHolder.playerCoords:SetText(PLAYER..":   0, 0");
+
+		CoordsHolder.mouseCoords = CoordsHolder:CreateFontString(nil, "OVERLAY");
+		CoordsHolder.mouseCoords:SetTextColor(1, 1 ,0);
+		CoordsHolder.mouseCoords:SetFontObject(NumberFontNormal);
 		CoordsHolder.mouseCoords:SetText(MOUSE_LABEL..":   0, 0");
+
 		CoordsHolder:SetScript("OnUpdate", self.UpdateCoords);
 
 		self:PositionCoords();

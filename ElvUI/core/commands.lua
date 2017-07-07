@@ -260,7 +260,7 @@ function E:LoadCommands()
 	self:RegisterChatCommand("cleanguild", "MassGuildKick")
 	self:RegisterChatCommand("enableblizzard", "EnableBlizzardAddOns")
 
-	if(E:GetModule("ActionBars")) then
+	if E:GetModule("ActionBars") and E.private.actionbar.enable then
 		self:RegisterChatCommand("kb", E:GetModule("ActionBars").ActivateBindMode);
 	end
 end

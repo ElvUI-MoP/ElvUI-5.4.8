@@ -12,16 +12,17 @@ local HEALER_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\healer.tga:14:
 local DPS_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\dps.tga:14:14|t"
 local NOBONUSREWARDS = BATTLEGROUND_HOLIDAY..": N/A"
 local lastPanel
+local enteredFrame = false
 
 local function MakeIconString(tank, healer, damage)
 	local str = ""
-	if(tank) then
+	if tank then
 		str = str..TANK_ICON
 	end
-	if(healer) then
+	if healer then
 		str = str..HEALER_ICON
 	end
-	if(damage) then
+	if damage then
 		str = str..DPS_ICON
 	end
 
@@ -34,7 +35,7 @@ local function OnEvent(self)
 	local dpsReward = false
 	local unavailable = true
 	for i = 1, GetNumRandomDungeons() do
-		local id, name = GetLFGRandomDungeonInfo(i)
+		local id = GetLFGRandomDungeonInfo(i)
 		for x = 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
 			local eligible, forTank, forHealer, forDamage, itemCount = GetLFGRoleShortageRewards(id, x)
 			if eligible and forTank and itemCount > 0 then tankReward = true; unavailable = false; end
@@ -43,7 +44,7 @@ local function OnEvent(self)
 		end
 	end
 
-	if(unavailable) then
+	if unavailable then
 		self.text:SetText(NOBONUSREWARDS)
 	else
 		self.text:SetText(BATTLEGROUND_HOLIDAY..": "..MakeIconString(tankReward, healerReward, dpsReward))
@@ -58,13 +59,17 @@ end
 local function ValueColorUpdate(hex)
 	NOBONUSREWARDS = BATTLEGROUND_HOLIDAY..": "..hex.."N/A|r"
 
-	if(lastPanel ~= nil) then
+	if lastPanel ~= nil then
 		OnEvent(lastPanel)
 	end
 end
 E["valueColorUpdateFuncs"][ValueColorUpdate] = true
 
 local function OnEnter(self)
+	if not enteredFrame then
+		enteredFrame = true
+	end
+
 	DT:SetupTooltip(self)
 	local allUnavailable = true
 	local numCTA = 0
@@ -82,7 +87,7 @@ local function OnEnter(self)
 			if eligible and forDamage and itemCount > 0 then dpsReward = true end
 		end
 
-		if(not unavailable) then
+		if not unavailable then
 			allUnavailable = false
 			local rolesString = MakeIconString(tankReward, healerReward, dpsReward)
 			if rolesString ~= ""  then
@@ -95,4 +100,24 @@ local function OnEnter(self)
 	DT.tooltip:Show()
 end
 
-DT:RegisterDatatext("Call to Arms", {"PLAYER_ENTERING_WORLD", "LFG_UPDATE_RANDOM_INFO"}, OnEvent, nil, OnClick, OnEnter)
+local updateInterval = 10
+local function OnUpdate(self, elapsed)
+	if self.timeSinceUpdate and self.timeSinceUpdate > updateInterval then
+		OnEvent(self)
+
+		if enteredFrame then
+			OnEnter(self)
+		end
+
+		self.timeSinceUpdate = 0
+	else
+		self.timeSinceUpdate = (self.timeSinceUpdate or 0) + elapsed
+	end
+end
+
+local function OnLeave()
+	DT.tooltip:Hide()
+	enteredFrame = false
+end
+
+DT:RegisterDatatext("Call to Arms", {"PLAYER_ENTERING_WORLD", "LFG_UPDATE_RANDOM_INFO"}, OnEvent, OnUpdate, OnClick, OnEnter, OnLeave, BATTLEGROUND_HOLIDAY)
