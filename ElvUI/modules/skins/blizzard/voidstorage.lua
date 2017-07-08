@@ -129,7 +129,7 @@ local function LoadSkin()
 				end
 			end
 
-			E:Delay(0.02, function()
+			E:Delay(0.05, function()
 				for i = 1, 80 do
 					local button = _G["VoidStorageStorageButton"..i]
 					local itemID = GetVoidItemInfo(i);

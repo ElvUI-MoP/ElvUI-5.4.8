@@ -1,11 +1,16 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
-local GetLFGRandomDungeonInfo = GetLFGRandomDungeonInfo;
-local GetLFGRoleShortageRewards = GetLFGRoleShortageRewards;
-local GetNumRandomDungeons = GetNumRandomDungeons;
-local LFG_ROLE_NUM_SHORTAGE_TYPES = LFG_ROLE_NUM_SHORTAGE_TYPES;
-local BATTLEGROUND_HOLIDAY = BATTLEGROUND_HOLIDAY;
+local GetLFGRandomDungeonInfo = GetLFGRandomDungeonInfo
+local GetLFGRoleShortageRewards = GetLFGRoleShortageRewards
+local GetNumRandomDungeons = GetNumRandomDungeons
+local GetNumRFDungeons = GetNumRFDungeons
+local GetRFDungeonInfo = GetRFDungeonInfo
+local PVEFrame_ToggleFrame = PVEFrame_ToggleFrame
+local LFG_ROLE_NUM_SHORTAGE_TYPES = LFG_ROLE_NUM_SHORTAGE_TYPES
+local BATTLEGROUND_HOLIDAY = BATTLEGROUND_HOLIDAY
+local DUNGEONS = DUNGEONS
+local RAID_FINDER = RAID_FINDER
 
 local TANK_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\tank.tga:14:14|t"
 local HEALER_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\healer.tga:14:14|t"
@@ -34,13 +39,24 @@ local function OnEvent(self)
 	local healerReward = false
 	local dpsReward = false
 	local unavailable = true
+
 	for i = 1, GetNumRandomDungeons() do
 		local id = GetLFGRandomDungeonInfo(i)
 		for x = 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
 			local eligible, forTank, forHealer, forDamage, itemCount = GetLFGRoleShortageRewards(id, x)
-			if eligible and forTank and itemCount > 0 then tankReward = true; unavailable = false; end
-			if eligible and forHealer and itemCount > 0 then healerReward = true; unavailable = false; end
-			if eligible and forDamage and itemCount > 0 then dpsReward = true; unavailable = false; end
+			if eligible and forTank and itemCount > 0 then tankReward = true unavailable = false end
+			if eligible and forHealer and itemCount > 0 then healerReward = true unavailable = false end
+			if eligible and forDamage and itemCount > 0 then dpsReward = true unavailable = false end
+		end
+	end
+
+	for i = 1, GetNumRFDungeons() do
+		local id = GetRFDungeonInfo(i)
+		for x = 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
+			local eligible, forTank, forHealer, forDamage, itemCount = GetLFGRoleShortageRewards(id, x)
+			if eligible and forTank and itemCount > 0 then tankReward = true unavailable = false end
+			if eligible and forHealer and itemCount > 0 then healerReward = true unavailable = false end
+			if eligible and forDamage and itemCount > 0 then dpsReward = true unavailable = false end
 		end
 	end
 
@@ -53,7 +69,7 @@ local function OnEvent(self)
 end
 
 local function OnClick()
-	PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame);
+	PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame)
 end
 
 local function ValueColorUpdate(hex)
@@ -71,14 +87,15 @@ local function OnEnter(self)
 	end
 
 	DT:SetupTooltip(self)
-	local allUnavailable = true
 	local numCTA = 0
+	local addTooltipHeader = true
 	for i = 1, GetNumRandomDungeons() do
 		local id, name = GetLFGRandomDungeonInfo(i)
 		local tankReward = false
 		local healerReward = false
 		local dpsReward = false
 		local unavailable = true
+
 		for x = 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
 			local eligible, forTank, forHealer, forDamage, itemCount = GetLFGRoleShortageRewards(id, x)
 			if eligible then unavailable = false end
@@ -88,9 +105,43 @@ local function OnEnter(self)
 		end
 
 		if not unavailable then
-			allUnavailable = false
 			local rolesString = MakeIconString(tankReward, healerReward, dpsReward)
 			if rolesString ~= ""  then
+				if addTooltipHeader then
+					DT.tooltip:AddLine(DUNGEONS)
+					addTooltipHeader = false
+				end
+				DT.tooltip:AddDoubleLine(name..":", rolesString, 1, 1, 1)
+			end
+			if tankReward or healerReward or dpsReward then numCTA = numCTA + 1 end
+		end
+	end
+
+	addTooltipHeader = true
+
+	for i = 1, GetNumRFDungeons() do
+		local id, name = GetRFDungeonInfo(i)
+		local tankReward = false
+		local healerReward = false
+		local dpsReward = false
+		local unavailable = true
+
+		for x = 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
+			local eligible, forTank, forHealer, forDamage, itemCount = GetLFGRoleShortageRewards(id, x)
+			if eligible then unavailable = false end
+			if eligible and forTank and itemCount > 0 then tankReward = true end
+			if eligible and forHealer and itemCount > 0 then healerReward = true end
+			if eligible and forDamage and itemCount > 0 then dpsReward = true end
+		end
+
+		if not unavailable then
+			local rolesString = MakeIconString(tankReward, healerReward, dpsReward)
+			if rolesString ~= ""  then
+				if addTooltipHeader then
+					DT.tooltip:AddLine(" ")
+					DT.tooltip:AddLine(RAID_FINDER)
+					addTooltipHeader = false
+				end
 				DT.tooltip:AddDoubleLine(name..":", rolesString, 1, 1, 1)
 			end
 			if tankReward or healerReward or dpsReward then numCTA = numCTA + 1 end

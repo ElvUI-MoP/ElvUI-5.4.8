@@ -25,6 +25,7 @@
 	<Script file="achievement.lua"/>
 	<Script file="elvuiconfig.lua"/>
 	<Script file="mastery.lua"/>
+	<Script file="movementspeed.lua"/>
 	<Script file="specswitch.lua"/>
 	<Script file="expertise.lua"/>
 	<Script file="calltoarms.lua"/>

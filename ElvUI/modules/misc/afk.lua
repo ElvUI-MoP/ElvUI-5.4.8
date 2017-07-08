@@ -87,6 +87,8 @@ function AFK:SetAFK(status)
 		UIParent:Hide();
 		self.AFKMode:Show();
 
+		E.global.afkEnabled = true
+
 		MoveViewLeftStart(CAMERA_SPEED);
 
 		if(IsInGuild()) then
@@ -116,6 +118,8 @@ function AFK:SetAFK(status)
 	elseif(not status and self.isAFK) then
 		self.AFKMode:Hide();
 		UIParent:Show();
+
+		E.global.afkEnabled = nil
 
 		MoveViewLeftStop();
 
@@ -246,6 +250,10 @@ end
 ]]
 
 function AFK:Initialize()
+	if E.global.afkEnabled then
+		E.global.afkEnabled = nil
+	end
+
 	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass];
 
 	self.AFKMode = CreateFrame("Frame", "ElvUIAFKFrame");
