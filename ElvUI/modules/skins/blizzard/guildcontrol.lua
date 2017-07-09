@@ -42,7 +42,7 @@ local function LoadSkin()
 	hooksecurefunc("GuildControlUI_RankOrder_Update", SkinGuildRanks)
 
 	GuildControlUIRankOrderFrameNewButton:HookScript("OnClick", function()
-		E:Delay(0.35, function()
+		E:Delay(1, function()
 			SkinGuildRanks()
 		end)
 	end)
