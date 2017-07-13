@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule("Skins");
+local E, L, V, P, G = unpack(select(2, ...))
+local S = E:GetModule("Skins")
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.movepad ~= true then return end
@@ -13,9 +13,12 @@ local function LoadSkin()
 	S:HandleButton(MovePadBackward)
 	S:HandleButton(MovePadJump)
 
-	S:HandleCloseButton(MovePadLock, nil, " ");
-	MovePadLock:Point("BOTTOMRIGHT", 5, -5);
-
+	MovePadLock:SetBackdrop(nil)
+	MovePadLock:GetNormalTexture():SetDesaturated(true)
+	MovePadLock:GetPushedTexture():SetDesaturated(true)
+	MovePadLock:GetCheckedTexture():SetDesaturated(true)
+	MovePadLock:GetHighlightTexture():SetDesaturated(true)
+	MovePadLock:Point("BOTTOMRIGHT", 5, -5)
 end
 
-S:AddCallbackForAddon("Blizzard_MovePad", "MovePad", LoadSkin);
+S:AddCallbackForAddon("Blizzard_MovePad", "MovePad", LoadSkin)
