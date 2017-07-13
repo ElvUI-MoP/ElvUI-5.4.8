@@ -345,6 +345,11 @@ local function LoadSkin()
 		factionButton.SetNormalTexture = function() end
 		factionButton:GetNormalTexture():SetInside()
 		factionButton:SetHighlightTexture(nil)
+
+		factionRow.War = factionRow:CreateTexture(nil, "OVERLAY")
+		factionRow.War:SetTexture("Interface\\Buttons\\UI-CheckBox-SwordCheck")
+		factionRow.War:Size(30)
+		factionRow.War:Point("RIGHT", 32, -7)
 	end
 
 	local function UpdateFaction()
@@ -354,21 +359,21 @@ local function LoadSkin()
 		for i = 1, NUM_FACTIONS_DISPLAYED, 1 do
 			local Bar = _G["ReputationBar"..i]
 			local Button = _G["ReputationBar"..i.."ExpandOrCollapseButton"]
-			local FactionName = _G["ReputationBar"..i.."FactionName"]
 			local factionIndex = factionOffset + i
 
-			if(factionIndex <= numFactions) then
-				local name, _, _, _, _, _, atWarWith, canToggleAtWar, isHeader, isCollapsed = GetFactionInfo(factionIndex);
+			if factionIndex <= numFactions then
+				local _, _, _, _, _, _, atWarWith, canToggleAtWar, isHeader, isCollapsed = GetFactionInfo(factionIndex)
 
-				if(isCollapsed) then
+				if isCollapsed then
 					Button:GetNormalTexture():SetTexCoord(0, 0.4375, 0, 0.4375)
 				else
 					Button:GetNormalTexture():SetTexCoord(0.5625, 1, 0, 0.4375)
 				end
 
-				FactionName:SetText(name)
-				if(atWarWith and canToggleAtWar and (not isHeader)) then
-					FactionName:SetFormattedText("%s|TInterface\\Buttons\\UI-CheckBox-SwordCheck:16:16:%d:0:32:32:0:16:0:16|t", name, - (20 + FactionName:GetStringWidth()))
+				if atWarWith and canToggleAtWar and (not isHeader) then
+					Bar.War:Show()
+				else
+					Bar.War:Hide()
 				end
 			end
 		end

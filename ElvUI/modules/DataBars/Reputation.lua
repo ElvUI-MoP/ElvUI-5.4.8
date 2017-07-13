@@ -25,7 +25,7 @@ function mod:UpdateReputation(event)
 
 	if not name or (event == "PLAYER_REGEN_DISABLED" and self.db.reputation.hideInCombat) then
 		bar:Hide();
-	elseif (not self.db.reputation.hideInCombat or not InCombatLockdown()) then
+	elseif name and (not self.db.reputation.hideInCombat or not InCombatLockdown()) then
 		bar:Show();
 
 		if(self.db.reputation.hideInVehicle) then
