@@ -1206,6 +1206,8 @@ function UF:Initialize()
 	ORD.ShowDispelableDebuff = true;
 	ORD.FilterDispellableDebuff = true;
 	ORD.MatchBySpellName = true;
+
+	self:UpdateRangeCheckSpells()
 end
 
 function UF:ResetUnitSettings(unit)
