@@ -9,7 +9,6 @@ local UnitIsUnit = UnitIsUnit;
 local IsAddOnLoaded = IsAddOnLoaded;
 local IsShiftKeyDown = IsShiftKeyDown;
 local SquareButton_SetIcon = SquareButton_SetIcon
-local UIDROPDOWNMENU_MAXLEVELS = UIDROPDOWNMENU_MAXLEVELS;
 
 local function LoadSkin()
 	if(E.private.skins.blizzard.enable ~= true) or (E.private.skins.blizzard.misc ~= true) then return; end

@@ -7,7 +7,7 @@ local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 local UnitIsUnit = UnitIsUnit
 
-local tradeskillCurrent, tradeskillTotal, mergeTradeskill = 0, 0, false
+local tradeskillCastTime, tradeskillCastDuration, tradeskillCurrent, tradeskillTotal, mergeTradeskill = 0, 0, 0, 0, false
 
 local updateSafeZone = function(self)
 	local sz = self.SafeZone
@@ -63,6 +63,8 @@ local UNIT_SPELLCAST_START = function(self, event, unit)
 
 		if(unit == "player") then
 			tradeskillCurrent = tradeskillCurrent + 1
+			tradeskillCastTime = max
+			tradeskillCastDuration = castbar.duration
 		end
 		castbar:SetValue(castbar.duration)
 	else
@@ -349,9 +351,10 @@ end
 local onUpdate = function(self, elapsed)
 	if(self.casting) then
 		local duration = self.duration + elapsed
-		if(duration >= self.max) then
+		if (duration >= self.max or (tradeskillTotal > 1 and duration >= (tradeskillCastDuration + tradeskillCastTime * 1.25))) then
 			self.casting = nil
 			self:Hide()
+			tradeskillTotal = 0
 
 			if(self.PostCastStop) then self:PostCastStop(self.__owner.unit) end
 			return
@@ -418,6 +421,7 @@ local onUpdate = function(self, elapsed)
 		self.casting = nil
 		self.castid = nil
 		self.channeling = nil
+		tradeskillTotal = 0
 
 		self:Hide()
 	end
@@ -517,6 +521,8 @@ local Disable = function(self)
 end
 
 hooksecurefunc("DoTradeSkill", function(_, num)
+	tradeskillCastTime = 0
+	tradeskillCastDuration = 0
 	tradeskillCurrent = 0
 	tradeskillTotal = tonumber(num) or 1
 	mergeTradeskill = true

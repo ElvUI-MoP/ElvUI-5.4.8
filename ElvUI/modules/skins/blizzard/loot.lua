@@ -162,9 +162,15 @@ local function LoadSkin()
 	LootFrame.Title:SetJustifyH("LEFT");
 
 	for i = 1, LOOTFRAME_NUMBUTTONS do
-		local button = _G["LootButton" .. i];
-		_G["LootButton" .. i .. "NameFrame"]:Hide();
-		S:HandleItemButton(button, true);
+		local button = _G["LootButton" .. i]
+		local questTex = _G["LootButton"..i.."IconQuestTexture"]
+
+		_G["LootButton" .. i .. "NameFrame"]:Hide()
+
+		S:HandleItemButton(button, true)
+
+		questTex:SetTexCoord(unpack(E.TexCoords))
+		questTex:SetInside()
 	end
 
 	S:HandleNextPrevButton(LootFrameUpButton);

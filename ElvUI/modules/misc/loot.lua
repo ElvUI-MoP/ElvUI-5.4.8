@@ -252,14 +252,16 @@ function M:LOOT_OPENED(_, autoloot)
 			w = max(w, slot.name:GetStringWidth())
 
 			local questTexture = slot.questTexture
-			if(questId and not isActive) then
-				questTexture:Show();
+			if questId and not isActive then
+				questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG)
+				questTexture:Show()
 				ActionButton_ShowOverlayGlow(slot.iconFrame)
-			elseif(questId or isQuestItem) then
-				questTexture:Hide();
+			elseif questId or isQuestItem then
+				questTexture:SetTexture(TEXTURE_ITEM_QUEST_BORDER)
+				questTexture:Show()
 				ActionButton_ShowOverlayGlow(slot.iconFrame)
 			else
-				questTexture:Hide();
+				questTexture:Hide()
 				ActionButton_HideOverlayGlow(slot.iconFrame)
 			end
 
