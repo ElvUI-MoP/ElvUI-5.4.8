@@ -109,6 +109,7 @@ V["skins"] = {
 		['tabard'] = true,
 		['talent'] = true,
 		['taxi'] = true,
+		["tooltip"] = true,
 		['timemanager'] = true,
 		['trade'] = true,
 		['tradeskill'] = true,

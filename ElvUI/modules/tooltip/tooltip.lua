@@ -79,33 +79,11 @@ local ID = ID;
 
 local GameTooltip, GameTooltipStatusBar = _G["GameTooltip"], _G["GameTooltipStatusBar"]
 local S_ITEM_LEVEL = ITEM_LEVEL:gsub( "%%d", "(%%d+)" )
-local playerGUID = UnitGUID("player")
 local targetList, inspectCache = {}, {}
 local TAPPED_COLOR = {r = .6, g = .6, b = .6}
 local AFK_LABEL = " |cffFFFFFF[|r|cffE7E716"..L["AFK"].."|r|cffFFFFFF]|r"
 local DND_LABEL = " |cffFFFFFF[|r|cffFF0000"..L["DND"].."|r|cffFFFFFF]|r"
 local keybindFrame
-
-local tooltips = {
-	GameTooltip,
-	ItemRefTooltip,
-	ItemRefShoppingTooltip1,
-	ItemRefShoppingTooltip2,
-	ItemRefShoppingTooltip3,
-	AutoCompleteBox,
-	FriendsTooltip,
-	ConsolidatedBuffsTooltip,
-	ShoppingTooltip1,
-	ShoppingTooltip2,
-	ShoppingTooltip3,
-	WorldMapTooltip,
-	WorldMapCompareTooltip1,
-	WorldMapCompareTooltip2,
-	WorldMapCompareTooltip3,
-	DropDownList1MenuBackdrop,
-	DropDownList2MenuBackdrop,
-	DropDownList3MenuBackdrop
-}
 
 local classification = {
 	worldboss = format("|cffAF5050 %s|r", BOSS),
@@ -256,11 +234,12 @@ end
 
 function TT:RemoveTrashLines(tt)
 	for i = 3, tt:NumLines() do
-		local tiptext = _G["GameTooltipTextLeft"..i];
-		local linetext = tiptext:GetText();
+		local tiptext = _G["GameTooltipTextLeft"..i]
+		local linetext = tiptext:GetText()
 
 		if(linetext == PVP or linetext == FACTION_ALLIANCE or linetext == FACTION_HORDE) then
-			tiptext:SetText();
+			tiptext:SetText(nil)
+			tiptext:Hide()
 		end
 	end
 end
@@ -379,6 +358,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		local pvpName = UnitPVPName(unit)
 		local relationship = UnitRealmRelationship(unit);
 		if(not localeClass or not class) then return; end
+
 		color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class];
 
 		if(self.db.playerTitles and pvpName) then
@@ -425,7 +405,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 			if(factionGroup and englishRace == "Pandaren") then
 				race = factionGroup.." "..race
 			end
-			levelLine:SetFormattedText("|cff%02x%02x%02x%s|r %s %s%s|r", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", race, E:RGBToHex(color.r, color.g, color.b), localeClass)
+			levelLine:SetFormattedText("|cff%02x%02x%02x%s|r %s %s%s|r", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", race or "", E:RGBToHex(color.r, color.g, color.b), localeClass)
 		end
 
 		if(self.db.inspectInfo and isShiftKeyDown) then
@@ -514,6 +494,11 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		GameTooltipStatusBar:SetStatusBarColor(color.r, color.g, color.b)
 	else
 		GameTooltipStatusBar:SetStatusBarColor(0.6, 0.6, 0.6)
+	end
+
+	local textWidth = GameTooltipStatusBar.text:GetStringWidth()
+	if textWidth then
+		tt:SetMinimumWidth(textWidth)
 	end
 end
 
@@ -671,14 +656,16 @@ function TT:SetItemRef(link)
 	end
 end
 
-function TT:RepositionBNET(_, _, anchor)
+function TT:RepositionBNET(frame, _, anchor)
 	if(anchor ~= BNETMover) then
-		BNToastFrame:ClearAllPoints()
-		BNToastFrame:SetPoint('TOPLEFT', BNETMover, 'TOPLEFT');
+		frame:ClearAllPoints()
+		frame:SetPoint('TOPLEFT', BNETMover, 'TOPLEFT');
 	end
 end
 
 function TT:CheckBackdropColor()
+	if not GameTooltip:IsShown() then return end
+
 	local r, g, b = GameTooltip:GetBackdropColor()
 	r = E:Round(r, 1)
 	g = E:Round(g, 1)
@@ -740,13 +727,7 @@ function TT:Initialize()
 	E.Tooltip = TT
 
 	GameTooltipStatusBar:Height(self.db.healthBar.height)
-	GameTooltipStatusBar:SetStatusBarTexture(E["media"].normTex)
-	E:RegisterStatusBar(GameTooltipStatusBar);
-	GameTooltipStatusBar:CreateBackdrop('Transparent')
-	GameTooltipStatusBar:SetScript("OnValueChanged", self.OnValueChanged)
-	GameTooltipStatusBar:ClearAllPoints()
-	GameTooltipStatusBar:Point("TOPLEFT", GameTooltip, "BOTTOMLEFT", E.Border, -(E.Spacing * 3))
-	GameTooltipStatusBar:Point("TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -E.Border, -(E.Spacing * 3))
+	GameTooltipStatusBar:SetScript("OnValueChanged", nil)
 	GameTooltipStatusBar.text = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
 	GameTooltipStatusBar.text:Point("CENTER", GameTooltipStatusBar, 0, -3)
 	GameTooltipStatusBar.text:FontTemplate(E.LSM:Fetch("font", self.db.healthBar.font), self.db.healthBar.fontSize, self.db.healthBar.fontOutline)
@@ -765,7 +746,6 @@ function TT:Initialize()
 	E:CreateMover(GameTooltipAnchor, 'TooltipMover', L['Tooltip'])
 
 	self:SecureHook('GameTooltip_SetDefaultAnchor')
-	self:SecureHook('GameTooltip_ShowStatusBar')
 	self:SecureHook("SetItemRef")
 	self:SecureHook(GameTooltip, "SetUnitAura")
 	self:SecureHook(GameTooltip, "SetUnitBuff", "SetUnitAura")
@@ -775,19 +755,14 @@ function TT:Initialize()
 	self:HookScript(GameTooltip, 'OnTooltipCleared', 'GameTooltip_OnTooltipCleared')
 	self:HookScript(GameTooltip, 'OnTooltipSetItem', 'GameTooltip_OnTooltipSetItem')
 	self:HookScript(GameTooltip, 'OnTooltipSetUnit', 'GameTooltip_OnTooltipSetUnit')
-	self:HookScript(GameTooltip, "OnSizeChanged", "CheckBackdropColor")
-	self:HookScript(GameTooltip, "OnUpdate", "CheckBackdropColor")
 
 	self:HookScript(GameTooltipStatusBar, 'OnValueChanged', 'GameTooltipStatusBar_OnValueChanged')
 
 	self:RegisterEvent("MODIFIER_STATE_CHANGED")
-	self:RegisterEvent("CURSOR_UPDATE", "CheckBackdropColor")
-	E.Skins:HandleCloseButton(ItemRefCloseButton)
-	for _, tt in pairs(tooltips) do
-		self:HookScript(tt, 'OnShow', 'SetStyle')
-	end
 
 	keybindFrame = ElvUI_KeyBinder
+
+	playerGUID = UnitGUID("player")
 end
 
 local function InitializeCallback()
