@@ -1,152 +1,139 @@
 local _, ns = ...
 local oUF = ns.oUF
 
-local tinsert = table.insert
-local floor = math.floor
-
-local CreateFrame = CreateFrame
-local UnitAura = UnitAura
-local UnitIsUnit = UnitIsUnit
-
 local VISIBLE = 1
 local HIDDEN = 0
 
-local UpdateTooltip = function(self)
+local function UpdateTooltip(self)
 	GameTooltip:SetUnitAura(self:GetParent().__owner.unit, self:GetID(), self.filter)
 end
 
-local OnEnter = function(self)
+local function onEnter(self)
 	if(not self:IsVisible()) then return end
 
 	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
 	self:UpdateTooltip()
 end
 
-local OnLeave = function()
+local function onLeave()
 	GameTooltip:Hide()
 end
 
-local createAuraIcon = function(icons, index)
-	local button = CreateFrame("Button", icons:GetName().."Button"..index, icons)
-	button:RegisterForClicks'RightButtonUp'
+local function createAuraIcon(element, index)
+	local button = CreateFrame("Button", element:GetName() .. "Button" .. index, element)
+	button:RegisterForClicks('RightButtonUp')
 
 	local cd = CreateFrame("Cooldown", "$parentCooldown", button, "CooldownFrameTemplate")
-	cd:SetAllPoints(button)
+	cd:SetAllPoints()
 
 	local icon = button:CreateTexture(nil, "BORDER")
-	icon:SetAllPoints(button)
+	icon:SetAllPoints()
 
-	local count = button:CreateFontString(nil, "OVERLAY")
-	count:SetFontObject(NumberFontNormal)
+	local count = button:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
 	count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 0)
 
 	local overlay = button:CreateTexture(nil, "OVERLAY")
-	overlay:SetTexture"Interface\\Buttons\\UI-Debuff-Overlays"
-	overlay:SetAllPoints(button)
+	overlay:SetTexture([[Interface\Buttons\UI-Debuff-Overlays]])
+	overlay:SetAllPoints()
 	overlay:SetTexCoord(.296875, .5703125, 0, .515625)
 	button.overlay = overlay
 
 	local stealable = button:CreateTexture(nil, 'OVERLAY')
-	stealable:SetTexture[[Interface\TargetingFrame\UI-TargetingFrame-Stealable]]
+	stealable:SetTexture([[Interface\TargetingFrame\UI-TargetingFrame-Stealable]])
 	stealable:SetPoint('TOPLEFT', -3, 3)
 	stealable:SetPoint('BOTTOMRIGHT', 3, -3)
-	stealable:SetBlendMode'ADD'
+	stealable:SetBlendMode('ADD')
 	button.stealable = stealable
 
 	button.UpdateTooltip = UpdateTooltip
-	button:SetScript("OnEnter", OnEnter)
-	button:SetScript("OnLeave", OnLeave)
+	button:SetScript('OnEnter', onEnter)
+	button:SetScript('OnLeave', onLeave)
 
 	button.icon = icon
 	button.count = count
 	button.cd = cd
 
-	if(icons.PostCreateIcon) then icons:PostCreateIcon(button) end
+	if(element.PostCreateIcon) then element:PostCreateIcon(button) end
 
 	return button
 end
 
-local customFilter = function(icons, unit, icon, name)
-	if((icons.onlyShowPlayer and icon.isPlayer) or (not icons.onlyShowPlayer and name)) then
+local function customFilter(element, unit, button, name)
+	if((element.onlyShowPlayer and button.isPlayer) or (not element.onlyShowPlayer and name)) then
 		return true
 	end
 end
 
-local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visible)
+local function updateIcon(element, unit, index, offset, filter, isDebuff, visible)
 	local name, rank, texture, count, dispelType, duration, expiration, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff = UnitAura(unit, index, filter)
 
-	if icons.forceShow then
+	if element.forceShow then
 		spellID = 47540
 		name, rank, texture = GetSpellInfo(spellID)
 		count, dispelType, duration, expiration, caster, isStealable, shouldConsolidate, canApplyAura, isBossDebuff = 5, 'Magic', 0, 60, 'player', nil, nil, nil, nil
 	end
 
 	if(name) then
-		local n = visible + offset + 1
-		local icon = icons[n]
-		if(not icon) then
-			local prev = icons.createdIcons
-			icon = (icons.CreateIcon or createAuraIcon) (icons, n)
+		local position = visible + offset + 1
+		local button = element[position]
+		if(not button) then
+			button = (element.CreateIcon or createAuraIcon) (element, position)
 
-			if(prev == icons.createdIcons) then
-				tinsert(icons, icon)
-				icons.createdIcons = icons.createdIcons + 1
-			end
+			table.insert(element, button)
+			element.createdIcons = element.createdIcons + 1
 		end
 
-		local isPlayer
-		if(caster == 'player' or caster == 'vehicle') then
-			isPlayer = true
-		end
-
-		icon.owner = caster
-		icon.filter = filter
-		icon.isDebuff = isDebuff
-		icon.isPlayer = isPlayer
+		button.caster = caster
+		button.filter = filter
+		button.isDebuff = isDebuff
+		button.isPlayer = caster == "player" or caster == "vehicle"
 
 		local show = true
-		if not icons.forceShow then
-			show = (icons.CustomFilter or customFilter) (icons, unit, icon, name, rank, texture, count, dispelType, duration, expiration, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff)
+		if not element.forceShow then
+			show = (element.CustomFilter or customFilter) (element, unit, button, name, rank, texture, count, dispelType, duration, expiration, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff)
 		end
+
 		if(show) then
-			local cd = icon.cd
-			if(cd and not icons.disableCooldown) then
+			if(button.cd and not element.disableCooldown) then
 				if(duration and duration > 0) then
-					cd:SetCooldown(expiration - duration, duration)
-					cd:Show()
+					button.cd:SetCooldown(expiration - duration, duration)
+					button.cd:Show()
 				else
-					cd:Hide()
+					button.cd:Hide()
 				end
 			end
 
-			if((isDebuff and icons.showDebuffType) or (not isDebuff and icons.showBuffType) or icons.showType) then
-				local color = DebuffTypeColor[dispelType] or DebuffTypeColor.none
+			if(button.overlay) then
+				if((isDebuff and element.showDebuffType) or (not isDebuff and element.showBuffType) or element.showType) then
+					local color = DebuffTypeColor[dispelType] or DebuffTypeColor.none
 
-				icon.overlay:SetVertexColor(color.r, color.g, color.b)
-				icon.overlay:Show()
-			else
-				icon.overlay:Hide()
+					button.overlay:SetVertexColor(color.r, color.g, color.b)
+					button.overlay:Show()
+				else
+					button.overlay:Hide()
+				end
 			end
 
-			local stealable = not isDebuff and isStealable
-			if(stealable and icons.showStealableBuffs and not UnitIsUnit('player', unit)) then
-				icon.stealable:Show()
-			else
-				icon.stealable:Hide()
+			if(button.stealable) then
+				if(not isDebuff and isStealable and element.showStealableBuffs and not UnitIsUnit('player', unit)) then
+					button.stealable:Show()
+				else
+					button.stealable:Hide()
+				end
 			end
 
-			icon.icon:SetTexture(texture)
-			icon.count:SetText((count > 1 and count))
+			if(button.icon) then button.icon:SetTexture(texture) end
+			if(button.count) then button.count:SetText(count > 1 and count) end
 
-			local size = icons.size or 16
-			icon:SetSize(size, size)
+			local size = element.size or 16
+			button:SetSize(size, size)
 
-			icon:EnableMouse(true)
-			icon:SetID(index)
-			icon:Show()
+			button:EnableMouse(not element.disableMouse)
+			button:SetID(index)
+			button:Show()
 
-			if(icons.PostUpdateIcon) then
-				icons:PostUpdateIcon(unit, icon, index, n)
+			if(element.PostUpdateIcon) then
+				element:PostUpdateIcon(unit, button, index, position)
 			end
 
 			return VISIBLE
@@ -156,33 +143,33 @@ local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visibl
 	end
 end
 
-local SetPosition = function(icons, from, to)
-	local sizex = (icons.size or 16) + (icons['spacing-x'] or icons.spacing or 0)
-	local sizey = (icons.size or 16) + (icons['spacing-y'] or icons.spacing or 0)
-	local anchor = icons.initialAnchor or "BOTTOMLEFT"
-	local growthx = (icons["growth-x"] == "LEFT" and -1) or 1
-	local growthy = (icons["growth-y"] == "DOWN" and -1) or 1
-	local cols = floor(icons:GetWidth() / sizex + .5)
+local function SetPosition(element, from, to)
+	local sizex = (element.size or 16) + (element['spacing-x'] or element.spacing or 0)
+	local sizey = (element.size or 16) + (element['spacing-y'] or element.spacing or 0)
+	local anchor = element.initialAnchor or 'BOTTOMLEFT'
+	local growthx = (element['growth-x'] == 'LEFT' and -1) or 1
+	local growthy = (element['growth-y'] == 'DOWN' and -1) or 1
+	local cols = math.floor(element:GetWidth() / sizex + 0.5)
 
 	for i = from, to do
-		local button = icons[i]
+		local button = element[i]
 
 		if(not button) then break end
 		local col = (i - 1) % cols
-		local row = floor((i - 1) / cols)
+		local row = math.floor((i - 1) / cols)
 
 		button:ClearAllPoints()
-		button:SetPoint(anchor, icons, anchor, col * sizex * growthx, row * sizey * growthy)
+		button:SetPoint(anchor, element, anchor, col * sizex * growthx, row * sizey * growthy)
 	end
 end
 
-local filterIcons = function(unit, icons, filter, limit, isDebuff, offset, dontHide)
+local function filterIcons(element, unit, filter, limit, isDebuff, offset, dontHide)
 	if(not offset) then offset = 0 end
 	local index = 1
 	local visible = 0
 	local hidden = 0
 	while(visible < limit) do
-		local result = updateIcon(unit, icons, index, offset, filter, isDebuff, visible)
+		local result = updateIcon(element, unit, index, offset, filter, isDebuff, visible)
 		if(not result) then
 			break
 		elseif(result == VISIBLE) then
@@ -195,15 +182,15 @@ local filterIcons = function(unit, icons, filter, limit, isDebuff, offset, dontH
 	end
 
 	if(not dontHide) then
-		for i = visible + offset + 1, #icons do
-			icons[i]:Hide()
+		for i = visible + offset + 1, #element do
+			element[i]:Hide()
 		end
 	end
 
 	return visible, hidden
 end
 
-local UpdateAuras = function(self, event, unit)
+local function UpdateAuras(self, event, unit)
 	if(self.unit ~= unit) then return end
 
 	local auras = self.Auras
@@ -212,39 +199,37 @@ local UpdateAuras = function(self, event, unit)
 
 		local numBuffs = auras.numBuffs or 32
 		local numDebuffs = auras.numDebuffs or 40
-		local max = numBuffs + numDebuffs
+		local max = auras.numTotal or numBuffs + numDebuffs
 
-		local visibleBuffs, hiddenBuffs = filterIcons(unit, auras, auras.buffFilter or auras.filter or 'HELPFUL', numBuffs, nil, 0, true)
+		local visibleBuffs, hiddenBuffs = filterIcons(auras, unit, auras.buffFilter or auras.filter or 'HELPFUL', math.min(numBuffs, max), nil, 0, true)
 
 		local hasGap
 		if(visibleBuffs ~= 0 and auras.gap) then
 			hasGap = true
 			visibleBuffs = visibleBuffs + 1
 
-			local icon = auras[visibleBuffs]
-			if(not icon) then
-				local prev = auras.createdIcons
-				icon = (auras.CreateIcon or createAuraIcon) (auras, visibleBuffs)
-				if(prev == auras.createdIcons) then
-					tinsert(auras, icon)
-					auras.createdIcons = auras.createdIcons + 1
-				end
+			local button = auras[visibleBuffs]
+			if(not button) then
+				button = (auras.CreateIcon or createAuraIcon) (auras, visibleBuffs)
+				table.insert(auras, button)
+				auras.createdIcons = auras.createdIcons + 1
 			end
 
-			if(icon.cd) then icon.cd:Hide() end
-			icon:EnableMouse(false)
-			icon.icon:SetTexture()
-			icon.overlay:Hide()
-			icon.stealable:Hide()
-			icon.count:SetText()
-			icon:Show()
+			if(button.cd) then button.cd:Hide() end
+			if(button.icon) then button.icon:SetTexture() end
+			if(button.overlay) then button.overlay:Hide() end
+			if(button.stealable) then button.stealable:Hide() end
+			if(button.count) then button.count:SetText() end
+
+			button:EnableMouse(false)
+			button:Show()
 
 			if(auras.PostUpdateGapIcon) then
-				auras:PostUpdateGapIcon(unit, icon, visibleBuffs)
+				auras:PostUpdateGapIcon(unit, button, visibleBuffs)
 			end
 		end
 
-		local visibleDebuffs, hiddenDebuffs = filterIcons(unit, auras, auras.debuffFilter or auras.filter or 'HARMFUL', numDebuffs, true, visibleBuffs)
+		local visibleDebuffs, hiddenDebuffs = filterIcons(auras, unit, auras.debuffFilter or auras.filter or 'HARMFUL', math.min(numDebuffs, max - visibleBuffs), true, visibleBuffs)
 		auras.visibleDebuffs = visibleDebuffs
 
 		if(hasGap and visibleDebuffs == 0) then
@@ -273,7 +258,7 @@ local UpdateAuras = function(self, event, unit)
 		if(buffs.PreUpdate) then buffs:PreUpdate(unit) end
 
 		local numBuffs = buffs.num or 32
-		local visibleBuffs, hiddenBuffs = filterIcons(unit, buffs, buffs.filter or 'HELPFUL', numBuffs)
+		local visibleBuffs, hiddenBuffs = filterIcons(buffs, unit, buffs.filter or 'HELPFUL', numBuffs)
 		buffs.visibleBuffs = visibleBuffs
 
 		local fromRange, toRange
@@ -294,7 +279,7 @@ local UpdateAuras = function(self, event, unit)
 		if(debuffs.PreUpdate) then debuffs:PreUpdate(unit) end
 
 		local numDebuffs = debuffs.num or 40
-		local visibleDebuffs, hiddenDebuffs = filterIcons(unit, debuffs, debuffs.filter or 'HARMFUL', numDebuffs, true)
+		local visibleDebuffs, hiddenDebuffs = filterIcons(debuffs, unit, debuffs.filter or 'HARMFUL', numDebuffs, true)
 		debuffs.visibleDebuffs = visibleDebuffs
 
 		local fromRange, toRange
@@ -311,7 +296,7 @@ local UpdateAuras = function(self, event, unit)
 	end
 end
 
-local Update = function(self, event, unit)
+local function Update(self, event, unit)
 	if(self.unit ~= unit) then return end
 
 	UpdateAuras(self, event, unit)
@@ -334,11 +319,11 @@ local Update = function(self, event, unit)
 	end
 end
 
-local ForceUpdate = function(element)
+local function ForceUpdate(element)
 	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
-local Enable = function(self)
+local function Enable(self)
 	if(self.Buffs or self.Debuffs or self.Auras) then
 		self:RegisterEvent("UNIT_AURA", UpdateAuras)
 
@@ -347,8 +332,10 @@ local Enable = function(self)
 			buffs.__owner = self
 			buffs.ForceUpdate = ForceUpdate
 
-			buffs.createdIcons = 0
+			buffs.createdIcons = buffs.createdIcons or 0
 			buffs.anchoredIcons = 0
+
+			buffs:Show()
 		end
 
 		local debuffs = self.Debuffs
@@ -356,8 +343,10 @@ local Enable = function(self)
 			debuffs.__owner = self
 			debuffs.ForceUpdate = ForceUpdate
 
-			debuffs.createdIcons = 0
+			debuffs.createdIcons = debuffs.createdIcons or 0
 			debuffs.anchoredIcons = 0
+
+			debuffs:Show()
 		end
 
 		local auras = self.Auras
@@ -365,18 +354,24 @@ local Enable = function(self)
 			auras.__owner = self
 			auras.ForceUpdate = ForceUpdate
 
-			auras.createdIcons = 0
+			auras.createdIcons = auras.createdIcons or 0
 			auras.anchoredIcons = 0
+
+			auras:Show()
 		end
 
 		return true
 	end
 end
 
-local Disable = function(self)
+local function Disable(self)
 	if(self.Buffs or self.Debuffs or self.Auras) then
-		self:UnregisterEvent("UNIT_AURA", UpdateAuras)
+		self:UnregisterEvent('UNIT_AURA', UpdateAuras)
+
+		if(self.Buffs) then self.Buffs:Hide() end
+		if(self.Debuffs) then self.Debuffs:Hide() end
+		if(self.Auras) then self.Auras:Hide() end
 	end
 end
 
-oUF:AddElement('Aura', Update, Enable, Disable)
+oUF:AddElement('Auras', Update, Enable, Disable)

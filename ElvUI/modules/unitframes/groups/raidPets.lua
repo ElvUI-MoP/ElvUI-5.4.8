@@ -33,9 +33,9 @@ function UF:Construct_RaidpetFrames()
 	tinsert(self.__elements, UF.UpdateTargetGlow);
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", UF.UpdateTargetGlow);
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", UF.UpdateTargetGlow);
-	self.Threat = UF:Construct_Threat(self);
-	self.RaidIcon = UF:Construct_RaidIcon(self);
-	self.HealPrediction = UF:Construct_HealComm(self)
+	self.ThreatIndicator = UF:Construct_Threat(self);
+	self.RaidTargetIndicator = UF:Construct_RaidIcon(self);
+	self.HealthPrediction = UF:Construct_HealComm(self)
 	self.Range = UF:Construct_Range(self);
 	self.customTexts = {};
 

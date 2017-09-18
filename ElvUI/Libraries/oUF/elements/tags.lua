@@ -1,4 +1,4 @@
-local parent, ns = ...
+local _, ns = ...
 local oUF = ns.oUF
  
 local _G = _G
@@ -37,13 +37,17 @@ local _PATTERN = '%[..-%]+'
 
 local _ENV = {
 	Hex = function(r, g, b)
-		if type(r) == "table" then
-			if r.r then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
+		if(type(r) == 'table') then
+			if(r.r) then
+				r, g, b = r.r, r.g, r.b
+			else
+				r, g, b = unpack(r)
+			end
 		end
 		if not r or type(r) == 'string' then
 			return '|cffFFFFFF'
 		end
-		return format("|cff%02x%02x%02x", r*255, g*255, b*255)
+		return format('|cff%02x%02x%02x', r * 255, g * 255, b * 255)
 	end,
 	ColorGradient = oUF.ColorGradient,
 }
@@ -423,20 +427,17 @@ local unitlessEvents = {
 	PLAYER_LEVEL_UP = true,
 	PLAYER_UPDATE_RESTING = true,
 	PLAYER_TARGET_CHANGED = true,
-
 	PARTY_LEADER_CHANGED = true,
-
 	GROUP_ROSTER_UPDATE = true,
-
 	UNIT_COMBO_POINTS = true
 }
 
 local events = {}
-local frame = CreateFrame"Frame"
+local frame = CreateFrame('Frame')
 frame:SetScript('OnEvent', function(_, event, unit)
 	local strings = events[event]
 	if(strings) then
-		for k, fontstring in next, strings do
+		for _, fontstring in next, strings do
 			if(fontstring:IsVisible() and (unitlessEvents[event] or fontstring.parent.unit == unit)) then
 				fontstring:UpdateTag()
 			end
@@ -444,11 +445,11 @@ frame:SetScript('OnEvent', function(_, event, unit)
 	end
 end)
 
-local OnUpdates = {}
+local onUpdates = {}
 local eventlessUnits = {}
 
-local createOnUpdate = function(timer)
-	local OnUpdate = OnUpdates[timer]
+local function createOnUpdate(timer)
+	local OnUpdate = onUpdates[timer]
 
 	if(not OnUpdate) then
 		local total = timer
@@ -457,8 +458,8 @@ local createOnUpdate = function(timer)
 
 		frame:SetScript('OnUpdate', function(_, elapsed)
 			if(total >= timer) then
-				for k, fs in next, strings do
-					if(fs.parent:IsVisible() and UnitExists(fs.parent.unit)) then
+				for _, fs in next, strings do
+					if(fs.parent:IsShown() and UnitExists(fs.parent.unit)) then
 						fs:UpdateTag()
 					end
 				end
@@ -469,52 +470,52 @@ local createOnUpdate = function(timer)
 			total = total + elapsed
 		end)
 
-		OnUpdates[timer] = frame
+		onUpdates[timer] = frame
 	end
 end
 
-local OnShow = function(self)
+local function onShow(self)
 	for _, fs in next, self.__tags do
 		fs:UpdateTag()
 	end
 end
 
-local getTagName = function(tag)
-	local s = (tag:match('>+()') or 2)
-	local e = tag:match('.*()<+')
-	e = (e and e - 1) or -2
+local function getTagName(tag)
+	local tagStart = (tag:match('>+()') or 2)
+	local tagEnd = tag:match('.*()<+')
+	tagEnd = (tagEnd and tagEnd - 1) or -2
 
-	return tag:sub(s, e), s, e
+	return tag:sub(tagStart, tagEnd), tagStart, tagEnd
 end
 
-local RegisterEvent = function(fontstr, event)
+local function registerEvent(fontstr, event)
 	if(not events[event]) then events[event] = {} end
 
 	frame:RegisterEvent(event)
 	tinsert(events[event], fontstr)
 end
 
-local RegisterEvents = function(fontstr, tagstr)
+local function registerEvents(fontstr, tagstr)
 	for tag in tagstr:gmatch(_PATTERN) do
 		tag = getTagName(tag)
 		local tagevents = tagEvents[tag]
 		if(tagevents) then
 			for event in tagevents:gmatch("%S+") do
-				RegisterEvent(fontstr, event)
+				registerEvent(fontstr, event)
 			end
 		end
 	end
 end
 
-local UnregisterEvents = function(fontstr)
-	for event, data in pairs(events) do
-		for k, tagfsstr in pairs(data) do
+local function unregisterEvents(fontstr)
+	for event, data in next, events do
+		for i, tagfsstr in next, data do
 			if(tagfsstr == fontstr) then
 				if(#data == 1) then
 					frame:UnregisterEvent(event)
 				end
 
-				tremove(data, k)
+				tremove(data, i)
 			end
 		end
 	end
@@ -532,6 +533,10 @@ local OnLeave = function(self)
 	end
 end
 
+local onUpdateDelay = {}
+local tagPool = {}
+local funcPool = {}
+local tmp = {}
 local escapeSequences = {
 	["||c"] = "|c",
 	["||r"] = "|r",
@@ -539,18 +544,13 @@ local escapeSequences = {
 	["||t"] = "|t",
 }
 
-local onUpdateDelay = {}
-local tagPool = {}
-local funcPool = {}
-local tmp = {}
-
-local Tag = function(self, fs, tagstr)
+local function Tag(self, fs, tagstr)
 	if(not fs or not tagstr) then return end
 
 	if(not self.__tags) then
 		self.__tags = {}
 		self.__mousetags = {}
-		tinsert(self.__elements, OnShow)
+		tinsert(self.__elements, onShow)
 	else
 		-- Since people ignore everything that's good practice - unregister the tag
 		-- if it already exists.
@@ -604,38 +604,38 @@ local Tag = function(self, fs, tagstr)
 		for bracket in tagstr:gmatch(_PATTERN) do
 			local tagFunc = funcPool[bracket] or tags[bracket:sub(2, -2)]
 			if(not tagFunc) then
-				local tagName, s, e = getTagName(bracket)
+				local tagName, tagStart, tagEnd = getTagName(bracket)
 				local tag = tags[tagName]
 				if(tag) then
-					s = s - 2
-					e = e + 2
+					tagStart = tagStart - 2
+					tagEnd = tagEnd + 2
 
-					if(s ~= 0 and e ~= 0) then
-						local pre = bracket:sub(2, s)
-						local ap = bracket:sub(e, -2)
+					if(tagStart ~= 0 and tagEnd ~= 0) then
+						local prefix = bracket:sub(2, tagStart)
+						local suffix = bracket:sub(tagEnd, -2)
 
-						tagFunc = function(u,r)
-							local str = tag(u,r)
+						tagFunc = function(unit, realUnit)
+							local str = tag(unit, realUnit)
 							if(str) then
 								return pre..str..ap
 							end
 						end
-					elseif(s ~= 0) then
-						local pre = bracket:sub(2, s)
+					elseif(tagStart ~= 0) then
+						local prefix = bracket:sub(2, tagStart)
 
-						tagFunc = function(u,r)
-							local str = tag(u,r)
+						tagFunc = function(unit, realUnit)
+							local str = tag(unit, realUnit)
 							if(str) then
-								return pre..str
+								return prefix .. str
 							end
 						end
-					elseif(e ~= 0) then
-						local ap = bracket:sub(e, -2)
+					elseif(tagEnd ~= 0) then
+						local suffix = bracket:sub(tagEnd, -2)
 
-						tagFunc = function(u,r)
-							local str = tag(u,r)
+						tagFunc = function(unit, realUnit)
+							local str = tag(unit, realUnit)
 							if(str) then
-								return str..ap
+								return str .. suffix
 							end
 						end
 					end
@@ -734,7 +734,7 @@ local Tag = function(self, fs, tagstr)
 		elseif containsOnUpdate then
 			timer = containsOnUpdate
 		else
-			timer = .1
+			timer = .5
 		end
 
 		if(not eventlessUnits[timer]) then eventlessUnits[timer] = {} end
@@ -742,27 +742,27 @@ local Tag = function(self, fs, tagstr)
 
 		createOnUpdate(timer)
 	else
-		RegisterEvents(fs, tagstr)
+		registerEvents(fs, tagstr)
 	end
 
 	tinsert(self.__tags, fs)
 end
 
-local Untag = function(self, fs)
+local function Untag(self, fs)
 	if(not fs) then return end
 
-	UnregisterEvents(fs)
+	unregisterEvents(fs)
 	for _, timers in next, eventlessUnits do
-		for k, fontstr in next, timers do
+		for i, fontstr in next, timers do
 			if(fs == fontstr) then
-				tremove(timers, k)
+				tremove(timers, i)
 			end
 		end
 	end
 
-	for k, fontstr in next, self.__tags do
+	for i, fontstr in next, self.__tags do
 		if(fontstr == fs) then
-			tremove(self.__tags, k)
+			tremove(self.__tags, i)
 		end
 	end
 

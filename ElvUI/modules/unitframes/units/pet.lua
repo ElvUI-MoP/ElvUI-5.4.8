@@ -17,12 +17,12 @@ function UF:Construct_PetFrame(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, "model");
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture");
 	frame.Buffs = self:Construct_Buffs(frame);
-	frame.HealPrediction = self:Construct_HealComm(frame)
+	frame.HealthPrediction = self:Construct_HealComm(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame);
 	frame.Castbar = self:Construct_Castbar(frame, L["Pet Castbar"]);
 	frame.Castbar.SafeZone = nil;
 	frame.Castbar.LatencyTexture:Hide();
-	frame.Threat = self:Construct_Threat(frame);
+	frame.ThreatIndicator = self:Construct_Threat(frame);
 	frame.AuraWatch = UF:Construct_AuraWatch(frame);
 	frame.Range = UF:Construct_Range(frame);
 	frame.InfoPanel = self:Construct_InfoPanel(frame);

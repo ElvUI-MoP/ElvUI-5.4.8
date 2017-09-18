@@ -3,38 +3,39 @@ local oUF = ns.oUF
 
 local UnitGroupRolesAssigned = UnitGroupRolesAssigned;
 
-local Update = function(self, event)
-	local lfdrole = self.LFDRole
-	if(lfdrole.PreUpdate) then
-		lfdrole:PreUpdate()
+local function Update(self, event)
+	local element = self.GroupRoleIndicator
+
+	if(element.PreUpdate) then
+		element:PreUpdate()
 	end
 
 	local role = UnitGroupRolesAssigned(self.unit)
 	if(role == 'TANK' or role == 'HEALER' or role == 'DAMAGER') then
-		lfdrole:SetTexCoord(GetTexCoordsForRoleSmallCircle(role))
-		lfdrole:Show()
+		element:SetTexCoord(GetTexCoordsForRoleSmallCircle(role))
+		element:Show()
 	else
-		lfdrole:Hide()
+		element:Hide()
 	end
 
-	if(lfdrole.PostUpdate) then
-		return lfdrole:PostUpdate(role)
+	if(element.PostUpdate) then
+		return element:PostUpdate(role)
 	end
 end
 
-local Path = function(self, ...)
-	return (self.LFDRole.Override or Update) (self, ...)
+local function Path(self, ...)
+	return (self.GroupRoleIndicator.Override or Update) (self, ...)
 end
 
-local ForceUpdate = function(element)
+local function ForceUpdate(element)
 	return Path(element.__owner, 'ForceUpdate')
 end
 
-local Enable = function(self)
-	local lfdrole = self.LFDRole
-	if(lfdrole) then
-		lfdrole.__owner = self
-		lfdrole.ForceUpdate = ForceUpdate
+local function Enable(self)
+	local element = self.GroupRoleIndicator
+	if(element) then
+		element.__owner = self
+		element.ForceUpdate = ForceUpdate
 
 		if(self.unit == "player") then
 			self:RegisterEvent("PLAYER_ROLES_ASSIGNED", Path, true)
@@ -42,21 +43,22 @@ local Enable = function(self)
 			self:RegisterEvent("GROUP_ROSTER_UPDATE", Path, true)
 		end
 
-		if(lfdrole:IsObjectType"Texture" and not lfdrole:GetTexture()) then
-			lfdrole:SetTexture[[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]]
+		if(element:IsObjectType('Texture') and not element:GetTexture()) then
+			element:SetTexture([[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]])
 		end
 
 		return true
 	end
 end
 
-local Disable = function(self)
-	local lfdrole = self.LFDRole
-	if(lfdrole) then
-		lfdrole:Hide()
+local function Disable(self)
+	local element = self.GroupRoleIndicator
+	if(element) then
+		element:Hide()
+
 		self:UnregisterEvent("PLAYER_ROLES_ASSIGNED", Path)
 		self:UnregisterEvent("GROUP_ROSTER_UPDATE", Path)
 	end
 end
 
-oUF:AddElement('LFDRole', Path, Enable, Disable)
+oUF:AddElement('GroupRoleIndicator', Path, Enable, Disable)

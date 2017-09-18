@@ -349,11 +349,11 @@ function UF:UpdateColors()
 	ElvUF.colors.power.ENERGY = E:GetColorTable(db.power.ENERGY);
 	ElvUF.colors.power.RUNIC_POWER = E:GetColorTable(db.power.RUNIC_POWER);
 
-	ElvUF.colors.Runes = {};
-	ElvUF.colors.Runes[1] = E:GetColorTable(db.classResources.DEATHKNIGHT[1]);
-	ElvUF.colors.Runes[2] = E:GetColorTable(db.classResources.DEATHKNIGHT[2]);
-	ElvUF.colors.Runes[3] = E:GetColorTable(db.classResources.DEATHKNIGHT[3]);
-	ElvUF.colors.Runes[4] = E:GetColorTable(db.classResources.DEATHKNIGHT[4]);
+	ElvUF.colors.runes = {};
+	ElvUF.colors.runes[1] = E:GetColorTable(db.classResources.DEATHKNIGHT[1]);
+	ElvUF.colors.runes[2] = E:GetColorTable(db.classResources.DEATHKNIGHT[2]);
+	ElvUF.colors.runes[3] = E:GetColorTable(db.classResources.DEATHKNIGHT[3]);
+	ElvUF.colors.runes[4] = E:GetColorTable(db.classResources.DEATHKNIGHT[4]);
 
 	ElvUF.colors.HolyPower = E:GetColorTable(db.classResources.PALADIN);
 

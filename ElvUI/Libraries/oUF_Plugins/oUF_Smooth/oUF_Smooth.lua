@@ -28,6 +28,9 @@ local function hook(frame)
 	if frame.Power then
 		SmoothBar(frame.Power)
 	end
+	if frame.AlternativePower then
+		SmoothBar(frame.AlternativePower)
+	end
 end
 
 for i, frame in ipairs(oUF.objects) do hook(frame) end

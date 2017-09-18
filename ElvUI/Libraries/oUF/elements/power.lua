@@ -1,110 +1,114 @@
 local _, ns = ...
 local oUF = ns.oUF
 
-local unpack = unpack
-
-local UnitPower = UnitPower
-local UnitPowerMax = UnitPowerMax
-local UnitIsConnected = UnitIsConnected
-local UnitPowerType = UnitPowerType
-local UnitIsPlayer = UnitIsPlayer
-local UnitPlayerControlled = UnitPlayerControlled
-local UnitClass = UnitClass
-local UnitReaction = UnitReaction
-local UnitIsTapped = UnitIsTapped
-local UnitIsTappedByPlayer = UnitIsTappedByPlayer
-
 local updateFrequentUpdates
-oUF.colors.power = {}
-for power, color in next, PowerBarColor do
-	if(type(power) == 'string') then
-		oUF.colors.power[power] = {color.r, color.g, color.b}
+
+local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX or 10
+
+local function getDisplayPower(unit)
+	local _, min, _, _, _, _, showOnRaid = UnitAlternatePowerInfo(unit)
+	if(showOnRaid) then
+		return ALTERNATE_POWER_INDEX, min
 	end
 end
 
-local GetDisplayPower = function(power, unit)
-	if not unit then return; end
-	local _, _, _, _, _, _, showOnRaid = UnitAlternatePowerInfo(unit)
-	if(power.displayAltPower and showOnRaid) then
-		return ALTERNATE_POWER_INDEX
-	else
-		return (UnitPowerType(unit))
-	end
-end
+local function UpdateColor(element, unit, cur, min, max, displayType)
+	local parent = element.__owner
 
-local Update = function(self, event, unit)
-	if(self.unit ~= unit) or not unit then return end
-	local power = self.Power
-
-	if(power.PreUpdate) then power:PreUpdate(unit) end
-
-	local displayType = GetDisplayPower(power, unit)
-	local min, max = UnitPower(unit, displayType), UnitPowerMax(unit, displayType)
-	local disconnected = not UnitIsConnected(unit)
-	if max == 0 then
-		max = 1
-	end
-	power:SetMinMaxValues(0, max)
-
-	if(disconnected) then
-		power:SetValue(max)
-	else
-		power:SetValue(min)
-	end
-
-	power.disconnected = disconnected
-	if power.frequentUpdates ~= power.__frequentUpdates then
-		power.__frequentUpdates = power.frequentUpdates
+	if element.frequentUpdates ~= element.__frequentUpdates then
+		element.__frequentUpdates = element.frequentUpdates
 		updateFrequentUpdates(self)
 	end
 
+	local ptype, ptoken, altR, altG, altB = UnitPowerType(unit)
 	local r, g, b, t
-	if(power.colorTapping and not UnitPlayerControlled(unit) and UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsTappedByAllThreatList(unit)) then
-		t = self.colors.tapped
-	elseif(power.colorDisconnected and not UnitIsConnected(unit)) then
-		t = self.colors.disconnected
-	elseif(power.colorPower) then
-		local ptype, ptoken, altR, altG, altB = UnitPowerType(unit)
-
-		t = self.colors.power[ptoken]
-		if(not t and altR) then
-			r, g, b = altR, altG, altB
+	if(element.colorTapping and element.tapped) then
+		t = parent.colors.tapped
+	elseif(element.colorDisconnected and element.disconnected) then
+		t = parent.colors.disconnected
+	elseif(displayType == ALTERNATE_POWER_INDEX and element.altPowerColor) then
+		t = element.altPowerColor
+	elseif(element.colorPower) then
+		t = parent.colors.power[ptoken]
+		if(not t) then
+			if(element.GetAlternativeColor) then
+				r, g, b = element:GetAlternativeColor(unit, ptype, ptoken, altR, altG, altB)
+			elseif(altR) then
+				r, g, b = altR, altG, altB
+			else
+				t = parent.colors.power[ptype]
+			end
 		end
-	elseif(power.colorClass and UnitIsPlayer(unit)) or
-		(power.colorClassNPC and not UnitIsPlayer(unit)) or
-		(power.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
+	elseif(element.colorClass and UnitIsPlayer(unit)) or
+		(element.colorClassNPC and not UnitIsPlayer(unit)) or
+		(element.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
 		local _, class = UnitClass(unit)
-		t = self.colors.class[class]
-	elseif(power.colorReaction and UnitReaction(unit, 'player')) then
-		t = self.colors.reaction[UnitReaction(unit, "player")]
-	elseif(power.colorSmooth) then
-		r, g, b = self.ColorGradient(min, max, unpack(power.smoothGradient or self.colors.smooth))
+		t = parent.colors.class[class]
+	elseif(element.colorReaction and UnitReaction(unit, 'player')) then
+		t = parent.colors.reaction[UnitReaction(unit, 'player')]
+	elseif(element.colorSmooth) then
+		local adjust = 0 - (min or 0)
+		r, g, b = parent.ColorGradient(cur + adjust, max + adjust, unpack(element.smoothGradient or parent.colors.smooth))
 	end
 
 	if(t) then
 		r, g, b = t[1], t[2], t[3]
 	end
 
-	if(b) then
-		power:SetStatusBarColor(r, g, b)
+	t = parent.colors.power[ptoken or ptype]
 
-		local bg = power.bg
-		if(bg) then
-			local mu = bg.multiplier or 1
-			bg:SetVertexColor(r * mu, g * mu, b * mu)
-		end
+	element:SetStatusBarTexture(element.texture)
+
+	if(r or g or b) then
+		element:SetStatusBarColor(r, g, b)
 	end
 
-	if(power.PostUpdate) then
-		return power:PostUpdate(unit, min, max)
+	local bg = element.bg
+	if(bg and b) then
+		local mu = bg.multiplier or 1
+		bg:SetVertexColor(r * mu, g * mu, b * mu)
 	end
 end
 
-local Path = function(self, ...)
+local function Update(self, event, unit)
+	if(self.unit ~= unit) then return end
+	local element = self.Power
+
+	if(element.PreUpdate) then
+		element:PreUpdate(unit)
+	end
+
+	local displayType, min
+	if(element.displayAltPower) then
+		displayType, min = getDisplayPower(unit)
+	end
+
+	local cur, max = UnitPower(unit, displayType), UnitPowerMax(unit, displayType)
+	local disconnected = not UnitIsConnected(unit)
+	local tapped = not UnitPlayerControlled(unit) and (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsTappedByAllThreatList(unit))
+	element:SetMinMaxValues(min or 0, max)
+
+	if(disconnected) then
+		element:SetValue(max)
+	else
+		element:SetValue(cur)
+	end
+
+	element.disconnected = disconnected
+	element.tapped = tapped
+
+	element:UpdateColor(unit, cur, min, max, displayType)
+
+	if(element.PostUpdate) then
+		return element:PostUpdate(unit, cur, min, max)
+	end
+end
+
+local function Path(self, ...)
 	return (self.Power.Override or Update) (self, ...)
 end
 
-local ForceUpdate = function(element)
+local function ForceUpdate(element)
 	return Path(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
@@ -125,35 +129,47 @@ function updateFrequentUpdates(self)
 	end
 end
 
-local Enable = function(self, unit)
-	local power = self.Power
-	if(power) then
-		power.__owner = self
-		power.ForceUpdate = ForceUpdate
-
-		power.__frequentUpdates = power.frequentUpdates
+local function Enable(self, unit)
+	local element = self.Power
+	if(element) then
+		element.__owner = self
+		element.ForceUpdate = ForceUpdate
+		element.__frequentUpdates = element.frequentUpdates
 		updateFrequentUpdates(self)
+
+		if(element.frequentUpdates and (unit == 'player' or unit == 'pet')) then
+			self:RegisterEvent('UNIT_POWER_FREQUENT', Path)
+		else
+			self:RegisterEvent('UNIT_POWER', Path)
+		end
 
 		self:RegisterEvent('UNIT_POWER_BAR_SHOW', Path)
 		self:RegisterEvent('UNIT_POWER_BAR_HIDE', Path)
 		self:RegisterEvent('UNIT_DISPLAYPOWER', Path)
 		self:RegisterEvent('UNIT_CONNECTION', Path)
 		self:RegisterEvent('UNIT_MAXPOWER', Path)
-
-		-- For tapping.
 		self:RegisterEvent('UNIT_FACTION', Path)
 
-		if(power:IsObjectType'StatusBar' and not power:GetStatusBarTexture()) then
-			power:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
+		if(element:IsObjectType('StatusBar')) then
+			element.texture = element:GetStatusBarTexture() and element:GetStatusBarTexture():GetTexture() or [[Interface\TargetingFrame\UI-StatusBar]]
+			element:SetStatusBarTexture(element.texture)
 		end
+
+		if(not element.UpdateColor) then
+			element.UpdateColor = UpdateColor
+		end
+
+		element:Show()
 
 		return true
 	end
 end
 
-local Disable = function(self)
-	local power = self.Power
-	if(power) then
+local function Disable(self)
+	local element = self.Power
+	if(element) then
+		element:Hide()
+
 		self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
 		self:UnregisterEvent('UNIT_POWER', Path)
 		self:UnregisterEvent('UNIT_POWER_BAR_SHOW', Path)

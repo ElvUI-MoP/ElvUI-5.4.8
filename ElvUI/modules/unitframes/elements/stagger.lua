@@ -9,7 +9,6 @@ function UF:Construct_Stagger(frame)
 	stagger:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 	stagger:SetOrientation("VERTICAL")
 	stagger.PostUpdate = UF.PostUpdateStagger
-	stagger:SetFrameStrata("LOW")
 
 	return stagger
 end
@@ -29,7 +28,7 @@ function UF:Configure_Stagger(frame)
 		end
 
 		stagger:ClearAllPoints()
-		if not frame.USE_MINI_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED and not frame.USE_POWERBAR_OFFSET then
+		if db.power.enable and not frame.USE_MINI_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED and not frame.USE_POWERBAR_OFFSET then
 			if(frame.ORIENTATION == "RIGHT") then
 				stagger:Point("BOTTOMRIGHT", frame.Power, "BOTTOMLEFT", -frame.BORDER*2 + (frame.BORDER - frame.SPACING*3), 0)
 				stagger:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.STAGGER_WIDTH, 0)

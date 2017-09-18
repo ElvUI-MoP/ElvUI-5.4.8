@@ -1,47 +1,47 @@
-local parent, ns = ...;
-local oUF = ns.oUF;
-local Private = oUF.Private;
+local parent, ns = ...
+local oUF = ns.oUF
+local Private = oUF.Private
 
-local argcheck = Private.argcheck;
-local tinsert = table.insert;
+local argcheck = Private.argcheck
+local tinsert = table.insert
 
-local _QUEUE = {};
-local _FACTORY = CreateFrame("Frame")
-_FACTORY:SetScript("OnEvent", function(self, event, ...)
-	return self[event](self, event, ...);
+local queue = {}
+local factory = CreateFrame('Frame')
+factory:SetScript('OnEvent', function(self, event, ...)
+	return self[event](self, event, ...)
 end)
 
-_FACTORY:RegisterEvent("PLAYER_LOGIN")
-_FACTORY.active = true;
+factory:RegisterEvent('PLAYER_LOGIN')
+factory.active = true
 
-function _FACTORY:PLAYER_LOGIN()
-	if(not self.active) then return; end
+function factory:PLAYER_LOGIN()
+	if(not self.active) then return end
 
-	for _, func in next, _QUEUE do
-		func(oUF);
+	for _, func in next, queue do
+		func(oUF)
 	end
 
-	wipe(_QUEUE);
+	wipe(queue)
 end
 
 function oUF:Factory(func)
-	argcheck(func, 2, "function");
+	argcheck(func, 2, 'function')
 
-	if(IsLoggedIn() and _FACTORY.active) then
-		return func(self);
+	if(IsLoggedIn() and factory.active) then
+		return func(self)
 	else
-		tinsert(_QUEUE, func);
+		tinsert(queue, func)
 	end
 end
 
 function oUF:EnableFactory()
-	_FACTORY.active = true;
+	factory.active = true
 end
 
 function oUF:DisableFactory()
-	_FACTORY.active = nil;
+	factory.active = nil
 end
 
 function oUF:RunFactoryQueue()
-	_FACTORY:PLAYER_LOGIN();
+	factory:PLAYER_LOGIN()
 end

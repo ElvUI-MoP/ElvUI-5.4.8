@@ -204,25 +204,25 @@ function UF:Configure_Power(frame)
 end
 
 local tokens = {[0] = "MANA", "RAGE", "FOCUS", "ENERGY", "RUNIC_POWER"}
-function UF:PostUpdatePower(unit, min, max)
+function UF:PostUpdatePower(unit, cur, min, max)
 	local pType, _, altR, altG, altB = UnitPowerType(unit)
 	local parent = self:GetParent()
 
-	if(parent.isForced) then
-		local color = ElvUF['colors'].power[tokens[pType]];
+	if parent.isForced then
+		local pType = random(0, 4)
+		local color = ElvUF['colors'].power[tokens[pType]]
 		min = random(1, max)
-		pType = random(0, 4)
 		self:SetValue(min)
 
-		if(not self.colorClass) then
-			self:SetStatusBarColor(color[1], color[2], color[3]);
-			local mu = self.bg.multiplier or 1;
-			self.bg:SetVertexColor(color[1] * mu, color[2] * mu, color[3] * mu);
+		if not self.colorClass then
+			self:SetStatusBarColor(color[1], color[2], color[3])
+			local mu = self.bg.multiplier or 1
+			self.bg:SetVertexColor(color[1] * mu, color[2] * mu, color[3] * mu)
 		end
 	end
 
-	local db = parent.db;
+	local db = parent.db
 	if(db and db.power and db.power.hideonnpc) then
-		UF:PostNamePosition(parent, unit);
+		UF:PostNamePosition(parent, unit)
 	end
 end
