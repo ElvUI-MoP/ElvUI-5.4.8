@@ -292,7 +292,7 @@ function AFK:Initialize()
 	self.AFKMode.bottom.logo = self.AFKMode:CreateTexture(nil, "OVERLAY");
 	self.AFKMode.bottom.logo:Size(320, 150);
 	self.AFKMode.bottom.logo:Point("CENTER", self.AFKMode.bottom, "CENTER", 0, 50);
-	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo_elvui");
+	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo");
 
 	local factionGroup = UnitFactionGroup("player");
 	local size, offsetX, offsetY = 140, -20, -16
