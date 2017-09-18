@@ -189,20 +189,29 @@ E.Options.args.datatexts = {
 								E:GetModule("Layout"):SetDataPanelStyle();
 							end
 						},
-						noCombatClick = {
+						panelBackdrop = {
 							order = 3,
+							type = "toggle",
+							name = L["Backdrop"],
+							set = function(info, value)
+								E.db.datatexts[ info[#info] ] = value
+								E:GetModule("Layout"):SetDataPanelStyle()
+							end
+						},
+						noCombatClick = {
+							order = 4,
 							type = "toggle",
 							name = L["Block Combat Click"],
 							desc = L["Blocks all click events while in combat."]
 						},
 						noCombatHover = {
-							order = 4,
+							order = 5,
 							type = "toggle",
 							name = L["Block Combat Hover"],
 							desc = L["Blocks datatext tooltip from showing in combat."]
 						},
 						goldFormat = {
-							order = 5,
+							order = 6,
 							type = "select",
 							name = L["Gold Format"],
 							desc = L["The display format of the money text that is shown in the gold datatext and its tooltip."],
@@ -216,7 +225,7 @@ E.Options.args.datatexts = {
 							}
 						},
 						goldCoins = {
-							order = 6,
+							order = 7,
 							type = "toggle",
 							name = L["Show Coins"],
 							desc = L["Use coin icons instead of colored text."]
