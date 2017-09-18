@@ -69,26 +69,26 @@ function DT:BattlegroundStats()
 			DT.tooltip:AddLine(" ")
 
 			if CurrentMapID == WSG or CurrentMapID == TP then 
-				DT.tooltip:AddDoubleLine(L["Flags Captured"], GetBattlefieldStatData(index, 1), 1, 1, 1)
-				DT.tooltip:AddDoubleLine(L["Flags Returned"], GetBattlefieldStatData(index, 2), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(1), GetBattlefieldStatData(index, 1), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(2), GetBattlefieldStatData(index, 2), 1, 1, 1)
 			elseif CurrentMapID == EOTS then
-				DT.tooltip:AddDoubleLine(L["Flags Captured"], GetBattlefieldStatData(index, 1), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(1), GetBattlefieldStatData(index, 1), 1, 1, 1)
 			elseif CurrentMapID == AV then
-				DT.tooltip:AddDoubleLine(L["Graveyards Assaulted"], GetBattlefieldStatData(index, 1), 1, 1, 1)
-				DT.tooltip:AddDoubleLine(L["Graveyards Defended"], GetBattlefieldStatData(index, 2), 1, 1, 1)
-				DT.tooltip:AddDoubleLine(L["Towers Assaulted"], GetBattlefieldStatData(index, 3), 1, 1, 1)
-				DT.tooltip:AddDoubleLine(L["Towers Defended"], GetBattlefieldStatData(index, 4), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(1), GetBattlefieldStatData(index, 1), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(2), GetBattlefieldStatData(index, 2), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(3), GetBattlefieldStatData(index, 3), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(4), GetBattlefieldStatData(index, 4), 1, 1, 1)
 			elseif CurrentMapID == SOTA then
-				DT.tooltip:AddDoubleLine(L["Demolishers Destroyed"], GetBattlefieldStatData(index, 1), 1, 1, 1)
-				DT.tooltip:AddDoubleLine(L["Gates Destroyed"], GetBattlefieldStatData(index, 2), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(1), GetBattlefieldStatData(index, 1), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(2), GetBattlefieldStatData(index, 2), 1, 1, 1)
 			elseif CurrentMapID == IOC or CurrentMapID == TBFG or CurrentMapID == AB then
-				DT.tooltip:AddDoubleLine(L["Bases Assaulted"], GetBattlefieldStatData(index, 1), 1, 1, 1)
-				DT.tooltip:AddDoubleLine(L["Bases Defended"], GetBattlefieldStatData(index, 2), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(1), GetBattlefieldStatData(index, 1), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(2), GetBattlefieldStatData(index, 2), 1, 1, 1)
 			elseif CurrentMapID == TOK then
-				DT.tooltip:AddDoubleLine(L["Orb Possessions"], GetBattlefieldStatData(index, 1), 1, 1, 1)
-				DT.tooltip:AddDoubleLine(L["Victory Points"], GetBattlefieldStatData(index, 2), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(1), GetBattlefieldStatData(index, 1), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(2), GetBattlefieldStatData(index, 2), 1, 1, 1)
 			elseif CurrentMapID == SSM then
-				DT.tooltip:AddDoubleLine(L["Carts Controlled"], GetBattlefieldStatData(index, 1), 1, 1, 1)
+				DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(1), GetBattlefieldStatData(index, 1), 1, 1, 1)
 			end
 			break
 		end
