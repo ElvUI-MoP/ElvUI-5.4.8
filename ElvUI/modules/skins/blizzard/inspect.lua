@@ -54,13 +54,15 @@ local function LoadSkin()
 	for _, slot in pairs(slots) do
 		local icon = _G["Inspect"..slot.."IconTexture"]
 		local slot = _G["Inspect"..slot]
+
 		slot:StripTextures()
-		slot:StyleButton()
-		icon:SetTexCoord(unpack(E.TexCoords))
-		icon:SetInside()
-		slot:SetFrameLevel(slot:GetFrameLevel() + 2)
 		slot:CreateBackdrop("Default")
 		slot.backdrop:SetAllPoints()
+		slot:SetFrameLevel(slot:GetFrameLevel() + 2)
+		slot:StyleButton()
+
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside()
 	end
 
 	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
@@ -84,6 +86,7 @@ local function LoadSkin()
 		button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor));
  	end)
 
+	-- Control Frame
 	InspectModelFrameControlFrame:StripTextures()
 
 	local controlbuttons = {
@@ -95,7 +98,7 @@ local function LoadSkin()
 		"InspectModelFrameControlFrameRotateResetButton"
 	}
 
-	for i = 1, getn(controlbuttons) do
+	for i = 1, #controlbuttons do
 		S:HandleButton(_G[controlbuttons[i]]);
 		_G[controlbuttons[i]]:StyleButton()
 		_G[controlbuttons[i].."Bg"]:Hide()

@@ -124,11 +124,19 @@ local function LoadSkin()
 
 	WhoFrameButton1:Point("TOPLEFT", 10, -82)
 
-	WhoFrameEditBox:Point("BOTTOM", -3, 20)
+	S:HandleEditBox(WhoFrameEditBox)
+	WhoFrameEditBox:Point("BOTTOM", -1, 29)
+	WhoFrameEditBox:Size(326, 18)
 
 	S:HandleButton(WhoFrameWhoButton)
+	WhoFrameWhoButton:Point("RIGHT", WhoFrameAddFriendButton, "LEFT", -2, 0)
+	WhoFrameWhoButton:Width(84)
+
 	S:HandleButton(WhoFrameAddFriendButton)
+	WhoFrameAddFriendButton:Point("RIGHT", WhoFrameGroupInviteButton, "LEFT", -2, 0)
+
 	S:HandleButton(WhoFrameGroupInviteButton)
+	WhoFrameGroupInviteButton:Point("BOTTOMRIGHT", -6, 4)
 
 	S:HandleDropDownBox(WhoFrameDropDown, 150)
 
@@ -292,7 +300,7 @@ local function LoadSkin()
 	S:HandleScrollBar(FriendsFrameIgnoreScrollFrameScrollBar)
 	FriendsFrameIgnoreScrollFrameScrollBar:Point("TOPLEFT", FriendsFrameIgnoreScrollFrame, "TOPRIGHT", 45, 0)
 
-	for i = 1, 19 do
+	for i = 2, 19 do
 		local button = _G["FriendsFrameIgnoreButton"..i]
 
 		button.stripe = button:CreateTexture(nil, "OVERLAY");
@@ -305,7 +313,7 @@ local function LoadSkin()
 		button.stripe:SetAllPoints()
 
 		button:StyleButton()
-		button:SetWidth(310)
+		button:Width(310)
 	end
 
 	S:HandleScrollBar(FriendsFramePendingScrollFrameScrollBar, 4)

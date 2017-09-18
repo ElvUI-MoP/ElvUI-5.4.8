@@ -79,7 +79,7 @@ local function LoadSkin()
 		end
 	end
 
-	--Control Frame
+	-- Control Frame
 	TransmogrifyModelFrameControlFrame:StripTextures()
 
 	local controlbuttons = {
@@ -91,8 +91,8 @@ local function LoadSkin()
 		"TransmogrifyModelFrameControlFrameRotateResetButton"
 	}
 
-	for i = 1, getn(controlbuttons) do
-		S:HandleButton(_G[controlbuttons[i]]);
+	for i = 1, #controlbuttons do
+		S:HandleButton(_G[controlbuttons[i]])
 		_G[controlbuttons[i]]:StyleButton()
 		_G[controlbuttons[i].."Bg"]:Hide()
 	end

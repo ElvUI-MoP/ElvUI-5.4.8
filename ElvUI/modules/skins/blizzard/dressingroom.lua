@@ -61,7 +61,7 @@ local function LoadSkin()
 		end
 	end)
 
-	--Control buttons
+	-- Control Frame
 	DressUpModelControlFrame:StripTextures();
 	SideDressUpModelControlFrame:StripTextures();
 
@@ -80,7 +80,7 @@ local function LoadSkin()
 		"SideDressUpModelControlFrameRotateResetButton"
 	};
 
-	for i = 1, getn(controlbuttons) do
+	for i = 1, #controlbuttons do
 		S:HandleButton(_G[controlbuttons[i]]);
 		_G[controlbuttons[i]]:StyleButton();
 		_G[controlbuttons[i].."Bg"]:Hide();

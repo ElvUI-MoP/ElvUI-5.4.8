@@ -22,7 +22,7 @@ local function LoadSkin()
 	CharacterModelFrame:CreateBackdrop("Default")
 	CharacterModelFrame.backdrop:Point("TOPLEFT", -1, 1)
 	CharacterModelFrame.backdrop:Point("BOTTOMRIGHT", 1, -2)
-	CharacterModelFrameBackgroundOverlay:SetTexture(0, 0, 0, 0.5)
+	CharacterModelFrameBackgroundOverlay:SetTexture(0, 0, 0, 0.6)
 
 	S:HandleCloseButton(CharacterFrameCloseButton)
 
@@ -192,6 +192,7 @@ local function LoadSkin()
 		SquareButton_SetIcon(CharacterFrameExpandButton, "LEFT");
 	end
 
+	-- Control Frame
 	CharacterModelFrameControlFrame:StripTextures()
 
 	local controlbuttons = {
@@ -203,8 +204,8 @@ local function LoadSkin()
 		"CharacterModelFrameControlFrameRotateResetButton"
 	}
 
-	for i = 1, getn(controlbuttons) do
-		S:HandleButton(_G[controlbuttons[i]]);
+	for i = 1, #controlbuttons do
+		S:HandleButton(_G[controlbuttons[i]])
 		_G[controlbuttons[i]]:StyleButton()
 		_G[controlbuttons[i].."Bg"]:Hide()
 	end

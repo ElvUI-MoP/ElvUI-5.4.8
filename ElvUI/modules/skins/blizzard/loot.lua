@@ -197,14 +197,17 @@ local function LoadRollSkin()
 	if(not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lootRoll) then return; end
 
 	local function OnShow(self)
-		self:SetTemplate("Transparent");
+		local cornerTexture = _G[self:GetName() .. "Corner"]
+		local iconFrame = _G[self:GetName() .. "IconFrame"]
+		local statusBar = _G[self:GetName() .. "Timer"]
+		local _, _, _, quality = GetLootRollItemInfo(self.rollID)
 
-		local cornerTexture = _G[self:GetName() .. "Corner"];
-		cornerTexture:SetTexture();
+		self:SetTemplate("Transparent")
 
-		local iconFrame = _G[self:GetName() .. "IconFrame"];
-		local _, _, _, quality = GetLootRollItemInfo(self.rollID);
-		iconFrame:SetBackdropBorderColor(GetItemQualityColor(quality));
+		cornerTexture:SetTexture()
+
+		iconFrame:SetBackdropBorderColor(GetItemQualityColor(quality))
+		statusBar:SetStatusBarColor(GetItemQualityColor(quality))
 	end
 
 	for i = 1, NUM_GROUP_LOOT_FRAMES do

@@ -349,6 +349,18 @@ local function LoadSkin()
 	LevelUpDisplaySpellFrameIcon:SetTexCoord(unpack(E.TexCoords));
 	LevelUpDisplaySpellFrameSubIcon:SetTexCoord(unpack(E.TexCoords));
 
+	LevelUpDisplaySide:HookScript("OnShow", function(self)
+		for i = 1, #self.unlockList do
+			local button = _G["LevelUpDisplaySideUnlockFrame"..i]
+
+			if not button.isSkinned then
+				button.icon:SetTexCoord(unpack(E.TexCoords))
+
+				button.isSkinned = true
+			end
+		end
+	end)
+
 	-- Channel Pullout Frame
 	ChannelPullout:StripTextures()
 	ChannelPullout:SetTemplate("Transparent")
