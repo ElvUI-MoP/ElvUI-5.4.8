@@ -53,7 +53,7 @@ local function UpdateFilterGroup()
 			color = {
 				type = "color",
 				order = 4,
-				name = L["Color"],
+				name = COLOR,
 				get = function(info)
 					local t = E.global["nameplates"]["filter"][selectedFilter][ info[#info] ]
 					if t then
@@ -698,7 +698,7 @@ E.Options.args.nameplate = {
 							name = L["Enemy Combat Toggle"],
 							desc = L["Control enemy nameplates toggling on or off when in combat."],
 							values = {
-								["DISABLED"] = L["Disabled"],
+								["DISABLED"] = DISABLE,
 								["TOGGLE_ON"] = L["Toggle On While In Combat"],
 								["TOGGLE_OFF"] = L["Toggle Off While In Combat"],
 							},
@@ -713,7 +713,7 @@ E.Options.args.nameplate = {
 							name = L["Friendly Combat Toggle"],
 							desc = L["Control friendly nameplates toggling on or off when in combat."],
 							values = {
-								["DISABLED"] = L["Disabled"],
+								["DISABLED"] = DISABLE,
 								["TOGGLE_ON"] = L["Toggle On While In Combat"],
 								["TOGGLE_OFF"] = L["Toggle Off While In Combat"],
 							},
@@ -743,7 +743,7 @@ E.Options.args.nameplate = {
 						fontSize = {
 							order = 3,
 							type = "range",
-							name = L["Font Size"],
+							name = FONT_SIZE,
 							min = 4, max = 34, step = 1,
 						},
 						fontOutline = {
@@ -752,7 +752,7 @@ E.Options.args.nameplate = {
 							name = L["Font Outline"],
 							desc = L["Set the font outline."],
 							values = {
-								["NONE"] = L["None"],
+								["NONE"] = NONE,
 								["OUTLINE"] = "OUTLINE",
 								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 								["THICKOUTLINE"] = "THICKOUTLINE"
@@ -939,12 +939,12 @@ E.Options.args.nameplate = {
 				filters = {
 					order = 6,
 					type = "group",
-					name = L["Filters"],
+					name = FILTERS,
 					args = {
 						header = {
 							order = 1,
 							type = "header",
-							name = L["Filters"]
+							name = FILTERS
 						},
 						addname = {
 							order = 2,

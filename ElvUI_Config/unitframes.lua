@@ -13,6 +13,11 @@ local IsAddOnLoaded = IsAddOnLoaded
 local GetScreenWidth = GetScreenWidth
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
+local SHOW, HIDE, DELETE, NONE = SHOW, HIDE, DELETE, NONE
+local SHIFT_KEY, ALT_KEY, CTRL_KEY = SHIFT_KEY, ALT_KEY, CTRL_KEY
+local HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP = HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP
+local RAGE, FOCUS, ENERGY, RUNIC_POWER = RAGE, FOCUS, ENERGY, RUNIC_POWER
+local HOLY_POWER, SOUL_SHARDS, SHADOW_ORBS, CHI_POWER = HOLY_POWER, SOUL_SHARDS, SHADOW_ORBS, CHI_POWER
 
 local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
 
@@ -132,7 +137,7 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 			header = {
 				order = 1,
 				type = "header",
-				name = L["Health"]
+				name = HEALTH
 			},
 			position = {
 				order = 2,
@@ -159,7 +164,7 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 				type = "select",
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"]
@@ -313,7 +318,7 @@ local function GetOptionsTable_Power(hasDetatchOption, updateFunc, groupName, nu
 				type = "select",
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"]
@@ -443,7 +448,7 @@ local function GetOptionsTable_Name(updateFunc, groupName, numUnits)
 				type = "select",
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"]
@@ -628,7 +633,7 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 			filters = {
 				order = 100,
 				type = "group",
-				name = L["Filters"],
+				name = FILTERS,
 				guiInline = true,
 				args = {}
 			}
@@ -644,7 +649,7 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 			values = {
 				["FRAME"] = L["Frame"],
 				["DEBUFFS"] = L["Debuffs"],
-				["HEALTH"] = L["Health"],
+				["HEALTH"] = HEALTH,
 				["POWER"] = L["Power"]
 			}
 		}
@@ -657,7 +662,7 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 			values = {
 				["FRAME"] = L["Frame"],
 				["BUFFS"] = L["Buffs"],
-				["HEALTH"] = L["Health"],
+				["HEALTH"] = HEALTH,
 				["POWER"] = L["Power"]
 			}
 		}
@@ -1203,7 +1208,7 @@ local function GetOptionsTable_AuraBars(friendlyOnly, updateFunc, groupName)
 			filters = {
 				order = 100,
 				type = "group",
-				name = L["Filters"],
+				name = FILTERS,
 				guiInline = true,
 				args = {}
 			}
@@ -1479,7 +1484,7 @@ local function GetOptionsTable_RaidIcon(updateFunc, groupName, numUnits)
 				type = "select",
 				name = L["Attach To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"]
@@ -1621,7 +1626,7 @@ local function GetOptionsTable_RaidDebuff(updateFunc, groupName)
 					color = {
 						order = 4,
 						type = "color",
-						name = L["Color"],
+						name = COLOR,
 						hasAlpha = true,
 						get = function(info)
 							local c = E.db.unitframe.units.raid.rdebuffs.duration.color;
@@ -1675,7 +1680,7 @@ local function GetOptionsTable_RaidDebuff(updateFunc, groupName)
 					color = {
 						order = 4,
 						type = "color",
-						name = L["Color"],
+						name = COLOR,
 						hasAlpha = true,
 						get = function(info)
 							local c = E.db.unitframe.units[groupName].rdebuffs.stack.color
@@ -1725,7 +1730,7 @@ local function GetOptionsTable_ReadyCheckIcon(updateFunc, groupName)
 				type = "select",
 				name = L["Attach To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"]
@@ -1872,7 +1877,7 @@ local function CreateCustomTextGroup(unit, objectName)
 				type = "select",
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"]
@@ -2095,7 +2100,7 @@ E.Options.args.unitframe = {
 		colorsShortcut = {
 			order = 6,
 			type = "execute",
-			name = L["Colors"],
+			name = COLORS,
 			buttonElvUI = true,
 			func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup") end,
 			disabled = function() return not E.UnitFrames end
@@ -2504,7 +2509,7 @@ E.Options.args.unitframe = {
 								health = {
 									order = 9,
 									type = "color",
-									name = L["Health"]
+									name = HEALTH
 								},
 								health_backdrop = {
 									order = 10,
@@ -5084,7 +5089,7 @@ E.Options.args.unitframe.args.party = {
 					type = "select",
 					name = L["Attach To"],
 					values = {
-						["Health"] = L["Health"],
+						["Health"] = HEALTH,
 						["Power"] = L["Power"],
 						["InfoPanel"] = L["Information Panel"],
 						["Frame"] = L["Frame"]
@@ -5701,7 +5706,7 @@ E.Options.args.unitframe.args["raid"] = {
 					type = "select",
 					name = L["Attach To"],
 					values = {
-						["Health"] = L["Health"],
+						["Health"] = HEALTH,
 						["Power"] = L["Power"],
 						["InfoPanel"] = L["Information Panel"],
 						["Frame"] = L["Frame"]
@@ -6139,7 +6144,7 @@ E.Options.args.unitframe.args["raid40"] = {
 					type = "select",
 					name = L["Attach To"],
 					values = {
-						["Health"] = L["Health"],
+						["Health"] = HEALTH,
 						["Power"] = L["Power"],
 						["InfoPanel"] = L["Information Panel"],
 						["Frame"] = L["Frame"]
@@ -7007,7 +7012,7 @@ if(P.unitframe.colors.classResources[E.myclass]) then
 		E.Options.args.unitframe.args.generalOptionsGroup.args.allColorsGroup.args.classResourceGroup.args[E.myclass] = {
 			order = ORDER,
 			type = "color",
-			name = L['Shadow Orbs']
+			name = SHADOW_ORBS
 		}
 	elseif E.myclass == "WARLOCK" then
 		local names = {
@@ -7037,7 +7042,7 @@ if(P.unitframe.colors.classResources[E.myclass]) then
 			E.Options.args.unitframe.args.generalOptionsGroup.args.allColorsGroup.args.classResourceGroup.args['resource'..i] = {
 				order = ORDER + i,
 				type = "color",
-				name = L['Harmony']..' #'..i,
+				name = CHI_POWER..' #'..i,
 				get = function(info)
 					local t = E.db.unitframe.colors.classResources.MONK[i]
 					local d = P.unitframe.colors.classResources.MONK[i]

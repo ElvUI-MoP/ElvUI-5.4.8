@@ -1,6 +1,11 @@
 local E, L, V, P, G = unpack(ElvUI);
 local CH = E:GetModule('Chat');
 
+local _G = _G
+local gsub, strlower = string.gsub, string.lower
+
+local GameTooltip = _G["GameTooltip"]
+
 E.Options.args.chat = {
 	type = 'group',
 	name = L['Chat'],
@@ -447,7 +452,7 @@ E.Options.args.chat = {
 					name = L['Font Outline'],
 					desc = L['Set the font outline.'],
 					values = {
-						["NONE"] = L["None"],
+						["NONE"] = NONE,
 						["OUTLINE"] = "OUTLINE",
 						["MONOCHROMEOUTLINE"] = "MONOCHROMEOUTLINE",
 						["THICKOUTLINE"] = "THICKOUTLINE"
@@ -476,7 +481,7 @@ E.Options.args.chat = {
 					name = L['Tab Font Outline'],
 					desc = L['Set the font outline.'],
 					values = {
-						["NONE"] = L["None"],
+						["NONE"] = NONE,
 						["OUTLINE"] = "OUTLINE",
 						["MONOCHROMEOUTLINE"] = "MONOCHROMEOUTLINE",
 						["THICKOUTLINE"] = "THICKOUTLINE"
@@ -519,7 +524,7 @@ E.Options.args.chat = {
 					type = 'input',
 					get = function(info) return "" end,
 					set = function(info, value)
-						if value == "" or string.gsub(value, "%s+", "") == "" then return; end
+						if value == "" or gsub(value, "%s+", "") == "" then return; end
 						E.global.chat.classColorMentionExcludedNames[strlower(value)] = value
 					end
 				},

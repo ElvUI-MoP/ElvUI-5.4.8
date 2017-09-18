@@ -143,7 +143,7 @@ E.Options.args.databars = {
 						textSize = {
 							order = 4,
 							type = "range",
-							name = L["Font Size"],
+							name = FONT_SIZE,
 							min = 6, max = 22, step = 1
 						},
 						textOutline = {
@@ -152,7 +152,7 @@ E.Options.args.databars = {
 							name = L["Font Outline"],
 							desc = L["Set the font outline."],
 							values = {
-								["NONE"] = L["None"],
+								["NONE"] = NONE,
 								["OUTLINE"] = "OUTLINE",
 								["MONOCHROME"] = "MONOCHROME",
 								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
@@ -280,7 +280,7 @@ E.Options.args.databars = {
 						textSize = {
 							order = 4,
 							type = "range",
-							name = L["Font Size"],
+							name = FONT_SIZE,
 							min = 6, max = 22, step = 1
 						},
 						textOutline = {
@@ -289,7 +289,7 @@ E.Options.args.databars = {
 							name = L["Font Outline"],
 							desc = L["Set the font outline."],
 							values = {
-								["NONE"] = L["None"],
+								["NONE"] = NONE,
 								["OUTLINE"] = "OUTLINE",
 								["MONOCHROME"] = "MONOCHROME",
 								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
