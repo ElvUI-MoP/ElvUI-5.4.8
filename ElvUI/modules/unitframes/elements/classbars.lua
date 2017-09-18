@@ -323,17 +323,18 @@ function UF:Construct_MageResourceBar(frame)
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassBarButton"..i, bars)
 		bars[i]:SetStatusBarTexture(E["media"].blankTex)
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-
-		bars[i].bg = bars[i]:CreateTexture(nil, "ARTWORK")
-
 		UF["statusbars"][bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
+
+		bars[i].bg = bars[i]:CreateTexture(nil, "BORDER")
+		bars[i].bg:SetAllPoints()
+		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg.multiplier = 0.3
 	end
 
 	bars.PostUpdate = UF.UpdateArcaneCharges
-
 	bars:SetScript("OnShow", ToggleResourceBar)
 	bars:SetScript("OnHide", ToggleResourceBar)
 
@@ -368,17 +369,18 @@ function UF:Construct_RogueResourceBar(frame)
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassBarButton"..i, bars)
 		bars[i]:SetStatusBarTexture(E["media"].blankTex)
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-
-		bars[i].bg = bars[i]:CreateTexture(nil, "ARTWORK")
-
 		UF["statusbars"][bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
+
+		bars[i].bg = bars[i]:CreateTexture(nil, "BORDER")
+		bars[i].bg:SetAllPoints()
+		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg.multiplier = 0.3
 	end
 
 	bars.PostUpdate = UF.UpdateAnticipation
-
 	bars:SetScript("OnShow", ToggleResourceBar)
 	bars:SetScript("OnHide", ToggleResourceBar)
 
@@ -413,15 +415,18 @@ function UF:Construct_WarlockResourceBar(frame)
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassBarButton"..i, bars)
 		bars[i]:SetStatusBarTexture(E["media"].blankTex)
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		bars[i].bg = bars[i]:CreateTexture(nil, "ARTWORK")
 		UF["statusbars"][bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
+
+		bars[i].bg = bars[i]:CreateTexture(nil, "BORDER")
+		bars[i].bg:SetAllPoints()
+		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg.multiplier = 0.3
 	end
 
 	bars.PostUpdate = UF.UpdateShardBar
-
 	bars:SetScript("OnShow", ToggleResourceBar)
 	bars:SetScript("OnHide", ToggleResourceBar)
 
@@ -452,6 +457,11 @@ function UF:Construct_MonkResourceBar(frame)
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
+
+		bars[i].bg = bars[i]:CreateTexture(nil, "BORDER")
+		bars[i].bg:SetAllPoints()
+		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg.multiplier = 0.3
 	end
 
 	bars.PostUpdate = UF.UpdateHarmony
@@ -507,6 +517,11 @@ function UF:Construct_PriestResourceBar(frame)
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
+
+		bars[i].bg = bars[i]:CreateTexture(nil, "BORDER")
+		bars[i].bg:SetAllPoints()
+		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg.multiplier = 0.3
 	end
 
 	bars.PostUpdate = UF.UpdateShadowOrbs

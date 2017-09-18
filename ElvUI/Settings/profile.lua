@@ -1521,6 +1521,7 @@ P["unitframe"] = {
 			["enable"] = true,
 			["rangeCheck"] = true,
 			["growthDirection"] = "DOWN",
+			["threatStyle"] = "NONE",
 			["orientation"] = "RIGHT",
 			["smartAuraPosition"] = "DISABLED",
 			["colorOverride"] = "USE_DEFAULT",
@@ -1884,13 +1885,13 @@ P["unitframe"] = {
 					["position"] = "CENTER",
 					["xOffset"] = 0,
 					["yOffset"] = 0,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				},
 				["stack"] = {
 					["position"] = "BOTTOMRIGHT",
 					["xOffset"] = 0,
 					["yOffset"] = 2,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
 			["roleIcon"] = {
@@ -1899,7 +1900,10 @@ P["unitframe"] = {
 				["attachTo"] = "Health",
 				["xOffset"] = 0,
 				["yOffset"] = 0,
-				["size"] = 15
+				["size"] = 15,
+				["tank"] = true,
+				["healer"] = true,
+				["damager"] = true
 			},
 			["raidRoleIcons"] = {
 				["enable"] = true,
@@ -2081,13 +2085,13 @@ P["unitframe"] = {
 					["position"] = "CENTER",
 					["xOffset"] = 0,
 					["yOffset"] = 0,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				},
 				["stack"] = {
 					["position"] = "BOTTOMRIGHT",
 					["xOffset"] = 0,
 					["yOffset"] = 2,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
 			["roleIcon"] = {
@@ -2096,7 +2100,10 @@ P["unitframe"] = {
 				["attachTo"] = "Health",
 				["xOffset"] = 0,
 				["yOffset"] = 0,
-				["size"] = 15
+				["size"] = 15,
+				["tank"] = true,
+				["healer"] = true,
+				["damager"] = true
 			},
 			["raidRoleIcons"] = {
 				["enable"] = true,
@@ -2244,13 +2251,13 @@ P["unitframe"] = {
 					["position"] = "CENTER",
 					["xOffset"] = 0,
 					["yOffset"] = 0,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				},
 				["stack"] = {
 					["position"] = "BOTTOMRIGHT",
 					["xOffset"] = 0,
 					["yOffset"] = 2,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
 			["roleIcon"] = {
@@ -2259,7 +2266,10 @@ P["unitframe"] = {
 				["attachTo"] = "Health",
 				["xOffset"] = 0,
 				["yOffset"] = 0,
-				["size"] = 15
+				["size"] = 15,
+				["tank"] = true,
+				["healer"] = true,
+				["damager"] = true
 			},
 			["raidRoleIcons"] = {
 				["enable"] = true,
@@ -2404,13 +2414,13 @@ P["unitframe"] = {
 					["position"] = "CENTER",
 					["xOffset"] = 0,
 					["yOffset"] = 0,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				},
 				["stack"] = {
 					["position"] = "BOTTOMRIGHT",
 					["xOffset"] = 0,
 					["yOffset"] = 2,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
 			["raidicon"] = {
@@ -2494,13 +2504,13 @@ P["unitframe"] = {
 					["position"] = "CENTER",
 					["xOffset"] = 0,
 					["yOffset"] = 0,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				},
 				["stack"] = {
 					["position"] = "BOTTOMRIGHT",
 					["xOffset"] = 0,
 					["yOffset"] = 2,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
 			["targetsGroup"] = {
@@ -2585,13 +2595,13 @@ P["unitframe"] = {
 					["position"] = "CENTER",
 					["xOffset"] = 0,
 					["yOffset"] = 0,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				},
 				["stack"] = {
 					["position"] = "BOTTOMRIGHT",
 					["xOffset"] = 0,
 					["yOffset"] = 2,
-					["color"] = {r = 1, g = 0.9, b = 0}
+					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
 			["targetsGroup"] = {
