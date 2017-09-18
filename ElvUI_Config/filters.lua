@@ -658,6 +658,7 @@ local function UpdateFilterGroup()
 							end
 						end,
 						set = function(info, r, g, b)
+							E.global.unitframe.buffwatch[E.myclass][selectedSpell][ info[#info] ] = E.global.unitframe.buffwatch[E.myclass][selectedSpell][ info[#info] ] or {}
 							local t = E.db.unitframe.filters.buffwatch[selectedSpell][ info[#info] ];
 							t.r, t.g, t.b = r, g, b;
 							UF:UpdateAuraWatchFromHeader("raid");
@@ -685,6 +686,7 @@ local function UpdateFilterGroup()
 							end
 						end,
 						set = function(info, r, g, b)
+							E.db.unitframe.filters.buffwatch[selectedSpell][ info[#info] ] = E.db.unitframe.filters.buffwatch[selectedSpell][ info[#info] ] or {}
 							local t = E.db.unitframe.filters.buffwatch[selectedSpell][ info[#info] ];
 							t.r, t.g, t.b = r, g, b;
 							UF:UpdateAuraWatchFromHeader("raid");
