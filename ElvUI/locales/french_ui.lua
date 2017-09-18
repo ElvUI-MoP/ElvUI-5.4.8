@@ -4,7 +4,7 @@ local L = AceLocale:NewLocale("ElvUI", "frFR");
 if not L then return; end
 
 --*_ADDON locales
-L["INCOMPATIBLE_ADDON"] = "L'addon %s n'est pas compatible avec le module %s d'ElvUI. Merci de sélectionner soit l'addon ou le module d'ElvUI pour le désactiver."
+L["INCOMPATIBLE_ADDON"] = "L'addon %s n'est pas compatible avec le module %s d'ElvUI. Merci de sélectionner soit l'addon, soit le module d'ElvUI, pour le désactiver."
 
 --*_MSG locales
 L["LOGIN_MSG"] = "Bienvenue sur %sElvUI|r version %s%s|r. Si vous avez besoin d'un support technique, vous pouvez nous rejoindre sur https://github.com/ElvUI-MoP"
@@ -63,8 +63,8 @@ L["Avoidance Breakdown"] = "Répartition de l'évitement"
 L["Bandwidth"] = "Bande passante"
 L["Character: "] = "Personnage: "
 L["Combat"] = "Combat"
-L["Combat/Arena Time"] = true;
-L["Coords"] = true;
+L["Combat/Arena Time"] = "Temps (Combat/Arène)"
+L["Coords"] = "Coordonnées"
 L["copperabbrev"] = "|cffeda55fc|r" --Also used in Bags
 L["Deficit:"] = "Déficit:"
 L["Download"] = "Téléchargement"
@@ -72,12 +72,12 @@ L["DPS"] = "DPS"
 L["Earned:"] = "Gagné:"
 L["Friends List"] = "Liste d'amis"
 L["Friends"] = "Amis" --Also in Skins
-L["Gold"] = true;
+L["Gold"] = "Or"
 L["goldabbrev"] = "|cffffd700g|r" --Also used in Bags
 L["Hit"] = "Toucher"
 L["Hold Shift + Right Click:"] = "Maintenir Majuscule + Clic droit";
 L["Home Latency:"] = "Latence du Domicile:"
-L["HP"] = "PdS"
+L["HP"] = "PV"
 L["HPS"] = "HPS"
 L["lvl"] = "niveau"
 L["Mitigation By Level: "] = "Réduction par niveau: "
@@ -91,12 +91,12 @@ L["Server: "] = "Serveur: "
 L["Session:"] = "Session:"
 L["silverabbrev"] = "|cffc7c7cfs|r" --Also used in Bags
 L["SP"] = "PdS"
-L["Spell/Heal Power"] = true;
-L["Spec"] = 'Spécialisation'
+L["Spell/Heal Power"] = "Puissance d'attaque / de soin"
+L["Spec"] = "Spécialisation"
 L["Spent:"] = "Dépensé: "
-L["Stats For:"] = "Stats pour:"
-L["System"] = true;
-L["Talent/Loot Specialization"] = true;
+L["Stats For:"] = "Statistiques pour :"
+L["System"] = "Système"
+L["Talent/Loot Specialization"] = "Spécialisation des talents / du butin"
 L["Total CPU:"] = "Charge du CPU:"
 L["Total Memory:"] = "Mémoire totale:"
 L["Total: "] = "Total: "
@@ -104,7 +104,8 @@ L["Unhittable:"] = "Intouchable:"
 L["Vengeance"] = true;
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = '|cffFFFFFFClick Gauche:|r Changer de spécialisation des talents'
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = '|cffFFFFFFClick Droit:|r Changer la spécialisation de butin'
-L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true;
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = "|cffFFFFFFShift + Click Gauche :|r Voir la spécialisation des talents de l'interface"
+
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s a essayé d'appeler la fonction protégée '%s'."
@@ -133,13 +134,13 @@ L["Choose a theme layout you wish to use for your initial setup."] = "Choisissez
 L["Classic"] = "Classique"
 L["Click the button below to resize your chat frames, unitframes, and reposition your actionbars."] = "Cliquez sur le bouton ci-dessous pour redimensionner vos fenêtres de chat, vos cadres d'unités et repositionner vos barres d'actions."
 L["Config Mode:"] = "Mode Configuration:"
-L["CVars Set"] = "CVars configurés"
+L["CVars Set"] = "CVars configurées"
 L["CVars"] = "CVars"
 L["Dark"] = "Sombre"
 L["Disable"] = "Désactiver"
 L["ElvUI Installation"] = "Installation d'ElvUI"
 L["Finished"] = "Terminé"
-L["Grid Size:"] = "Taille de la Grille:"
+L["Grid Size:"] = "Taille de la grille:"
 L["Healer"] = "Soigneur"
 L["High Resolution"] = "Haute Résolution"
 L["high"] = "Haute"
@@ -193,13 +194,13 @@ L["Bars"] = "Barres" --Also used in UnitFrames
 L["Calendar"] = 'Calendrier'
 L["Can't Roll"] = "Ne peut pas jeter les dés"
 L["Disband Group"] = "Dissoudre le groupe"
-L["Empty Slot"] = true;
+L["Empty Slot"] = "Emplacement vide"
 L["Enable"] = "Activer" --Doesn't fit a section since it's used a lot of places
 L["Experience"] = "Expérience"
 L["Farm Mode"] = "Mode farm"
 L["Fishy Loot"] = "Butin de pêche"
 L["iLvl"] = "iLvl"; --Column header in raidbrowser
-L["Left Click:"] = "Clique Gauche:" --layout\layout.lua
+L["Left Click:"] = "Clic Gauche:"
 L["Raid Menu"] = "Menu Raid"
 L["Remaining:"] = "Restant:"
 L["Rested:"] = "Reposé:"
@@ -215,17 +216,17 @@ L["You don't have permission to mark targets."] = "Vous n'avez pas la permission
 L["Alternative Power"] = "Puissance Alternative"
 L["Archeology Progress Bar"] = "Barre de progression d'Archéologie"
 L["Arena Frames"] = "Cadre d'arène" --Also used in UnitFrames
-L["Bag Mover (Grow Down)"] = true;
-L["Bag Mover (Grow Up)"] = true;
-L["Bag Mover"] = true;
+L["Bag Mover (Grow Down)"] = "Orientation des sacs (ajouter vers le bas)"
+L["Bag Mover (Grow Up)"] = "Orientation des sacs (ajouter vers le haut)"
+L["Bag Mover"] = "Orientation des sacs"
 L["Bags"] = "Sacs" --Also in DataTexts
-L["Bank Mover (Grow Down)"] = true;
-L["Bank Mover (Grow Up)"] = true;
+L["Bank Mover (Grow Down)"] = "Orientation de la banque (ajouter vers le bas)"
+L["Bank Mover (Grow Up)"] = "Orientation de la banque (ajouter vers le haut)"
 L["Bar "] = "Barre " --Also in ActionBars
 L["BNet Frame"] = "Cadre BNet"
 L["Boss Button"] = "Bouton du Boss"
 L["Boss Frames"] = "Cadre du Boss" --Also used in UnitFrames
-L["Class Totems"] = true;
+L["Class Totems"] = "Barre des totems"
 L["Classbar"] = "Barre de Classe"
 L["Error Frame"] = true;
 L["Experience Bar"] = "Barre d'expérience"
@@ -234,13 +235,13 @@ L["Focus Frame"] = "Cadre Focus" --Also used in UnitFrames
 L["FocusTarget Frame"] = "Cadre de la cible de votre Focus" --Also used in UnitFrames
 L["GM Ticket Frame"] = "Cadre du ticket MJ"
 L["Left Chat"] = "Chat gauche"
-L["Level Up Display"] = true;
+L["Level Up Display"] = "Affichage du gain de niveau"
 L["Loot / Alert Frames"] = "Cadres de butin / Alerte"
 L["Loot Frame"] = "Cadre de butin";
 L["Loss Control Icon"] = "Icône de la perte de contrôle"
 L["MA Frames"] = "Cadres de l`assistant principal"
 L["Micro Bar"] = "Micro Barre" --Also in ActionBars
-L["Minimap"] = "Mini-carte"
+L["Minimap"] = "Minicarte"
 L["MirrorTimer"] = "Timer mirroir";
 L["MT Frames"] = "Cadres du Tank principal"
 L["Objective Frame"] = "Cadre d'objectif"
@@ -271,16 +272,16 @@ L["Weapons"] = true;
 L["DESC_MOVERCONFIG"] = [=[Cadres déverrouillés. Déplacez-les et cliquez sur Verrouiller une fois terminé.
 
 Options:
-  Shift + RightClick - Hides mover temporarily.
-  Ctrl + RightClick - Resets mover position to default.
+  Shift + clic droit - Cacher temporairement.
+  Ctrl + clic droit - Réinitialiser la position par défaut.
 ]=]
 
 --Plugin Installer
-L["ElvUI Plugin Installation"] = true;
-L["In Progress"] = true;
-L["List of installations in queue:"] = true;
-L["Pending"] = true;
-L["Steps"] = true;
+L["ElvUI Plugin Installation"] = "Installation des Plugins ElvUI"
+L["In Progress"] = "En cours"
+L["List of installations in queue:"] = "Liste des installations en file d'attente"
+L["Pending"] = "En attente"
+L["Steps"] = "Etapes"
 
 --Prints
 L[" |cff00ff00bound to |r"] = "|cff00ff00assigné à |r"
@@ -294,7 +295,7 @@ L["Binds Saved"] = "Raccourcis sauvegardés"
 L["Confused.. Try Again!"] = "Confus...Essayez à nouveau!"
 L["No gray items to delete."] = "Aucun objet gris à détruire."
 L["The spell '%s' has been added to the Blacklist unitframe aura filter."] = "Le sort '%s' a bien été ajouté à la liste noire des filtres des cadres d'unités."
-L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."] = true;
+L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."] = "Cette configuration a causé un conflit avec le point d'ancrage, où '%s' devrait y être rattaché. Veuillez vérifier les points d'ancrages. La configuration de '%s' sera attachée à '%s'.";
 L["Vendored gray items for:"] = "Objets gris vendus pour:"
 L["You don't have enough money to repair."] = "Vous n'avez pas assez d'argent pour réparer votre équipement."
 L["You must be at a vendor."] = "Vous devez être chez un marchand."
@@ -304,7 +305,7 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "Un réglage que vous avez modifié ne s'appliquera que pour ce personnage. La modification de ce réglage ne sera pas affecté par un changement de profil. Changer ce réglage requiert de relancer l'interface."
-L["Are you sure you want to apply this font to all ElvUI elements?"] = true;
+L["Are you sure you want to apply this font to all ElvUI elements?"] =  "Êtes-vous sûr de vouloir appliquer cette police à tous les éléments d'ELvUI ?"
 L["Are you sure you want to delete all your gray items?"] = "Êtes-vous sûr de vouloir détruire tous vos Objets Gris ?"
 L["Are you sure you want to disband the group?"] = "Êtes-vous sûr de vouloir dissoudre le groupe ? "
 L["Are you sure you want to reset all the settings on this profile?"] = "Êtes-vous sûr de vouloir réinitialiser tous les réglages sur ce profile?"
@@ -329,7 +330,7 @@ L["The profile you tried to import already exists. Choose a new name or accept t
 L["Type /hellokitty to revert to old settings."] = "Tapez /hellokitty pour recharger les anciennes configurations";
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = "Si vous utilisez l'agencement Soigneur, il est hautement recommandé de télécharger l'Addon Clique si vous souhaitez avoir la fonction cliquer-pour-soigner."
 L["Yes, Keep Changes!"] = "Oui, garder les changements!";
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = true;
+L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = "Vous venez de changer l'épaisseur de la bordure de votre interface. Vous devez finir le processus d'installation pour supprimer tout défaut graphique."
 L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = "Vous venez de changer l'échelle de votre interface, alors que votre option d'échelle automatique est encore activée dans ElvUI. Cliquer sur accepter si vous voulez désactiver l'option d'échelle automatique."
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = "Vous avez importé des paramètes qui requierent un rechargement de l'interface. Recharger maintenant ?";
 L["You must purchase a bank slot first!"] = "Vous devez d'abord acheter un emplacement de banque!"
