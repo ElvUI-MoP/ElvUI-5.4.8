@@ -779,8 +779,8 @@ function E:SendMessage()
 	end
 end
 
-local myName = E.myname.."-"..E.myrealm
-myName = myName:gsub("%s+", "")
+local myRealm = gsub(E.myrealm,'[%s%-]','')
+local myName = E.myname..'-'..myRealm
 
 local function SendRecieve(_, event, prefix, message, _, sender)
 	if(not E.global.general.versionCheck) then return end
