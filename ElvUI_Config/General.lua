@@ -1,33 +1,40 @@
-﻿local E, L, V, P, G = unpack(ElvUI);
+﻿local E, L, V, P, G = unpack(ElvUI)
 
 E.Options.args.general = {
+	order = 1,
 	type = "group",
 	name = L["General"],
-	order = 1,
 	childGroups = "tab",
 	get = function(info) return E.db.general[ info[#info] ] end,
 	set = function(info, value) E.db.general[ info[#info] ] = value end,
 	args = {
-		animateConfig = {
+		versionCheck = {
 			order = 1,
+			type = "toggle",
+			name = L["Version Check"],
+			get = function(info) return E.global.general.versionCheck; end,
+			set = function(info, value) E.global.general.versionCheck = value; end
+		},
+		animateConfig = {
+			order = 2,
 			type = "toggle",
 			name = L["Animate Config"],
 			get = function(info) return E.global.general.animateConfig; end,
 			set = function(info, value) E.global.general.animateConfig = value; E:StaticPopup_Show("GLOBAL_RL"); end
 		},
 		spacer = {
-			order = 2,
+			order = 3,
 			type = "description",
 			name = "",
 			width = "full"
 		},
 		intro = {
-			order = 3,
+			order = 4,
 			type = "description",
 			name = L["ELVUI_DESC"]
 		},
 		general = {
-			order = 4,
+			order = 5,
 			type = "group",
 			name = L["General"],
 			args = {
@@ -197,7 +204,7 @@ E.Options.args.general = {
 			}
 		},
 		media = {
-			order = 5,
+			order = 6,
 			type = "group",
 			name = L["Media"],
 			get = function(info) return E.db.general[ info[#info] ] end,
@@ -397,7 +404,7 @@ E.Options.args.general = {
 			}
 		},
 		totems = {
-			order = 6,
+			order = 7,
 			type = "group",
 			name = L["Class Totems"],
 			get = function(info) return E.db.general.totems[ info[#info] ]; end,
@@ -451,8 +458,8 @@ E.Options.args.general = {
 			}
 		},
 		cooldown = {
+			order = 8,
 			type = "group",
-			order = 7,
 			name = L["Cooldown Text"],
 			get = function(info)
 				local t = E.db.cooldown[ info[#info] ];
@@ -543,7 +550,7 @@ E.Options.args.general = {
 			}
 		},
 		chatBubbles = {
-			order = 8,
+			order = 9,
 			type = "group",
 			name = L["Chat Bubbles"],
 			args = {
@@ -607,7 +614,7 @@ E.Options.args.general = {
 			}
 		},
 		watchFrame = {
-			order = 9,
+			order = 10,
 			type = "group",
 			name = L["Objective Frame"],
 			args = {
@@ -628,7 +635,7 @@ E.Options.args.general = {
 			}
 		},
 		threatGroup = {
-			order = 10,
+			order = 11,
 			type = "group",
 			name = L["Threat"],
 			args = {
@@ -699,7 +706,7 @@ E.Options.args.general = {
 			}
 		},
 		errorFrame = {
-			order = 11,
+			order = 12,
 			type = "group",
 			name = L["Error Frame"],
 			args = {
