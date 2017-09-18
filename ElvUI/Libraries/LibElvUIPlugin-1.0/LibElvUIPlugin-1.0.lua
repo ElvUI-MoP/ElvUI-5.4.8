@@ -146,21 +146,22 @@ function lib:VersionCheck(event, prefix, message, channel, sender)
 	local E = ElvUI[1]
 	if event == "CHAT_MSG_ADDON" then
 		if (event == "CHAT_MSG_ADDON") and sender and message and (message ~= "") and (prefix == lib.prefix) then
-		local myRealm = gsub(E.myrealm,'[%s%-]','')
-		local myName = E.myname..'-'..myRealm
-		if sender == myName then return end
-		if not E["pluginRecievedOutOfDateMessage"] then
-			for _, p in pairs({strsplit(";",message)}) do
-				if not p:match("^%s-$") then
-					local name, version = p:match("([%w_]+)=([%d%p]+)")
-					if lib.plugins[name] then
-						local plugin = lib.plugins[name]
-						if plugin.version ~= 'BETA' and version ~= nil and tonumber(version) ~= nil and plugin.version ~= nil and tonumber(plugin.version) ~= nil and tonumber(version) > tonumber(plugin.version) then
-							plugin.old = true
-							plugin.newversion = tonumber(version)
-							local Pname = GetAddOnMetadata(plugin.name, "Title")
-							E:Print(format(MSG_OUTDATED,Pname,plugin.newversion))
-							E["pluginRecievedOutOfDateMessage"] = true
+			local myRealm = gsub(E.myrealm,'[%s%-]','')
+			local myName = E.myname..'-'..myRealm
+			if sender == myName then return end
+			if not E["pluginRecievedOutOfDateMessage"] then
+				for _, p in pairs({strsplit(";",message)}) do
+					if not p:match("^%s-$") then
+						local name, version = p:match("([%w_]+)=([%d%p]+)")
+						if lib.plugins[name] then
+							local plugin = lib.plugins[name]
+							if plugin.version ~= 'BETA' and version ~= nil and tonumber(version) ~= nil and plugin.version ~= nil and tonumber(plugin.version) ~= nil and tonumber(version) > tonumber(plugin.version) then
+								plugin.old = true
+								plugin.newversion = tonumber(version)
+								local Pname = GetAddOnMetadata(plugin.name, "Title")
+								E:Print(format(MSG_OUTDATED,Pname,plugin.newversion))
+								E["pluginRecievedOutOfDateMessage"] = true
+							end
 						end
 					end
 				end
