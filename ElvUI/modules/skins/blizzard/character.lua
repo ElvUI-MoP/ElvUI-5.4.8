@@ -385,8 +385,6 @@ local function LoadSkin()
 	ReputationDetailFrame:SetTemplate("Transparent")
 	ReputationDetailFrame:Point("TOPLEFT", ReputationFrame, "TOPRIGHT", 1, 0)
 
-	ReputationDetailFactionDescription:FontTemplate(nil, 12)
-
 	S:HandleCheckBox(ReputationDetailMainScreenCheckBox)
 	S:HandleCheckBox(ReputationDetailInactiveCheckBox)
 	S:HandleCheckBox(ReputationDetailLFGBonusReputationCheckBox)

@@ -111,18 +111,6 @@ local function LoadSkin()
 			WorldMapFrameSizeDownButton:Disable()
 			WorldMapFrameSizeUpButton:Disable()
 		end
-
-		WorldMapFrameAreaLabel:FontTemplate(nil, 50, "OUTLINE")
-		WorldMapFrameAreaLabel:SetShadowOffset(2, -2)
-		WorldMapFrameAreaLabel:SetTextColor(0.90, 0.8294, 0.6407)
-
-		WorldMapFrameAreaDescription:FontTemplate(nil, 40, "OUTLINE")
-		WorldMapFrameAreaDescription:SetShadowOffset(2, -2)
-
-		WorldMapFrameAreaPetLevels:FontTemplate(nil, 40, "OUTLINE");
-
-		WorldMapZoneInfo:FontTemplate(nil, 27, "OUTLINE")
-		WorldMapZoneInfo:SetShadowOffset(2, -2)
 	end
 
 	WorldMapFrame:HookScript("OnShow", FixSkin)
