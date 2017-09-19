@@ -60,7 +60,7 @@ local function LoadSkin()
 	end
 
 	local function QuestSkin()
-		if(not InCombatLockdown()) then
+		if not InCombatLockdown() then
 			WorldMapFrame:SetParent(E.UIParent)
 			WorldMapFrame:EnableMouse(false)
 			WorldMapFrame:EnableKeyboard(false)
@@ -72,22 +72,37 @@ local function LoadSkin()
 		WorldMapFrame.backdrop:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -8, 70)
 		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOMRIGHT", 325, -235)
 
-		if(not WorldMapQuestDetailScrollFrame.backdrop) then
+		if not WorldMapQuestDetailScrollFrame.isSkinned then
 			WorldMapQuestDetailScrollFrame:CreateBackdrop("Transparent")
 			WorldMapQuestDetailScrollFrame.backdrop:Point("TOPLEFT", -22, 2)
-			WorldMapQuestDetailScrollFrame.backdrop:Point("BOTTOMRIGHT", 23, -4)
+			WorldMapQuestDetailScrollFrame.backdrop:Point("BOTTOMRIGHT", 23, -2)
+
+			WorldMapQuestDetailScrollFrame:Width(320)
+			WorldMapQuestDetailScrollChildFrame:SetScale(1)
+
+			WorldMapQuestDetailScrollFrame.isSkinned = true
 		end
 
-		if(not WorldMapQuestRewardScrollFrame.backdrop) then
+		if not WorldMapQuestRewardScrollFrame.isSkinned then
 			WorldMapQuestRewardScrollFrame:CreateBackdrop("Transparent")
 			WorldMapQuestRewardScrollFrame.backdrop:Point("TOPLEFT", -2, 2)
-			WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -4)
+			WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -2)
+
+			WorldMapQuestRewardScrollFrame:Point("LEFT", WorldMapQuestDetailScrollFrame, "RIGHT", 27, 0)
+			WorldMapQuestRewardScrollFrame:Width(307)
+			WorldMapQuestRewardScrollChildFrame:SetScale(0.97)
+
+			WorldMapQuestRewardScrollFrame.isSkinned = true
 		end
 
-		if(not WorldMapQuestScrollFrame.backdrop) then
+		if not WorldMapQuestScrollFrame.isSkinned then
 			WorldMapQuestScrollFrame:CreateBackdrop("Transparent")
 			WorldMapQuestScrollFrame.backdrop:Point("TOPLEFT", 0, 2)
-			WorldMapQuestScrollFrame.backdrop:Point("BOTTOMRIGHT", 25, -3)
+			WorldMapQuestScrollFrame.backdrop:Point("BOTTOMRIGHT", 25, 0)
+
+			WorldMapQuestScrollFrame:Point("TOPLEFT", WorldMapDetailFrame, "TOPRIGHT", 6, -1)
+
+			WorldMapQuestScrollFrame.isSkinned = true
 		end
 	end
 

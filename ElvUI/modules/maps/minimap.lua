@@ -366,7 +366,7 @@ function M:UpdateSettings()
 		--Skin PvP Button
 		MiniMapBattlefieldFrame:StripTextures();
 		MiniMapBattlefieldFrame:CreateBackdrop();
-		MiniMapBattlefieldFrame:Size(30);
+		MiniMapBattlefieldFrame:Size(28);
 
 		MiniMapBattlefieldFrame.texture = MiniMapBattlefieldFrame:CreateTexture(nil, "OVERLAY");
 		if(UnitFactionGroup("player") == "Horde") then
@@ -418,7 +418,7 @@ function M:UpdateSettings()
 
 		ticketbutton:CreateBackdrop();
 		ticketbutton:SetFrameStrata("MEDIUM");
-		ticketbutton:Size(30);
+		ticketbutton:Size(28);
 
 		ticketbuttonIcon:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-Blizz");
 		ticketbuttonIcon:SetTexCoord(unpack(E.TexCoords));
@@ -454,7 +454,7 @@ function M:UpdateSettings()
 		worldMapButton:StripTextures();
 		worldMapButton:CreateBackdrop();
 		worldMapButton:SetFrameStrata("MEDIUM");
-		worldMapButton:Size(30);
+		worldMapButton:Size(28);
 
 		worldMapButtonIcon:SetTexture("INTERFACE\\ICONS\\INV_Misc_Map02");
 		worldMapButtonIcon:SetTexCoord(unpack(E.TexCoords));
