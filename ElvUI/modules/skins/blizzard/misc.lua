@@ -346,8 +346,13 @@ local function LoadSkin()
 	S:HandleButton(MovieFrame.CloseDialog.ResumeButton)
 
 	-- Level Up Popup
-	LevelUpDisplaySpellFrameIcon:SetTexCoord(unpack(E.TexCoords));
-	LevelUpDisplaySpellFrameSubIcon:SetTexCoord(unpack(E.TexCoords));
+	LevelUpDisplaySpellFrame:CreateBackdrop()
+	LevelUpDisplaySpellFrame.backdrop:SetOutside(LevelUpDisplaySpellFrameIcon)
+
+	LevelUpDisplaySpellFrameIcon:SetTexCoord(unpack(E.TexCoords))
+	LevelUpDisplaySpellFrameSubIcon:SetTexCoord(unpack(E.TexCoords))
+
+	LevelUpDisplaySpellFrameIconBorder:SetAlpha(0)
 
 	LevelUpDisplaySide:HookScript("OnShow", function(self)
 		for i = 1, #self.unlockList do
