@@ -110,7 +110,7 @@ Lib.Filters.quality = {
 	end,
 
 	match = function(self, link, operator, num)
-		local quality = select(3, GetItemInfo(link));
+		local quality = link:sub(1, 9) == 'battlepet' and tonumber(link:match('%d+:%d+:(%d+)')) or select(3, GetItemInfo(link))
 		return Search:Compare(operator, quality, num);
 	end,
 };

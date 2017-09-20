@@ -51,6 +51,11 @@ do
 			{3, 4, 5, 7},
 			true
 		}
+	elseif Class == 'MONK' then
+		Unusable = {
+			{2, 3, 4, 6, 9, 13, 14, 15, 16},
+			{4, 5, 7}
+		}
 	elseif Class == 'PALADIN' then
 		Unusable = {
 			{3, 4, 10, 11, 13, 14, 15, 16},
