@@ -128,6 +128,8 @@ local function LoadSkin()
 		end
 	end
 
+	WorldMapFrameAreaPetLevels:FontTemplate(nil, 25, "OUTLINE")
+
 	WorldMapFrame:HookScript("OnShow", FixSkin)
 	hooksecurefunc("WorldMapFrame_SetFullMapView", LargeSkin)
 	hooksecurefunc("WorldMapFrame_SetQuestMapView", QuestSkin)

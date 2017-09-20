@@ -75,24 +75,29 @@ local function LoadSkin()
 	S:HandleScrollBar(InstanceSelect.scroll.ScrollBar, 4)
 
 	--Dungeon/Raid Tabs
-	InstanceSelect.dungeonsTab:StripTextures()
-	InstanceSelect.dungeonsTab.backdrop = CreateFrame("Frame", nil, InstanceSelect.dungeonsTab)
-	InstanceSelect.dungeonsTab.backdrop:SetTemplate("Default", true)
-	InstanceSelect.dungeonsTab.backdrop:SetFrameLevel(InstanceSelect.dungeonsTab:GetFrameLevel() - 1)
-	InstanceSelect.dungeonsTab.backdrop:Point("TOPLEFT", 3, -7)
-	InstanceSelect.dungeonsTab.backdrop:Point("BOTTOMRIGHT", -2, -1)
-	InstanceSelect.dungeonsTab:Point("BOTTOMRIGHT", EncounterJournalInstanceSelectRaidTab, "BOTTOMLEFT", 0, 0)
-	InstanceSelect.dungeonsTab:HookScript("OnEnter", S.SetModifiedBackdrop);
-	InstanceSelect.dungeonsTab:HookScript("OnLeave", S.SetOriginalBackdrop);
+	local function onEnable(self)
+		self:Height(self.storedHeight)
+	end
 
-	InstanceSelect.raidsTab:StripTextures()
-	InstanceSelect.raidsTab.backdrop = CreateFrame("Frame", nil, InstanceSelect.raidsTab)
-	InstanceSelect.raidsTab.backdrop:SetTemplate("Default", true)
-	InstanceSelect.raidsTab.backdrop:SetFrameLevel(InstanceSelect.raidsTab:GetFrameLevel() - 1)
-	InstanceSelect.raidsTab.backdrop:Point("TOPLEFT", 3, -7)
-	InstanceSelect.raidsTab.backdrop:Point("BOTTOMRIGHT", -2, -1)
-	InstanceSelect.raidsTab:HookScript("OnEnter", S.SetModifiedBackdrop);
-	InstanceSelect.raidsTab:HookScript("OnLeave", S.SetOriginalBackdrop);
+	local instanceTabs = {
+		InstanceSelect.dungeonsTab,
+		InstanceSelect.raidsTab
+	}
+
+	for _, instanceTab in pairs(instanceTabs) do
+		instanceTab:StripTextures()
+		instanceTab:CreateBackdrop("Default", true)
+		instanceTab.backdrop:Point("TOPLEFT", -10, -1)
+		instanceTab.backdrop:Point("BOTTOMRIGHT", 10, -1)
+		instanceTab.backdrop:SetFrameLevel(instanceTab:GetFrameLevel() - 1)
+		instanceTab:Height(instanceTab.storedHeight)
+
+		instanceTab:HookScript("OnEnable", onEnable)
+		instanceTab:HookScript("OnEnter", S.SetModifiedBackdrop)
+		instanceTab:HookScript("OnLeave", S.SetOriginalBackdrop)
+	end
+
+	InstanceSelect.raidsTab:Point("BOTTOMRIGHT", EncounterJournalInstanceSelect, "TOPRIGHT", -41, -45)
 
 	--Encounter Info Frame
 	local EncounterInfo = EJ.encounter.info

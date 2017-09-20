@@ -229,7 +229,7 @@ local function LoadSkin()
 	--PVP Tab
 	InspectPVPFrame:StripTextures()
 
-	for _, Section in pairs({ "RatedBG", "Arena2v2", "Arena3v3", "Arena5v5"}) do
+	for _, Section in pairs({"RatedBG", "Arena2v2", "Arena3v3", "Arena5v5"}) do
 		local Frame = InspectPVPFrame[Section]
 		Frame:SetTemplate("Transparent")
 		Frame:EnableMouse(true)
