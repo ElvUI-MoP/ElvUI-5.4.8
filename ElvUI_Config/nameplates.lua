@@ -274,7 +274,7 @@ local function GetUnitSettings(unit, name)
 						set = function(info, value) E.db.nameplates.units[unit].buffs[ info[#info] ] = value; NP:ConfigureAll(); end
 					},
 					filtersGroup = {
-						name = L["Filters"],
+						name = FILTERS,
 						order = 5,
 						type = "group",
 						guiInline = true,

@@ -66,8 +66,10 @@ Zum Deaktvieren lasse das Feld leer. Brauchst du mehr Informationen besuche http
 L["Action Paging"] = "Seitenwechsel der Aktionsleisten"
 L["ActionBars"] = "Aktionsleisten"
 L["Allow Masque to handle the skinning of this element."] = "Erlaubt Masque das Gestalten dieser Elememte."
+L["Allow newly learned spells to be automatically placed on an empty actionbar slot."] = "Erlaubt neu erlernte Zauber direkt in einen Aktionsleisten slot hinzuzufügen."
 L["Alpha"] = "Alpha"
 L["Anchor Point"] = "Ankerpunkt" --also in unitframes
+L["Auto Add New Spells"] = "Automatisches hinzufügen von neuen Zaubern"
 L["Automatic"] = "Automatisch"
 L["Backdrop Spacing"] = "Hintergrund Abstand"
 L["Backdrop"] = "Hintergrund"
@@ -239,7 +241,6 @@ L["Auto-Close Pet Battle Log"] = "Kampfhaustier Kampflog automatisch schließen"
 L["Below Chat"] = "Unter dem Chat"
 L["Chat EditBox Position"] = "Position der Texteingabeleiste"
 L["Chat History"] = "Chatverlauf"
-L["Chat History Lines"] = true;
 L["Class Color Mentions"] = "Erwähnung in Klassenfarbe"
 L["Custom Timestamp Color"] = "Benutzerdefinierte Zeitstempel Farbe"
 L["Display LFG Icons in group chat."] = "LFG Symbole im Gruppenchat anzeigen"
@@ -266,7 +267,6 @@ L["List of words to color in chat if found in a message. If you wish to add mult
 L["Lock Positions"] = "Positionen fixieren"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Sichert den Chatverlauf der Hauptchatfenster. Wenn du dein UI neulädst oder einloggst, siehst du den Chatverlauf der letzten Sitzung."
 L["No Alert In Combat"] = "Kein Alarm im Kampf"
-L["Number of chat messages to be stored in the chat history."] = true;
 L["Number of messages you scroll for each step."] = "Anzahl der Nachrichten die mit jeden Schritt gescrollt werden."
 L["Number of repeat characters while in combat before the chat editbox is automatically closed."] = "Anzahl der wiederholten Zeichen im Kampf, bevor das Chateingabefeld automatisch schließt."
 L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."] = "Anzahl der Sekunden um im Chatfenster nach unten zu scrollen, wenn du nicht komplett nach unten gescrollt bist."
@@ -331,11 +331,11 @@ L["ELVUI_CREDITS"] = "Ich möchte mich hier bei folgenden Personen bedanken, die
 L["Testing:"] = "Tester:"
 
 --DataBars
-L["DATABAR_DESC"] = "Einstellung der Informationsleisten."
 L["Current - Percent (Remaining)"] = "Aktuell - Prozent (Verleibend)"
 L["Current - Remaining"] = "Aktuell - Verbleibend"
 L["DataBars"] = "Informationsleisten"
 L["Hide in Combat"] = "Im Kampf ausblenden"
+L["Setup on-screen display of information bars."] = "Einstellung der Informationsleisten."
 
 --DataTexts
 L["Add Currency ID"] = "Währungs-ID hinzufügen"
@@ -434,7 +434,6 @@ L["Loot"] = "Beute"
 L["Lowest Allowed UI Scale"] = "Niedrigste erlaubte UI Skalierung"
 L["Multi-Monitor Support"] = "Multi-Monitor-Unterstützung"
 L["Name Font"] = "Schriftart von Spielernamen"
-L["Number Prefix"] = "Nummern-Präfix"
 L["Objective Frame Height"] = "Questfenster Höhe"
 L["Party / Raid"] = "Gruppe / Schlachtzug"
 L["Party Only"] = "Nur in der Gruppe"
@@ -455,6 +454,7 @@ L["The unit prefixes you want to use when values are shortened in ElvUI. This is
 L["Thin Border Theme"] = "Dünner Rahmen Theme"
 L["Toggle Tutorials"] = "Tutorial starten"
 L["Top Panel"] = "Obere Leiste"
+L["Unit Prefix Style"] = "Einheit Präfix Stil"
 L["When you go AFK display the AFK screen."] = "AFK Bildschirm anzeigen wenn du AFK bist."
 
 --Media
@@ -926,6 +926,7 @@ L["Offset position for text."] = "Versatz Positionen für Texte."
 L["Offset"] = "Versatz"
 L["Only show when the unit is not in range."] = "Nur zeigen wenn die Einheit nicht in Reichweite ist."
 L["Only show when you are mousing over a frame."] = "Nur zeigen wenn du mit der Maus über dem Fenster bist."
+L["Only Match SpellID"] = "Nur SpellID entsprechen"
 L["OOR Alpha"] = "Außer Reichweite Alpha"
 L["Others"] = "Andere"
 L["Overlay the healthbar"] = "Überblendung der Gesundheitsleiste"
@@ -1069,6 +1070,7 @@ L["Visibility"] = "Sichtbarkeit"
 L["What point to anchor to the frame you set to attach to."] = "Welchen Punkt für das verankern der Fenster möchtest du wählen."
 L["What to attach the buff anchor frame to."] = "Wo die Stärkungszauber angehängt werden sollen."
 L["What to attach the debuff anchor frame to."] = "Wo die Schwächungszauber angehängt werden sollen."
+L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."] = "Wenn aktiviert werden nur Zauber angezeigt die dem Filter hinzugefügt wurden die der SpellID entsprechen und nicht dem Namen."
 L["When true, the header includes the player when not in a raid."] = "Wenn aktiv und sich der Spieler nicht in einem Raid befindet, dann wird das angezeigt."
 L["Whitelist"] = "Weiße Liste"
 L["Width"] = "Breite" --Also used in NamePlates module

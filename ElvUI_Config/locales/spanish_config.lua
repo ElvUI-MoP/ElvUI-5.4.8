@@ -66,8 +66,10 @@ Para desactivarlo dejar el campo en blanco, si necesitas más información visit
 L["Action Paging"] = "Paginación"
 L["ActionBars"] = "Barras de Acción"
 L["Allow Masque to handle the skinning of this element."] = true;
+L["Allow newly learned spells to be automatically placed on an empty actionbar slot."] = true;
 L["Alpha"] = "Transparencia"
 L["Anchor Point"] = "Punto de Fijación"
+L["Auto Add New Spells"] = true;
 L["Automatic"] = true;
 L["Backdrop Spacing"] = true;
 L["Backdrop"] = "Fondo"
@@ -239,7 +241,6 @@ L["Auto-Close Pet Battle Log"] = true;
 L["Below Chat"] = "Debajo del Chat"
 L["Chat EditBox Position"] = "Posición del Cuadro de Edición del Chat"
 L["Chat History"] = "Historial de Chat"
-L["Chat History Lines"] = true;
 L["Class Color Mentions"] = true;
 L["Custom Timestamp Color"] = true;
 L["Display LFG Icons in group chat."] = true;
@@ -266,7 +267,6 @@ L["List of words to color in chat if found in a message. If you wish to add mult
 L["Lock Positions"] = "Bloquear Posiciones"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Guardar el historial de los marcos de chat principales. Así cuando recargues la interfaz o reconectes verás el historial de chat de tu última sesión."
 L["No Alert In Combat"] = true;
-L["Number of chat messages to be stored in the chat history."] = true;
 L["Number of messages you scroll for each step."] = true;
 L["Number of repeat characters while in combat before the chat editbox is automatically closed."] = true;
 L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."] = "Tiempo en segundos para desplazarse al final de la ventana de chat si no se ha desplazado completamente hasta el final."
@@ -331,11 +331,11 @@ L["ELVUI_CREDITS"] = "Quiero dar un agradecimiento especial a las siguientes per
 L["Testing:"] = "Pruebas:"
 
 --DataBars
-L["DATABAR_DESC"] = "Setup on-screen display of information bars."
 L["Current - Percent (Remaining)"] = true;
 L["Current - Remaining"] = true;
 L["DataBars"] = true;
 L["Hide in Combat"] = true;
+L["Setup on-screen display of information bars."] = true;
 
 --DataTexts
 L["Add Currency ID"] = true;
@@ -435,7 +435,6 @@ L["Loot"] = "Botín"
 L["Lowest Allowed UI Scale"] = true;
 L["Multi-Monitor Support"] = true;
 L["Name Font"] = "Fuente para Nombres"
-L["Number Prefix"] = true;
 L["Objective Frame Height"] = true;
 L["Party / Raid"] = true;
 L["Party Only"] = true;
@@ -456,6 +455,7 @@ L["The unit prefixes you want to use when values are shortened in ElvUI. This is
 L["Thin Border Theme"] = true;
 L["Toggle Tutorials"] = "Mostrar/Ocultar Tutoriales"
 L["Top Panel"] = "Panel Superior"
+L["Unit Prefix Style"] = true;
 L["When you go AFK display the AFK screen."] = true;
 
 --Media
@@ -926,6 +926,7 @@ L["Offset position for text."] = "Posición de desplazamiento para el texto."
 L["Offset"] = "Desplazamiento"
 L["Only show when the unit is not in range."] = "Mostrar sólo cuando la unidad no esté dentro del rango."
 L["Only show when you are mousing over a frame."] = "Mostrar sólo cuando pasas el ratón por encima de un marco."
+L["Only Match SpellID"] = true;
 L["OOR Alpha"] = "Transparencia FDA"
 L["Others"] = "Otros"
 L["Overlay the healthbar"] = "Recubrir la barra de salud"
@@ -1069,6 +1070,7 @@ L["Visibility"] = "Visibilidad"
 L["What point to anchor to the frame you set to attach to."] = "Punto de fijación a utilizar del marco que se va a sujetar."
 L["What to attach the buff anchor frame to."] = "Dónde sujetar el fijador del marco de beneficios."
 L["What to attach the debuff anchor frame to."] = "Dónde sujetar el fijador del marco de perjuicios."
+L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."] = true;
 L["When true, the header includes the player when not in a raid."] = "Cuando está activo, la cabecera incluye al jugador cuando no está en una banda."
 L["Whitelist"] = "Lista Blanca"
 L["Width"] = "Anchura"

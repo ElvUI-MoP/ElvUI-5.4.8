@@ -86,8 +86,15 @@ local function BuildABConfig()
 					LOCK_ACTIONBAR = (value == true and "1" or "0")
 				end
 			},
-			movementModifier = {
+			addNewSpells = {
 				order = 10,
+				type = "toggle",
+				name = L["Auto Add New Spells"],
+				desc = L["Allow newly learned spells to be automatically placed on an empty actionbar slot."],
+				set = function(info, value) E.db.actionbar.addNewSpells = value; AB:IconIntroTracker_Toggle() end
+			},
+			movementModifier = {
+				order = 11,
 				type = "select",
 				name = PICKUP_ACTION_KEY_TEXT,
 				desc = L["The button you must hold down in order to drag an ability to another action button."],
@@ -100,7 +107,7 @@ local function BuildABConfig()
 				}
 			},
 			globalFadeAlpha = {
-				order = 11,
+				order = 12,
 				type = "range",
 				name = L["Global Fade Transparency"],
 				desc = L["Transparency level when not in combat, no target exists, full health, not casting, and no focus target exists."],
@@ -109,7 +116,7 @@ local function BuildABConfig()
 				set = function(info, value) E.db.actionbar[ info[#info] ] = value AB.fadeParent:SetAlpha(1-value) end
 			},
 			colorGroup = {
-				order = 12,
+				order = 13,
 				type = "group",
 				name = COLORS,
 				guiInline = true,
@@ -151,7 +158,7 @@ local function BuildABConfig()
 				}
 			},
 			fontGroup = {
-				order = 13,
+				order = 14,
 				type = "group",
 				guiInline = true,
 				name = L["Fonts"],
@@ -198,7 +205,7 @@ local function BuildABConfig()
 				}
 			},
 			masque = {
-				order = 14,
+				order = 15,
 				type = "group",
 				guiInline = true,
 				name = L["Masque Support"],

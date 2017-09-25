@@ -66,8 +66,10 @@ Para desactivar deixe o espaço em branco, se precisar de mais informações vis
 L["Action Paging"] = "Paginação da Barra de Ação"
 L["ActionBars"] = "Barras de Ações"
 L["Allow Masque to handle the skinning of this element."] = true;
+L["Allow newly learned spells to be automatically placed on an empty actionbar slot."] = true;
 L["Alpha"] = "Transparência"
 L["Anchor Point"] = "Ponto de Fixação"
+L["Auto Add New Spells"] = true;
 L["Automatic"] = true;
 L["Backdrop Spacing"] = true;
 L["Backdrop"] = "Fundo"
@@ -239,7 +241,6 @@ L["Auto-Close Pet Battle Log"] = true;
 L["Below Chat"] = "Abaixo do Bate-papo"
 L["Chat EditBox Position"] = "Posição da caixa de edição do bate-papo"
 L["Chat History"] = "Histórico do bate-papo"
-L["Chat History Lines"] = true;
 L["Class Color Mentions"] = true;
 L["Custom Timestamp Color"] = true;
 L["Display LFG Icons in group chat."] = true;
@@ -266,7 +267,6 @@ L["List of words to color in chat if found in a message. If you wish to add mult
 L["Lock Positions"] = "Travar Posições"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Armazenar o histórico dos quadros principais do bate-papo. Para que possa ver o histórico de sua última sessão ao relogar ou conectar e desconectar."
 L["No Alert In Combat"] = true;
-L["Number of chat messages to be stored in the chat history."] = true;
 L["Number of messages you scroll for each step."] = true;
 L["Number of repeat characters while in combat before the chat editbox is automatically closed."] = true;
 L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."] = "Tempo, em segundos, para rolar o bate-papo até ao fim caso nao tenha rolado completamente."
@@ -331,11 +331,11 @@ L["ELVUI_CREDITS"] = "Gostaria de agradecer especialmente às seguintes pessoas 
 L["Testing:"] = "Testar:"
 
 --DataBars
-L["DATABAR_DESC"] = "Setup on-screen display of information bars."
 L["Current - Percent (Remaining)"] = true;
 L["Current - Remaining"] = true;
 L["DataBars"] = true;
 L["Hide in Combat"] = true;
+L["Setup on-screen display of information bars."] = true;
 
 --DataTexts
 L["Add Currency ID"] = true;
@@ -435,7 +435,6 @@ L["Loot"] = "Saque"
 L["Lowest Allowed UI Scale"] = true;
 L["Multi-Monitor Support"] = true;
 L["Name Font"] = "Fonte de Nomes"
-L["Number Prefix"] = true;
 L["Objective Frame Height"] = true;
 L["Party / Raid"] = true;
 L["Party Only"] = true;
@@ -456,6 +455,7 @@ L["The unit prefixes you want to use when values are shortened in ElvUI. This is
 L["Thin Border Theme"] = true;
 L["Toggle Tutorials"] = "Ativar Tutoriais"
 L["Top Panel"] = "Painel Superior"
+L["Unit Prefix Style"] = true;
 L["When you go AFK display the AFK screen."] = true;
 
 --Media
@@ -926,6 +926,7 @@ L["Offset position for text."] = "Deslocamento da posição do texto"
 L["Offset"] = "Distância"
 L["Only show when the unit is not in range."] = "Somente mostra quando a unidade não está ao alcance."
 L["Only show when you are mousing over a frame."] = "Somente mostra quando você está com o mouse sobre um quadro."
+L["Only Match SpellID"] = true;
 L["OOR Alpha"] = "Transparência Fora de Alcance"
 L["Others"] = "Outros"
 L["Overlay the healthbar"] = "Sobrepor a barra de vida"
@@ -1069,6 +1070,7 @@ L["Visibility"] = "Visibilidade"
 L["What point to anchor to the frame you set to attach to."] = "Qual é o ponto a fixar ao quadro que você definiu para ser anexado."
 L["What to attach the buff anchor frame to."] = "Ao que anexar o quadro fixador dos Bônus."
 L["What to attach the debuff anchor frame to."] = "Ao que anexar o quadro fixador das Penalidades."
+L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."] = true;
 L["When true, the header includes the player when not in a raid."] = "Quando verdade, o cabeçalho inclui o jogador quando não está em Raide."
 L["Whitelist"] = "Lista Branca"
 L["Width"] = "Comprimento"

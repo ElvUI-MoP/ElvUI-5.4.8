@@ -66,8 +66,10 @@ Pour désactiver, laisser le champs vide. Pour plus d'information, merci de visi
 L["Action Paging"] = "Pagination d'action"
 L["ActionBars"] = "Barres d'actions"
 L["Allow Masque to handle the skinning of this element."] = "Autoriser Masque à gérer l'habillage de cet élement."
+L["Allow newly learned spells to be automatically placed on an empty actionbar slot."] = true;
 L["Alpha"] = "Transparence"
 L["Anchor Point"] = "Point d'ancrage" --also in unitframes
+L["Auto Add New Spells"] = true;
 L["Automatic"] = "Automatique"
 L["Backdrop Spacing"] = "Espacement du fond"
 L["Backdrop"] = "Fond"
@@ -239,7 +241,6 @@ L["Auto-Close Pet Battle Log"] = true;
 L["Below Chat"] = "En-dessous du Chat"
 L["Chat EditBox Position"] = "Position de la fenêtre de saisie du Chat"
 L["Chat History"] = "historique de la discussion"
-L["Chat History Lines"] = true;
 L["Class Color Mentions"] = true;
 L["Custom Timestamp Color"] = true;
 L["Display LFG Icons in group chat."] = "Afficher l'icône RDG dans la discussion de groupe.";
@@ -266,7 +267,6 @@ L["List of words to color in chat if found in a message. If you wish to add mult
 L["Lock Positions"] = "Verrouiller les positions"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Active la fenêtre principale de l'historique de discussion. Ainsi quand vous rechargez l'interface ou effectuez une connexion / déconnexion, vous voyez l'historique de la dernière session"
 L["No Alert In Combat"] = "Pas d'alerte en combat";
-L["Number of chat messages to be stored in the chat history."] = true;
 L["Number of messages you scroll for each step."] = true;
 L["Number of repeat characters while in combat before the chat editbox is automatically closed."] = true;
 L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."] = "Temps en secondes pour faire défiler vers le bas de la fenêtre de discussion si vous ne l'avez pas fait défiler jusqu'en bas."
@@ -331,11 +331,11 @@ L["ELVUI_CREDITS"] = "Je voudrais remercier tout spécialement ceux qui m'ont ai
 L["Testing:"] = "Testeurs: "
 
 --DataBars
-L["DATABAR_DESC"] = "Configuration de l'affichage des différentes barres d'expérience"
 L["Current - Percent (Remaining)"] = "Actuel - Pourcentage (restant)"
 L["Current - Remaining"] = "Actuel - Restant"
 L["DataBars"] = "Barres d'expériences"
 L["Hide In Combat"] = "Cacher en combat"
+L["Setup on-screen display of information bars."] = "Configuration de l'affichage des différentes barres d'expérience"
 
 --DataTexts
 L["Add Currency ID"] = "Ajouter l'ID de la monnaie"
@@ -435,7 +435,6 @@ L["Loot"] = "Butin"
 L["Lowest Allowed UI Scale"] = true;
 L["Multi-Monitor Support"] = "Support Multi-Moniteur";
 L["Name Font"] = "Nom de la police"
-L["Number Prefix"] = true;
 L["Objective Frame Height"] = "Hauteur du cadre d'objectif";
 L["Party / Raid"] = "Groupe / Raid";
 L["Party Only"] = "Groupe seulement";
@@ -456,6 +455,7 @@ L["The unit prefixes you want to use when values are shortened in ElvUI. This is
 L["Thin Border Theme"] = true;
 L["Toggle Tutorials"] = "Afficher les tutoriels"
 L["Top Panel"] = "Bandeau en haut"
+L["Unit Prefix Style"] = true;
 L["When you go AFK display the AFK screen."] = "Quand vous êtes AFK, affiche un écran spécial.";
 
 --Media
@@ -925,6 +925,7 @@ L["Offset position for text."] = "Décalage de la position du texte."
 L["Offset"] = "Décalage"
 L["Only show when the unit is not in range."] = "S'affiche seulement quand l'unité est hors de portée."
 L["Only show when you are mousing over a frame."] = "S'affiche seulement quand vous survolez à la souris une fenêtre."
+L["Only Match SpellID"] = true;
 L["OOR Alpha"] = "Transparence Hors de portée"
 L["Others"] = "Autres"
 L["Overlay the healthbar"] = "Superposé sur la barre de vie"
@@ -1068,6 +1069,7 @@ L["Visibility"] = "Visibilité"
 L["What point to anchor to the frame you set to attach to."] = "Quel point d'ancrage sur le cadre vous choisissez à attacher."
 L["What to attach the buff anchor frame to."] = "Choisissez à quoi vous voulez attacher les améliorations sur le cadre."
 L["What to attach the debuff anchor frame to."] = "Choisissez à quoi vous voulez attacher les affaiblissements sur le cadre."
+L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."] = true;
 L["When true, the header includes the player when not in a raid."] = "Quand coché, l'en-tête est affiché lorsque le joueur n'est pas dans un raid."
 L["Whitelist"] = "Liste blanche"
 L["Width"] = "Largeur" --Also used in NamePlates module

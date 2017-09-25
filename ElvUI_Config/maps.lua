@@ -166,8 +166,13 @@ E.Options.args.maps = {
 						    },
 						    disabled = function() return not E.private.general.minimap.enable; end
 						},
+						spacer  = {
+							order = 3,
+							type = "description",
+							name = "\n"
+						},
 						locationFont = {
-						    order = 3,
+						    order = 4,
 						    type = "select",
 						    dialogControl = "LSM30_Font",
 						    name = L["Font"],
@@ -176,7 +181,7 @@ E.Options.args.maps = {
 							disabled = function() return not E.private.general.minimap.enable; end
 						},
 						locationFontSize = {
-						    order = 4,
+						    order = 5,
 						    type = "range",
 						    name = FONT_SIZE,
 						    min = 6, max = 36, step = 1,
@@ -184,7 +189,7 @@ E.Options.args.maps = {
 							disabled = function() return not E.private.general.minimap.enable end
 						},
 						locationFontOutline = {
-						    order = 5,
+						    order = 6,
 						    type = "select",
 						    name = L["Font Outline"],
 						    set = function(info, value) E.db.general.minimap.locationFontOutline = value; MM:Update_ZoneText(); end,
@@ -583,11 +588,11 @@ E.Options.args.maps = {
 										["BOTTOMRIGHT"] = L["Bottom Right"]
 									}
 								},
-								size = {
+								scale = {
 									order = 5,
 									type = "range",
-									name = L["Size"],
-									min = 1, max = 50, step = 1
+									name = L["Scale"],
+									min = 0.5, max = 2, step = 0.05,
 								},
 								xOffset = {
 									order = 6,

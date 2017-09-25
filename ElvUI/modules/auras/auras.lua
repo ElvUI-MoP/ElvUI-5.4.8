@@ -206,7 +206,7 @@ function A:UpdateTempEnchant(button, index)
 	local offset = 2
 	local weapon = button:GetName():sub(-1)
 	if weapon:match("2") then
-		offset = 6
+		offset = 5
 	end
 
 	if(quality) then

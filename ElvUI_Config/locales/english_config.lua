@@ -66,8 +66,10 @@ To disable leave the field blank, if you need more information visit http://www.
 L["Action Paging"] = true;
 L["ActionBars"] = true;
 L["Allow Masque to handle the skinning of this element."] = true;
+L["Allow newly learned spells to be automatically placed on an empty actionbar slot."] = true;
 L["Alpha"] = true;
 L["Anchor Point"] = true; --also in unitframes
+L["Auto Add New Spells"] = true;
 L["Automatic"] = true;
 L["Backdrop Spacing"] = true;
 L["Backdrop"] = true;
@@ -237,7 +239,6 @@ L["Auto-Close Pet Battle Log"] = true;
 L["Below Chat"] = true;
 L["Chat EditBox Position"] = true;
 L["Chat History"] = true;
-L["Chat History Lines"] = true;
 L["Class Color Mentions"] = true;
 L["Custom Timestamp Color"] = true;
 L["Display LFG Icons in group chat."] = true;
@@ -264,7 +265,6 @@ L["List of words to color in chat if found in a message. If you wish to add mult
 L["Lock Positions"] = true;
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = true;
 L["No Alert In Combat"] = true;
-L["Number of chat messages to be stored in the chat history."] = true;
 L["Number of messages you scroll for each step."] = true;
 L["Number of repeat characters while in combat before the chat editbox is automatically closed."] = true;
 L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."] = true;
@@ -320,11 +320,11 @@ L["ELVUI_CREDITS"] = "I would like to give out a special shout out to the follow
 L["Testing:"] = true;
 
 --DataBars
-L["DATABAR_DESC"] = "Setup on-screen display of information bars."
 L["Current - Percent (Remaining)"] = true;
 L["Current - Remaining"] = true;
 L["DataBars"] = true;
 L["Hide in Combat"] = true;
+L["Setup on-screen display of information bars."] = true;
 
 --DataTexts
 L["Add Currency ID"] = true;
@@ -424,7 +424,6 @@ L["Loot"] = true;
 L["Lowest Allowed UI Scale"] = true;
 L["Multi-Monitor Support"] = true;
 L["Name Font"] = true;
-L["Number Prefix"] = true;
 L["Objective Frame Height"] = true;
 L["Party / Raid"] = true;
 L["Party Only"] = true;
@@ -445,6 +444,7 @@ L["The unit prefixes you want to use when values are shortened in ElvUI. This is
 L["Thin Border Theme"] = true;
 L["Toggle Tutorials"] = true;
 L["Top Panel"] = true;
+L["Unit Prefix Style"] = true;
 L["When you go AFK display the AFK screen."] = true;
 
 --Media
@@ -915,6 +915,7 @@ L["Offset position for text."] = true;
 L["Offset"] = true;
 L["Only show when the unit is not in range."] = true;
 L["Only show when you are mousing over a frame."] = true;
+L["Only Match SpellID"] = true;
 L["OOR Alpha"] = true;
 L["Others"] = true;
 L["Overlay the healthbar"] = true;
@@ -1058,6 +1059,7 @@ L["Visibility"] = true;
 L["What point to anchor to the frame you set to attach to."] = true;
 L["What to attach the buff anchor frame to."] = true;
 L["What to attach the debuff anchor frame to."] = true;
+L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."] = true;
 L["When true, the header includes the player when not in a raid."] = true;
 L["Whitelist"] = true;
 L["Width"] = true; --Also used in NamePlates module

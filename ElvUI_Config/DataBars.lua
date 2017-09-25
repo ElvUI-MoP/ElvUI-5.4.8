@@ -1,19 +1,19 @@
-local E, L, V, P, G = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI)
 local mod = E:GetModule("DataBars")
 
-local databars = {};
+local databars = {}
 
 E.Options.args.databars = {
 	type = "group",
 	name = L["DataBars"],
 	childGroups = "tab",
-	get = function(info) return E.db.databars[ info[#info] ]; end,
-	set = function(info, value) E.db.databars[ info[#info] ] = value; end,
+	get = function(info) return E.db.databars[ info[#info] ] end,
+	set = function(info, value) E.db.databars[ info[#info] ] = value end,
 	args = {
 		intro = {
 			order = 1,
 			type = "description",
-			name = L["DATABAR_DESC"]
+			name = L["Setup on-screen display of information bars."]
 		},
 		spacer = {
 			order = 2,
@@ -24,6 +24,8 @@ E.Options.args.databars = {
 			order = 3,
 			type = "group",
 			name = XPBAR_LABEL,
+			get = function(info) return mod.db.experience[ info[#info] ] end,
+			set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperienceDimensions() end,
 			args = {
 				header = {
  					order = 1,
@@ -34,132 +36,97 @@ E.Options.args.databars = {
 					order = 2,
 					type = "toggle",
 					name = L["Enable"],
-					get = function(info) return mod.db.experience[ info[#info] ]; end,
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:EnableDisable_ExperienceBar(); end
+					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:EnableDisable_ExperienceBar() end
 				},
-				generalGroup = {
+				mouseover = {
 					order = 3,
-					type = "group",
-					guiInline = true,
-					name = L["General"],
-					get = function(info) return mod.db.experience[ info[#info] ]; end,
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperienceDimensions(); end,
-					disabled = function() return not mod.db.experience.enable end,
-					args = {
-						mouseover = {
-							order = 1,
-							type = "toggle",
-							name = L["Mouseover"]
-						},
-						hideAtMaxLevel = {
-							order = 2,
-							type = "toggle",
-							name = L["Hide At Max Level"],
-							set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience(); end
-						},
-						hideInVehicle = {
-							order = 3,
-							type = "toggle",
-							name = L["Hide In Vehicle"],
-							set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience(); end
-						},
-						hideInCombat = {
- 							order = 4,
- 							type = "toggle",
-							name = L["Hide in Combat"],
-							set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end,
-						},
-						reverseFill = {
-							order = 5,
-							type = "toggle",
-							name = L["Reverse Fill Direction"],
-						},
-						spacer = {
-							order = 6,
-							type = "description",
-							name = ""
-						},
-						orientation = {
-							order = 7,
-							type = "select",
-							name = L["Statusbar Fill Orientation"],
-							desc = L["Direction the bar moves on gains/losses"],
-							values = {
-								["HORIZONTAL"] = L["Horizontal"],
-								["VERTICAL"] = L["Vertical"]
-							}
-						},
-						width = {
-							order = 8,
-							type = "range",
-							name = L["Width"],
-							min = 5, max = ceil(GetScreenWidth() or 800), step = 1
-						},
-						height = {
-							order = 9,
-							type = "range",
-							name = L["Height"],
-							min = 5, max = ceil(GetScreenHeight() or 800), step = 1
-						}
+					type = "toggle",
+					name = L["Mouseover"]
+				},
+				hideAtMaxLevel = {
+					order = 4,
+					type = "toggle",
+					name = L["Hide At Max Level"],
+					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end,
+				},
+				hideInVehicle = {
+					order = 5,
+					type = "toggle",
+					name = L["Hide In Vehicle"],
+					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end,
+				},
+				hideInCombat = {
+					order = 6,
+					type = "toggle",
+					name = L["Hide In Combat"],
+					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end,
+				},
+				reverseFill = {
+					order = 7,
+					type = "toggle",
+					name = L["Reverse Fill Direction"],
+				},
+				orientation = {
+					order = 8,
+					type = "select",
+					name = L["Statusbar Fill Orientation"],
+					desc = L["Direction the bar moves on gains/losses"],
+					values = {
+						["HORIZONTAL"] = L["Horizontal"],
+						["VERTICAL"] = L["Vertical"]
 					}
 				},
-				fontGroup = {
-					order = 4,
-					type = "group",
-					guiInline = true,
+				width = {
+					order = 9,
+					type = "range",
+					name = L["Width"],
+					min = 5, max = ceil(GetScreenWidth() or 800), step = 1
+				},
+				height = {
+					order = 10,
+					type = "range",
+					name = L["Height"],
+					min = 5, max = ceil(GetScreenHeight() or 800), step = 1
+				},
+				font = {
+					order = 11,
+					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
-					get = function(info) return mod.db.experience[ info[#info] ]; end,
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperienceDimensions(); end,
-					disabled = function() return not mod.db.experience.enable; end,
-					args = {
-						textFormat = {
-							order = 1,
-							type = "select",
-							name = L["Text Format"],
-							width = "double",
-							values = {
-								NONE = NONE,
-								PERCENT = L["Percent"],
-								CUR = L["Current"],
-								REM = L["Remaining"],
-								CURMAX = L["Current - Max"],
-								CURPERC = L["Current - Percent"],
-								CURREM = L["Current - Remaining"],
-								CURPERCREM = L["Current - Percent (Remaining)"]
-							},
-							set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience(); end
-						},
-						spacer = {
-							order = 2,
-							type = "description",
-							name = " ",
-						},
-						textFont = {
-							order = 3,
-							type = "select", dialogControl = "LSM30_Font",
-							name = L["Font"],
-							values = AceGUIWidgetLSMlists.font
-						},
-						textSize = {
-							order = 4,
-							type = "range",
-							name = FONT_SIZE,
-							min = 6, max = 22, step = 1
-						},
-						textOutline = {
-							order = 5,
-							type = "select",
-							name = L["Font Outline"],
-							desc = L["Set the font outline."],
-							values = {
-								["NONE"] = NONE,
-								["OUTLINE"] = "OUTLINE",
-								["MONOCHROME"] = "MONOCHROME",
-								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
-								["THICKOUTLINE"] = "THICKOUTLINE"
-							}
-						}
+					values = AceGUIWidgetLSMlists.font
+				},
+				textSize = {
+					order = 12,
+					name = FONT_SIZE,
+					type = "range",
+					min = 6, max = 22, step = 1
+				},
+				fontOutline = {
+					order = 13,
+					type = "select",
+					name = L["Font Outline"],
+					values = {
+						["NONE"] = NONE,
+						["OUTLINE"] = "OUTLINE",
+						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
+						["THICKOUTLINE"] = "THICKOUTLINE"
 					}
+				},
+				textFormat = {
+					order = 14,
+					type = "select",
+					name = L["Text Format"],
+					width = "double",
+					values = {
+						NONE = NONE,
+						PERCENT = L["Percent"],
+						CUR = L["Current"],
+						REM = L["Remaining"],
+						CURMAX = L["Current - Max"],
+						CURPERC = L["Current - Percent"],
+						CURREM = L["Current - Remaining"],
+						CURPERCREM = L["Current - Percent (Remaining)"],
+					},
+					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end
 				}
 			}
 		},
@@ -167,136 +134,108 @@ E.Options.args.databars = {
 			order = 4,
 			type = "group",
 			name = REPUTATION,
+			get = function(info) return mod.db.reputation[ info[#info] ] end,
+			set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputationDimensions() end,
 			args = {
 				header = {
  					order = 1,
 					type = "header",
-					name = L["Reputation Bar"],
+					name = L["Reputation Bar"]
 				},
 				enable = {
 					order = 2,
 					type = "toggle",
 					name = L["Enable"],
-					get = function(info) return mod.db.reputation[ info[#info] ]; end,
-					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:EnableDisable_ReputationBar(); end,
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:EnableDisable_ReputationBar() end
 				},
-				generalGroup = {
+				mouseover = {
 					order = 3,
-					type = "group",
-					guiInline = true,
-					name = L["General"],
-					get = function(info) return mod.db.reputation[ info[#info] ]; end,
-					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputationDimensions(); end,
-					disabled = function() return not mod.db.reputation.enable end,
-					args = {
-						mouseover = {
-							order = 1,
-							type = "toggle",
-							name = L["Mouseover"]
-						},
-						hideInVehicle = {
-							order = 2,
-							type = "toggle",
-							name = L["Hide In Vehicle"],
-							set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end
-						},
-						hideInCombat = {
- 							order = 3,
- 							type = "toggle",
-							name = L["Hide in Combat"],
-							set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end,
-						},
-						reverseFill = {
-							order = 4,
-							type = "toggle",
-							name = L["Reverse Fill Direction"],
-						},
-						spacer = {
-							order = 5,
-							type = "description",
-							name = ""
-						},
-						orientation = {
-							order = 6,
-							type = "select",
-							name = L["Statusbar Fill Orientation"],
-							desc = L["Direction the bar moves on gains/losses"],
-							values = {
-								["HORIZONTAL"] = L["Horizontal"],
-								["VERTICAL"] = L["Vertical"]
-							}
-						},
-						width = {
-							order = 7,
-							type = "range",
-							name = L["Width"],
-							min = 5, max = ceil(GetScreenWidth() or 800), step = 1
-						},
-						height = {
-							order = 8,
-							type = "range",
-							name = L["Height"],
-							min = 5, max = ceil(GetScreenHeight() or 800), step = 1
-						}
+					type = "toggle",
+					name = L["Mouseover"]
+				},
+				hideInVehicle = {
+					order = 4,
+					type = "toggle",
+					name = L["Hide In Vehicle"],
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end
+				},
+				hideInCombat = {
+					order = 5,
+					type = "toggle",
+					name = L["Hide In Combat"],
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end
+				},
+				reverseFill = {
+					order = 6,
+					type = "toggle",
+					name = L["Reverse Fill Direction"],
+				},
+				spacer = {
+					order = 7,
+					type = "description",
+					name = " "
+				},
+				orientation = {
+					order = 8,
+					type = "select",
+					name = L["Statusbar Fill Orientation"],
+					desc = L["Direction the bar moves on gains/losses"],
+					values = {
+						["HORIZONTAL"] = L["Horizontal"],
+						["VERTICAL"] = L["Vertical"]
 					}
 				},
-				fontGroup = {
-					order = 4,
-					type = "group",
-					guiInline = true,
+				width = {
+					order = 9,
+					type = "range",
+					name = L["Width"],
+					min = 5, max = ceil(GetScreenWidth() or 800), step = 1
+				},
+				height = {
+					order = 10,
+					type = "range",
+					name = L["Height"],
+					min = 5, max = ceil(GetScreenHeight() or 800), step = 1
+				},
+				font = {
+					order = 11,
+					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
-					get = function(info) return mod.db.reputation[ info[#info] ]; end,
-					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputationDimensions(); end,
-					disabled = function() return not mod.db.reputation.enable; end,
-					args = {
-						textFormat = {
-							order = 1,
-							type = "select",
-							name = L["Text Format"],
-							width = "double",
-							values = {
-								NONE = NONE,
-								PERCENT = L["Percent"],
-								CUR = L["Current"],
-								REM = L["Remaining"],
-								CURMAX = L["Current - Max"],
-								CURPERC = L["Current - Percent"],
-								CURREM = L["Current - Remaining"],
-								CURPERCREM = L["Current - Percent (Remaining)"]
-							},
-							set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation(); end
-						},
-						spacer = {
-							order = 2,
-							type = "description",
-							name = " ",
-						},
-						textFont = {
-							order = 3,
-							type = "select", dialogControl = "LSM30_Font",
-							name = L["Font"],
-							values = AceGUIWidgetLSMlists.font
-						},
-						textSize = {
-							order = 4,
-							type = "range",
-							name = FONT_SIZE,
-							min = 6, max = 22, step = 1
-						},
-						textOutline = {
-							order = 5,
-							type = "select",
-							name = L["Font Outline"],
-							desc = L["Set the font outline."],
-							values = {
-								["NONE"] = NONE,
-								["OUTLINE"] = "OUTLINE",
-								["MONOCHROME"] = "MONOCHROME",
-								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
-								["THICKOUTLINE"] = "THICKOUTLINE"
-							}
-						}
+					values = AceGUIWidgetLSMlists.font
+				},
+				textSize = {
+					order = 12,
+					name = FONT_SIZE,
+					type = "range",
+					min = 6, max = 22, step = 1
+				},
+				fontOutline = {
+					order = 13,
+					type = "select",
+					name = L["Font Outline"],
+					values = {
+						["NONE"] = NONE,
+						["OUTLINE"] = "OUTLINE",
+						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
+						["THICKOUTLINE"] = "THICKOUTLINE"
 					}
+				},
+				textFormat = {
+					order = 14,
+					type = "select",
+					name = L["Text Format"],
+					width = "double",
+					values = {
+						NONE = NONE,
+						CUR = L["Current"],
+						REM = L["Remaining"],
+						PERCENT = L["Percent"],
+						CURMAX = L["Current - Max"],
+						CURPERC = L["Current - Percent"],
+						CURREM = L["Current - Remaining"],
+						CURPERCREM = L["Current - Percent (Remaining)"],
+					},
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end
 				}
 			}
 		}

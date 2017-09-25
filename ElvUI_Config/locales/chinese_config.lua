@@ -66,8 +66,10 @@ L["TEXT_FORMAT_DESC"] = [=[提供一个更改文字格式的方式
 L["Action Paging"] = "动作条翻页"
 L["ActionBars"] = "动作条"
 L["Allow Masque to handle the skinning of this element."] = "允许Masque来处理这个元素的皮肤"
+L["Allow newly learned spells to be automatically placed on an empty actionbar slot."] = true;
 L["Alpha"] = "透明度"
 L["Anchor Point"] = "定位方向"
+L["Auto Add New Spells"] = true;
 L["Automatic"] = "自动"
 L["Backdrop Spacing"] = "背景间距"
 L["Backdrop"] = "背景"
@@ -239,7 +241,6 @@ L["Auto-Close Pet Battle Log"] = "自动关闭宠物对战日志"
 L["Below Chat"] = '聊天框下方'
 L["Chat EditBox Position"] = '对话輸入框位置'
 L["Chat History"] = '聊天历史'
-L["Chat History Lines"] = true;
 L["Class Color Mentions"] = "职业颜色提示"
 L["Custom Timestamp Color"] = "自定义时间戳颜色"
 L["Display LFG Icons in group chat."] = "撠予銝剜蝷粹"
@@ -266,7 +267,6 @@ L["List of words to color in chat if found in a message. If you wish to add mult
 L["Lock Positions"] = '锁定位置'
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = '记录对话历史,当你重载,登录和退出时会恢复你最后一次会话'
 L["No Alert In Combat"] = "战斗中不警报"
-L["Number of chat messages to be stored in the chat history."] = true;
 L["Number of messages you scroll for each step."] = "每次滚动的聊天信息数目"
 L["Number of repeat characters while in combat before the chat editbox is automatically closed."] = "当你在战斗中按下技能键时,有可能你的输入框还处于打开状态,这个功能可以在你按下技能键并且在输入框中输入下列个数字符串却没有放出技能时帮你自动关闭输入框"
 L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."] = "聊天框滚动到底部所需要的滚动时间(秒)"
@@ -331,11 +331,11 @@ L["ELVUI_CREDITS"] = "我想透过这个特别方式, 向那些协助测试、�
 L["Testing:"] = "测试:"
 
 --DataBars
-L["DATABAR_DESC"] = "设置各种数据条"
 L["Current - Percent (Remaining)"] = "当前值 - 百分百(剩余)"
 L["Current - Remaining"] = "敶 - 雿"
 L["DataBars"] = "数据条"
 L["Hide in Combat"] = "葉"
+L["Setup on-screen display of information bars."] = "设置各种数据条"
 
 --DataTexts
 L["Add Currency ID"] = "添加货币ID"
@@ -435,7 +435,6 @@ L["Loot"] = "拾取"
 L["Lowest Allowed UI Scale"] = "雿捂UI蝻拇"
 L["Multi-Monitor Support"] = "多显示器支持"
 L["Name Font"] = "名称字体"
-L["Number Prefix"] = "数值缩写"
 L["Objective Frame Height"] = "任务框架高度"
 L["Party / Raid"] = "小队/团队"
 L["Party Only"] = "仅小队"
@@ -456,6 +455,7 @@ L["The unit prefixes you want to use when values are shortened in ElvUI. This is
 L["Thin Border Theme"] = "细边框主题"
 L["Toggle Tutorials"] = "教学开关"
 L["Top Panel"] = '顶部面板'
+L["Unit Prefix Style"] = true;
 L["When you go AFK display the AFK screen."] = "当你离开时显示AFK界面"
 
 --Media
@@ -925,6 +925,7 @@ L["Offset position for text."] = "偏移文本的位置"
 L["Offset"] = "偏移"
 L["Only show when the unit is not in range."] = "不在范围内时显示."
 L["Only show when you are mousing over a frame."] = "鼠标滑过时显示."
+L["Only Match SpellID"] = "仅匹配法术ID"
 L["OOR Alpha"] = "超出距离透明度"
 L["Others"] = "他人的"
 L["Overlay the healthbar"] = "头像重叠与生命条上"
@@ -1068,6 +1069,7 @@ L["Visibility"] = "可见性"
 L["What point to anchor to the frame you set to attach to."] = "框架的定位对齐方向"
 L["What to attach the buff anchor frame to."] = "buff 定位附加到哪儿"
 L["What to attach the debuff anchor frame to."] = "Debuff 定位附加到的框架."
+L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."] = "启用后将只显示通过法术ID添加到过滤器中的法术, 而不包括通过名字添加的."
 L["When true, the header includes the player when not in a raid."] = "若启用,队伍中将显示玩家"
 L["Whitelist"] = "白名单"
 L["Width"] = "宽"

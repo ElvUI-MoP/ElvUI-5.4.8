@@ -358,14 +358,14 @@ local function Vehicle_OnClick()
 end
 
 function AB:UpdateVehicleLeave()
-	local button = LeaveVehicleButton;
-	if(not button) then return; end
+	local button = LeaveVehicleButton
+	if not button then return end
 
-	local pos = E.db.general.minimap.icons.vehicleLeave.position or "BOTTOMLEFT";
-	local size = E.db.general.minimap.icons.vehicleLeave.size or 26;
-	button:ClearAllPoints();
-	button:Point(pos, Minimap, pos, E.db.general.minimap.icons.vehicleLeave.xOffset or 2, E.db.general.minimap.icons.vehicleLeave.yOffset or 2);
-	button:SetSize(size, size);
+	local pos = E.db.general.minimap.icons.vehicleLeave.position or "BOTTOMLEFT"
+	local scale = 26 * (E.db.general.minimap.icons.vehicleLeave.scale or 1)
+	button:ClearAllPoints()
+	button:Point(pos, Minimap, pos, E.db.general.minimap.icons.vehicleLeave.xOffset or 2, E.db.general.minimap.icons.vehicleLeave.yOffset or 2)
+	button:SetSize(scale, scale)
 end
 
 function AB:CreateVehicleLeave()
@@ -681,6 +681,18 @@ function AB:FadeParent_OnEvent()
 	end
 end
 
+function AB:IconIntroTracker_Toggle()
+	if self.db.addNewSpells then
+		IconIntroTracker:RegisterEvent("SPELL_PUSHED_TO_ACTIONBAR")
+		IconIntroTracker:Show()
+		IconIntroTracker:SetParent(UIParent)
+	else
+		IconIntroTracker:UnregisterAllEvents()
+		IconIntroTracker:Hide()
+		IconIntroTracker:SetParent(UIHider)
+	end
+end
+
 function AB:DisableBlizzard()
 	local UIHider = CreateFrame("Frame");
 	UIHider:Hide();
@@ -776,10 +788,7 @@ function AB:DisableBlizzard()
 	MultiCastActionBarFrame:Hide()
 	MultiCastActionBarFrame:SetParent(UIHider)
 
-	--This frame puts spells on the damn actionbar, fucking obliterate that shit
-	IconIntroTracker:UnregisterAllEvents()
-	IconIntroTracker:Hide()
-	IconIntroTracker:SetParent(UIHider)
+	self:IconIntroTracker_Toggle()
 
 	InterfaceOptionsCombatPanelActionButtonUseKeyDown:SetScale(0.0001);
 	InterfaceOptionsCombatPanelActionButtonUseKeyDown:SetAlpha(0);

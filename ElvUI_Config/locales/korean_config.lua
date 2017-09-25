@@ -102,8 +102,10 @@ L["TEXT_FORMAT_DESC"] = [=[글자가 표시되는 형식을 변경할 수 있습
 L["Action Paging"] = "페이지 자동전환 조건"
 L["ActionBars"] = "행동단축바"
 L["Allow Masque to handle the skinning of this element."] = true;
+L["Allow newly learned spells to be automatically placed on an empty actionbar slot."] = true;
 L["Alpha"] = "투명도"
 L["Anchor Point"] = "첫 번째 요소 위치"
+L["Auto Add New Spells"] = true;
 L["Automatic"] = "자동"
 L["Backdrop Spacing"] = true;
 L["Backdrop"] = "배경"
@@ -285,7 +287,6 @@ L["Auto-Close Pet Battle Log"] = true;
 L["Below Chat"] = "채팅창 아래에 배치"
 L["Chat EditBox Position"] = "대화입력창 위치"
 L["Chat History"] = "이전 채팅내역 기억"
-L["Chat History Lines"] = true;
 L["Class Color Mentions"] = true;
 L["Custom Timestamp Color"] = true;
 L["Display LFG Icons in group chat."] = "말한 사람에게 역할 아이콘이 설정되어 있는 경우 이름에 같이 표시할지 여부를 결정합니다."
@@ -311,7 +312,6 @@ L["List of words to color in chat if found in a message. If you wish to add mult
 L["Lock Positions"] = "패널에 채팅창 고정"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "애드온 리로드나 로그아웃 이전의 채팅내역을 보존하여 접속했을 때 보여줍니다."
 L["No Alert In Combat"] = true;
-L["Number of chat messages to be stored in the chat history."] = true;
 L["Number of messages you scroll for each step."] = true;
 L["Number of repeat characters while in combat before the chat editbox is automatically closed."] = true;
 L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."] = "채팅창의 스크롤이 맨 아래가 아니라면 이 값 만큼 시간이 지났을 때 맨 아래로 자동 스크롤링 됩니다."
@@ -379,11 +379,11 @@ L["ELVUI_CREDITS"] = "저는 이 애드온의 유지와 개발 코딩에 도움�
 L["Testing:"] = "|cff2eb7e4< 테스터 >|r"
 
 --DataBars
-L["DATABAR_DESC"] = "Setup on-screen display of information bars."
 L["Current - Percent (Remaining)"] = true;
 L["Current - Remaining"] = true;
 L["DataBars"] = true;
 L["Hide in Combat"] = true;
+L["Setup on-screen display of information bars."] = true;
 
 --DataTexts
 L["Add Currency ID"] = true;
@@ -483,7 +483,6 @@ L["Loot"] = "전리품 확인창"
 L["Lowest Allowed UI Scale"] = true;
 L["Multi-Monitor Support"] = "다중모니터 지원"
 L["Name Font"] = "캐릭터 이름 글꼴"
-L["Number Prefix"] = true;
 L["Objective Frame Height"] = "퀘스트프레임 세로길이"
 L["Party / Raid"] = "파티&레이드 채널로"
 L["Party Only"] = "파티채널만"
@@ -504,6 +503,7 @@ L["The unit prefixes you want to use when values are shortened in ElvUI. This is
 L["Thin Border Theme"] = true;
 L["Toggle Tutorials"] = "애드온 튜토리얼 확인"
 L["Top Panel"] = "상단 패널 표시"
+L["Unit Prefix Style"] = true;
 L["When you go AFK display the AFK screen."] = "자리비움 시 UI가 자리비움모드로 전환됩니다."
 
 --Media
@@ -974,6 +974,7 @@ L["Offset position for text."] = "위치 기준점에서부터 얼마나 떨어�
 L["Offset"] = "생명력바와 겹쳐 표시"
 L["Only show when the unit is not in range."] = "사정거리 밖에 있을 때에만 이 기능을 보이게 합니다."
 L["Only show when you are mousing over a frame."] = "마우스를 갖다 댔을(마우스오버) 때에만 이 기능을 보이게 합니다."
+L["Only Match SpellID"] = true;
 L["OOR Alpha"] = "사거리 밖 투명도"
 L["Others"] = "다른 유저"
 L["Overlay the healthbar"] = "생명력바에 덮어 씌워 표시합니다."
@@ -1117,6 +1118,7 @@ L["Visibility"] = "표시"
 L["What point to anchor to the frame you set to attach to."] = "첫 번째 버튼을 기준으로 나머지 아이콘들이 나열됩니다."
 L["What to attach the buff anchor frame to."] = "첫 번째 버튼 위치가 어느 프레임을 기준으로 할지를 결정합니다."
 L["What to attach the debuff anchor frame to."] = "첫 디버프 위치가 어느 프레임을 기준으로 할지를 결정합니다."
+L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."] = true;
 L["When true, the header includes the player when not in a raid."] = "활성화시, 공격대에 속해있지 않아도 플레이어를 표시합니다."
 L["Whitelist"] = "요구 목록"
 L["Width"] = "가로 길이"
