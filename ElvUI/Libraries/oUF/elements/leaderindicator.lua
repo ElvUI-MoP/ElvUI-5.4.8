@@ -3,7 +3,7 @@ local oUF = ns.oUF
 
 local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
-local UnitIsPartyLeader = UnitIsPartyLeader
+local UnitIsGroupLeader = UnitIsGroupLeader
 
 local function Update(self, event)
 	local element = self.LeaderIndicator
@@ -13,7 +13,7 @@ local function Update(self, event)
 	end
 
 	local unit = self.unit
-	local isLeader = (UnitInParty(unit) or UnitInRaid(unit)) and UnitIsPartyLeader(unit)
+	local isLeader = (UnitInParty(unit) or UnitInRaid(unit)) and UnitIsGroupLeader(unit)
 	if(isLeader) then
 		element:Show()
 	else
@@ -39,9 +39,8 @@ local function Enable(self)
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
+		self:RegisterEvent('GROUP_ROSTER_UPDATE', Path, true)
 		self:RegisterEvent('PARTY_LEADER_CHANGED', Path, true)
-		self:RegisterEvent('PARTY_MEMBERS_CHANGED', Path, true)
-		self:RegisterEvent('RAID_ROSTER_UPDATE', Path, true)
 
 		if(element:IsObjectType('Texture') and not element:GetTexture()) then
 			element:SetTexture([[Interface\GroupFrame\UI-Group-LeaderIcon]])
@@ -56,9 +55,8 @@ local function Disable(self)
 	if(element) then
 		element:Hide()
 
+		self:UnregisterEvent('GROUP_ROSTER_UPDATE', Path)
 		self:UnregisterEvent('PARTY_LEADER_CHANGED', Path)
-		self:UnregisterEvent('PARTY_MEMBERS_CHANGED', Path)
-		self:UnregisterEvent('RAID_ROSTER_UPDATE', Path)
 	end
 end
 

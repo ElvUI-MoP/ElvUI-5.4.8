@@ -789,7 +789,7 @@ local function SendRecieve(_, event, prefix, message, _, sender)
 		if(sender == myName) then return; end
 		if(prefix == "ELVUI_VERSIONCHK" and not E.recievedOutOfDateMessage) then
 			if(tonumber(message) ~= nil and tonumber(message) > tonumber(E.version)) then
-				E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP."]:gsub("ElvUI", E.UIName));
+				E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP."]);
 
 				if((tonumber(message) - tonumber(E.version)) >= 0.05) then
 					E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE");
