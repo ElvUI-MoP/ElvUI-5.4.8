@@ -417,9 +417,9 @@ G.unitframe.aurafilters["Whitelist"] = {
 	["spells"] = {
 		[31821] = Defaults(),	-- Devotion Aura
 		[2825] = Defaults(),	-- Bloodlust
-		[32182] = Defaults(),	-- Heroism	
+		[32182] = Defaults(),	-- Heroism
 		[80353] = Defaults(),	-- Time Warp
-		[90355] = Defaults(),	-- Ancient Hysteria		
+		[90355] = Defaults(),	-- Ancient Hysteria
 		[47788] = Defaults(),	-- Guardian Spirit
 		[33206] = Defaults(),	-- Pain Suppression
 		[116849] = Defaults(),	-- Life Cocoon
@@ -427,7 +427,7 @@ G.unitframe.aurafilters["Whitelist"] = {
 	}
 }
 
-G.unitframe.aurafilters["RaidDebuffs"] = { 
+G.unitframe.aurafilters["RaidDebuffs"] = {
 	["type"] = "Whitelist",
 	["spells"] = {
 	-- Mogu'shan Vaults
@@ -439,6 +439,7 @@ G.unitframe.aurafilters["RaidDebuffs"] = {
 		[116942] = Defaults(),	-- Flaming Spear
 		-- Gara'jal the Spiritbinder
 		[116161] = Defaults(),	-- Crossed Over
+		[122151] = Defaults(),	-- Voodoo Doll
 		-- The Spirit Kings
 		[117708] = Defaults(),	-- Maddening Shout
 		[118303] = Defaults(),	-- Fixate
@@ -450,7 +451,7 @@ G.unitframe.aurafilters["RaidDebuffs"] = {
 		-- Will of the Emperor
 		[116835] = Defaults(),	-- Devastating Arc
 		[116778] = Defaults(),	-- Focused Defense
-		[116525] = Defaults(),	-- Focused Assault  
+		[116525] = Defaults(),	-- Focused Assault
 	-- Heart of Fear		
 		-- Imperial Vizier Zor'lok
 		[122761] = Defaults(),	-- Exhale
@@ -523,7 +524,7 @@ G.unitframe.aurafilters["RaidDebuffs"] = {
 		[147383] = Defaults(),	-- Debilitation
 		-- Norushen
 		[146124] = Defaults(),	-- Self Doubt
-		[144851] = Defaults(),	-- Test of Confidence	
+		[144851] = Defaults(),	-- Test of Confidence
 		-- Sha of Pride
 		[144358] = Defaults(),	-- Wounded Pride
 		[144774] = Defaults(),	-- Reaching Attacks
@@ -571,7 +572,6 @@ local function ClassBuff(id, point, color, anyUnit, onlyShowMissing, style, disp
 	["textColor"] = {["r"] = r2, ["g"] = g2, ["b"] = b2}, ["textThreshold"] = textThreshold or -1, ["xOffset"] = xOffset or 0, ["yOffset"] = yOffset or 0, ["sizeOverride"] = sizeOverride or 0}
 end
 
--- Indicator Buffs
 G.unitframe.buffwatch = {
 	PRIEST = {
 		[6788] = ClassBuff(6788, "TOPRIGHT", {1, 0, 0}, true),						-- Weakened Soul
@@ -581,7 +581,7 @@ G.unitframe.buffwatch = {
 		[123258] = ClassBuff(123258, "TOPLEFT", {0.81, 0.85, 0.1}, true),			-- Power Word: Shield Power Insight
 		[10060] = ClassBuff(10060 , "RIGHT", {227/255, 23/255, 13/255}),			-- Power Infusion
 		[47788] = ClassBuff(47788, "LEFT", {221/255, 117/255, 0}, true),			-- Guardian Spirit
-		[33206] = ClassBuff(33206, "LEFT", {227/255, 23/255, 13/255}, true),		-- Pain Suppression		
+		[33206] = ClassBuff(33206, "LEFT", {227/255, 23/255, 13/255}, true),		-- Pain Suppression
 	},
 	DRUID = {
 		[774] = ClassBuff(774, "TOPRIGHT", {0.8, 0.4, 0.8}),						-- Rejuvenation
@@ -618,11 +618,11 @@ G.unitframe.buffwatch = {
 	},
 	WARRIOR = {
 		[114030] = ClassBuff(114030, "TOPLEFT", {0.2, 0.2, 1}),						-- Vigilance
-		[3411] = ClassBuff(3411, "TOPRIGHT", {227/255, 23/255, 13/255}),			-- Intervene	
+		[3411] = ClassBuff(3411, "TOPRIGHT", {227/255, 23/255, 13/255}),			-- Intervene
 		[114029] = ClassBuff(114029, "TOPRIGHT", {227/255, 23/255, 13/255}),		-- Safe Guard
 	},
 	DEATHKNIGHT = {
-		[49016] = ClassBuff(49016, "TOPRIGHT", {227/255, 23/255, 13/255}),			-- Unholy Frenzy	
+		[49016] = ClassBuff(49016, "TOPRIGHT", {227/255, 23/255, 13/255}),			-- Unholy Frenzy
 	},
 	PET = {
 		[19615] = ClassBuff(19615, 'TOPLEFT', {227/255, 23/255, 13/255}, true),		-- Frenzy
