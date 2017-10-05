@@ -2,7 +2,7 @@ local _, ns = ...
 local oUF = ns.oUF
 
 local UnitInRaid = UnitInRaid
-local UnitIsPartyLeader = UnitIsPartyLeader
+local UnitIsGroupLeader = UnitIsGroupLeader
 local UnitIsRaidOfficer = UnitIsRaidOfficer
 
 local function Update(self, event)
@@ -13,7 +13,7 @@ local function Update(self, event)
 	end
 
 	local unit = self.unit
-	local isAssistant = UnitInRaid(unit) and UnitIsRaidOfficer(unit) and not UnitIsPartyLeader(unit)
+	local isAssistant = UnitInRaid(unit) and UnitIsRaidOfficer(unit) and not UnitIsGroupLeader(unit)
 	if(isAssistant) then
 		element:Show()
 	else
