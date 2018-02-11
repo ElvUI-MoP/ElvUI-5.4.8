@@ -64,15 +64,15 @@ UF["classMaxResourceBar"] = {
 }
 
 UF["mapIDs"] = {
-	[489] = 10, -- Warsong Gulch
-	[726] = 10, -- Twin Peaks
-	[761] = 10, -- The Battle for Gilneas
-	[968] = 10, -- Rated Eye of the Storm
-	[529] = 15, -- Arathi Basin
-	[566] = 15, -- Eye of the Storm
-	[607] = 15, -- Strand of the Ancients
-	[30] = 40, -- Alterac Valley
-	[628] = 40 -- Isle of Conquest
+	[443] = 10, -- Warsong Gulch
+	[626] = 10, -- Twin Peaks
+	[736] = 10, -- The Battle for Gilneas
+	--[968] = 10, -- Rated Eye of the Storm
+	[461] = 15, -- Arathi Basin
+	[482] = 15, -- Eye of the Storm
+	[512] = 15, -- Strand of the Ancients
+	[401] = 40, -- Alterac Valley
+	[540] = 40, -- Isle of Conquest
 }
 
 UF["headerGroupBy"] = {
@@ -486,7 +486,7 @@ function UF:CreateAndUpdateUFGroup(group, numGroup)
 			self[unit]:SetID(i)
 		end
 
-		local frameName = E:StringTitle(group)
+		frameName = E:StringTitle(group)
 		frameName = frameName:gsub("t(arget)", "T%1")
 		self[unit].Update = function()
 			UF["Update_"..E:StringTitle(frameName).."Frames"](self, self[unit], self.db["units"][group])
@@ -700,14 +700,14 @@ function UF.headerPrototype:Update(isForced)
 	local i = 1
 	local child = self:GetAttribute("child" .. i)
 
-	while(child) do
+	while child do
 		UF["Update_"..E:StringTitle(group).."Frames"](UF, child, db)
 
-		if(_G[child:GetName().."Pet"]) then
+		if _G[child:GetName().."Pet"] then
 			UF["Update_"..E:StringTitle(group).."Frames"](UF, _G[child:GetName().."Pet"], db)
 		end
 
-		if(_G[child:GetName().."Target"]) then
+		if _G[child:GetName().."Target"] then
 			UF["Update_"..E:StringTitle(group).."Frames"](UF, _G[child:GetName().."Target"], db)
 		end
 
@@ -750,7 +750,7 @@ function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName,
 			"oUF-initialConfigFunction", ("self:SetWidth(%d); self:SetHeight(%d);"):format(db.width, db.height),
 			"groupFilter", groupFilter,
 			"showParty", true,
-			"showRaid", true,
+			"showRaid", group == "party" and false or true,
 			"showSolo", true,
 			template and "template", template)
 
@@ -940,6 +940,22 @@ function UF:LoadUnits()
 	self["headerstoload"] = nil
 end
 
+function UF:RegisterRaidDebuffIndicator()
+	local _, instanceType = IsInInstance()
+	local ORD = ns.oUF_RaidDebuffs or oUF_RaidDebuffs
+	if ORD then
+		ORD:ResetDebuffData()
+
+		if instanceType == "party" or instanceType == "raid" then
+			local instance = E.global.unitframe.raidDebuffIndicator.instanceFilter
+			ORD:RegisterDebuffs(E.global.unitframe.aurafilters[instance] and E.global.unitframe.aurafilters[instance].spells or E.global.unitframe.aurafilters.RaidDebuffs.spells)
+		else
+			local other = E.global.unitframe.raidDebuffIndicator.otherFilter
+			ORD:RegisterDebuffs(E.global.unitframe.aurafilters[other] and E.global.unitframe.aurafilters[other].spells or E.global.unitframe.aurafilters.CCDebuffs.spells)
+		end
+	end
+end
+
 function UF:UpdateAllHeaders(event)
 	if(InCombatLockdown()) then
 		self:RegisterEvent("PLAYER_REGEN_ENABLED", "UpdateAllHeaders")
@@ -950,21 +966,11 @@ function UF:UpdateAllHeaders(event)
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	end
 
-	local _, instanceType = IsInInstance()
-	local ORD = ns.oUF_RaidDebuffs or oUF_RaidDebuffs
-	if(ORD) then
-		ORD:ResetDebuffData()
-
-		if(instanceType == "party" or instanceType == "raid") then
-			ORD:RegisterDebuffs(E.global.unitframe.aurafilters.RaidDebuffs.spells)
-		else
-			ORD:RegisterDebuffs(E.global.unitframe.aurafilters.CCDebuffs.spells)
-		end
-	end
-
 	if(E.private["unitframe"]["disabledBlizzardFrames"].party) then
 		ElvUF:DisableBlizzard("party")
 	end
+
+	self:RegisterRaidDebuffIndicator()
 
 	local smartRaidFilterEnabled = self.db.smartRaidFilter
 	for group, header in pairs(self["headers"]) do
@@ -1160,13 +1166,7 @@ end
 
 local ignoreSettings = {
 	["position"] = true,
-	["playerOnly"] = true,
-	["noConsolidated"] = true,
-	["useBlacklist"] = true,
-	["useWhitelist"] = true,
-	["noDuration"] = true,
-	["onlyDispellable"] = true,
-	["useFilter"] = true
+	["priority"] = true
 }
 
 local ignoreSettingsGroup = {
@@ -1253,13 +1253,13 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 
 		backdropTex:ClearAllPoints()
 		if(statusBarOrientation == "VERTICAL") then
-			backdropTex:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
-			backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "TOPLEFT")
-			backdropTex:SetPoint("BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
+			backdropTex:Point("TOPLEFT", statusBar, "TOPLEFT")
+			backdropTex:Point("BOTTOMLEFT", statusBarTex, "TOPLEFT")
+			backdropTex:Point("BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
 		else
-			backdropTex:SetPoint("TOPLEFT", statusBarTex, "TOPRIGHT")
-			backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
-			backdropTex:SetPoint("BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
+			backdropTex:Point("TOPLEFT", statusBarTex, "TOPRIGHT")
+			backdropTex:Point("BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
+			backdropTex:Point("BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
 		end
 
 		if(invertBackdropTex) then
@@ -1376,7 +1376,7 @@ function UF:Initialize()
 	if(not ORD) then return end
 	ORD.ShowDispellableDebuff = true
 	ORD.FilterDispellableDebuff = true
-	ORD.MatchBySpellName = true
+	ORD.MatchBySpellName = false
 
 	self:UpdateRangeCheckSpells()
 end

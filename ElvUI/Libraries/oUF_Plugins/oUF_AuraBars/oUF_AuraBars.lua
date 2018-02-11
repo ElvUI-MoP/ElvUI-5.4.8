@@ -52,9 +52,9 @@ local function SetAnchors(self)
 	for index = 1, #bars do
 		local frame = bars[index]
 		local anchor = frame.anchor
-		frame:SetHeight(self.auraBarHeight or 20)
-		frame.statusBar.iconHolder:Size(frame:GetHeight())			
-		frame:SetWidth((self.auraBarWidth or self:GetWidth()) - (frame:GetHeight() + (self.gap or 0)))	
+		frame:Height(self.auraBarHeight or 20)
+		frame.statusBar.iconHolder:Size(frame:GetHeight())
+		frame:Width((self.auraBarWidth or self:GetWidth()) - (frame:GetHeight() + (self.gap or 0)))
 		frame:ClearAllPoints()
 		if self.down == true then
 			if self == anchor then -- Root frame so indent for icon
@@ -76,8 +76,8 @@ local function CreateAuraBar(oUF, anchor)
 	local auraBarParent = oUF.AuraBars
 
 	local frame = CreateFrame("Frame", nil, auraBarParent)
-	frame:SetHeight(auraBarParent.auraBarHeight or 20)
-	frame:SetWidth((auraBarParent.auraBarWidth or auraBarParent:GetWidth()) - (frame:GetHeight() + (auraBarParent.gap or 0)))
+	frame:Height(auraBarParent.auraBarHeight or 20)
+	frame:Width((auraBarParent.auraBarWidth or auraBarParent:GetWidth()) - (frame:GetHeight() + (auraBarParent.gap or 0)))
 	frame.anchor = anchor
 
 	-- the main bar
@@ -104,14 +104,14 @@ local function CreateAuraBar(oUF, anchor)
 
 	local spark = statusBar:CreateTexture(nil, "OVERLAY", nil);
 	spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]]);
-	spark:SetWidth(12);
+	spark:Width(12)
 	spark:SetBlendMode("ADD");
 	spark:SetPoint('CENTER', statusBar:GetStatusBarTexture(), 'RIGHT')		
 	statusBar.spark = spark
 
 	statusBar.iconHolder = CreateFrame('Button', nil, statusBar)
-	statusBar.iconHolder:SetHeight(frame:GetHeight())
-	statusBar.iconHolder:SetWidth(frame:GetHeight())
+	statusBar.iconHolder:Height(frame:GetHeight())
+	statusBar.iconHolder:Width(frame:GetHeight())
 	statusBar.iconHolder:SetPoint('BOTTOMRIGHT', frame, 'BOTTOMLEFT', -auraBarParent.gap, 0)
 	statusBar.iconHolder.__unit = oUF.unit
 	statusBar.iconHolder:SetScript('OnEnter', OnEnter)
@@ -195,8 +195,7 @@ local function Update(self, event, unit)
 	if self.unit ~= unit then return end
 	local auraBars = self.AuraBars
 	local helpOrHarm
-	local isFriend = UnitIsFriend("player", unit) == 1 and true or false;
-	local both = false
+	local isFriend = UnitIsFriend("player", unit)
 
 	if auraBars.friendlyAuraType and auraBars.enemyAuraType then
 		if isFriend then
@@ -208,11 +207,6 @@ local function Update(self, event, unit)
 		helpOrHarm = isFriend and 'HELPFUL' or 'HARMFUL'
 	end
 
-	if helpOrHarm == 'BOTH' then
-		both = true
-		helpOrHarm = 'HELPFUL'
-	end
-
 	-- Create a table of auras to display
 	local auras = {}
 	local lastAuraIndex = 0
@@ -221,7 +215,7 @@ local function Update(self, event, unit)
 		for index = 1, auraBars.maxBars do
 			local spellID = 47540
 			local name, rank, icon = GetSpellInfo(spellID)
-			local count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate = 5, "Magic", 0, 0, "player", nil, nil
+			local count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, canApplyAura, isBossDebuff = 5, 'Magic', 0, 0, 'player', nil, nil, nil, nil
 			lastAuraIndex = lastAuraIndex + 1
 			auras[lastAuraIndex] = {}
 			auras[lastAuraIndex].spellID = spellID
@@ -240,23 +234,10 @@ local function Update(self, event, unit)
 		end
 	else
 		for index = 1, 40 do
-			local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID
+			local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID, canApply, isBossDebuff = UnitAura(unit, index, helpOrHarm)
+			if not name then break end
 
-			if not both then
-				name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID = UnitAura(unit, index, helpOrHarm)
-
-				if not name then break end
-			else
-				name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID = UnitAura(unit, index, 'HELPFUL')
-
-				if not name then
-					name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID = UnitAura(unit, index, 'HARMFUL')
-					
-					if not name then break end
-				end
-			end
-
-			if (auraBars.filter or DefaultFilter)(self, unit, name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID) then
+			if (auraBars.filter or DefaultFilter)(self, unit, name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID, canApply, isBossDebuff) then
 				lastAuraIndex = lastAuraIndex + 1
 				auras[lastAuraIndex] = {}
 				auras[lastAuraIndex].spellID = spellID
@@ -291,7 +272,7 @@ local function Update(self, event, unit)
 	-- Show and configure bars for buffs/debuffs.
 	local bars = auraBars.bars
 	if lastAuraIndex == 0 then
-		self.AuraBars:SetHeight(1)
+		self.AuraBars:Height(1)
 	end
 
 	for index = 1 , lastAuraIndex do
@@ -306,9 +287,9 @@ local function Update(self, event, unit)
 
 		if index == lastAuraIndex then
 			if self.AuraBars.down then
-				self.AuraBars:SetHeight(self.AuraBars:GetTop() - frame:GetBottom())
+				self.AuraBars:Height(self.AuraBars:GetTop() - frame:GetBottom())
 			elseif frame:GetTop() and self.AuraBars:GetBottom() then
-				self.AuraBars:SetHeight(frame:GetTop() - self.AuraBars:GetBottom())
+				self.AuraBars:Height(frame:GetTop() - self.AuraBars:GetBottom())
 			else
 				self.AuraBars:Height(20)
 			end
@@ -327,8 +308,8 @@ local function Update(self, event, unit)
 		else
 			if auraBars.scaleTime and auraBars.scaleTime > 0 then
 				local maxvalue = min(auraBars.scaleTime, bar.aura.duration)
-				bar:SetMinMaxValues(0, maxvalue)
-				bar:SetWidth(
+				bar:SetMinMaxValues(0, auraBars.scaleTime)
+				bar:Width(
 					( maxvalue / auraBars.scaleTime ) *
 					(	( auraBars.auraBarWidth or auraBars:GetWidth() ) -
 						( bar:GetHeight() + (auraBars.gap or 0) ) ) ) 				-- icon size + gap
@@ -378,7 +359,7 @@ end
 local function Enable(self)
 	if self.AuraBars then
 		self:RegisterEvent('UNIT_AURA', Update)
-		self.AuraBars:SetHeight(1)
+		self.AuraBars:Height(1)
 		self.AuraBars.bars = self.AuraBars.bars or {}
 		self.AuraBars.SetAnchors = SetAnchors
 		self.AuraBars:SetScript('OnUpdate', UpdateBars)

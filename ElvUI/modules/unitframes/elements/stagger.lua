@@ -14,6 +14,8 @@ function UF:Construct_Stagger(frame)
 end
 
 function UF:Configure_Stagger(frame)
+	if not frame.VARIABLES_SET then return end
+
 	local stagger = frame.Stagger
 	local db = frame.db
 

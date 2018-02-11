@@ -151,7 +151,7 @@ ElvUF.Tags.Events["altpowercolor"] = "UNIT_POWER UNIT_MAXPOWER"
 ElvUF.Tags.Methods["altpowercolor"] = function(u)
 	local cur = UnitPower(u, ALTERNATE_POWER_INDEX)
 	if(cur > 0) then
-		local tPath, r, g, b = UnitAlternatePowerTextureInfo(u, 2)
+		local _, r, g, b = UnitAlternatePowerTextureInfo(u, 2)
 
 		if not r then
 			r, g, b = 1, 1, 1
@@ -487,7 +487,7 @@ end
 
 ElvUF.Tags.Events["difficultycolor"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 ElvUF.Tags.Methods["difficultycolor"] = function(unit)
-	local r, g, b = 0.55, 0.57, 0.61
+	local r, g, b
 	if(UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then
 		local level = UnitBattlePetLevel(unit)
 
@@ -1034,9 +1034,7 @@ end
 
 ElvUF.Tags.Events["guild"] = "PLAYER_GUILD_UPDATE"
 ElvUF.Tags.Methods["guild"] = function(unit)
-	local guildName = GetGuildInfo(unit)
-
-	return guildName or ""
+	return GetGuildInfo(unit) or ""
 end
 
 ElvUF.Tags.Events["guild:brackets"] = "PLAYER_GUILD_UPDATE"

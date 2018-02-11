@@ -221,6 +221,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 		if(not (suffix == 'target' or objectUnit and objectUnit:match('target'))) then
 			object:RegisterEvent("UNIT_ENTERED_VEHICLE", updateActiveUnit)
 			object:RegisterEvent("UNIT_EXITED_VEHICLE", updateActiveUnit)
+			object:RegisterEvent("UNIT_EXITING_VEHICLE", updateActiveUnit)
 			object:RegisterEvent("PLAYER_ENTERING_WORLD", updateActiveUnit)
 
 			if(objectUnit ~= "player") then

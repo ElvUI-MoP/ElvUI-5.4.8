@@ -4,7 +4,6 @@ local SpellRange = LibStub("SpellRange-1.0")
 local _, class = UnitClass("player")
 
 local pairs, ipairs = pairs, ipairs
-local tinsert, tremove, twipe = table.insert, table.remove, table.wipe
 
 local CheckInteractDistance = CheckInteractDistance
 local UnitCanAttack = UnitCanAttack
@@ -155,7 +154,7 @@ local function enemyIsInLongRange(unit)
 	return false
 end
 
-function UF:UpdateRange(event)
+function UF:UpdateRange()
 	local range = self.Range
 	local unit = self.unit
 	if(unit) then

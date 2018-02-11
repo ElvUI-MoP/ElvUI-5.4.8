@@ -23,7 +23,6 @@ function UF:Configure_PVPIcon(frame)
 		frame:EnableElement("PvPIndicator")
 	elseif not frame.db.pvpIcon.enable and frame:IsElementEnabled("PvPIndicator") then
 		frame:DisableElement("PvPIndicator")
-		PvPIndicator:Hide()
 	end
 end
 

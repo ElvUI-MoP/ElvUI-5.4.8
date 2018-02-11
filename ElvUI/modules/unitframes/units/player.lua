@@ -102,7 +102,7 @@ function UF:Update_PlayerFrame(frame, db)
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable;
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0;
 
-		frame.STAGGER_SHOWN = frame.Stagger and frame.Stagger:IsShown()
+		frame.STAGGER_SHOWN = (db.stagger and db.stagger.enable) and frame.Stagger and frame.Stagger:IsShown()
 		frame.STAGGER_WIDTH = frame.STAGGER_SHOWN and (db.stagger.width + (frame.BORDER*2)) or 0;
 
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame);

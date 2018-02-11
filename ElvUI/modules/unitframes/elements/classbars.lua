@@ -189,6 +189,12 @@ function UF:Configure_ClassBar(frame)
 				bars[i]:Show();
 			end
 		end
+
+		if not frame.USE_MINI_CLASSBAR then
+			bars.backdrop:Show()
+		else
+			bars.backdrop:Hide()
+		end
 	else
 		--?? Apparent bug fix for the width after in-game settings change
 		bars.LunarBar:SetMinMaxValues(0, 0)
@@ -197,14 +203,6 @@ function UF:Configure_ClassBar(frame)
 		bars.SolarBar:SetStatusBarColor(unpack(ElvUF.colors.EclipseBar[2]))
 		bars.LunarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
 		bars.SolarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
-	end
-
-	if(E.myclass ~= "DRUID") then
-		if(not frame.USE_MINI_CLASSBAR) then
-			bars.backdrop:Show();
-		else
-			bars.backdrop:Hide();
-		end
 	end
 
 	if(frame.CLASSBAR_DETACHED and db.classbar.parent == "UIPARENT") then
@@ -679,11 +677,11 @@ function UF:DruidPostUpdateAltPower(_, min, max)
 				self.Text:SetFormattedText(color.."%d%%|r |cffD7BEA5- |r", floor(min / max * 100))
 			elseif find(powerTextPosition, "LEFT") then
 				self.Text:Point("LEFT", powerValue, "RIGHT", -3, 0)
-				self.Text:SetFormattedText("|cffD7BEA5-|r"..color.." %d%%|r", floor(min / max * 100))
+				self.Text:SetFormattedText("|cffD7BEA5 -|r"..color.." %d%%|r", floor(min / max * 100))
 			else
 				if select(4, powerValue:GetPoint()) <= 0 then
 					self.Text:Point("LEFT", powerValue, "RIGHT", -3, 0)
-					self.Text:SetFormattedText("|cffD7BEA5-|r"..color.." %d%%|r", floor(min / max * 100))
+					self.Text:SetFormattedText(" |cffD7BEA5-|r"..color.." %d%%|r", floor(min / max * 100))
 				else
 					self.Text:Point("RIGHT", powerValue, "LEFT", 3, 0)
 					self.Text:SetFormattedText(color.."%d%%|r |cffD7BEA5- |r", floor(min / max * 100))
