@@ -249,7 +249,8 @@ function LO:CreateChatPanels()
 	local SPACING = E.Border*3 - E.Spacing;
 	--Left Chat
 	local lchat = CreateFrame('Frame', 'LeftChatPanel', E.UIParent)
-	lchat:SetFrameStrata('BACKGROUND')
+	--lchat:SetFrameStrata('BACKGROUND')
+	lchat:SetFrameStrata("LOW")
 	lchat:Size(E.db.chat.panelWidth, E.db.chat.panelHeight)
 	lchat:Point('BOTTOMLEFT', E.UIParent, 4, 4)
 	lchat:SetFrameLevel(lchat:GetFrameLevel() + 2)
@@ -295,7 +296,8 @@ function LO:CreateChatPanels()
 
 	--Right Chat
 	local rchat = CreateFrame('Frame', 'RightChatPanel', E.UIParent)
-	rchat:SetFrameStrata('BACKGROUND')
+	--rchat:SetFrameStrata('BACKGROUND')
+	rchat:SetFrameStrata("LOW")
 	rchat:Size(E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth, E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
 	rchat:Point('BOTTOMRIGHT', E.UIParent, -4, 4)
 	rchat:SetFrameLevel(lchat:GetFrameLevel() + 2)
