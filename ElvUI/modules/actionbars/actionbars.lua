@@ -339,7 +339,18 @@ function AB:CreateBar(id)
 end
 
 function AB:PLAYER_REGEN_ENABLED()
-	self:UpdateButtonSettings();
+	if AB.NeedsUpdateButtonSettings then
+		self:UpdateButtonSettings()
+		AB.NeedsUpdateButtonSettings = nil
+	end
+	if AB.NeedsUpdateMicroBarVisibility then
+		self:UpdateMicroBarVisibility()
+		AB.NeedsUpdateMicroBarVisibility = nil
+	end
+	if AB.NeedsAdjustMaxStanceButtons then
+		AB:AdjustMaxStanceButtons(AB.NeedsAdjustMaxStanceButtons) --sometimes it holds the event, otherwise true. pass it before we nil it.
+		AB.NeedsAdjustMaxStanceButtons = nil
+	end
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED");
 end
 
@@ -482,8 +493,13 @@ function AB:UpdateButtonSettingsForBar(barName)
 end
 
 function AB:UpdateButtonSettings()
-	if(E.private.actionbar.enable ~= true) then return; end
-	if(InCombatLockdown()) then self:RegisterEvent("PLAYER_REGEN_ENABLED"); return; end
+	if E.private.actionbar.enable ~= true then return end
+
+	if InCombatLockdown() then
+		AB.NeedsUpdateButtonSettings = true
+		self:RegisterEvent("PLAYER_REGEN_ENABLED")
+		return
+	end
 
 	for button, _ in pairs(self["handledbuttons"]) do
 		if(button) then
@@ -503,6 +519,7 @@ function AB:UpdateButtonSettings()
 	for i = 1, 6 do
 		self:PositionAndSizeBar("bar" .. i);
 	end
+	self:AdjustMaxStanceButtons()
 	self:PositionAndSizeBarPet();
 	self:PositionAndSizeBarShapeShift();
 end
@@ -818,7 +835,12 @@ function AB:DisableBlizzard()
 end
 
 function AB:UpdateButtonConfig(bar, buttonName)
-	if(InCombatLockdown()) then self:RegisterEvent("PLAYER_REGEN_ENABLED"); return; end
+	if InCombatLockdown() then
+		AB.NeedsUpdateButtonSettings = true
+		self:RegisterEvent("PLAYER_REGEN_ENABLED")
+		return
+	end
+
 	if(not bar.buttonConfig) then bar.buttonConfig = {hideElements = {}, colors = {}}; end
 	bar.buttonConfig.hideElements.macro = self.db.macrotext;
 	bar.buttonConfig.hideElements.hotkey = self.db.hotkeytext;
@@ -1004,6 +1026,62 @@ function AB:LAB_ButtonUpdate(button)
 end
 LAB.RegisterCallback(AB, "OnButtonUpdate", AB.LAB_ButtonUpdate);
 
+local function Saturate(cooldown)
+	if not E.private.cooldown.enable then
+		cooldown:GetParent().icon:SetDesaturated(false)
+	else
+		cooldown:GetParent():GetParent():GetParent().icon:SetDesaturated(false)
+	end
+end
+
+local function OnCooldownUpdate(_, button, start, duration)
+	if not button._state_type == "action" then return; end
+
+	if start and duration > 1.5 then
+		button.saturationLocked = true --Lock any new actions that are created after we activated desaturation option
+
+		button.icon:SetDesaturated(true)
+
+		--Hook cooldown done and add colors back
+		if not button.onCooldownDoneHooked then
+			button.onCooldownDoneHooked = true
+			if not E.private.cooldown.enable then
+				AB:HookScript(button.cooldown, "OnHide", Saturate)
+			else
+				AB:HookScript(button.cooldown.timer, "OnHide", Saturate)
+			end
+		end
+	end
+end
+
+function AB:ToggleDesaturation(value)
+	value = value or self.db.desaturateOnCooldown
+
+	if value then
+		LAB.RegisterCallback(AB, "OnCooldownUpdate", OnCooldownUpdate)
+		local start, duration
+		for button in pairs(LAB.actionButtons) do
+			button.saturationLocked = true
+			start, duration = button:GetCooldown()
+			OnCooldownUpdate(nil, button, start, duration)
+		end
+	else
+		LAB.UnregisterCallback(AB, "OnCooldownUpdate")
+		for button in pairs(LAB.actionButtons) do
+			button.saturationLocked = nil
+			button.icon:SetDesaturated(false)
+			if button.onCooldownDoneHooked then
+				if not E.private.cooldown.enable then
+					AB:Unhook(button.cooldown, "OnHide")
+				else
+					AB:Unhook(button.cooldown.timer, "OnHide")
+				end
+				button.onCooldownDoneHooked = nil
+			end
+		end
+	end
+end
+
 function AB:Initialize()
 	self.db = E.db.actionbar;
 	if(E.private.actionbar.enable ~= true) then return; end
@@ -1053,6 +1131,8 @@ function AB:Initialize()
 	LOCK_ACTIONBAR = (self.db.lockActionBars == true and "1" or "0")
 
 	SpellFlyout:HookScript("OnShow", SetupFlyoutButton);
+
+	self:ToggleDesaturation()
 end
 
 local function InitializeCallback()

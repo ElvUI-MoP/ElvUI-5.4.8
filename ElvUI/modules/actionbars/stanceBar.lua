@@ -2,7 +2,6 @@
 local AB = E:GetModule("ActionBars");
 
 local _G = _G;
-local type = type;
 local ceil = math.ceil;
 local format, find = format, string.find
 
@@ -14,9 +13,7 @@ local GetShapeshiftFormCooldown = GetShapeshiftFormCooldown;
 local GetShapeshiftFormInfo = GetShapeshiftFormInfo;
 local InCombatLockdown = InCombatLockdown;
 local RegisterStateDriver = RegisterStateDriver;
-local UnregisterStateDriver = UnregisterStateDriver;
 local GetBindingKey = GetBindingKey;
-local C_PetBattlesIsInBattle = C_PetBattles.IsInBattle
 local NUM_STANCE_SLOTS = NUM_STANCE_SLOTS;
 
 local Masque = LibStub("Masque", true)
@@ -147,6 +144,8 @@ function AB:PositionAndSizeBarShapeShift()
 
 	bar.db = self.db["stanceBar"]
 	bar.db.position = nil; --Depreciated
+	bar.mouseover = self.db["stanceBar"].mouseover
+
 	if bar.LastButton and numButtons > bar.LastButton then
 		numButtons = bar.LastButton;
 	end
@@ -178,7 +177,6 @@ function AB:PositionAndSizeBarShapeShift()
  	bar:Width(barWidth);
 	bar:Height(barHeight);
 
-	bar.mouseover = self.db["stanceBar"].mouseover
 	if self.db["stanceBar"].enabled then
 		bar:SetScale(1);
 		bar:SetAlpha(bar.db.alpha);
@@ -277,7 +275,16 @@ function AB:PositionAndSizeBarShapeShift()
 end
 
 function AB:AdjustMaxStanceButtons(event)
-	if InCombatLockdown() then return; end
+	if InCombatLockdown() then
+		AB.NeedsAdjustMaxStanceButtons = event or true
+		self:RegisterEvent("PLAYER_REGEN_ENABLED")
+		return
+	end
+
+	local visibility = self.db.stanceBar.visibility;
+	if visibility and visibility:match("[\n\r]") then
+		visibility = visibility:gsub("[\n\r]","")
+	end
 
 	for i = 1, #bar.buttons do
 		bar.buttons[i]:Hide()
@@ -304,21 +311,14 @@ function AB:AdjustMaxStanceButtons(event)
 		end
 	end
 
+	-- sometimes after combat lock down `event` may be true because of passing it back with `AB.NeedsAdjustMaxStanceButtons`
 	self:PositionAndSizeBarShapeShift();
 
 	if event == "UPDATE_SHAPESHIFT_FORMS" then
 		self:StyleShapeShift()
 	end
 
-	if not C_PetBattlesIsInBattle() or initialCreate then
-		if numButtons == 0 then
-			UnregisterStateDriver(bar, "show");
-			bar:Hide()
-		else
-			bar:Show()
-			RegisterStateDriver(bar, "show", "[petbattle] hide;show");
-		end
-	end
+	RegisterStateDriver(bar, "visibility", (numButtons == 0 and "hide") or visibility)
 end
 
 function AB:UpdateStanceBindings()
@@ -338,13 +338,6 @@ function AB:CreateBarShapeShift()
 	bar.backdrop:SetAllPoints();
 	bar:Point("TOPLEFT", E.UIParent, "TOPLEFT", 4, -4);
 	bar.buttons = {};
-	bar:SetAttribute("_onstate-show", [[
-		if newstate == "hide" then
-			self:Hide();
-		else
-			self:Show();
-		end
-	]]);
 
 	self:HookScript(bar, "OnEnter", "Bar_OnEnter");
 	self:HookScript(bar, "OnLeave", "Bar_OnLeave");

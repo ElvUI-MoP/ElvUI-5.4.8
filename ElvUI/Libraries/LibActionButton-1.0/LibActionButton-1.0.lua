@@ -1180,6 +1180,8 @@ end
 function UpdateCooldown(self)
 	local start, duration, enable, charges, maxCharges = self:GetCooldown()
 	CooldownFrame_SetTimer(self.cooldown, start, duration, enable, charges, maxCharges)
+
+	lib.callbacks:Fire("OnCooldownUpdate", self, start, duration, enable)
 end
 
 function StartFlash(self)

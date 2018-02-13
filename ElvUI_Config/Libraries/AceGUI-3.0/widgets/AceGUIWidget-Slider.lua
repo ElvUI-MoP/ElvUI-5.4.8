@@ -61,6 +61,10 @@ local function Slider_OnValueChanged(frame)
 	local self = frame.obj
 	if not frame.setup then
 		local newvalue = frame:GetValue()
+		if self.step and self.step > 0 then
+			local min_value = self.min or 0
+			newvalue = floor((newvalue - min_value) / self.step + 0.5) * self.step + min_value
+		end
 		if newvalue ~= self.value and not self.disabled then
 			self.value = newvalue
 			self:Fire("OnValueChanged", newvalue)

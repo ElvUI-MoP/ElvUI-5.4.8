@@ -850,6 +850,7 @@ function E:UpdateAll(ignoreInstall)
 	AB:UpdateMicroPositionDimensions();
 	AB:Extra_SetAlpha();
 	AB:Extra_SetScale();
+	AB:ToggleDesaturation()
 
 	local bags = E:GetModule("Bags"); 
 	bags.db = self.db.bags;

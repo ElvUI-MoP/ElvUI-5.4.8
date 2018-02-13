@@ -62,11 +62,16 @@ local function BuildABConfig()
 				name = L["Keybind Text"],
 				desc = L["Display bind names on action buttons."]
 			},
-			selfcast = {
+			rightClickSelfCast = {
 				order = 7,
 				type = "toggle",
-				name = L["Self Cast"],
-				desc = L["Self cast on right click."]
+				name = L["RightClick Self-Cast"],
+				set = function(info, value)
+					E.db.actionbar.rightClickSelfCast = value
+					for _, bar in pairs(AB["handledBars"]) do
+						AB:UpdateButtonConfig(bar, bar.bindButtons)
+					end
+				end
 			},
 			keyDown = {
 				order = 8,
@@ -93,8 +98,17 @@ local function BuildABConfig()
 				desc = L["Allow newly learned spells to be automatically placed on an empty actionbar slot."],
 				set = function(info, value) E.db.actionbar.addNewSpells = value; AB:IconIntroTracker_Toggle() end
 			},
-			movementModifier = {
+			desaturateOnCooldown = {
 				order = 11,
+				type = "toggle",
+				name = L["Desaturate On Cooldown"],
+				set = function(info, value)
+					E.db.actionbar.desaturateOnCooldown = value;
+					AB:ToggleDesaturation(value)
+				end
+			},
+			movementModifier = {
+				order = 12,
 				type = "select",
 				name = PICKUP_ACTION_KEY_TEXT,
 				desc = L["The button you must hold down in order to drag an ability to another action button."],
@@ -107,7 +121,7 @@ local function BuildABConfig()
 				}
 			},
 			globalFadeAlpha = {
-				order = 12,
+				order = 13,
 				type = "range",
 				name = L["Global Fade Transparency"],
 				desc = L["Transparency level when not in combat, no target exists, full health, not casting, and no focus target exists."],
@@ -116,7 +130,7 @@ local function BuildABConfig()
 				set = function(info, value) E.db.actionbar[ info[#info] ] = value AB.fadeParent:SetAlpha(1-value) end
 			},
 			colorGroup = {
-				order = 13,
+				order = 14,
 				type = "group",
 				name = COLORS,
 				guiInline = true,
@@ -158,7 +172,7 @@ local function BuildABConfig()
 				}
 			},
 			fontGroup = {
-				order = 14,
+				order = 15,
 				type = "group",
 				guiInline = true,
 				name = L["Fonts"],
@@ -205,7 +219,7 @@ local function BuildABConfig()
 				}
 			},
 			masque = {
-				order = 15,
+				order = 16,
 				type = "group",
 				guiInline = true,
 				name = L["Masque Support"],
@@ -515,7 +529,22 @@ local function BuildABConfig()
 					["classic"] = L["Classic"]
 				},
 				disabled = function() return not E.db.actionbar.stanceBar.enabled end
-			}
+			},
+			visibility = {
+				order = 19,
+				type = "input",
+				name = L["Visibility State"],
+				desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
+				width = "full",
+				multiline = true,
+				set = function(info, value)
+					if value and value:match("[\n\r]") then
+						value = value:gsub("[\n\r]","")
+					end
+					E.db.actionbar["stanceBar"]["visibility"] = value;
+					AB:UpdateButtonSettings()
+				end
+ 			}
 		}
 	}
 	group["microbar"] = {
@@ -544,26 +573,24 @@ local function BuildABConfig()
 				func = function() E:CopyTable(E.db.actionbar["microbar"], P.actionbar["microbar"]) E:ResetMovers(L["Micro Bar"]) AB:UpdateMicroPositionDimensions() end,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
-			buttonsPerRow = {
+			spacer = {
 				order = 4,
+				type = "description",
+				name = " "
+			},
+			mouseover = {
+				order = 5,
+				type = "toggle",
+				name = L["Mouse Over"],
+				desc = L["The frame is not shown unless you mouse over the frame."],
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			buttonsPerRow = {
+				order = 6,
 				type = "range",
 				name = L["Buttons Per Row"],
 				desc = L["The amount of buttons to display per row."],
 				min = 1, max = #MICRO_BUTTONS, step = 1,
-				disabled = function() return not E.db.actionbar.microbar.enabled end
-			},
-			xOffset = {
-				order = 5,
-				type = "range",
-				name = L["xOffset"],
-				min = 0, max = 60, step = 1,
-				disabled = function() return not E.db.actionbar.microbar.enabled end
-			},
-			yOffset = {
-				order = 6,
-				type = "range",
-				name = L["yOffset"],
-				min = 0, max = 60, step = 1,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
 			alpha = {
@@ -575,11 +602,34 @@ local function BuildABConfig()
 				min = 0, max = 1, step = 0.1,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
-			mouseover = {
+			xOffset = {
 				order = 8,
-				type = "toggle",
-				name = L["Mouse Over"],
-				desc = L["The frame is not shown unless you mouse over the frame."],
+				type = "range",
+				name = L["xOffset"],
+				min = 0, max = 60, step = 1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			yOffset = {
+				order = 9,
+				type = "range",
+				name = L["yOffset"],
+				min = 0, max = 60, step = 1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			visibility = {
+				order = 10,
+				type = "input",
+				name = L["Visibility State"],
+				desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
+				width = "full",
+				multiline = true,
+				set = function(info, value)
+					if value and value:match("[\n\r]") then
+						value = value:gsub("[\n\r]","")
+					end
+					E.db.actionbar["microbar"]["visibility"] = value
+					AB:UpdateMicroPositionDimensions()
+				end,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			}
 		}
@@ -741,7 +791,7 @@ local function BuildABConfig()
 					type = "range",
 					name = L["Button Spacing"],
 					desc = L["The spacing between buttons."],
-					min = 0, max = 20, step = 1,
+					min = -1, max = 20, step = 1,
 					disabled = function() return not E.db.actionbar["bar" .. i].enabled end
 				},
 				backdropSpacing = {
