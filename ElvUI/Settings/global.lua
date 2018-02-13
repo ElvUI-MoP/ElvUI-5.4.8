@@ -13,7 +13,8 @@ G["general"] = {
 		["yOffset"] = 0
 	},
 	["animateConfig"] = true,
-	["versionCheck"] = true
+	["versionCheck"] = true,
+	["showMissingTalentAlert"] = true
 };
 
 G["classtimer"] = {};

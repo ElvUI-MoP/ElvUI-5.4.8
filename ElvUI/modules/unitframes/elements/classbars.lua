@@ -222,11 +222,12 @@ function UF:Configure_ClassBar(frame)
 	end
 end
 
-local function ToggleResourceBar(bars)
+local function ToggleResourceBar(bars, overrideVisibility)
 	local frame = bars.origParent or bars:GetParent();
 	local db = frame.db;
-	if(not db) then return; end
-	frame.CLASSBAR_SHOWN = bars:IsShown();
+	if not db then return end
+
+	frame.CLASSBAR_SHOWN = (not not overrideVisibility) or bars:IsShown()
 
 	local height;
 	if(db.classbar) then
@@ -584,7 +585,25 @@ function UF:Construct_DeathKnightResourceBar(frame)
 		runes[i].bg.multiplier = 0.2;
 	end
 
+	runes.PostUpdateVisibility = UF.PostVisibilityRunes
+	runes.UpdateColor = E.noop --We handle colors on our own in Configure_ClassBar
+	runes:SetScript("OnShow", ToggleResourceBar)
+	runes:SetScript("OnHide", ToggleResourceBar)
+
 	return runes;
+end
+
+function UF:PostVisibilityRunes(enabled, stateChanged)
+	local frame = self.origParent or self:GetParent()
+
+	if enabled and stateChanged then
+		frame.MAX_CLASS_BAR = #self
+		ToggleResourceBar(frame[frame.ClassBar])
+		UF:Configure_ClassBar(frame)
+		UF:Configure_HealthBar(frame)
+		UF:Configure_Power(frame)
+		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
+	end
 end
 
 -- Druid

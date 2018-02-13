@@ -1,6 +1,6 @@
 local parent, ns = ...
 local global = GetAddOnMetadata(parent, 'X-oUF')
-local _VERSION = GetAddOnMetadata(parent, 'version')
+local _VERSION = '@project-version@'
 
 local oUF = ns.oUF
 local Private = oUF.Private

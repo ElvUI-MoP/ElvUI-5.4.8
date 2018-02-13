@@ -20,7 +20,7 @@ local function LoadSkin()
 	ArchaeologyFrameRankBar:StripTextures()
 	ArchaeologyFrameRankBar:CreateBackdrop("Default")
 	ArchaeologyFrameRankBar:SetStatusBarTexture(E["media"].normTex)
-	ArchaeologyFrameRankBar:SetStatusBarColor(0.11, 0.50, 1.00)
+	ArchaeologyFrameRankBar:SetStatusBarColor(0.22, 0.39, 0.84)
 	ArchaeologyFrameRankBar:Size(332, 20)
 	ArchaeologyFrameRankBar:ClearAllPoints()
 	ArchaeologyFrameRankBar.ClearAllPoints = E.noop

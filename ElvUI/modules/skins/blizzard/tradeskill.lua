@@ -142,7 +142,7 @@ local function LoadSkin()
 	TradeSkillRankFrame:StripTextures()
 	TradeSkillRankFrame:CreateBackdrop()
 	TradeSkillRankFrame:SetStatusBarTexture(E["media"].normTex)
-	TradeSkillRankFrame:SetStatusBarColor(0.13, 0.35, 0.80)
+	TradeSkillRankFrame:SetStatusBarColor(0.22, 0.39, 0.84)
 	E:RegisterStatusBar(TradeSkillRankFrame)
 
 	TradeSkillRankFrameSkillRank:ClearAllPoints()

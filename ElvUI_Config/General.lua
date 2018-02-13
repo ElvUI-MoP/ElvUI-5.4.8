@@ -163,8 +163,16 @@ E.Options.args.general = {
 					get = function(info) return E.private.general.lfrEnhancement end,
 					set = function(info, value) E.private.general.lfrEnhancement = value; E:StaticPopup_Show("PRIVATE_RL") end
 				},
-				autoScale = {
+				showMissingTalentAlert = {
 					order = 17,
+					type = "toggle",
+					name = L["Missing Talent Alert"],
+					desc = L["Show an alert frame if you have unspend talent points."],
+					get = function(info) return E.global.general.showMissingTalentAlert end,
+					set = function(info, value) E.global.general.showMissingTalentAlert = value; E:StaticPopup_Show("GLOBAL_RL") end,
+				},
+				autoScale = {
+					order = 18,
 					type = "toggle",
 					name = L["Auto Scale"],
 					desc = L["Automatically scale the User Interface based on your screen resolution"],
@@ -172,7 +180,7 @@ E.Options.args.general = {
 					set = function(info, value) E.global.general[ info[#info] ] = value; E:StaticPopup_Show("GLOBAL_RL") end
 				},
 				raidUtility = {
-					order = 18,
+					order = 19,
 					type = "toggle",
 					name = RAID_CONTROL,
 					desc = L["Enables the ElvUI Raid Control panel."],
@@ -180,15 +188,15 @@ E.Options.args.general = {
 					set = function(info, value) E.private.general.raidUtility = value; E:StaticPopup_Show("PRIVATE_RL") end
 				},
 				minUiScale = {
-					order = 19,
+					order = 20,
 					type = "range",
 					name = L["Lowest Allowed UI Scale"],
-					min = 0.32, max = 0.64, step = 0.01,
+					softMin = 0.20, softMax = 0.64, step = 0.01,
 					get = function(info) return E.global.general.minUiScale; end,
 					set = function(info, value) E.global.general.minUiScale = value; E:StaticPopup_Show("GLOBAL_RL"); end
 				},
 				decimalLength = {
-					order = 20,
+					order = 21,
 					type = "range",
 					name = L["Decimal Length"],
 					desc = L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."],
@@ -197,7 +205,7 @@ E.Options.args.general = {
 					set = function(info, value) E.db.general.decimalLength = value; E:StaticPopup_Show("GLOBAL_RL") end
 				},
 				numberPrefixStyle = {
-					order = 21,
+					order = 22,
 					type = "select",
 					name = L["Unit Prefix Style"],
 					desc = L["The unit prefixes you want to use when values are shortened in ElvUI. This is mostly used on UnitFrames."],

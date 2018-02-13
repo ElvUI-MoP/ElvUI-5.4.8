@@ -64,6 +64,7 @@ end
 function M:PLAYER_REGEN_ENABLED()
 	WorldMapFrameSizeDownButton:Enable()
 	WorldMapFrameSizeUpButton:Enable()
+	WorldMapShowDropDownButton:Enable()
 	WorldMapTrackQuest:Enable()
 
 	if WorldMapFrame.questMap then
@@ -80,6 +81,7 @@ end
 function M:PLAYER_REGEN_DISABLED()
 	WorldMapFrameSizeDownButton:Disable()
 	WorldMapFrameSizeUpButton:Disable()
+	WorldMapShowDropDownButton:Disable()
 	WorldMapTrackQuest:Disable()
 
 	if WorldMapFrame.questMap then

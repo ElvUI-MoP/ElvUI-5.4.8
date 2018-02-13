@@ -241,7 +241,7 @@ local function OnEnter(self, _, noUpdate)
 	end
 
 	if GetGuildLevel() ~= 25 then
-		if guildXP[0] and guildXP[1] then
+		if guildXP[0] then
 			local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
 
 			DT.tooltip:AddLine(" ")
