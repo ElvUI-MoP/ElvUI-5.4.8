@@ -218,11 +218,10 @@ local function DefaultSort(a, b)
 		end
 	end
 
-	local _, _, aRarity, _, _, aType, aSubType, _, aEquipLoc = GetItemInfo(aID)
-	local _, _, bRarity, _, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
+	local _, _, _, _, _, aType, aSubType, _, aEquipLoc = GetItemInfo(aID)
+	local _, _, _, _, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
 
- 	aRarity = bagQualities[a]
-	bRarity = bagQualities[b]
+ 	local aRarity, bRarity = bagQualities[a], bagQualities[b]
 
 	if bagPetIDs[a] then
 		aRarity = 1

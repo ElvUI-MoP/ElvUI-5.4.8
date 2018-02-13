@@ -232,7 +232,6 @@ local function ExportImport_Open(mode)
 	frame:AddChild(label1);
 
 	local label2 = AceGUI:Create("Label");
-	local font = GameFontHighlightSmall:GetFont();
 	label2:SetFont(font, 14);
 	label2:SetText(" \n ")
 	label2:SetWidth(800);

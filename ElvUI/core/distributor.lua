@@ -3,7 +3,7 @@ local D = E:NewModule('Distributor', "AceEvent-3.0","AceTimer-3.0","AceComm-3.0"
 local LibCompress = LibStub:GetLibrary("LibCompress");
 local LibBase64 = LibStub("LibBase64-1.0-ElvUI");
 
-local tonumber, type, pcall, loadstring = tonumber, type, pcall, loadstring;
+local tonumber, type, gsub, pcall, loadstring = tonumber, type, gsub, pcall, loadstring
 local len, format, split, find = string.len, string.format, string.split, string.find;
 
 local CreateFrame = CreateFrame;
@@ -531,7 +531,7 @@ E.PopupDialogs["IMPORT_RL"] = {
 	text = L["You have imported settings which may require a UI reload to take effect. Reload now?"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() ReloadUI(); end,
+	OnAccept = ReloadUI,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,

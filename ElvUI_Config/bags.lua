@@ -459,8 +459,7 @@ E.Options.args.bags = {
 					multiline = 26,
 					width = "full",
 					name = "",
-					get = function(info) return L["SEARCH_SYNTAX_DESC"]; end,
-					set = function(info, value) value = L["SEARCH_SYNTAX_DESC"]; end
+					get = function(info) return L["SEARCH_SYNTAX_DESC"]; end
 				}
 			}
 		}

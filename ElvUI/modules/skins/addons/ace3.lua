@@ -5,7 +5,6 @@ local _G = _G
 local unpack, select, pairs = unpack, select, pairs
 
 local CreateFrame = CreateFrame
-local SquareButton_SetIcon = SquareButton_SetIcon
 
 local RegisterAsWidget, RegisterAsContainer
 local function SetModifiedBackdrop(self)

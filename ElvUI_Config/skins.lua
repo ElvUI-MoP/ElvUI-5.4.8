@@ -1,5 +1,4 @@
-local E, L, V, P, G = unpack(ElvUI);
-local S = E:GetModule('Skins')
+local E, L, V, P, G = unpack(ElvUI)
 
 E.Options.args.skins = {
 	type = "group",

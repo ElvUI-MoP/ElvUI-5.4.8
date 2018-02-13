@@ -552,12 +552,14 @@ P["datatexts"] = {
 	["goldCoins"] = true,
 	["noCombatClick"] = false,
 	["noCombatHover"] = false,
-
 	["currencies"] = {
 		["displayedCurrency"] = "GOLD",
 		["displayStyle"] = "ICON"
 	},
-
+	["friends"] = {
+		["hideAFK"] = false,
+		["hideDND"] = false,
+	},
 	["minimapPanels"] = true,
 	["leftChatPanel"] = true,
 	["rightChatPanel"] = true,

@@ -43,6 +43,8 @@ local LSM = LibStub("LibSharedMedia-3.0");
 local Masque = LibStub("Masque", true)
 local MasqueGroup = Masque and Masque:Group("ElvUI", "ActionBars")
 
+local UIHider
+
 AB["handledBars"] = {};
 AB["handledbuttons"] = {};
 AB["barDefaults"] = {
@@ -512,7 +514,7 @@ function AB:UpdateButtonSettings()
 
 	self:UpdatePetBindings();
 	self:UpdateStanceBindings();
-	for barName, bar in pairs(self["handledBars"]) do
+	for _, bar in pairs(self["handledBars"]) do
 		self:UpdateButtonConfig(bar, bar.bindButtons);
 	end
 
@@ -711,7 +713,7 @@ function AB:IconIntroTracker_Toggle()
 end
 
 function AB:DisableBlizzard()
-	local UIHider = CreateFrame("Frame");
+	UIHider = CreateFrame("Frame");
 	UIHider:Hide();
 
 	MultiBarBottomLeft:SetParent(UIHider);

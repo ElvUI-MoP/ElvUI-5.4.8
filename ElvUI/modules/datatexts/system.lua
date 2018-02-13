@@ -86,7 +86,7 @@ local function UpdateCPU()
 
 	UpdateAddOnCPUUsage()
 
-	local addonCPU = 0
+	local addonCPU
 	local totalCPU = 0
 	for i = 1, #cpuTable do
 		addonCPU = GetAddOnCPUUsage(cpuTable[i][1])

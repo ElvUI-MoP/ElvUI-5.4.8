@@ -15,13 +15,12 @@ local displayString = "";
 local lastPanel;
 
 local function OnEvent(self)
-	local free, total, used = 0, 0, 0;
+	local free, total = 0, 0
 	for i = 0, NUM_BAG_SLOTS do
 		free, total = free + GetContainerNumFreeSlots(i), total + GetContainerNumSlots(i);
 	end
-	used = total - free;
+	self.text:SetFormattedText(displayString, L["Bags"], total - free, total)
 
-	self.text:SetFormattedText(displayString, L["Bags"], used, total);
 	lastPanel = self;
 end
 

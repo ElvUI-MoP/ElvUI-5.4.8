@@ -6,7 +6,6 @@ local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs
 local find = string.find;
 local tinsert, wipe = table.insert, table.wipe;
 
-local SquareButton_SetIcon = SquareButton_SetIcon
 local CreateFrame = CreateFrame;
 local SetDesaturation = SetDesaturation;
 local hooksecurefunc = hooksecurefunc;
@@ -140,7 +139,7 @@ function S:HandleTab(tab)
 end
 
 function S:HandleNextPrevButton(btn, useVertical, inverseDirection)
-	local inverseDirection = inverseDirection or btn:GetName() and (find(btn:GetName():lower(), "left") or find(btn:GetName():lower(), "prev") or find(btn:GetName():lower(), "decrement") or find(btn:GetName():lower(), "back"))
+	inverseDirection = inverseDirection or btn:GetName() and (find(btn:GetName():lower(), "left") or find(btn:GetName():lower(), "prev") or find(btn:GetName():lower(), "decrement") or find(btn:GetName():lower(), "back"))
 
 	btn:StripTextures()
 	btn:SetNormalTexture(nil)
@@ -454,7 +453,7 @@ function S:HandleIconSelectionFrame(frame, numIcons, buttonNameTemplate, frameNa
 	end
 end
 
-function S:ADDON_LOADED(event, addon)
+function S:ADDON_LOADED(_, addon)
 	if(self.allowBypass[addon]) then
 		if(self.addonsToLoad[addon]) then
 			--Load addons using the old deprecated register method

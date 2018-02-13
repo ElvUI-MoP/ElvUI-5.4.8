@@ -5,8 +5,12 @@ local _G = _G
 local pairs = pairs
 
 local NONE = NONE
+local FRIENDS = FRIENDS
 local HideLeftChat = HideLeftChat
 local HideRightChat = HideRightChat
+local HIDE = HIDE
+local AFK = AFK
+local DND = DND
 
 local datatexts = {}
 
@@ -32,7 +36,7 @@ function DT:PanelLayoutOptions()
 				name = L[pointLoc] or pointLoc,
 				args = {}
 			};
-			for option, value in pairs(tab) do
+			for option in pairs(tab) do
 				table[pointLoc].args[option] = {
 					type = "select",
 					name = L[option] or option:upper(),
@@ -501,9 +505,48 @@ E.Options.args.datatexts = {
 					args = {}
 				}
 			}
+		},
+		friends = {
+			order = 8,
+			type = "group",
+			name = FRIENDS,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = FRIENDS
+				},
+				description = {
+					order = 2,
+					type = "description",
+					name = L["Hide specific sections in the datatext tooltip."]
+				},
+				hideGroup = {
+					order = 3,
+					type = "group",
+					guiInline = true,
+					name = HIDE,
+					args = {
+						hideAFK = {
+							order = 1,
+							type = "toggle",
+							name = AFK,
+							get = function(info) return E.db.datatexts.friends.hideAFK end,
+							set = function(info, value) E.db.datatexts.friends.hideAFK = value; DT:LoadDataTexts() end
+						},
+						hideDND = {
+							order = 2,
+							type = "toggle",
+							name = DND,
+							get = function(info) return E.db.datatexts.friends.hideDND end,
+							set = function(info, value) E.db.datatexts.friends.hideDND = value; DT:LoadDataTexts() end
+						}
+					}
+				}
+			}
 		}
 	}
-};
+}
 
 DT:PanelLayoutOptions();
 SetupCustomCurrencies()

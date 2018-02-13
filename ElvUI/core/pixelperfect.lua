@@ -67,7 +67,7 @@ function E:UIScale(event)
 		if E.Round and E:Round(UIParent:GetScale(), 5) ~= E:Round(scale, 5) and (event == "PLAYER_LOGIN") then
 			SetCVar("useUiScale", 1);
 			SetCVar("uiScale", scale);
-			WorldMapFrame.hasTaint = true;
+			WorldMapFrame.questMap = true;
 		end
 
 		--SetCVar for UI scale only accepts value as low as 0.64, so scale UIParent if needed
