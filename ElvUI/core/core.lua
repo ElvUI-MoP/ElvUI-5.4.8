@@ -175,6 +175,18 @@ E.PriestColors = {
 	b = 0.99
 };
 
+function E:GetPlayerRole()
+	local assignedRole = UnitGroupRolesAssigned("player")
+	if assignedRole == "NONE" then
+		local spec = GetSpecialization()
+		if spec then
+			return GetSpecializationRole(spec)
+		end
+	end
+
+	return assignedRole
+end
+
 function E:CheckClassColor(r, g, b)
 	r, g, b = floor(r*100+.5)/100, floor(g*100+.5)/100, floor(b*100+.5)/100
 	local matchFound = false;
@@ -866,6 +878,7 @@ function E:UpdateAll(ignoreInstall)
 
 	local NP = self:GetModule("NamePlates");
 	NP.db = self.db.nameplates;
+	NP:StyleFilterInitializeAllFilters()
 	NP:ConfigureAll();
 
 	local DataBars = self:GetModule("DataBars");

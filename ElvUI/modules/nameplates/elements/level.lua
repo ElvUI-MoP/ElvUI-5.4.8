@@ -20,7 +20,7 @@ function mod:ConfigureElement_Level(frame)
 
 	level:ClearAllPoints()
 
-	if self.db.units[frame.UnitType].healthbar.enable or frame.isTarget then
+	if(self.db.units[frame.UnitType].healthbar.enable or (self.db.alwaysShowTargetHealth and frame.isTarget)) then
 		level:SetJustifyH("RIGHT")
 		level:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, E.Border*2)
 	else
@@ -31,5 +31,7 @@ function mod:ConfigureElement_Level(frame)
 end
 
 function mod:ConstructElement_Level(frame)
-	return frame:CreateFontString(nil, "OVERLAY")
+	local level = frame:CreateFontString(nil, "OVERLAY")
+	level:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	return level
 end

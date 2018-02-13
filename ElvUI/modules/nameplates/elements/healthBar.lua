@@ -2,23 +2,27 @@ local E, L, V, P, G = unpack(select(2, ...))
 local mod = E:GetModule("NamePlates")
 local LSM = LibStub("LibSharedMedia-3.0")
 
-function mod:UpdateElement_HealthOnValueChanged(health)
+function mod:UpdateElement_HealthOnValueChanged()
 	local frame = self:GetParent():GetParent().UnitFrame
 	if not frame.UnitType then return end -- Bugs
 
 	mod:UpdateElement_Health(frame)
 	mod:UpdateElement_HealthColor(frame)
 	mod:UpdateElement_Glow(frame)
+	mod:UpdateElement_Filters(frame, "UNIT_HEALTH")
 end
 
 function mod:UpdateElement_HealthColor(frame)
-	if(not frame.HealthBar:IsShown()) then return end
-	local r, g, b
+	if not frame.HealthBar:IsShown() then return end
+
+	local r, g, b, classColor, useClassColor
 	local scale = 1
 
 	local class = frame.UnitClass
-	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-	local useClassColor = mod.db.units[frame.UnitType].healthbar.useClassColor
+	if class then
+		classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+		useClassColor = mod.db.units[frame.UnitType].healthbar.useClassColor
+	end
 
 	if classColor and ((frame.UnitType == "FRIENDLY_PLAYER" and useClassColor) or (frame.UnitType == "ENEMY_PLAYER" and useClassColor)) then
 		r, g, b = classColor.r, classColor.g, classColor.b
@@ -28,7 +32,7 @@ function mod:UpdateElement_HealthColor(frame)
 		local status = mod:UnitDetailedThreatSituation(frame)
 		if status then
 			if status == 3 then
-				if E.Role == "Tank" then
+				if E:GetPlayerRole() == "TANK" then
 					r, g, b = mod.db.threat.goodColor.r, mod.db.threat.goodColor.g, mod.db.threat.goodColor.b
 					scale = mod.db.threat.goodScale
 				else
@@ -36,21 +40,21 @@ function mod:UpdateElement_HealthColor(frame)
 					scale = mod.db.threat.badScale
 				end
 			elseif status == 2 then
-				if E.Role == "Tank" then
+				if E:GetPlayerRole() == "TANK" then
 					r, g, b = mod.db.threat.badTransition.r, mod.db.threat.badTransition.g, mod.db.threat.badTransition.b
 				else
 					r, g, b = mod.db.threat.goodTransition.r, mod.db.threat.goodTransition.g, mod.db.threat.goodTransition.b
 				end
 				scale = 1
 			elseif status == 1 then
-				if E.Role == "Tank" then
+				if E:GetPlayerRole() == "TANK" then
 					r, g, b = mod.db.threat.goodTransition.r, mod.db.threat.goodTransition.g, mod.db.threat.goodTransition.b
 				else
 					r, g, b = mod.db.threat.badTransition.r, mod.db.threat.badTransition.g, mod.db.threat.badTransition.b
 				end
 				scale = 1
 			else
-				if E.Role == "Tank" then
+				if E:GetPlayerRole() == "TANK" then
 					r, g, b = mod.db.threat.badColor.r, mod.db.threat.badColor.g, mod.db.threat.badColor.b
 					scale = mod.db.threat.badScale
 				else
@@ -77,19 +81,18 @@ function mod:UpdateElement_HealthColor(frame)
 	end
 
 	if r ~= frame.HealthBar.r or g ~= frame.HealthBar.g or b ~= frame.HealthBar.b then
-		if not frame.CustomColor then
+		if not frame.HealthColorChanged then
 			frame.HealthBar:SetStatusBarColor(r, g, b)
-			frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = r, g, b
-		else
-			local CustomColor = frame.CustomColor
-			frame.HealthBar:SetStatusBarColor(CustomColor.r, CustomColor.g, CustomColor.b)
-			frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = CustomColor.r, CustomColor.g, CustomColor.b
 		end
+		frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = r, g, b
 	end
 
-	if (not frame.isTarget or not mod.db.useTargetScale) and not frame.CustomScale then
+	if frame.ThreatScale ~= scale then
 		frame.ThreatScale = scale
-		mod:SetFrameScale(frame, scale)
+		if frame.isTarget and self.db.useTargetScale then
+			scale = scale * self.db.targetScale
+		end
+		self:SetFrameScale(frame, scale * (frame.ActionScale or 1))
 	end
 end
 
@@ -99,6 +102,7 @@ function mod:UpdateElement_Health(frame)
 	frame.HealthBar:SetMinMaxValues(0, maxHealth)
 
 	frame.HealthBar:SetValue(health)
+	frame:GetParent().UnitFrame.FlashTexture:Point("TOPRIGHT", frame.HealthBar:GetStatusBarTexture(), "TOPRIGHT") --idk why this fixes this
 
 	if self.db.units[frame.UnitType].healthbar.text.enable then
 		frame.HealthBar.text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].healthbar.text.format, health, maxHealth))
@@ -111,13 +115,9 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 	local healthBar = frame.HealthBar
 
 	healthBar:SetPoint("TOP", frame, "CENTER", 0, self.db.units[frame.UnitType].castbar.height + 3)
-	if frame.isTarget and self.db.useTargetScale then
-		healthBar:SetHeight(self.db.units[frame.UnitType].healthbar.height * ((frame.CustomScale and frame.CustomScale * self.db.targetScale) or self.db.targetScale))
-		healthBar:SetWidth(self.db.units[frame.UnitType].healthbar.width * ((frame.CustomScale and frame.CustomScale * self.db.targetScale) or self.db.targetScale))
-	else
-		healthBar:SetHeight((frame.CustomScale and frame.CustomScale * self.db.units[frame.UnitType].healthbar.height) or self.db.units[frame.UnitType].healthbar.height)
-		healthBar:SetWidth((frame.CustomScale and frame.CustomScale * self.db.units[frame.UnitType].healthbar.width) or self.db.units[frame.UnitType].healthbar.width)
-	end
+
+	healthBar:SetWidth(self.db.units[frame.UnitType].healthbar.width * (frame.ThreatScale or 1) * (frame.isTarget and self.db.useTargetScale and self.db.targetScale or 1))
+	healthBar:SetHeight(self.db.units[frame.UnitType].healthbar.height * (frame.ThreatScale or 1) * (frame.isTarget and self.db.useTargetScale and self.db.targetScale or 1))
 
 	healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar), "BORDER")
 	if(not configuring) and (self.db.units[frame.UnitType].healthbar.enable or frame.isTarget) then
@@ -125,15 +125,28 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 	end
 
 	healthBar.text:SetAllPoints(healthBar)
-	healthBar.text:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	healthBar.text:SetFont(LSM:Fetch("font", self.db.healthFont), self.db.healthFontSize, self.db.healthFontOutline)
 end
 
 function mod:ConstructElement_HealthBar(parent)
 	local frame = CreateFrame("StatusBar", nil, parent)
+	frame:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar), "BORDER")
 	self:StyleFrame(frame)
-	frame:SetFrameLevel(parent:GetFrameLevel())
+
+	frame:SetScript("OnSizeChanged", function(self, width)
+		local health = self:GetValue()
+		local _, maxHealth = self:GetMinMaxValues()
+		self:GetStatusBarTexture():SetPoint("TOPRIGHT", -(width * ((maxHealth - health) / maxHealth)), 0)
+	end)
+
+	parent.FlashTexture = frame:CreateTexture(nil, "OVERLAY")
+	parent.FlashTexture:SetTexture(LSM:Fetch("background", "ElvUI Blank"))
+	parent.FlashTexture:Point("BOTTOMLEFT", frame:GetStatusBarTexture(), "BOTTOMLEFT")
+	parent.FlashTexture:Point("TOPRIGHT", frame:GetStatusBarTexture(), "TOPRIGHT")
+	parent.FlashTexture:Hide()
 
 	frame.text = frame:CreateFontString(nil, "OVERLAY")
+	frame.text:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 	frame.text:SetWordWrap(false)
 	frame.scale = CreateAnimationGroup(frame)
 

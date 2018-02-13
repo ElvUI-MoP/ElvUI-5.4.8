@@ -2,24 +2,35 @@ local E, L, V, P, G = unpack(select(2, ...))
 local mod = E:GetModule("NamePlates")
 local LSM = LibStub("LibSharedMedia-3.0")
 
-function mod:UpdateElement_Name(frame)
-	if not self.db.units[frame.UnitType].showName then return end
+function mod:UpdateElement_Name(frame, triggered)
+	if not triggered then
+		if not self.db.units[frame.UnitType].showName then return end
+	end
 
 	frame.Name:SetText(frame.UnitName)
 
+	local r, g, b
+	local reactionType = frame.UnitReaction
 	local useClassColor = self.db.units[frame.UnitType].name and self.db.units[frame.UnitType].name.useClassColor
+	local useReactionColor = self.db.units[frame.UnitType].name and self.db.units[frame.UnitType].name.useReactionColor
+
 	if useClassColor and (frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "ENEMY_PLAYER") then
 		local class = frame.UnitClass
 		local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 		if class and color then
-			frame.Name:SetTextColor(color.r, color.g, color.b)
+			r, g, b = color.r, color.g, color.b
 		else
-			frame.Name:SetTextColor(self.db.reactions.friendlyPlayer.r, self.db.reactions.friendlyPlayer.g, self.db.reactions.friendlyPlayer.b)
+			r, g, b = self.db.reactions.friendlyPlayer.r, self.db.reactions.friendlyPlayer.g, self.db.reactions.friendlyPlayer.b
 		end
-	elseif not self.db.units[frame.UnitType].healthbar.enable and not frame.isTarget then
-		local reactionType = frame.UnitReaction
-
-		local r, g, b
+	elseif useReactionColor and (frame.UnitType == "FRIENDLY_NPC" or frame.UnitType == "ENEMY_NPC") then
+		if reactionType == 4 then
+			r, g, b = self.db.reactions.neutral.r, self.db.reactions.neutral.g, self.db.reactions.neutral.b
+		elseif reactionType > 4 then
+			r, g, b = mod.db.reactions.good.r, mod.db.reactions.good.g, mod.db.reactions.good.b
+		else
+			r, g, b = self.db.reactions.bad.r, self.db.reactions.bad.g, self.db.reactions.bad.b
+		end
+	elseif triggered or (not self.db.units[frame.UnitType].healthbar.enable and not frame.isTarget) then
 		if reactionType == 4 then
 			r, g, b = self.db.reactions.neutral.r, self.db.reactions.neutral.g, self.db.reactions.neutral.b
 		elseif reactionType > 4 then
@@ -30,12 +41,19 @@ function mod:UpdateElement_Name(frame)
 			end
 		else
 			r, g, b = self.db.reactions.bad.r, self.db.reactions.bad.g, self.db.reactions.bad.b
-		end	
-
-		frame.Name:SetTextColor(r, g, b)
+		end
 	else
-		frame.Name:SetTextColor(1, 1, 1)
+		r, g, b = 1, 1, 1
 	end
+
+	if triggered or (r ~= frame.Name.r or g ~= frame.Name.g or b ~= frame.Name.b) then
+		frame.Name:SetTextColor(r, g, b)
+		if not triggered then
+			frame.Name.r, frame.Name.g, frame.Name.b = r, g, b
+		end
+	end
+
+	frame.Name.NameOnlyGlow:SetVertexColor(self.db.glowColor.r, self.db.glowColor.g, self.db.glowColor.b, self.db.glowColor.a)
 end
 
 function mod:ConfigureElement_Name(frame)
@@ -44,7 +62,7 @@ function mod:ConfigureElement_Name(frame)
 	name:SetJustifyH("LEFT")
 	name:SetJustifyV("BOTTOM")
 	name:ClearAllPoints()
-	if self.db.units[frame.UnitType].healthbar.enable or frame.isTarget then
+	if(self.db.units[frame.UnitType].healthbar.enable or (self.db.alwaysShowTargetHealth and frame.isTarget)) then
 		name:SetJustifyH("LEFT")
 		name:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, E.Border*2)
 		name:SetPoint("BOTTOMRIGHT", frame.Level, "BOTTOMLEFT")
@@ -58,7 +76,15 @@ end
 
 function mod:ConstructElement_Name(frame)
 	local name = frame:CreateFontString(nil, "OVERLAY")
+	name:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 	name:SetWordWrap(false)
 
+	local g = frame:CreateTexture(nil, "BACKGROUND", nil, -5)
+	g:SetTexture([[Interface\AddOns\ElvUI\media\textures\spark.tga]])
+	g:Hide()
+	g:SetPoint("TOPLEFT", name, -20, 8)
+	g:SetPoint("BOTTOMRIGHT", name, 20, -8)
+
+	name.NameOnlyGlow = g
 	return name
 end

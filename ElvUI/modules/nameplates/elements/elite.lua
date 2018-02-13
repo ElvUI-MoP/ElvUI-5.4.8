@@ -22,9 +22,10 @@ function mod:ConfigureElement_Elite(frame)
 	if not self.db.units[frame.UnitType].eliteIcon then return end
 
 	local icon = frame.Elite
+	local size = self.db.units[frame.UnitType].eliteIcon.size
 	local position = self.db.units[frame.UnitType].eliteIcon.position
 
-	icon:Size(self.db.units[frame.UnitType].eliteIcon.size)
+	icon:Size(size)
 	icon:ClearAllPoints()
 
 	if frame.HealthBar:IsShown() then

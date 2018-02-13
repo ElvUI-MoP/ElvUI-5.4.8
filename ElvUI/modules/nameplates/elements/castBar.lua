@@ -6,8 +6,12 @@ local unpack = unpack
 
 local CreateFrame = CreateFrame
 
-local green = {r = 0, g = 1, b = 0}
 function mod:UpdateElement_CastBarOnValueChanged(value)
+	local frame = self:GetParent():GetParent().UnitFrame
+	if not frame.UnitType then return end
+	if mod.db.units[frame.UnitType].castbar.enable ~= true then return end
+	if mod.db.units[frame.UnitType].healthbar.enable ~= true and not (frame.isTarget and mod.db.alwaysShowTargetHealth) then return end
+
 	local frame = self:GetParent():GetParent().UnitFrame
 	local min, max = self:GetMinMaxValues()
 	local isChannel = value < frame.CastBar:GetValue()
@@ -37,41 +41,56 @@ function mod:UpdateElement_CastBarOnValueChanged(value)
 		frame.CastBar.Spark:SetPoint("CENTER", frame.CastBar, "LEFT", sparkPosition, 0)
 	end
 
-	local color
 	if self.Shield:IsShown() then
-		color = mod.db.castNoInterruptColor
+		frame.CastBar:SetStatusBarColor(mod.db.castNoInterruptColor.r, mod.db.castNoInterruptColor.g, mod.db.castNoInterruptColor.b)
 	else
-		if value > 0 and (isChannel and (value/max) <= 0.02 or (value/max) >= 0.98) then
-			color = green
-		else
-			color = mod.db.castColor
-		end
+		frame.CastBar:SetStatusBarColor(mod.db.castColor.r, mod.db.castColor.g, mod.db.castColor.b)
 	end
 
 	frame.CastBar.Name:SetText(self.Name:GetText())
 	frame.CastBar.Icon.texture:SetTexture(self.Icon:GetTexture())
-	frame.CastBar:SetStatusBarColor(color.r, color.g, color.b)
 end
 
 function mod:UpdateElement_CastBarOnShow()
+	local frame = self:GetParent():GetParent().UnitFrame
+	if not frame.UnitType then return end
+	if mod.db.units[frame.UnitType].castbar.enable ~= true then return end
+	if mod.db.units[frame.UnitType].healthbar.enable ~= true and not (frame.isTarget and mod.db.alwaysShowTargetHealth) then return end
+
 	self:GetParent():GetParent().UnitFrame.CastBar:Show()
 end
 
 function mod:UpdateElement_CastBarOnHide()
+	local frame = self:GetParent():GetParent().UnitFrame
+	if not frame.UnitType then return end
+	if mod.db.units[frame.UnitType].castbar.enable ~= true then return end
+	if mod.db.units[frame.UnitType].healthbar.enable ~= true and not (frame.isTarget and mod.db.alwaysShowTargetHealth) then return end
+
 	self:GetParent():GetParent().UnitFrame.CastBar:Hide()
 end
 
 function mod:ConfigureElement_CastBar(frame)
 	local castBar = frame.CastBar
 
+	castBar:ClearAllPoints()
 	castBar:SetPoint("TOPLEFT", frame.HealthBar, "BOTTOMLEFT", 0, -self.db.units[frame.UnitType].castbar.offset)
 	castBar:SetPoint("TOPRIGHT", frame.HealthBar, "BOTTOMRIGHT", 0, -self.db.units[frame.UnitType].castbar.offset)
 	castBar:SetHeight(self.db.units[frame.UnitType].castbar.height)
 
-	castBar.Icon:SetPoint("TOPLEFT", frame.HealthBar, "TOPRIGHT", self.db.units[frame.UnitType].castbar.offset, 0);
-	castBar.Icon:SetPoint("BOTTOMLEFT", castBar, "BOTTOMRIGHT", self.db.units[frame.UnitType].castbar.offset, 0);
+	castBar.Icon:ClearAllPoints()
+	if self.db.units[frame.UnitType].castbar.iconPosition == "RIGHT" then
+		castBar.Icon:SetPoint("TOPLEFT", frame.HealthBar, "TOPRIGHT", self.db.units[frame.UnitType].castbar.offset, 0)
+		castBar.Icon:SetPoint("BOTTOMLEFT", castBar, "BOTTOMRIGHT", self.db.units[frame.UnitType].castbar.offset, 0)
+	elseif self.db.units[frame.UnitType].castbar.iconPosition == "LEFT" then
+		castBar.Icon:SetPoint("TOPRIGHT", frame.HealthBar, "TOPLEFT", -self.db.units[frame.UnitType].castbar.offset, 0)
+		castBar.Icon:SetPoint("BOTTOMRIGHT", castBar, "BOTTOMLEFT", -self.db.units[frame.UnitType].castbar.offset, 0)
+	end
 	castBar.Icon:SetWidth(self.db.units[frame.UnitType].castbar.height + self.db.units[frame.UnitType].healthbar.height + self.db.units[frame.UnitType].castbar.offset)
+	castBar.Icon.texture:SetTexCoord(unpack(E.TexCoords))
 
+	castBar.Time:SetPoint("TOPRIGHT", castBar, "BOTTOMRIGHT", 0, -E.Border*3)
+	castBar.Name:SetPoint("TOPLEFT", castBar, "BOTTOMLEFT", 0, -E.Border*3)
+	castBar.Name:SetPoint("TOPRIGHT", castBar.Time, "TOPLEFT")
 	castBar.Name:SetJustifyH("LEFT")
 	castBar.Name:SetJustifyV("TOP")
 	castBar.Name:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
@@ -97,27 +116,28 @@ function mod:ConfigureElement_CastBar(frame)
 end
 
 function mod:ConstructElement_CastBar(parent)
-	local frame = CreateFrame("StatusBar", nil, parent)
+	local frame = CreateFrame("StatusBar", "$parentCastBar", parent)
 	self:StyleFrame(frame)
-	frame:SetFrameLevel(parent:GetFrameLevel())
 
 	frame.Icon = CreateFrame("Frame", nil, frame)
 	frame.Icon.texture = frame.Icon:CreateTexture(nil, "BORDER")
 	frame.Icon.texture:SetAllPoints()
-	frame.Icon.texture:SetTexCoord(unpack(E.TexCoords))
-	self:StyleFrame(frame.Icon, true)
+	self:StyleFrame(frame.Icon)
+
+	frame.Name = frame:CreateFontString(nil, "OVERLAY")
+	frame.Name:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	frame.Name:SetWordWrap(false)
 
 	frame.Time = frame:CreateFontString(nil, "OVERLAY")
-	frame.Time:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -E.Border*3)
+	frame.Time:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 	frame.Time:SetWordWrap(false)
-	frame.Name = frame:CreateFontString(nil, "OVERLAY")
-	frame.Name:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -E.Border*3)
-	frame.Name:SetPoint("TOPRIGHT", frame.Time, "TOPLEFT")
-	frame.Name:SetWordWrap(false)
+
 	frame.Spark = frame:CreateTexture(nil, "OVERLAY")
 	frame.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
 	frame.Spark:SetBlendMode("ADD")
 	frame.Spark:SetSize(15, 15)
+
 	frame:Hide()
+
 	return frame
 end
