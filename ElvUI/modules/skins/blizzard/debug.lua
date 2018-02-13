@@ -1,20 +1,28 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule("Skins");
+local E, L, V, P, G = unpack(select(2, ...))
+local S = E:GetModule("Skins")
 
-local _G = _G;
-local unpack, select = unpack, select;
+local _G = _G
+local unpack, select = unpack, select
+
+local GetCVar = GetCVar
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.debug ~= true then return end
 
 	ScriptErrorsFrame:SetParent(E.UIParent)
 	ScriptErrorsFrame:SetTemplate("Transparent")
+
 	S:HandleScrollBar(ScriptErrorsFrameScrollFrameScrollBar)
+
 	S:HandleCloseButton(ScriptErrorsFrameClose)
+
 	ScriptErrorsFrameScrollFrameText:FontTemplate(nil, 13)
+
 	ScriptErrorsFrameScrollFrame:CreateBackdrop("Default")
 	ScriptErrorsFrameScrollFrame:SetFrameLevel(ScriptErrorsFrameScrollFrame:GetFrameLevel() + 2)
+
 	EventTraceFrame:SetTemplate("Transparent")
+	S:HandleSliderFrame(EventTraceFrameScroll)
 
 	local texs = {
 		"TopLeft",
@@ -47,8 +55,8 @@ local function LoadSkin()
 			bgFile = E["media"].blankTex,
 			edgeFile = E["media"].blankTex,
 			tile = false, tileSize = 0, edgeSize = noscalemult,
-			insets = { left = -noscalemult, right = -noscalemult, top = -noscalemult, bottom = -noscalemult}
-		});
+			insets = {left = -noscalemult, right = -noscalemult, top = -noscalemult, bottom = -noscalemult}
+		})
 		self:SetBackdropColor(unpack(E["media"].backdropfadecolor))
 		self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 	end)

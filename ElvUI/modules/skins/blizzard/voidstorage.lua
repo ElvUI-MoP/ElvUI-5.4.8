@@ -1,8 +1,10 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local unpack, select = unpack, select;
+local _G = _G
+local unpack, select = unpack, select
+
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.voidstorage ~= true then return end
@@ -13,6 +15,7 @@ local function LoadSkin()
 	VoidStorageBorderFrame:StripTextures()
 	VoidStorageCostFrame:StripTextures()
 
+	local VoidStorageFrame = _G["VoidStorageFrame"]
 	select(2, VoidStorageFrame:GetRegions()):Kill()
 	VoidStorageFrame:SetTemplate("Transparent")
 	VoidStorageFrame:Size(675, 410)
@@ -94,55 +97,55 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("VoidStorage_ItemsUpdate", function(doDeposit, doContents)
-		if(doDeposit) then
+		if doDeposit then
 			for i = 1, 9 do
 				local button = _G["VoidStorageDepositButton"..i]
-				local itemID = GetVoidTransferDepositInfo(i);
+				local itemID = GetVoidTransferDepositInfo(i)
 
-				if(itemID) then
+				if itemID then
 					local quality = select(3, GetItemInfo(itemID))
-					if(quality and quality > 1) then
-						button:SetBackdropBorderColor(GetItemQualityColor(quality));
+					if quality and quality > 1 then
+						button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						button:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
 				else
-					button:SetTemplate("Default", true)
+					button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 		end
 
-		if(doContents) then
+		if doContents then
 			for i = 1, 9 do
 				local button = _G["VoidStorageWithdrawButton"..i]
-				local itemID = GetVoidTransferWithdrawalInfo(i);
+				local itemID = GetVoidTransferWithdrawalInfo(i)
 
-				if(itemID) then
+				if itemID then
 					local quality = select(3, GetItemInfo(itemID))
-					if(quality and quality > 1) then
-						button:SetBackdropBorderColor(GetItemQualityColor(quality));
+					if quality and quality > 1 then
+						button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						button:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
 				else
-					button:SetTemplate("Default", true)
+					button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 
 			E:Delay(0.05, function()
 				for i = 1, 80 do
 					local button = _G["VoidStorageStorageButton"..i]
-					local itemID = GetVoidItemInfo(i);
+					local itemID = GetVoidItemInfo(i)
 
-					if(itemID) then
+					if itemID then
 						local quality = select(3, GetItemInfo(itemID))
-						if(quality and quality > 1) then
-							button:SetBackdropBorderColor(GetItemQualityColor(quality));
+						if quality and quality > 1 then
+							button:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
-							button:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+							button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 						end
 					else
-						button:SetTemplate("Default", true)
+						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
 				end
 			end)
@@ -150,4 +153,4 @@ local function LoadSkin()
 	end)
 end
 
-S:AddCallbackForAddon("Blizzard_VoidStorageUI", "VoidStorageUI", LoadSkin);
+S:AddCallbackForAddon("Blizzard_VoidStorageUI", "VoidStorageUI", LoadSkin)

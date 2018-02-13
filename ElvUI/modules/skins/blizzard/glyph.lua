@@ -1,8 +1,8 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local unpack = unpack;
+local _G = _G
+local unpack = unpack
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.talent ~= true then return end
@@ -18,9 +18,10 @@ local function LoadSkin()
 		self.specIcon:SetAlpha(1 - self.glow:GetAlpha())
 	end)
 
-	if(not GlyphFrame.isSkinned) then
+	if not GlyphFrame.isSkinned then
 		for i = 1, 6 do
 			local Glyph = _G["GlyphFrameGlyph"..i]
+
 			Glyph:SetTemplate("Default", true)
 			Glyph:SetFrameLevel(Glyph:GetFrameLevel() + 5)
 			Glyph:StyleButton(nil, true)
@@ -44,8 +45,8 @@ local function LoadSkin()
 				local Alpha = Glyph.highlight:GetAlpha()
 				self:SetAlpha(Alpha)
 
-				if(strfind(Glyph.icon:GetTexture(), "Interface\\Spellbook\\UI%-Glyph%-Rune")) then
-					if(Alpha == 0) then
+				if strfind(Glyph.icon:GetTexture(), "Interface\\Spellbook\\UI%-Glyph%-Rune") then
+					if Alpha == 0 then
 						Glyph.icon:SetVertexColor(1, 1, 1)
 						Glyph.icon:SetAlpha(1)
 					else
@@ -68,20 +69,20 @@ local function LoadSkin()
 		end
 
 		hooksecurefunc("GlyphFrame_Update", function(self)
-			local isActiveTalentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup == GetActiveSpecGroup();
+			local isActiveTalentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup == GetActiveSpecGroup()
 			for i = 1, NUM_GLYPH_SLOTS do
 				local GlyphSocket = _G["GlyphFrameGlyph"..i]
 				local _, _, _, _, iconFilename = GetGlyphSocketInfo(i, PlayerTalentFrame.talentGroup)
 
-				if(iconFilename) then
+				if iconFilename then
 					GlyphSocket.icon:SetTexture(iconFilename)
 				else
 					GlyphSocket.icon:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune-"..i)
 				end
-				GlyphFrameGlyph_UpdateSlot(GlyphSocket);
-				SetDesaturation(GlyphSocket.icon, not isActiveTalentGroup);
+				GlyphFrameGlyph_UpdateSlot(GlyphSocket)
+				SetDesaturation(GlyphSocket.icon, not isActiveTalentGroup)
 			end
-			SetDesaturation(self.specIcon, not isActiveTalentGroup);
+			SetDesaturation(self.specIcon, not isActiveTalentGroup)
 
 			GlyphFrame.levelOverlayText1:SetTextColor(1, 1, 1)
 			GlyphFrame.levelOverlayText2:SetTextColor(1, 1, 1)
@@ -117,4 +118,4 @@ local function LoadSkin()
 	end
 end
 
-S:AddCallbackForAddon("Blizzard_GlyphUI", "Glyph", LoadSkin);
+S:AddCallbackForAddon("Blizzard_GlyphUI", "Glyph", LoadSkin)

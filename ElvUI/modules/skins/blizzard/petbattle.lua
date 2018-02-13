@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local pairs, unpack = pairs, unpack
@@ -34,8 +34,8 @@ local function LoadSkin()
 		infoBar.IconBackdrop:SetTemplate()
 
 		hooksecurefunc(infoBar.Border, "SetVertexColor", function(_, r, g, b)
-			infoBar.IconBackdrop:SetBackdropBorderColor(r, g, b);
-		end);
+			infoBar.IconBackdrop:SetBackdropBorderColor(r, g, b)
+		end)
 
 		infoBar.BorderFlash:Kill()
 		infoBar.HealthBarBG:Kill()
@@ -62,7 +62,7 @@ local function LoadSkin()
 		infoBar.FirstAttack:Size(30)
 		infoBar.FirstAttack:SetTexture("Interface\\PetBattles\\PetBattle-StatIcons")
 
-		if(index == 1) then
+		if index == 1 then
 			infoBar.HealthBarBackdrop:Point("TOPLEFT", infoBar.ActualHealthBar, "TOPLEFT", -E.Border, E.Border)
 			infoBar.HealthBarBackdrop:Point("BOTTOMLEFT", infoBar.ActualHealthBar, "BOTTOMLEFT", -E.Border, -E.Border)
 
@@ -114,7 +114,7 @@ local function LoadSkin()
 		infoBar.Level:ClearAllPoints()
 		infoBar.Level:Point("BOTTOMLEFT", infoBar.Icon, "BOTTOMLEFT", 2, 2)
 
-		if(infoBar.SpeedIcon) then
+		if infoBar.SpeedIcon then
 			infoBar.SpeedIcon:ClearAllPoints()
 			infoBar.SpeedIcon:Point("CENTER")
 			infoBar.SpeedIcon:SetAlpha(0)
@@ -155,7 +155,7 @@ local function LoadSkin()
 		if not self.petOwner or not self.petIndex then return end
 
 		local nextFrame = 1
-		for i=1, C_PetBattles_GetNumAuras(self.petOwner, self.petIndex) do
+		for i = 1, C_PetBattles_GetNumAuras(self.petOwner, self.petIndex) do
 			local auraID, instanceID, turnsRemaining, isBuff = C_PetBattles_GetAuraInfo(self.petOwner, self.petIndex, i)
 			if (isBuff and self.displayBuffs) or (not isBuff and self.displayDebuffs) then
 				local frame = self.frames[nextFrame]
@@ -268,8 +268,8 @@ local function LoadSkin()
 		infoBar.bg:SetFrameLevel(infoBar.bg:GetFrameLevel() - 2)
 
 		hooksecurefunc(infoBar.BorderAlive, "SetVertexColor", function(_, r, g, b)
-			infoBar.bg:SetBackdropBorderColor(r, g, b);
-		end);
+			infoBar.bg:SetBackdropBorderColor(r, g, b)
+		end)
 
 		infoBar.healthBarWidth = E.PixelMode and 42 or 44
 		infoBar.ActualHealthBar:ClearAllPoints()
@@ -297,13 +297,13 @@ local function LoadSkin()
 	bar:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 4)
 	bar:SetFrameLevel(0)
 	bar:SetFrameStrata("BACKGROUND")
-	if(bar.backdropTexture) then
+	if bar.backdropTexture then
 		bar.backdropTexture:SetDrawLayer("BACKGROUND", 0)
 	end
 	bar:SetScript("OnShow", function(self)
 		if(not self.initialShow) then
-			self.initialShow = true;
-			return;
+			self.initialShow = true
+			return
 		end
 
 		if(self.backdropTexture) then

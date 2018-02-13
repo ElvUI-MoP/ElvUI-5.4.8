@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
@@ -26,31 +26,32 @@ local function LoadSkin()
 
 	local function navButtonFrameLevel(self)
 		for i = 1, #self.navList do
-			local navButton = self.navList[i];
-			local lastNav = self.navList[i-1];
-			if(navButton and lastNav) then
-				navButton:SetFrameLevel(lastNav:GetFrameLevel() - 2);
-				navButton:ClearAllPoints();
-				navButton:Point("LEFT", lastNav, "RIGHT", 1, 0);
+			local navButton = self.navList[i]
+			local lastNav = self.navList[i - 1]
+
+			if navButton and lastNav then
+				navButton:SetFrameLevel(lastNav:GetFrameLevel() - 2)
+				navButton:ClearAllPoints()
+				navButton:Point("LEFT", lastNav, "RIGHT", 1, 0)
 			end
 		end
 	end
 
 	hooksecurefunc("NavBar_AddButton", function(self)
-		if(self:GetParent():GetName() == "HelpFrameKnowledgebase") then return; end
+		if self:GetParent():GetName() == "HelpFrameKnowledgebase" then return end
 
-		local navButton = self.navList[#self.navList];
+		local navButton = self.navList[#self.navList]
 
-		if(not navButton.skinned) then
-			S:HandleButton(navButton, true);
-			navButton.skinned = true;
+		if not navButton.isSkinned then
+			S:HandleButton(navButton, true)
+			navButton.isSkinned = true
 
 			navButton:HookScript("OnClick", function()
-				navButtonFrameLevel(self);
+				navButtonFrameLevel(self)
 			end)
 		end
 
-		navButtonFrameLevel(self);
+		navButtonFrameLevel(self)
 	end)
 
 	EncounterJournalBg:SetAlpha(0)
@@ -68,13 +69,13 @@ local function LoadSkin()
 	S:HandleEditBox(EJ.searchBox)
 	S:HandleCloseButton(EncounterJournalCloseButton)
 
-	--Instance Selection Frame
+	-- Instance Selection Frame
 	local InstanceSelect = EJ.instanceSelect
 	InstanceSelect.bg:Kill()
 	S:HandleNextPrevButton(EncounterJournalInstanceSelectScrollDownButton)
 	S:HandleScrollBar(InstanceSelect.scroll.ScrollBar, 4)
 
-	--Dungeon/Raid Tabs
+	-- Dungeon/Raid Tabs
 	local function onEnable(self)
 		self:Height(self.storedHeight)
 	end
@@ -136,7 +137,7 @@ local function LoadSkin()
 	EncounterJournalEncounterFrameInfoBossTab:Size(45, 40)
 	EncounterJournalEncounterFrameInfoBossTab:Point("TOPLEFT", EncounterJournalEncounterFrameInfo, "TOPRIGHT", E.PixelMode and 7 or 9, 40)
 
-	EncounterJournalEncounterFrameInfoBossTab.icon = EncounterJournalEncounterFrameInfoBossTab:CreateTexture(nil, "OVERLAY");
+	EncounterJournalEncounterFrameInfoBossTab.icon = EncounterJournalEncounterFrameInfoBossTab:CreateTexture(nil, "OVERLAY")
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetTexCoord(0.902, 0.996, 0.269, 0.311)
 	EncounterJournalEncounterFrameInfoBossTab.icon:SetInside()
@@ -147,7 +148,7 @@ local function LoadSkin()
 	EncounterJournalEncounterFrameInfoLootTab:Size(45, 40)
 	EncounterJournalEncounterFrameInfoLootTab:Point("TOP", EncounterJournalEncounterFrameInfoBossTab, "BOTTOM", 0, -10)
 
-	EncounterJournalEncounterFrameInfoLootTab.icon = EncounterJournalEncounterFrameInfoLootTab:CreateTexture(nil, "OVERLAY");
+	EncounterJournalEncounterFrameInfoLootTab.icon = EncounterJournalEncounterFrameInfoLootTab:CreateTexture(nil, "OVERLAY")
 	EncounterJournalEncounterFrameInfoLootTab.icon:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 	EncounterJournalEncounterFrameInfoLootTab.icon:SetTexCoord(0.632, 0.726, 0.618, 0.660)
 	EncounterJournalEncounterFrameInfoLootTab.icon:SetInside()
@@ -158,7 +159,7 @@ local function LoadSkin()
 	EncounterJournalEncounterFrameInfoModelTab:Size(45, 40)
 	EncounterJournalEncounterFrameInfoModelTab:Point("TOP", EncounterJournalEncounterFrameInfoLootTab, "BOTTOM", 0, -10)
 
-	EncounterJournalEncounterFrameInfoModelTab.icon = EncounterJournalEncounterFrameInfoModelTab:CreateTexture(nil, "OVERLAY");
+	EncounterJournalEncounterFrameInfoModelTab.icon = EncounterJournalEncounterFrameInfoModelTab:CreateTexture(nil, "OVERLAY")
 	EncounterJournalEncounterFrameInfoModelTab.icon:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 	EncounterJournalEncounterFrameInfoModelTab.icon:SetTexCoord(0.804, 0.900, 0.662, 0.705)
 	EncounterJournalEncounterFrameInfoModelTab.icon:SetInside()
@@ -190,7 +191,7 @@ local function LoadSkin()
 
 	EncounterJournalEncounterFrameInfoLootScrollFrameClassFilterClearFrame:StripTextures()
 
-	EncounterJournalEncounterFrameInstanceFrameMapButton:StripTextures();
+	EncounterJournalEncounterFrameInstanceFrameMapButton:StripTextures()
 	S:HandleButton(EncounterJournalEncounterFrameInstanceFrameMapButton)
 	EncounterJournalEncounterFrameInstanceFrameMapButton:ClearAllPoints()
 	EncounterJournalEncounterFrameInstanceFrameMapButton:Point("TOPLEFT", EncounterJournalEncounterFrameInstanceFrame, "TOPLEFT", 107, 40)
@@ -226,12 +227,12 @@ local function LoadSkin()
 
 	--Boss selection buttons
 	local function SkinBosses()
-		local bossIndex = 1;
-		local name, description, bossID, _, link = EJ_GetEncounterInfoByIndex(bossIndex);
-		local bossButton;
+		local bossIndex = 1
+		local name, description, bossID, _, link = EJ_GetEncounterInfoByIndex(bossIndex)
+		local bossButton
 
 		while bossID do
-			bossButton = _G["EncounterJournalBossButton"..bossIndex];
+			bossButton = _G["EncounterJournalBossButton"..bossIndex]
 			if bossButton and not bossButton.isSkinned then
 				S:HandleButton(bossButton)
 				bossButton.creature:ClearAllPoints()
@@ -239,8 +240,8 @@ local function LoadSkin()
 				bossButton.isSkinned = true
 			end
 
-			bossIndex = bossIndex + 1;
-			name, description, bossID, _, link = EJ_GetEncounterInfoByIndex(bossIndex);
+			bossIndex = bossIndex + 1
+			name, description, bossID, _, link = EJ_GetEncounterInfoByIndex(bossIndex)
 		end
 	end
 	hooksecurefunc("EncounterJournal_DisplayInstance", SkinBosses)
@@ -331,14 +332,14 @@ local function LoadSkin()
 	hooksecurefunc("EncounterJournal_ToggleHeaders", SkinAbilitiesInfo)
 
 	--Search Frame
-	EncounterJournalSearchResultsScrollFrame:StripTextures();
-	EncounterJournalSearchResultsScrollFrameScrollChild:StripTextures();
+	EncounterJournalSearchResultsScrollFrame:StripTextures()
+	EncounterJournalSearchResultsScrollFrameScrollChild:StripTextures()
 
 	for i = 1, 9 do
 		local button = _G["EncounterJournalSearchResultsScrollFrameButton"..i]
 		local icon = _G["EncounterJournalSearchResultsScrollFrameButton"..i.."Icon"]
 
-		button:StripTextures();
+		button:StripTextures()
 		button:SetTemplate("Default")
 		button:StyleButton()
 		button:CreateBackdrop()
@@ -349,20 +350,20 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("EncounterJournal_SearchUpdate", function()
-		local scrollFrame = EncounterJournal.searchResults.scrollFrame;
-		local offset = HybridScrollFrame_GetOffset(scrollFrame);
-		local results = scrollFrame.buttons;
-		local result, index;
-		local numResults = EJ_GetNumSearchResults();
+		local scrollFrame = EncounterJournal.searchResults.scrollFrame
+		local offset = HybridScrollFrame_GetOffset(scrollFrame)
+		local results = scrollFrame.buttons
+		local result, index
+		local numResults = EJ_GetNumSearchResults()
 
 		for i = 1, #results do
-			result = results[i];
-			index = offset + i;
-			if(index <= numResults) then
-				local _, icon = EncounterJournal_GetSearchDisplay(index);
+			result = results[i]
+			index = offset + i
+			if index <= numResults then
+				local _, icon = EncounterJournal_GetSearchDisplay(index)
 
 				result.icon:SetTexCoord(unpack(E.TexCoords))
-				result.icon.SetTexCoord = E.noop;
+				result.icon.SetTexCoord = E.noop
 			end
 		end
 	end)
@@ -372,7 +373,7 @@ local function LoadSkin()
 		local icon = _G["EncounterJournalSearchBoxSearchButton"..i.."Icon"]
 
 		button:CreateBackdrop()
-		button:StripTextures();
+		button:StripTextures()
 		button:StyleButton()
 
 		icon:SetTexCoord(unpack(E.TexCoords))
@@ -381,7 +382,7 @@ local function LoadSkin()
 
 	S:HandleButton(EncounterJournalSearchBoxShowALL)
 
-	EncounterJournalSearchResults:StripTextures();
+	EncounterJournalSearchResults:StripTextures()
 	EncounterJournalSearchResults:SetTemplate("Transparent")
 
 	S:HandleScrollBar(EncounterJournalSearchResultsScrollFrameScrollBar)
@@ -393,4 +394,4 @@ local function LoadSkin()
 	S:HandleScrollBar(EncounterJournalEncounterFrameInstanceFrameLoreScrollFrameScrollBar, 4)
 end
 
-S:AddCallbackForAddon("Blizzard_EncounterJournal", "EncounterJournal", LoadSkin);
+S:AddCallbackForAddon("Blizzard_EncounterJournal", "EncounterJournal", LoadSkin)

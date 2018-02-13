@@ -1,15 +1,15 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local pairs, unpack = pairs, unpack;
+local _G = _G
+local pairs, unpack = pairs, unpack
 local format = string.format
 
-local hooksecurefunc = hooksecurefunc;
-local GetWhoInfo = GetWhoInfo;
+local hooksecurefunc = hooksecurefunc
+local GetWhoInfo = GetWhoInfo
 local MAX_DISPLAY_CHANNEL_BUTTONS = MAX_DISPLAY_CHANNEL_BUTTONS
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS;
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.friends ~= true then return end
@@ -36,8 +36,8 @@ local function LoadSkin()
 		headerTab.backdrop:Point("TOPLEFT", 3, -7)
 		headerTab.backdrop:Point("BOTTOMRIGHT", -2, -1)
 
-		headerTab:HookScript("OnEnter", S.SetModifiedBackdrop);
-		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop);
+		headerTab:HookScript("OnEnter", S.SetModifiedBackdrop)
+		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
 	for i = 1, 11 do
@@ -73,7 +73,7 @@ local function LoadSkin()
 	S:HandleDropDownBox(FriendsFriendsFrameDropDown, 150)
 
 	S:HandleDropDownBox(FriendsFrameStatusDropDown, 70)
-	FriendsFrameStatusDropDown:Point("TOPLEFT", 5, -25);
+	FriendsFrameStatusDropDown:Point("TOPLEFT", 5, -25)
 
 	S:HandleScrollBar(FriendsFrameFriendsScrollFrameScrollBar, 5)
 	S:HandleScrollBar(FriendsFriendsScrollFrameScrollBar)
@@ -99,7 +99,7 @@ local function LoadSkin()
 
 	S:HandleEditBox(AddFriendNameEditBox)
 
-	--Who Frame
+	-- Who Frame
 	WhoFrameListInset:StripTextures()
 	WhoFrameEditBoxInset:StripTextures()
 
@@ -115,12 +115,12 @@ local function LoadSkin()
 		_G["WhoFrameColumnHeader"..i]:ClearAllPoints()
 	end
 
-	WhoFrameColumnHeader1:Point("LEFT", WhoFrameColumnHeader4, "RIGHT", -2, 0);
-	WhoFrameColumn_SetWidth(WhoFrameColumnHeader1, 105);
-	WhoFrameColumnHeader2:Point("LEFT", WhoFrameColumnHeader1, "RIGHT", -5, 0);
-	WhoFrameColumnHeader3:Point("TOPLEFT", WhoFrame, "TOPLEFT", 15, -57);
-	WhoFrameColumnHeader4:Point("LEFT", WhoFrameColumnHeader3, "RIGHT", -2, 0);
-	WhoFrameColumn_SetWidth(WhoFrameColumnHeader4, 48);
+	WhoFrameColumnHeader1:Point("LEFT", WhoFrameColumnHeader4, "RIGHT", -2, 0)
+	WhoFrameColumn_SetWidth(WhoFrameColumnHeader1, 105)
+	WhoFrameColumnHeader2:Point("LEFT", WhoFrameColumnHeader1, "RIGHT", -5, 0)
+	WhoFrameColumnHeader3:Point("TOPLEFT", WhoFrame, "TOPLEFT", 15, -57)
+	WhoFrameColumnHeader4:Point("LEFT", WhoFrameColumnHeader3, "RIGHT", -2, 0)
+	WhoFrameColumn_SetWidth(WhoFrameColumnHeader4, 48)
 
 	WhoFrameButton1:Point("TOPLEFT", 10, -82)
 
@@ -143,89 +143,89 @@ local function LoadSkin()
 	S:HandleScrollBar(WhoListScrollFrameScrollBar, 5)
 
 	for i = 1, 17 do
-		local button = _G["WhoFrameButton"..i];
+		local button = _G["WhoFrameButton"..i]
 		local level = _G["WhoFrameButton" .. i .. "Level"]
 		local name = _G["WhoFrameButton" .. i .. "Name"]
 
-		button.icon = button:CreateTexture("$parentIcon", "ARTWORK");
-		button.icon:Point("LEFT", 45, 0);
-		button.icon:Size(14);
-		button.icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes");
+		button.icon = button:CreateTexture("$parentIcon", "ARTWORK")
+		button.icon:Point("LEFT", 45, 0)
+		button.icon:Size(14)
+		button.icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
 
 		button:CreateBackdrop("Default", true)
 		button.backdrop:SetAllPoints(button.icon)
 		button:StyleButton()
 
-		button.stripe = button:CreateTexture(nil, "BACKGROUND");
-		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame");
+		button.stripe = button:CreateTexture(nil, "BACKGROUND")
+		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")
 		button.stripe:SetInside()
 
-		level:ClearAllPoints();
-		if(i == 1) then
-			level:Point("TOPLEFT", 11, -2);
+		level:ClearAllPoints()
+		if i == 1 then
+			level:Point("TOPLEFT", 11, -2)
 		else
-			level:Point("TOPLEFT", 12, -2);
+			level:Point("TOPLEFT", 12, -2)
 		end
 
-		name:Size(100, 14);
-		name:ClearAllPoints();
-		name:Point("LEFT", 85, 0);
+		name:Size(100, 14)
+		name:ClearAllPoints()
+		name:Point("LEFT", 85, 0)
 
-		_G["WhoFrameButton" .. i .. "Class"]:Hide();
+		_G["WhoFrameButton" .. i .. "Class"]:Hide()
 	end
 
 	hooksecurefunc("WhoList_Update", function()
-		local whoOffset = FauxScrollFrame_GetOffset(WhoListScrollFrame);
-		local playerZone = GetRealZoneText();
-		local playerGuild = GetGuildInfo("player");
-		local playerRace = UnitRace("player");
+		local whoOffset = FauxScrollFrame_GetOffset(WhoListScrollFrame)
+		local playerZone = GetRealZoneText()
+		local playerGuild = GetGuildInfo("player")
+		local playerRace = UnitRace("player")
 
 		for i = 1, WHOS_TO_DISPLAY, 1 do
-			local index = whoOffset + i;
-			local button = _G["WhoFrameButton"..i];
-			local nameText = _G["WhoFrameButton"..i.."Name"];
-			local levelText = _G["WhoFrameButton"..i.."Level"];
-			local classText = _G["WhoFrameButton"..i.."Class"];
-			local variableText = _G["WhoFrameButton"..i.."Variable"];
+			local index = whoOffset + i
+			local button = _G["WhoFrameButton"..i]
+			local nameText = _G["WhoFrameButton"..i.."Name"]
+			local levelText = _G["WhoFrameButton"..i.."Level"]
+			local classText = _G["WhoFrameButton"..i.."Class"]
+			local variableText = _G["WhoFrameButton"..i.."Variable"]
 
-			local _, guild, level, race, _, zone, classFileName = GetWhoInfo(index);
+			local _, guild, level, race, _, zone, classFileName = GetWhoInfo(index)
 
-			local classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classFileName] or RAID_CLASS_COLORS[classFileName];
-			local levelTextColor = GetQuestDifficultyColor(level);
+			local classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classFileName] or RAID_CLASS_COLORS[classFileName]
+			local levelTextColor = GetQuestDifficultyColor(level)
 
-			if(classFileName) then
-				button.icon:Show();
-				button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]));
+			if classFileName then
+				button.icon:Show()
+				button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 
-				nameText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b);
-				levelText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b);
+				nameText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
+				levelText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 
-				if(zone == playerZone) then
-					zone = "|cff00ff00"..zone;
+				if zone == playerZone then
+					zone = "|cff00ff00"..zone
 				end
-				if(guild == playerGuild) then
-					guild = "|cff00ff00"..guild;
+				if guild == playerGuild then
+					guild = "|cff00ff00"..guild
 				end
-				if(race == playerRace) then
-					race = "|cff00ff00"..race;
+				if race == playerRace then
+					race = "|cff00ff00"..race
 				end
 
-				local columnTable = {zone, guild, race};
+				local columnTable = {zone, guild, race}
 
-				variableText:SetText(columnTable[UIDropDownMenu_GetSelectedID(WhoFrameDropDown)]);
+				variableText:SetText(columnTable[UIDropDownMenu_GetSelectedID(WhoFrameDropDown)])
 			else
-				button.icon:Hide();
+				button.icon:Hide()
 			end
 
-			if((i + whoOffset) % 2 == 1) then
-				button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998);
+			if (i + whoOffset) % 2 == 1 then
+				button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998)
 			else
-				button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921);
+				button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921)
 			end
 		end
-	end);
+	end)
 
-	--Channel Frame
+	-- Channel Frame
 	ChannelRoster:StripTextures()
 	ChannelFrameLeftInset:StripTextures()
 	ChannelFrameRightInset:StripTextures()
@@ -256,8 +256,8 @@ local function LoadSkin()
 			if button then
 				_G["ChannelButton"..i.."NormalTexture"]:SetAlpha(0)
 				_G["ChannelButton"..i.."Text"]:FontTemplate(nil, 12)
-				_G["ChannelButton"..i.."Collapsed"]:SetTextColor(1, 1, 1);
-				_G["ChannelButton"..i]:StyleButton();
+				_G["ChannelButton"..i.."Collapsed"]:SetTextColor(1, 1, 1)
+				_G["ChannelButton"..i]:StyleButton()
 			end
 		end
 	end
@@ -277,7 +277,7 @@ local function LoadSkin()
 
 	S:HandleCloseButton(ChannelFrameDaughterFrameDetailCloseButton,ChannelFrameDaughterFrame)
 
-	--BN Frame
+	-- BN Frame
 	BNConversationInviteDialog:StripTextures()
 	BNConversationInviteDialog:CreateBackdrop("Transparent")
 
@@ -291,7 +291,7 @@ local function LoadSkin()
 		S:HandleCheckBox(_G["BNConversationInviteDialogListFriend"..i].checkButton)
 	end
 
-	--Ignore List
+	-- Ignore List
 	IgnoreListFrame:StripTextures()
 
 	FriendsFrameIgnoreButton1:Point("TOPLEFT", 10, -89)
@@ -303,12 +303,12 @@ local function LoadSkin()
 	for i = 2, 19 do
 		local button = _G["FriendsFrameIgnoreButton"..i]
 
-		button.stripe = button:CreateTexture(nil, "OVERLAY");
-		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame");
+		button.stripe = button:CreateTexture(nil, "OVERLAY")
+		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")
 		if(i % 2 == 1) then
-			button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998);
+			button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998)
 		else
-			button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921);
+			button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921)
 		end
 		button.stripe:SetAllPoints()
 
@@ -318,7 +318,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(FriendsFramePendingScrollFrameScrollBar, 4)
 
-	--Scroll of Resurrection
+	-- Scroll of Resurrection
 	ScrollOfResurrectionFrame:StripTextures()
 	ScrollOfResurrectionFrame:SetTemplate("Transparent")
 
@@ -355,7 +355,7 @@ local function LoadSkin()
 	FriendsTabHeaderSoRButtonIcon:SetTexCoord(unpack(E.TexCoords))
 	FriendsTabHeaderSoRButtonIcon:SetDrawLayer("OVERLAY")
 
-	--Recruit a Friend
+	-- Recruit a Friend
 	RecruitAFriendFrame:StripTextures()
 	RecruitAFriendFrame:SetTemplate("Transparent")
 
@@ -373,10 +373,10 @@ local function LoadSkin()
 	FriendsTabHeaderRecruitAFriendButtonIcon:SetTexCoord(unpack(E.TexCoords))
 	FriendsTabHeaderRecruitAFriendButtonIcon:SetDrawLayer("OVERLAY")
 
-	--Bottom Tabs
+	-- Bottom Tabs
 	for i = 1, 4 do
 		S:HandleTab(_G["FriendsFrameTab"..i])
 	end
 end
 
-S:AddCallback("Friends", LoadSkin);
+S:AddCallback("Friends", LoadSkin)

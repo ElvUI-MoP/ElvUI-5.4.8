@@ -1,12 +1,15 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local pairs, unpack = pairs, unpack;
+local pairs, unpack = pairs, unpack
+
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	if(not E.private.skins.blizzard.enable or not E.private.skins.blizzard.inspect) then return; end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.inspect then return end
 
+	local InspectFrame = _G["InspectFrame"]
 	InspectFrame:StripTextures(true)
 	InspectFrame:SetTemplate("Transparent")
 
@@ -66,28 +69,29 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
-		if(button.hasItem) then
+		if button.hasItem then
 			local itemID = GetInventoryItemID(InspectFrame.unit, button:GetID())
-			if(itemID) then
+			if itemID then
 				local _, _, quality = GetItemInfo(itemID)
-				if(not quality) then
+				if not quality then
 					E:Delay(0.1, function()
 						if(InspectFrame.unit) then
-							InspectPaperDollItemSlotButton_Update(button);
+							InspectPaperDollItemSlotButton_Update(button)
 						end
-					end);
+					end)
 					return
-				elseif(quality and quality > 1) then
-					button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality));
+				elseif quality and quality > 1 then
+					button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					return
  				end
 			end
 		end
-		button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor));
+		button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
  	end)
 
 	-- Control Frame
 	InspectModelFrameControlFrame:StripTextures()
+	InspectModelFrameControlFrame:Size(123, 23)
 
 	local controlbuttons = {
 		"InspectModelFrameControlFrameZoomInButton",
@@ -99,10 +103,15 @@ local function LoadSkin()
 	}
 
 	for i = 1, #controlbuttons do
-		S:HandleButton(_G[controlbuttons[i]]);
-		_G[controlbuttons[i]]:StyleButton()
+		S:HandleButton(_G[controlbuttons[i]])
 		_G[controlbuttons[i].."Bg"]:Hide()
 	end
+
+	InspectModelFrameControlFrameZoomOutButton:Point("LEFT", "InspectModelFrameControlFrameZoomInButton", "RIGHT", 2, 0)
+	InspectModelFrameControlFramePanButton:Point("LEFT", "InspectModelFrameControlFrameZoomOutButton", "RIGHT", 2, 0)
+	InspectModelFrameControlFrameRotateRightButton:Point("LEFT", "InspectModelFrameControlFramePanButton", "RIGHT", 2, 0)
+	InspectModelFrameControlFrameRotateLeftButton:Point("LEFT", "InspectModelFrameControlFrameRotateRightButton", "RIGHT", 2, 0)
+	InspectModelFrameControlFrameRotateResetButton:Point("LEFT", "InspectModelFrameControlFrameRotateLeftButton", "RIGHT", 2, 0)
 
 	--Talent Tab
 	InspectTalentFrame:StripTextures()
@@ -119,30 +128,30 @@ local function LoadSkin()
 	Specialization.bg:SetFrameLevel(Specialization.bg:GetFrameLevel() - 2)
 
 	Specialization:HookScript("OnShow", function(self)
-		if(INSPECTED_UNIT ~= nil) then
-			Spec = GetInspectSpecialization(INSPECTED_UNIT);
-			Sex = UnitSex(INSPECTED_UNIT);
+		if INSPECTED_UNIT ~= nil then
+			Spec = GetInspectSpecialization(INSPECTED_UNIT)
+			Sex = UnitSex(INSPECTED_UNIT)
 		end
 
-		if(Spec ~= nil and Spec > 0 and Sex ~= nil) then
-			local Role = GetSpecializationRoleByID(Spec);
+		if Spec ~= nil and Spec > 0 and Sex ~= nil then
+			local Role = GetSpecializationRoleByID(Spec)
 
-			if(Role ~= nil) then
+			if Role ~= nil then
 				self.specIcon:SetTexture(select(4, GetSpecializationInfoByID(Spec, Sex)))
 
-				if(Role == "DAMAGER") then
+				if Role == "DAMAGER" then
 					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\dps.tga")
 					self.roleIcon:Size(19)
-				elseif(Role == "TANK") then
+				elseif Role == "TANK" then
 					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga")
 					self.roleIcon:Size(20)
-				elseif(Role == "HEALER") then
+				elseif Role == "HEALER" then
 					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\healer.tga")
 					self.roleIcon:Size(20)
 				end
-				self.roleIcon:SetTexCoord(unpack(E.TexCoords));
+				self.roleIcon:SetTexCoord(unpack(E.TexCoords))
 
-				self.roleName:SetTextColor(1, 1, 1);
+				self.roleName:SetTextColor(1, 1, 1)
 			end
 		end
 	end)
@@ -151,7 +160,7 @@ local function LoadSkin()
 		for j = 1, 3 do
 			local button = _G["TalentsTalentRow"..i.."Talent"..j]
 
-			if(button) then
+			if button then
 				button:StripTextures()
 				button:CreateBackdrop()
 				button.backdrop:SetOutside(button.icon)
@@ -162,14 +171,14 @@ local function LoadSkin()
 				end)
 
 				hooksecurefunc(button.border, "Hide", function()
-					button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+					button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end)
 			end
 		end
 	end
 
 	InspectTalentFrame:HookScript("OnShow", function(self)
-		if(self.isGlyphsDone) then return end
+		if self.isGlyphsDone then return end
 
 		for i = 1, 6 do
 			local Glyph = InspectGlyphs["Glyph"..i]
@@ -185,7 +194,7 @@ local function LoadSkin()
 			Glyph.icon:SetInside()
 			Glyph.icon:SetTexCoord(unpack(E.TexCoords))
 
-			if(i % 2 == 1) then
+			if i % 2 == 1 then
 				Glyph:Size(Glyph:GetWidth() * .6, Glyph:GetHeight() * .6)
 			else
 				Glyph:Size(Glyph:GetWidth() * .8, Glyph:GetHeight() * .8)
@@ -205,22 +214,22 @@ local function LoadSkin()
 	end)
 
 	hooksecurefunc("InspectGlyphFrameGlyph_UpdateSlot", function(self)
-		local id = self:GetID();
-		local talentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup;
-		local enabled, glyphType, _, glyphSpell, iconFilename = GetGlyphSocketInfo(id, talentGroup, true, INSPECTED_UNIT);
+		local id = self:GetID()
+		local talentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup
+		local enabled, glyphType, _, glyphSpell, iconFilename = GetGlyphSocketInfo(id, talentGroup, true, INSPECTED_UNIT)
 
-		if(self.icon) then
+		if self.icon then
 			self.icon:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune1")
 		end
-		if(not glyphType) then
-			return;
+		if not glyphType then
+			return
 		end
-		if(not enabled) then
+		if not enabled then
 		elseif(not glyphSpell or (clear == true)) then
 		else
-			if(self.icon) then
-				if(iconFilename) then
-					self.icon:SetTexture(iconFilename);
+			if self.icon then
+				if iconFilename then
+					self.icon:SetTexture(iconFilename)
 				end
 			end
 		end
@@ -239,7 +248,7 @@ local function LoadSkin()
 		end)
 
 		Frame:SetScript("OnLeave", function(self)
-			self:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+			self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 		end)
 	end
 
@@ -247,4 +256,4 @@ local function LoadSkin()
 	InspectGuildFrameBG:SetDesaturated(true)
 end
 
-S:AddCallbackForAddon("Blizzard_InspectUI", "Inspect", LoadSkin);
+S:AddCallbackForAddon("Blizzard_InspectUI", "Inspect", LoadSkin)

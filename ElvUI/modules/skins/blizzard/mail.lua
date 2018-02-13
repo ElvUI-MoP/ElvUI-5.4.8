@@ -18,8 +18,22 @@ local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mail ~= true then return end
 
 	-- Inbox Frame
+	local MailFrame = _G["MailFrame"]
 	MailFrame:StripTextures(true)
 	MailFrame:SetTemplate("Transparent")
+
+	MailFrame:EnableMouseWheel(true)
+	MailFrame:SetScript("OnMouseWheel", function(_, value)
+		if value > 0 then
+			if InboxPrevPageButton:IsEnabled() == 1 then
+				InboxPrevPage()
+			end
+		else
+			if InboxNextPageButton:IsEnabled() == 1 then
+				InboxNextPage()
+			end	
+		end
+	end)
 
 	MailFrameInset:Kill()
 	MailFrameBg:Kill()
@@ -45,7 +59,7 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("InboxFrame_Update", function()
-		local numItems, totalItems = GetInboxNumItems()
+		local numItems = GetInboxNumItems()
 		local index = ((InboxFrame.pageNum - 1) * INBOXITEMS_TO_DISPLAY) + 1
 
 		for i = 1, INBOXITEMS_TO_DISPLAY do
@@ -144,6 +158,8 @@ local function LoadSkin()
 	S:HandleEditBox(SendMailMoneyCopper)
 
 	S:HandleButton(SendMailMailButton)
+	SendMailMailButton:Point("RIGHT", SendMailCancelButton, "LEFT", -2, 0)
+
 	S:HandleButton(SendMailCancelButton)
 
 	for i = 1, 5 do
@@ -211,6 +227,7 @@ local function LoadSkin()
 	S:HandleScrollBar(OpenMailScrollFrameScrollBar)
 
 	OpenMailBodyText:SetTextColor(1, 1, 1)
+	InvoiceTextFontNormal:SetFont(E.media.normFont, 13)
 	InvoiceTextFontNormal:SetTextColor(1, 1, 1)
 	OpenMailInvoiceBuyMode:SetTextColor(1, 0.80, 0.10)
 
@@ -237,4 +254,4 @@ local function LoadSkin()
 	OpenMailMoneyButtonCount:SetDrawLayer("OVERLAY")
 end
 
-S:AddCallback("Mail", LoadSkin);
+S:AddCallback("Mail", LoadSkin)

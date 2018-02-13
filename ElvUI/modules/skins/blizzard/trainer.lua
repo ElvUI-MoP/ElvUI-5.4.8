@@ -1,11 +1,11 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule("Skins");
+local E, L, V, P, G = unpack(select(2, ...))
+local S = E:GetModule("Skins")
 
 local _G = _G
-local unpack, select = unpack, select;
+local unpack, select = unpack, select
 
 local function LoadSkin()
-	if(E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trainer ~= true) then return; end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trainer ~= true then return end
 
 	ClassTrainerScrollFrameScrollChild:StripTextures()
 	ClassTrainerFrameBottomInset:StripTextures()
@@ -51,19 +51,20 @@ local function LoadSkin()
 		icon:SetParent(button.bg)
 	end
 
+	local ClassTrainerFrame = _G["ClassTrainerFrame"]
+	ClassTrainerFrame:StripTextures()
+	ClassTrainerFrame:CreateBackdrop("Transparent")
+	ClassTrainerFrame:Height(ClassTrainerFrame:GetHeight() + 42)
+
 	ClassTrainerTrainButton:StripTextures()
 	S:HandleButton(ClassTrainerTrainButton)
 
-	S:HandleCloseButton(ClassTrainerFrameCloseButton,ClassTrainerFrame)
+	S:HandleCloseButton(ClassTrainerFrameCloseButton, ClassTrainerFrame)
 
 	S:HandleScrollBar(ClassTrainerScrollFrameScrollBar, 5)
 
 	S:HandleDropDownBox(ClassTrainerFrameFilterDropDown)
 	ClassTrainerFrameFilterDropDown:Point("TOPRIGHT", -10, -50)
-
-	ClassTrainerFrame:StripTextures()
-	ClassTrainerFrame:CreateBackdrop("Transparent")
-	ClassTrainerFrame:Height(ClassTrainerFrame:GetHeight() + 42)
 
 	ClassTrainerFrameSkillStepButton:StripTextures()
 	ClassTrainerFrameSkillStepButton:SetTemplate()
@@ -82,6 +83,8 @@ local function LoadSkin()
 
 	ClassTrainerFrameSkillStepButton.icon:SetParent(ClassTrainerFrameSkillStepButton.bg)
 
+	ClassTrainerFrameSkillStepButton.name:Point("TOPLEFT", 42, -1)
+
 	ClassTrainerFrameSkillStepButtonMoneyFrame:SetScale(0.90)
 	ClassTrainerFrameSkillStepButtonMoneyFrame:Point("TOPRIGHT", 10, -3)
 
@@ -94,7 +97,7 @@ local function LoadSkin()
 	ClassTrainerStatusBar:Point("TOP", ClassTrainerFrame, "TOP", 0, -30)
 
 	ClassTrainerStatusBar.rankText:Point("CENTER")
-	ClassTrainerStatusBar.rankText:FontTemplate(nil, 12, "OUTLINE");
+	ClassTrainerStatusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
 end
 
-S:AddCallbackForAddon("Blizzard_TrainerUI", "Trainer", LoadSkin);
+S:AddCallbackForAddon("Blizzard_TrainerUI", "Trainer", LoadSkin)

@@ -1,8 +1,11 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local unpack, select = unpack, select;
+local unpack, select = unpack, select
 
+local hooksecurefunc = hooksecurefunc
+local GetItemInfo = GetItemInfo
+local GetItemQualityColor = GetItemQualityColor
 local HybridScrollFrame_GetOffset = HybridScrollFrame_GetOffset
 local C_BlackMarket_GetNumItems = C_BlackMarket.GetNumItems
 local C_BlackMarket_GetItemInfoByIndex = C_BlackMarket.GetItemInfoByIndex
@@ -11,6 +14,7 @@ local C_BlackMarket_GetHotItem = C_BlackMarket.GetHotItem
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.bmah ~= true then return end
 
+	local BlackMarketFrame = _G["BlackMarketFrame"]
 	BlackMarketFrame:StripTextures()
 	BlackMarketFrame:SetTemplate("Transparent")
 
@@ -38,16 +42,16 @@ local function LoadSkin()
 	S:HandleButton(BlackMarketFrame.BidButton)
 
 	hooksecurefunc("BlackMarketScrollFrame_Update", function()
-		local buttons = BlackMarketScrollFrame.buttons;
-		local numButtons = #buttons;
-		local offset = HybridScrollFrame_GetOffset(BlackMarketScrollFrame);
-		local numItems = C_BlackMarket_GetNumItems();
+		local buttons = BlackMarketScrollFrame.buttons
+		local numButtons = #buttons
+		local offset = HybridScrollFrame_GetOffset(BlackMarketScrollFrame)
+		local numItems = C_BlackMarket_GetNumItems()
 
 		for i = 1, numButtons do
-			local button = buttons[i];
-			local index = offset + i;
+			local button = buttons[i]
+			local index = offset + i
 
-			if(not button.skinned) then
+			if not button.skinned then
 				S:HandleItemButton(button.Item)
 				button:StripTextures("BACKGROUND")
 				button:StyleButton()
@@ -61,19 +65,19 @@ local function LoadSkin()
 				button.skinned = true
 			end
 
-			if(index <= numItems) then
-				local name, texture, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetItemInfoByIndex(index);
-				if(name) then
-					button.Item.IconTexture:SetTexture(texture);
+			if index <= numItems then
+				local name, texture, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetItemInfoByIndex(index)
+				if name then
+					button.Item.IconTexture:SetTexture(texture)
 
-					if(link) then
-						local quality = select(3, GetItemInfo(link));
-						if(quality and quality > 1) then
-							button.Name:SetTextColor(GetItemQualityColor(quality));
-							button.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality));
+					if link then
+						local quality = select(3, GetItemInfo(link))
+						if quality and quality > 1 then
+							button.Name:SetTextColor(GetItemQualityColor(quality))
+							button.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
-							button.Name:SetTextColor(1, 1, 1);
-							button.Item.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+							button.Name:SetTextColor(1, 1, 1)
+							button.Item.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 						end
 					end
 				end
@@ -100,16 +104,16 @@ local function LoadSkin()
 	BlackMarketFrame.bg:SetFrameLevel(BlackMarketFrame.bg:GetFrameLevel() - 1)
 
 	hooksecurefunc("BlackMarketFrame_UpdateHotItem", function(self)
-		local name, _, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetHotItem();
-		if(name) then
-			if(link) then
-				local quality = select(3, GetItemInfo(link));
-				if(quality and quality > 1) then
-					self.HotDeal.Name:SetTextColor(GetItemQualityColor(quality));
-					self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality));
+		local name, _, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetHotItem()
+		if name then
+			if link then
+				local quality = select(3, GetItemInfo(link))
+				if quality and quality > 1 then
+					self.HotDeal.Name:SetTextColor(GetItemQualityColor(quality))
+					self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else
-					self.HotDeal.Name:SetTextColor(1, 1, 1);
-					self.HotDeal.Item.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+					self.HotDeal.Name:SetTextColor(1, 1, 1)
+					self.HotDeal.Item.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 		end
@@ -117,11 +121,11 @@ local function LoadSkin()
 
 	for i = 1, BlackMarketFrame:GetNumRegions() do
 		local region = select(i, BlackMarketFrame:GetRegions())
-		if(region and region:IsObjectType("FontString") and region:GetText() == BLACK_MARKET_TITLE) then
+		if region and region:IsObjectType("FontString") and region:GetText() == BLACK_MARKET_TITLE then
 			region:ClearAllPoints()
 			region:Point("TOP", BlackMarketFrame, 0, -4)
 		end
 	end
 end
 
-S:AddCallbackForAddon("Blizzard_BlackMarketUI", "BlackMarketUI", LoadSkin);
+S:AddCallbackForAddon("Blizzard_BlackMarketUI", "BlackMarketUI", LoadSkin)

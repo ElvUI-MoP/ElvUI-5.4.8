@@ -1,8 +1,8 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local unpack, select = unpack, select;
+local _G = _G
+local unpack, select = unpack, select
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.archaeology ~= true then return end
@@ -24,7 +24,7 @@ local function LoadSkin()
 	ArchaeologyFrameRankBar:Size(332, 20)
 	ArchaeologyFrameRankBar:ClearAllPoints()
 	ArchaeologyFrameRankBar.ClearAllPoints = E.noop
-	ArchaeologyFrameRankBar:Point("TOP", ArchaeologyFrame, "TOP", 0, -50);
+	ArchaeologyFrameRankBar:Point("TOP", ArchaeologyFrame, "TOP", 0, -50)
 	ArchaeologyFrameRankBar.SetPoint = E.noop
 
 	--Solve Rank Bar
@@ -48,12 +48,12 @@ local function LoadSkin()
 	ArchaeologyFrameHelpPageDigTex:Point("LEFT", -35, 0)
 
 	ArchaeologyFrameHelpPage:CreateBackdrop("Transparent", true)
-	ArchaeologyFrameHelpPage.backdrop:Point("TOPLEFT", -28, -235);
-	ArchaeologyFrameHelpPage.backdrop:Point("BOTTOMRIGHT", -22, 37);
+	ArchaeologyFrameHelpPage.backdrop:Point("TOPLEFT", -28, -235)
+	ArchaeologyFrameHelpPage.backdrop:Point("BOTTOMRIGHT", -22, 37)
 
 	ArchaeologyFrameHelpPageHelpScroll:CreateBackdrop("Transparent")
-	ArchaeologyFrameHelpPageHelpScroll.backdrop:Point("TOPLEFT", -15, 30);
-	ArchaeologyFrameHelpPageHelpScroll.backdrop:Point("BOTTOMRIGHT", 10, 37);
+	ArchaeologyFrameHelpPageHelpScroll.backdrop:Point("TOPLEFT", -15, 30)
+	ArchaeologyFrameHelpPageHelpScroll.backdrop:Point("BOTTOMRIGHT", 10, 37)
 
 	ArchaeologyFrameHelpPageHelpScroll:ClearAllPoints()
 	ArchaeologyFrameHelpPageHelpScroll:Point("TOP", ArchaeologyFrameHelpPage, -22, -60)
@@ -68,8 +68,8 @@ local function LoadSkin()
 
 	--Artifact Page
 	ArchaeologyFrameArtifactPage:CreateBackdrop("Transparent")
-	ArchaeologyFrameArtifactPage.backdrop:Point("TOPLEFT", -45, -45);
-	ArchaeologyFrameArtifactPage.backdrop:Point("BOTTOMRIGHT", 0, 95);
+	ArchaeologyFrameArtifactPage.backdrop:Point("TOPLEFT", -45, -45)
+	ArchaeologyFrameArtifactPage.backdrop:Point("BOTTOMRIGHT", 0, 95)
 
 	ArchaeologyFrameArtifactPageHistoryScroll:ClearAllPoints()
 	ArchaeologyFrameArtifactPageHistoryScroll:Point("BOTTOMLEFT", ArchaeologyFrameArtifactPageSolveFrame, -40, 70)
@@ -119,10 +119,10 @@ local function LoadSkin()
 		local frame = _G["ArchaeologyFrameSummaryPageRace"..i]
 		local frameIcon = frame:GetNormalTexture()
 
-		if(frame) then
+		if frame then
 			frame:CreateBackdrop("Transparent", true)
-			frame:HookScript("OnEnter", S.SetModifiedBackdrop);
-			frame:HookScript("OnLeave", S.SetOriginalBackdrop);
+			frame:HookScript("OnEnter", S.SetModifiedBackdrop)
+			frame:HookScript("OnLeave", S.SetOriginalBackdrop)
 
 			frame.raceName:ClearAllPoints()
 			frame.raceName:Point("BOTTOM", frame, "BOTTOM", 0, -30)
@@ -132,7 +132,7 @@ local function LoadSkin()
 
 	for i = 1, ArchaeologyFrameSummaryPage:GetNumRegions() do
 		local region = select(i, ArchaeologyFrameSummaryPage:GetRegions())
-		if(region:GetObjectType() == "FontString") then
+		if region:GetObjectType() == "FontString" then
 			region:SetTextColor(1, 0.80, 0.10)
 		end
 	end
@@ -144,13 +144,13 @@ local function LoadSkin()
 		local artifact = _G["ArchaeologyFrameCompletedPageArtifact"..i]
 		local icon = _G["ArchaeologyFrameCompletedPageArtifact"..i.."Icon"]
 
-		if(artifact) then
+		if artifact then
 			_G["ArchaeologyFrameCompletedPageArtifact"..i.."Border"]:Kill()
 			_G["ArchaeologyFrameCompletedPageArtifact"..i.."Bg"]:Kill()
 			_G["ArchaeologyFrameCompletedPageArtifact"..i.."ArtifactName"]:SetTextColor(1, 0.80, 0.10)
 			_G["ArchaeologyFrameCompletedPageArtifact"..i.."ArtifactSubText"]:SetTextColor(0.6, 0.6, 0.6)
 
-			artifact:SetTemplate("Transparent");
+			artifact:SetTemplate("Transparent")
 			artifact:StyleButton()
 
 			icon.bg = CreateFrame("Frame", nil, artifact)
@@ -168,7 +168,7 @@ local function LoadSkin()
 
 	for i = 1, ArchaeologyFrameCompletedPage:GetNumRegions() do
 		local region = select(i, ArchaeologyFrameCompletedPage:GetRegions())
-		if(region:GetObjectType() == "FontString") then
+		if region:GetObjectType() == "FontString" then
 			region:SetTextColor(1, 1, 1)
 			region:Point("LEFT", -10, 0)
 		end
@@ -201,7 +201,7 @@ local function LoadSkin()
 	ArchaeologyFrameSummarytButton:Size(45, 38)
 	ArchaeologyFrameSummarytButton:Point("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -50)
 
-	ArchaeologyFrameSummarytButton.icon = ArchaeologyFrameSummarytButton:CreateTexture(nil, "OVERLAY");
+	ArchaeologyFrameSummarytButton.icon = ArchaeologyFrameSummarytButton:CreateTexture(nil, "OVERLAY")
 	ArchaeologyFrameSummarytButton.icon:SetTexture("Interface\\ARCHEOLOGY\\ARCH-RACE-TOLVIR")
 	ArchaeologyFrameSummarytButton.icon:SetTexCoord(0, 0.58, 0.100, 0.33)
 	ArchaeologyFrameSummarytButton.icon:Point("TOPLEFT", -5, -6)
@@ -215,7 +215,7 @@ local function LoadSkin()
 	ArchaeologyFrameCompletedButton:Size(45, 38)
 	ArchaeologyFrameCompletedButton:Point("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -100)
 
-	ArchaeologyFrameCompletedButton.icon = ArchaeologyFrameCompletedButton:CreateTexture(nil, "OVERLAY");
+	ArchaeologyFrameCompletedButton.icon = ArchaeologyFrameCompletedButton:CreateTexture(nil, "OVERLAY")
 	ArchaeologyFrameCompletedButton.icon:SetTexture("Interface\\ARCHEOLOGY\\ARCH-RACE-TOLVIR")
 	ArchaeologyFrameCompletedButton.icon:SetTexCoord(0, 0.58, 0.344, 0.68)
 	ArchaeologyFrameCompletedButton.icon:Point("TOPLEFT", -3, -7)
@@ -255,4 +255,4 @@ local function LoadSkin()
 	E:CreateMover(ArcheologyDigsiteProgressBar, "DigSiteProgressBarMover", L["Archeology Progress Bar"])
 end
 
-S:AddCallbackForAddon("Blizzard_ArchaeologyUI", "Archaeology", LoadSkin);
+S:AddCallbackForAddon("Blizzard_ArchaeologyUI", "Archaeology", LoadSkin)

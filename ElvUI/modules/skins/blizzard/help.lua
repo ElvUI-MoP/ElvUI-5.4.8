@@ -1,11 +1,11 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule("Skins");
+local E, L, V, P, G = unpack(select(2, ...))
+local S = E:GetModule("Skins")
 
 local _G = _G
-local unpack, select = unpack, select;
+local unpack, select = unpack, select
 
 local function LoadSkin()
-	if(E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.help ~= true) then return; end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.help ~= true then return end
 
 	local frames = {
 		"HelpFrameLeftInset",
@@ -57,7 +57,7 @@ local function LoadSkin()
 
 	for i = 1, HelpFrameReportBug:GetNumChildren() do
 		local child = select(i, HelpFrameReportBug:GetChildren())
-		if(not child:GetName()) then
+		if not child:GetName() then
 			child:StripTextures()
 		end
 	end
@@ -72,7 +72,7 @@ local function LoadSkin()
 
 	for i = 1, HelpFrameTicket:GetNumChildren() do
 		local child = select(i, HelpFrameTicket:GetChildren())
-		if(not child:GetName()) then
+		if not child:GetName() then
 			child:StripTextures()
 		end
 	end
@@ -84,7 +84,7 @@ local function LoadSkin()
 
 	for i = 1, HelpFrameSubmitSuggestion:GetNumChildren() do
 		local child = select(i, HelpFrameSubmitSuggestion:GetChildren())
-		if(not child:GetName()) then
+		if not child:GetName() then
 			child:StripTextures()
 		end
 	end
@@ -142,32 +142,33 @@ local function LoadSkin()
 
 	local function navButtonFrameLevel(self)
 		for i = 1, #self.navList do
-			local navButton = self.navList[i];
-			local lastNav = self.navList[i-1];
-			if(navButton and lastNav) then
-				navButton:SetFrameLevel(lastNav:GetFrameLevel() - 2);
-				navButton:ClearAllPoints();
-				navButton:Point("LEFT", lastNav, "RIGHT", 1, 0);
+			local navButton = self.navList[i]
+			local lastNav = self.navList[i - 1]
+
+			if navButton and lastNav then
+				navButton:SetFrameLevel(lastNav:GetFrameLevel() - 2)
+				navButton:ClearAllPoints()
+				navButton:Point("LEFT", lastNav, "RIGHT", 1, 0)
 			end
 		end
 	end
 
 	hooksecurefunc("NavBar_AddButton", function(self)
-		if(self:GetParent():GetName() == "EncounterJournal") then return; end
+		if self:GetParent():GetName() == "EncounterJournal" then return end
 
-		local navButton = self.navList[#self.navList];
+		local navButton = self.navList[#self.navList]
 
-		if(not navButton.skinned) then
-			S:HandleButton(navButton, true);
-			navButton.skinned = true;
+		if not navButton.skinned then
+			S:HandleButton(navButton, true)
+			navButton.skinned = true
 
 			navButton:HookScript("OnClick", function()
-				navButtonFrameLevel(self);
+				navButtonFrameLevel(self)
 			end)
 		end
 
-		navButtonFrameLevel(self);
+		navButtonFrameLevel(self)
 	end)
 end
 
-S:AddCallback("Help", LoadSkin);
+S:AddCallback("Help", LoadSkin)

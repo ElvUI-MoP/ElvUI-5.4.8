@@ -88,6 +88,11 @@ E.Options.args.skins = {
 					name = L["KeyBinding Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
+				BlizzardOptions = {
+					type = "toggle",
+					name = INTERFACE_OPTIONS,
+					desc = L["TOGGLESKIN_DESC"]
+				},
 				bmah = {
 					type = "toggle",
 					name = L["Black Market"],
@@ -258,6 +263,12 @@ E.Options.args.skins = {
 					type = "toggle",
 					name = L["Raid Frame"],
 					desc = L["TOGGLESKIN_DESC"]
+				},
+				RaidManager = {
+					type = "toggle",
+					name = RAID_CONTROL,
+					desc = L["TOGGLESKIN_DESC"],
+					disabled = function() return E.private["unitframe"]["disabledBlizzardFrames"].raid and E.private["unitframe"]["disabledBlizzardFrames"].party end
 				},
 				reforge = {
 					type = "toggle",

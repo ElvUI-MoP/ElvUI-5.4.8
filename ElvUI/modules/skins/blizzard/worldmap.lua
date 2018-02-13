@@ -1,25 +1,53 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule("Skins");
+local E, L, V, P, G = unpack(select(2, ...))
+local S = E:GetModule("Skins")
+
+local _G = _G
 
 local function LoadSkin()
-	if(E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.worldmap ~= true) then return; end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.worldmap ~= true then return end
+
+	local WorldMapFrame = _G["WorldMapFrame"]
+	WorldMapFrame:CreateBackdrop("Transparent")
+
+	WorldMapDetailFrame:CreateBackdrop()
+	WorldMapDetailFrame.backdrop:Point("TOPLEFT", -2, 2)
+	WorldMapDetailFrame.backdrop:Point("BOTTOMRIGHT", 2, -1)
+	WorldMapDetailFrame.backdrop:SetFrameLevel(WorldMapDetailFrame:GetFrameLevel() - 2)
+
+	WorldMapQuestDetailScrollFrame:Width(348)
+	WorldMapQuestDetailScrollFrame:Point("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOMLEFT", -25, -207)
+	WorldMapQuestDetailScrollFrame:CreateBackdrop("Transparent")
+	WorldMapQuestDetailScrollFrame.backdrop:Point("TOPLEFT", 24, 2)
+	WorldMapQuestDetailScrollFrame.backdrop:Point("BOTTOMRIGHT", 23, -3)
+	WorldMapQuestDetailScrollFrame.backdrop:SetFrameLevel(WorldMapQuestDetailScrollFrame:GetFrameLevel())
+
+	WorldMapQuestDetailScrollChildFrame:SetScale(1)
+
+	WorldMapQuestRewardScrollFrame:Width(340)
+	WorldMapQuestRewardScrollFrame:Point("LEFT", WorldMapQuestDetailScrollFrame, "RIGHT", 8, 0)
+	WorldMapQuestRewardScrollFrame:CreateBackdrop("Transparent")
+	WorldMapQuestRewardScrollFrame.backdrop:Point("TOPLEFT", 20, 2)
+	WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -3)
+	WorldMapQuestRewardScrollFrame.backdrop:SetFrameLevel(WorldMapQuestRewardScrollFrame:GetFrameLevel())
+
+	WorldMapQuestRewardScrollChildFrame:SetScale(1)
+
+	WorldMapQuestScrollFrame:CreateBackdrop("Transparent")
+	WorldMapQuestScrollFrame.backdrop:Point("TOPLEFT", 0, 2)
+	WorldMapQuestScrollFrame.backdrop:Point("BOTTOMRIGHT", 25, -2)
+	WorldMapQuestScrollFrame.backdrop:SetFrameLevel(WorldMapQuestScrollFrame:GetFrameLevel())
 
 	S:HandleScrollBar(WorldMapQuestScrollFrameScrollBar)
 	S:HandleScrollBar(WorldMapQuestDetailScrollFrameScrollBar, 4)
 	S:HandleScrollBar(WorldMapQuestRewardScrollFrameScrollBar, 4)
 
-	WorldMapFrame:CreateBackdrop("Transparent")
-	WorldMapDetailFrame.backdrop = CreateFrame("Frame", nil, WorldMapFrame)
-	WorldMapDetailFrame.backdrop:SetTemplate("Default")
-	WorldMapDetailFrame.backdrop:SetOutside(WorldMapDetailFrame)
-	WorldMapDetailFrame.backdrop:SetFrameLevel(WorldMapDetailFrame:GetFrameLevel() - 2)
-
 	S:HandleCloseButton(WorldMapFrameCloseButton)
-	S:HandleCloseButton(WorldMapFrameSizeDownButton, nil, "-")
-	S:HandleCloseButton(WorldMapFrameSizeUpButton, nil, "+")
 
-	WorldMapFrameSizeUpButton.text:Point("CENTER", 0, -1)
+	S:HandleCloseButton(WorldMapFrameSizeDownButton, nil, "-")
 	WorldMapFrameSizeDownButton.text:Point("CENTER")
+
+	S:HandleCloseButton(WorldMapFrameSizeUpButton, nil, "+")
+	WorldMapFrameSizeUpButton.text:Point("CENTER", 0, -1)
 
 	S:HandleDropDownBox(WorldMapLevelDropDown)
 	S:HandleDropDownBox(WorldMapZoneMinimapDropDown)
@@ -29,145 +57,92 @@ local function LoadSkin()
 
 	S:HandleButton(WorldMapZoomOutButton)
 	WorldMapZoomOutButton:Point("LEFT", WorldMapZoneDropDown, "RIGHT", 0, 4)
-	WorldMapLevelUpButton:Point("TOPLEFT", WorldMapLevelDropDown, "TOPRIGHT", -2, 8)
-	WorldMapLevelDownButton:Point("BOTTOMLEFT", WorldMapLevelDropDown, "BOTTOMRIGHT", -2, 2)
+
+	S:HandleNextPrevButton(WorldMapLevelUpButton)
+	SquareButton_SetIcon(WorldMapLevelUpButton, "UP")
+	WorldMapLevelUpButton:Point("TOPLEFT", WorldMapLevelDropDown, "TOPRIGHT", -2, 6)
+	WorldMapLevelUpButton:Size(16)
+
+	S:HandleNextPrevButton(WorldMapLevelDownButton)
+	SquareButton_SetIcon(WorldMapLevelDownButton, "DOWN")
+	WorldMapLevelDownButton:Point("BOTTOMLEFT", WorldMapLevelDropDown, "BOTTOMRIGHT", -2, 3)
+	WorldMapLevelDownButton:Size(16)
 
 	S:HandleCheckBox(WorldMapTrackQuest)
 
-	--Mini
 	local function SmallSkin()
+		WorldMapFrame.backdrop:ClearAllPoints()
+		WorldMapFrame.backdrop:Point("TOPLEFT", 5, 0)
+		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", -2, 4)
+
+		WorldMapDetailFrame.backdrop:ClearAllPoints()
+		WorldMapDetailFrame.backdrop:Point("TOPLEFT", -3, 3)
+		WorldMapDetailFrame.backdrop:Point("BOTTOMRIGHT", 3, -2)
+
 		WorldMapLevelDropDown:ClearAllPoints()
 		WorldMapLevelDropDown:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -10, -4)
 
-		WorldMapFrame.backdrop:ClearAllPoints()
-		WorldMapFrame.backdrop:Point("TOPLEFT", 2, 2)
-		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", 5, -2)
+		WorldMapShowDropDown:ClearAllPoints()
+		WorldMapShowDropDown:Point("BOTTOMRIGHT", 2, -2)
 	end
 
-	--Large
 	local function LargeSkin()
-		if(not InCombatLockdown()) then
-			WorldMapFrame:SetParent(E.UIParent)
-			WorldMapFrame:EnableMouse(false)
-			WorldMapFrame:EnableKeyboard(false)
-			SetUIPanelAttribute(WorldMapFrame, "area", "center");
-			SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)
-		end
-
 		WorldMapFrame.backdrop:ClearAllPoints()
-		WorldMapFrame.backdrop:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -12, 70)
-		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOMRIGHT", 17, -30)
+		WorldMapFrame.backdrop:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -10, 70)
+		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOMRIGHT", 12, -30)
+
+		WorldMapDetailFrame.backdrop:ClearAllPoints()
+		WorldMapDetailFrame.backdrop:Point("TOPLEFT", -2, 2)
+		WorldMapDetailFrame.backdrop:Point("BOTTOMRIGHT", 2, -1)
+
+		WorldMapShowDropDown:ClearAllPoints()
+		WorldMapShowDropDown:Point("BOTTOMRIGHT", 9, -53)
 	end
 
 	local function QuestSkin()
-		if not InCombatLockdown() then
-			WorldMapFrame:SetParent(E.UIParent)
-			WorldMapFrame:EnableMouse(false)
-			WorldMapFrame:EnableKeyboard(false)
-			SetUIPanelAttribute(WorldMapFrame, "area", "center");
-			SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)
-		end
-
 		WorldMapFrame.backdrop:ClearAllPoints()
-		WorldMapFrame.backdrop:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -8, 70)
-		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOMRIGHT", 325, -235)
+		WorldMapFrame.backdrop:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -(E.PixelMode and 10 or 11), 69)
+		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOMRIGHT", E.PixelMode and 321 or 322, -237)
 
-		if not WorldMapQuestDetailScrollFrame.isSkinned then
-			WorldMapQuestDetailScrollFrame:CreateBackdrop("Transparent")
-			WorldMapQuestDetailScrollFrame.backdrop:Point("TOPLEFT", -22, 2)
-			WorldMapQuestDetailScrollFrame.backdrop:Point("BOTTOMRIGHT", 23, -2)
+		WorldMapDetailFrame.backdrop:ClearAllPoints()
+		WorldMapDetailFrame.backdrop:Point("TOPLEFT", -2, 2)
+		WorldMapDetailFrame.backdrop:Point("BOTTOMRIGHT", 2, -1)
 
-			WorldMapQuestDetailScrollFrame:Width(320)
-			WorldMapQuestDetailScrollChildFrame:SetScale(1)
-
-			WorldMapQuestDetailScrollFrame.isSkinned = true
-		end
-
-		if not WorldMapQuestRewardScrollFrame.isSkinned then
-			WorldMapQuestRewardScrollFrame:CreateBackdrop("Transparent")
-			WorldMapQuestRewardScrollFrame.backdrop:Point("TOPLEFT", -2, 2)
-			WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -2)
-
-			WorldMapQuestRewardScrollFrame:Point("LEFT", WorldMapQuestDetailScrollFrame, "RIGHT", 27, 0)
-			WorldMapQuestRewardScrollFrame:Width(307)
-			WorldMapQuestRewardScrollChildFrame:SetScale(0.97)
-
-			WorldMapQuestRewardScrollFrame.isSkinned = true
-		end
-
-		if not WorldMapQuestScrollFrame.isSkinned then
-			WorldMapQuestScrollFrame:CreateBackdrop("Transparent")
-			WorldMapQuestScrollFrame.backdrop:Point("TOPLEFT", 0, 2)
-			WorldMapQuestScrollFrame.backdrop:Point("BOTTOMRIGHT", 25, 0)
-
-			WorldMapQuestScrollFrame:Point("TOPLEFT", WorldMapDetailFrame, "TOPRIGHT", 6, -1)
-
-			WorldMapQuestScrollFrame.isSkinned = true
-		end
+		WorldMapShowDropDown:ClearAllPoints()
+		WorldMapShowDropDown:Point("BOTTOMRIGHT", 9, -53)
 	end
 
 	local function FixSkin()
 		WorldMapFrame:StripTextures()
 
-		if(WORLDMAP_SETTINGS.size == WORLDMAP_FULLMAP_SIZE) then
+		if WORLDMAP_SETTINGS.size == WORLDMAP_FULLMAP_SIZE then
 			LargeSkin()
-		elseif(WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE) then
+		elseif WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE then
 			SmallSkin()
-		elseif(WORLDMAP_SETTINGS.size == WORLDMAP_QUESTLIST_SIZE) then
+		elseif WORLDMAP_SETTINGS.size == WORLDMAP_QUESTLIST_SIZE then
 			QuestSkin()
 		end
 
-		if(not InCombatLockdown()) then
-			WorldMapFrame:SetScale(1)
-			WorldMapFrameSizeDownButton:Show()
-			WorldMapFrame:SetFrameLevel(30)
-			WorldMapDetailFrame:SetFrameLevel(WorldMapFrame:GetFrameLevel() + 1)
-		else
-			WorldMapFrameSizeDownButton:Disable()
-			WorldMapFrameSizeUpButton:Disable()
-		end
-	end
+		WorldMapFrameAreaLabel:FontTemplate(nil, 50, "OUTLINE")
+		WorldMapFrameAreaLabel:SetShadowOffset(2, -2)
+		WorldMapFrameAreaLabel:SetTextColor(0.9, 0.8, 0.6)
 
-	WorldMapFrameAreaPetLevels:FontTemplate(nil, 25, "OUTLINE")
+		WorldMapFrameAreaDescription:FontTemplate(nil, 40, "OUTLINE")
+		WorldMapFrameAreaDescription:SetShadowOffset(2, -2)
+
+		WorldMapZoneInfo:FontTemplate(nil, 25, "OUTLINE")
+		WorldMapZoneInfo:SetShadowOffset(2, -2)
+
+		if InCombatLockdown() then return end
+
+		WorldMapFrame:SetFrameLevel(30)
+		WorldMapDetailFrame:SetFrameLevel(WorldMapFrame:GetFrameLevel() + 1)
+	end
 
 	WorldMapFrame:HookScript("OnShow", FixSkin)
 	hooksecurefunc("WorldMapFrame_SetFullMapView", LargeSkin)
 	hooksecurefunc("WorldMapFrame_SetQuestMapView", QuestSkin)
 	hooksecurefunc("WorldMap_ToggleSizeUp", FixSkin)
-
-	WorldMapFrame:Show()
-	WorldMapFrame:Hide()
-
-	WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
-		--For some reason these buttons aren't functioning correctly, and we can't afford for it to fuckup because toggling to a big map in combat will cause a taint.
-		if(InCombatLockdown()) then
-			WorldMapFrameSizeDownButton:Disable()
-			WorldMapFrameSizeUpButton:Disable()
-		else
-			WorldMapFrameSizeDownButton:Enable()
-			WorldMapFrameSizeUpButton:Enable()
-		end
-
-		if(WORLDMAP_SETTINGS.size == WORLDMAP_FULLMAP_SIZE) then
-			WorldMapFrameSizeUpButton:Hide()
-			WorldMapFrameSizeDownButton:Show()
-		elseif(WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE) then
-			WorldMapFrameSizeUpButton:Show()
-			WorldMapFrameSizeDownButton:Hide()
-		elseif(WORLDMAP_SETTINGS.size == WORLDMAP_QUESTLIST_SIZE) then
-			WorldMapFrameSizeUpButton:Hide()
-			WorldMapFrameSizeDownButton:Show()
-		end
-
-		if(DropDownList1:GetScale() ~= UIParent:GetScale()) then
-			DropDownList1:SetScale(UIParent:GetScale())
-		end
-	end)
-
-	WorldMapZoneDropDownButton:HookScript("OnClick", function(self)
-		DropDownList1:ClearAllPoints()
-		DropDownList1:Point("TOPRIGHT", self, "BOTTOMRIGHT", -17, -4)
-	end)
 end
 
 S:AddCallback("SkinWorldMap", LoadSkin)

@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local function LoadSkin()
@@ -21,23 +21,23 @@ local function LoadSkin()
 
 		self.AbilityName:ClearAllPoints()
 		self.AbilityName:Point("BOTTOM", self, 0, -28)
-		self.AbilityName.scrollTime = nil;
+		self.AbilityName.scrollTime = nil
 		self.AbilityName:FontTemplate(font, 20, "OUTLINE")
 
 		self.TimeLeft.NumberText:ClearAllPoints()
 		self.TimeLeft.NumberText:Point("BOTTOM", self, 4, -58)
-		self.TimeLeft.NumberText.scrollTime = nil;
+		self.TimeLeft.NumberText.scrollTime = nil
 		self.TimeLeft.NumberText:FontTemplate(font, 20, "OUTLINE")
 
 		self.TimeLeft.SecondsText:ClearAllPoints()
 		self.TimeLeft.SecondsText:Point("BOTTOM", self, 0, -80)
-		self.TimeLeft.SecondsText.scrollTime = nil;
+		self.TimeLeft.SecondsText.scrollTime = nil
 		self.TimeLeft.SecondsText:FontTemplate(font, 20, "OUTLINE")
 
-		if(self.Anim:IsPlaying()) then
+		if self.Anim:IsPlaying() then
 			self.Anim:Stop()
 		end
 	end)
 end
 
-S:AddCallback("LossOfControlFrame", LoadSkin);
+S:AddCallback("LossOfControlFrame", LoadSkin)

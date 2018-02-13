@@ -1,11 +1,11 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local pairs = pairs;
+local _G = _G
+local pairs = pairs
 
 local function LoadSkin()
-	if(E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.raid ~= true) then return; end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.raid ~= true then return end
 
 	local StripAllTextures = {
 		"RaidGroup1",
@@ -19,9 +19,9 @@ local function LoadSkin()
 	}
 
 	for _, object in pairs(StripAllTextures) do
-		if(not _G[object]) then print(object) end
+		if not _G[object] then print(object) end
 
-		if(_G[object]) then
+		if _G[object] then
 			_G[object]:StripTextures()
 		end
 	end
@@ -37,13 +37,13 @@ local function LoadSkin()
 		end
 	end
 
-	--[[S:HandleButton(RaidFrameReadyCheckButton);
+	--[[S:HandleButton(RaidFrameReadyCheckButton)
 	RaidFrameReadyCheckButton:Point("TOPLEFT", RaidFrameAllAssistCheckButton, "TOPRIGHT", 100, -1)
 
-	S:HandleCheckBox(RaidFrameAllAssistCheckButton);
+	S:HandleCheckBox(RaidFrameAllAssistCheckButton)
 	RaidFrameAllAssistCheckButton:Point("TOPLEFT", 15, -23)
 
 	RaidFrameAllAssistCheckButtonText:Point("LEFT", RaidFrameAllAssistCheckButton, "RIGHT", 0, -2)]]
 end
 
-S:AddCallbackForAddon("Blizzard_RaidUI", "RaidUI", LoadSkin);
+S:AddCallbackForAddon("Blizzard_RaidUI", "RaidUI", LoadSkin)

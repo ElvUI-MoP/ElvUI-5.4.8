@@ -1,17 +1,20 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local unpack, select = unpack, select;
+local _G = _G
+local unpack, select = unpack, select
 
-local GetItemInfo = GetItemInfo;
-local GetItemQualityColor = GetItemQualityColor;
-local GetTradePlayerItemLink = GetTradePlayerItemLink;
-local GetTradeTargetItemLink = GetTradeTargetItemLink;
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
+local GetItemInfo = GetItemInfo
+local GetItemQualityColor = GetItemQualityColor
+local GetTradePlayerItemLink = GetTradePlayerItemLink
+local GetTradeTargetItemLink = GetTradeTargetItemLink
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trade ~= true then return end
 
+	local TradeFrame = _G["TradeFrame"]
 	TradeFrame:StripTextures(true)
 	TradeFrame:CreateBackdrop("Transparent")
 	TradeFrame.backdrop:SetAllPoints()
@@ -99,34 +102,44 @@ local function LoadSkin()
 	TradeHighlightRecipientEnchant:SetFrameStrata("HIGH")
 
 	hooksecurefunc("TradeFrame_UpdatePlayerItem", function(id)
-		local link = GetTradePlayerItemLink(id);
-		local tradeItemButton = _G["TradePlayerItem" .. id .. "ItemButton"];
-		local tradeItemName = _G["TradePlayerItem" .. id .. "Name"];
-		if(link) then
-			local quality = select(3, GetItemInfo(link));
-			tradeItemName:SetTextColor(GetItemQualityColor(quality));
-			if(quality and quality > 1) then
-				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality));
+		local tradeItemButton = _G["TradePlayerItem"..id.."ItemButton"]
+		local tradeItemName = _G["TradePlayerItem"..id.."Name"]
+		local link = GetTradePlayerItemLink(id)
+
+		if link then
+			local quality = select(3, GetItemInfo(link))
+
+			if quality and quality > 1 then
+				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
+				tradeItemName:SetTextColor(GetItemQualityColor(quality))
+			else
+				tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				tradeItemName:SetTextColor(1, 1, 1)
  			end
 		else
-			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
  		end
-	end);
+	end)
 
 	hooksecurefunc("TradeFrame_UpdateTargetItem", function(id)
-		local link = GetTradeTargetItemLink(id);
-		local tradeItemButton = _G["TradeRecipientItem" .. id .. "ItemButton"];
-		local tradeItemName = _G["TradeRecipientItem" .. id .. "Name"];
-		if(link) then
-			local quality = select(3, GetItemInfo(link));
-			tradeItemName:SetTextColor(GetItemQualityColor(quality));
-			if(quality and quality > 1) then
-				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality));
+		local tradeItemButton = _G["TradeRecipientItem"..id.."ItemButton"]
+		local tradeItemName = _G["TradeRecipientItem"..id.."Name"]
+		local link = GetTradeTargetItemLink(id)
+
+		if link then
+			local quality = select(3, GetItemInfo(link))
+
+			if quality and quality > 1 then
+				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
+				tradeItemName:SetTextColor(GetItemQualityColor(quality))
+			else
+				tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				tradeItemName:SetTextColor(1, 1, 1)
  			end
 		else
-			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
  		end
-	end);
+	end)
 end
 
-S:AddCallback("Trade", LoadSkin);
+S:AddCallback("Trade", LoadSkin)

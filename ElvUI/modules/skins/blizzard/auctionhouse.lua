@@ -1,9 +1,11 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local pairs, unpack = pairs, unpack;
+local _G = _G
+local pairs, unpack = pairs, unpack
 
+local hooksecurefunc = hooksecurefunc
+local CreateFrame = CreateFrame
 local GetAuctionSellItemInfo = GetAuctionSellItemInfo
 
 local function LoadSkin()
@@ -14,6 +16,7 @@ local function LoadSkin()
 	AuctionsScrollFrame:StripTextures()
 	BidScrollFrame:StripTextures()
 
+	local AuctionFrame = _G["AuctionFrame"]
 	AuctionFrame:StripTextures(true)
 	AuctionFrame:SetTemplate("Transparent")
 
@@ -31,28 +34,22 @@ local function LoadSkin()
 	S:HandleCloseButton(AuctionFrameCloseButton)
 	AuctionFrameCloseButton:Point("TOPRIGHT", 2, 2)
 
-	--Progress Frame
+	-- Progress Frame
 	AuctionProgressFrame:StripTextures()
 	AuctionProgressFrame:SetTemplate("Transparent")
 
-	AuctionProgressFrameCancelButton:StyleButton()
-	AuctionProgressFrameCancelButton:SetTemplate("Default")
+	S:HandleNextPrevButton(AuctionProgressFrameCancelButton)
+	SquareButton_SetIcon(AuctionProgressFrameCancelButton, "DELETE")
 	AuctionProgressFrameCancelButton:SetHitRectInsets(0, 0, 0, 0)
-	AuctionProgressFrameCancelButton:GetNormalTexture():ClearAllPoints()
-	AuctionProgressFrameCancelButton:GetNormalTexture():Point("TOPLEFT", 2, -2)
-	AuctionProgressFrameCancelButton:GetNormalTexture():Point("BOTTOMRIGHT", -2, 2)
-	AuctionProgressFrameCancelButton:GetNormalTexture():SetTexCoord(0.67, 0.37, 0.61, 0.26)
 	AuctionProgressFrameCancelButton:Size(28)
 	AuctionProgressFrameCancelButton:Point("LEFT", AuctionProgressBar, "RIGHT", 8, 0)
 
-	AuctionProgressBarIcon:SetTexCoord(0.67, 0.37, 0.61, 0.26)
+	AuctionProgressBarIcon.backdrop = CreateFrame("Frame", nil, AuctionProgressBarIcon:GetParent())
+	AuctionProgressBarIcon.backdrop:SetTemplate("Default")
+	AuctionProgressBarIcon.backdrop:SetOutside(AuctionProgressBarIcon)
 
-	local backdrop = CreateFrame("Frame", nil, AuctionProgressBarIcon:GetParent())
-	backdrop:Point("TOPLEFT", AuctionProgressBarIcon, "TOPLEFT", -2, 2)
-	backdrop:Point("BOTTOMRIGHT", AuctionProgressBarIcon, "BOTTOMRIGHT", 2, -2)
-	backdrop:SetTemplate("Default")
-
-	AuctionProgressBarIcon:SetParent(backdrop)
+	AuctionProgressBarIcon:SetTexCoord(unpack(E.TexCoords))
+	AuctionProgressBarIcon:SetParent(AuctionProgressBarIcon.backdrop)
 
 	AuctionProgressBarText:ClearAllPoints()
 	AuctionProgressBarText:SetPoint("CENTER")
@@ -102,12 +99,12 @@ local function LoadSkin()
 	AuctionsItemButton:SetScript("OnUpdate", function()
 		if AuctionsItemButton:GetNormalTexture() then
 			AuctionsItemButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-			AuctionsItemButton:GetNormalTexture():SetInside();
+			AuctionsItemButton:GetNormalTexture():SetInside()
 		end
 
 		local _, _, _, quality = GetAuctionSellItemInfo()
 		if(quality and quality > 1) then
-			AuctionsItemButton:SetBackdropBorderColor(GetItemQualityColor(quality));
+			AuctionsItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 		else
 			AuctionsItemButton:SetTemplate("Default", true)
 		end
@@ -187,63 +184,63 @@ local function LoadSkin()
 	for i = 1, NUM_BROWSE_TO_DISPLAY do
 		local button = _G["BrowseButton"..i]
 		local icon = _G["BrowseButton"..i.."Item"]
-		local name = _G["BrowseButton"..i.."Name"];
-		local texture = _G["BrowseButton"..i.."ItemIconTexture"];
+		local name = _G["BrowseButton"..i.."Name"]
+		local texture = _G["BrowseButton"..i.."ItemIconTexture"]
 
-		if(texture) then
-			texture:SetTexCoord(unpack(E.TexCoords));
-			texture:SetInside();
+		if texture then
+			texture:SetTexCoord(unpack(E.TexCoords))
+			texture:SetInside()
 		end
 
-		if(icon) then
-			icon:StyleButton();
-			icon:GetNormalTexture():SetTexture("");
-			icon:SetTemplate("Default");
+		if icon then
+			icon:StyleButton()
+			icon:GetNormalTexture():SetTexture("")
+			icon:SetTemplate("Default")
 
 			hooksecurefunc(name, "SetVertexColor", function(_, r, g, b)
-				if(r == 1 and g == 1 and b == 1) then
-					icon:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+				if r == 1 and g == 1 and b == 1 then
+					icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				else
-					icon:SetBackdropBorderColor(r, g, b);
+					icon:SetBackdropBorderColor(r, g, b)
 				end
-			end);
-			hooksecurefunc(name, "Hide", function(_, r, g, b)
-				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor));
-			end);
+			end)
+			hooksecurefunc(name, "Hide", function()
+				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			end)
 		end
 
-		button:StripTextures();
-		button:StyleButton();
+		button:StripTextures()
+		button:StyleButton()
 
-		_G["BrowseButton"..i.."Highlight"] = button:GetHighlightTexture();
-		button:GetHighlightTexture():ClearAllPoints();
-		button:GetHighlightTexture():Point("TOPLEFT", icon, "TOPRIGHT", 2, 0);
-		button:GetHighlightTexture():Point("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5);
-		button:GetPushedTexture():SetAllPoints(button:GetHighlightTexture());
+		_G["BrowseButton"..i.."Highlight"] = button:GetHighlightTexture()
+		button:GetHighlightTexture():ClearAllPoints()
+		button:GetHighlightTexture():Point("TOPLEFT", icon, "TOPRIGHT", 2, 0)
+		button:GetHighlightTexture():Point("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5)
+		button:GetPushedTexture():SetAllPoints(button:GetHighlightTexture())
 	end
 
 	for i = 1, NUM_AUCTIONS_TO_DISPLAY do
 		local button = _G["AuctionsButton"..i]
 		local icon = _G["AuctionsButton"..i.."Item"]
-		local name = _G["AuctionsButton"..i.."Name"];
+		local name = _G["AuctionsButton"..i.."Name"]
 
 		_G["AuctionsButton"..i.."ItemIconTexture"]:SetTexCoord(unpack(E.TexCoords))
 		_G["AuctionsButton"..i.."ItemIconTexture"]:SetInside()
 
-		icon:StyleButton();
-		icon:GetNormalTexture():SetTexture("");
-		icon:SetTemplate("Default");
+		icon:StyleButton()
+		icon:GetNormalTexture():SetTexture("")
+		icon:SetTemplate("Default")
 
 		hooksecurefunc(name, "SetVertexColor", function(_, r, g, b)
-			if(r == 1 and g == 1 and b == 1) then
-				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+			if r == 1 and g == 1 and b == 1 then
+				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 			else
-				icon:SetBackdropBorderColor(r, g, b);
+				icon:SetBackdropBorderColor(r, g, b)
 			end
-		end);
-		hooksecurefunc(name, "Hide", function(_, r, g, b)
-			icon:SetBackdropBorderColor(unpack(E["media"].bordercolor));
-		end);
+		end)
+		hooksecurefunc(name, "Hide", function()
+			icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+		end)
 
 		button:StripTextures()
 		button:StyleButton()
@@ -258,27 +255,27 @@ local function LoadSkin()
 	for i = 1, NUM_BIDS_TO_DISPLAY do
 		local button = _G["BidButton"..i]
 		local icon = _G["BidButton"..i.."Item"]
-		local name = _G["BidButton"..i.."Name"];
+		local name = _G["BidButton"..i.."Name"]
 
 		_G["BidButton"..i.."ItemIconTexture"]:SetTexCoord(unpack(E.TexCoords))
 		_G["BidButton"..i.."ItemIconTexture"]:SetInside()
 
 		icon:StyleButton()
 		icon:GetNormalTexture():SetTexture("")
-		icon:SetTemplate("Default");
+		icon:SetTemplate("Default")
 		icon:CreateBackdrop("Default")
 		icon.backdrop:SetAllPoints()
 
 		hooksecurefunc(name, "SetVertexColor", function(_, r, g, b)
-			if(r == 1 and g == 1 and b == 1) then
-				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+			if r == 1 and g == 1 and b == 1 then
+				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 			else
-				icon:SetBackdropBorderColor(r, g, b);
+				icon:SetBackdropBorderColor(r, g, b)
 			end
-		end);
-		hooksecurefunc(name, "Hide", function(_, r, g, b)
-			icon:SetBackdropBorderColor(unpack(E["media"].bordercolor));
-		end);
+		end)
+		hooksecurefunc(name, "Hide", function()
+			icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+		end)
 
 		button:StripTextures()
 		button:StyleButton()
@@ -289,7 +286,7 @@ local function LoadSkin()
 		button:GetPushedTexture():SetAllPoints(button:GetHighlightTexture())
 	end
 
-	--Custom Backdrops
+	-- Custom Backdrops
 	AuctionFrameBrowse.bg1 = CreateFrame("Frame", nil, AuctionFrameBrowse)
 	AuctionFrameBrowse.bg1:SetTemplate("Default")
 	AuctionFrameBrowse.bg1:Point("TOPLEFT", 20, -103)
@@ -327,4 +324,4 @@ local function LoadSkin()
 	--AuctionFrameAuctions.bg2:SetFrameLevel(AuctionFrameAuctions.bg2:GetFrameLevel() - 3)
 end
 
-S:AddCallbackForAddon("Blizzard_AuctionUI", "AuctionHouse", LoadSkin);
+S:AddCallbackForAddon("Blizzard_AuctionUI", "AuctionHouse", LoadSkin)

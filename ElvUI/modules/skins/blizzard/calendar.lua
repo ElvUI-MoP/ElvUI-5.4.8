@@ -10,11 +10,25 @@ local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.calendar ~= true then return end
 
+	local CalendarFrame = _G["CalendarFrame"]
 	CalendarFrame:StripTextures()
 	CalendarFrame:SetTemplate("Transparent")
 
 	S:HandleCloseButton(CalendarCloseButton)
 	CalendarCloseButton:Point("TOPRIGHT", 2, 2)
+
+	CalendarFrame:EnableMouseWheel(true)
+	CalendarFrame:SetScript("OnMouseWheel", function(_, value)
+		if value > 0 then
+			if CalendarPrevMonthButton:IsEnabled() == 1 then
+				CalendarPrevMonthButton_OnClick()
+			end
+		else
+			if CalendarNextMonthButton:IsEnabled() == 1 then
+				CalendarNextMonthButton_OnClick()
+			end
+		end
+	end)
 
 	S:HandleNextPrevButton(CalendarPrevMonthButton)
 	S:HandleNextPrevButton(CalendarNextMonthButton)

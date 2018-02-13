@@ -1,12 +1,15 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
 local unpack, select = unpack, select
-local ceil = math.ceil;
+local ceil = math.ceil
+
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	if(E.private.skins.blizzard.enable ~= true) or (E.private.skins.blizzard.gbank ~= true) then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.gbank ~= true then return end
 
 	GuildBankFrame:StripTextures()
 	GuildBankFrame:SetTemplate("Transparent")
@@ -17,7 +20,7 @@ local function LoadSkin()
 
 	for i = 1, GuildBankFrame:GetNumChildren() do
 		local child = select(i, GuildBankFrame:GetChildren())
-		if(child.GetPushedTexture and child:GetPushedTexture() and not child:GetName()) then
+		if child.GetPushedTexture and child:GetPushedTexture() and not child:GetName() then
 			S:HandleCloseButton(child)
 			child:Point("TOPRIGHT", 2, 2)
 		end
@@ -81,7 +84,7 @@ local function LoadSkin()
 			local icon = _G["GuildBankColumn"..i.."Button"..x.."IconTexture"]
 			local texture = _G["GuildBankColumn"..i.."Button"..x.."NormalTexture"]
 			local count = _G["GuildBankColumn"..i.."Button"..x.."Count"]
-			if(texture) then
+			if texture then
 				texture:SetTexture(nil)
 			end
 			button:StyleButton()
@@ -116,22 +119,22 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("GuildBankFrame_Update", function()
-		if(GuildBankFrame.mode ~= "bank") then return; end
+		if GuildBankFrame.mode ~= "bank" then return end
 
-		local tab = GetCurrentGuildBankTab();
-		local button, index, column, itemLink, itemRarity, r, g, b;
+		local tab = GetCurrentGuildBankTab()
+		local button, index, column, itemLink, itemRarity, r, g, b
 		for i = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
-			index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
-			if(index == 0) then
-				index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+			index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
+			if index == 0 then
+				index = NUM_SLOTS_PER_GUILDBANK_GROUP
 			end
-			column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
-			button = _G["GuildBankColumn"..column.."Button"..index];
+			column = ceil((i - 0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
+			button = _G["GuildBankColumn"..column.."Button"..index]
 
-			itemLink = GetGuildBankItemLink(tab, i);
-			if(itemLink) then
+			itemLink = GetGuildBankItemLink(tab, i)
+			if itemLink then
 				itemRarity = select(3, GetItemInfo(itemLink))
-				if(itemRarity > 1) then
+				if itemRarity and itemRarity > 1 then
 					r, g, b = GetItemQualityColor(itemRarity)
 				else
 					r, g, b = unpack(E.media.bordercolor)
@@ -143,7 +146,7 @@ local function LoadSkin()
 		end
 	end)
 
-	--Popup
+	-- Popup
 	S:HandleIconSelectionFrame(GuildBankPopupFrame, NUM_GUILDBANK_ICONS_SHOWN, "GuildBankPopupButton", "GuildBankPopup")
 
 	S:HandleScrollBar(GuildBankPopupScrollFrameScrollBar)
@@ -156,7 +159,7 @@ local function LoadSkin()
 	GuildBankPopupButton1:Point("TOPLEFT", GuildBankPopupFrame, "TOPLEFT", 30, -86)
 	GuildBankPopupFrame:Point("TOPLEFT", GuildBankFrame, "TOPRIGHT", 36, 0)
 
-	--Reposition tabs
+	-- Reposition tabs
 	GuildBankFrameTab1:ClearAllPoints()
 	GuildBankFrameTab1:Point("BOTTOMLEFT", GuildBankFrame, "BOTTOMLEFT", 0, -30)
 
@@ -186,4 +189,4 @@ local function LoadSkin()
 	GuildBankColumn7Button8:Point("TOPLEFT", GuildBankColumn7Button1, "TOPRIGHT", 5, 0)
 end
 
-S:AddCallbackForAddon("Blizzard_GuildBankUI", "GuildBank", LoadSkin);
+S:AddCallbackForAddon("Blizzard_GuildBankUI", "GuildBank", LoadSkin)

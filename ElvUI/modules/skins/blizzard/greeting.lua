@@ -1,8 +1,8 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local S = E:GetModule("Skins");
+local E, L, V, P, G = unpack(select(2, ...))
+local S = E:GetModule("Skins")
 
-local _G = _G;
-local find, gsub = string.find, string.gsub;
+local _G = _G
+local find, gsub = string.find, string.gsub
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.greeting ~= true then return end
@@ -24,8 +24,8 @@ local function LoadSkin()
 
 		for i = 1, MAX_NUM_QUESTS do
 			local button = _G["QuestTitleButton"..i]
-			if(button:GetFontString()) then
-				if(button:GetFontString():GetText() and button:GetFontString():GetText():find("|cff000000")) then
+			if button:GetFontString() then
+				if button:GetFontString():GetText() and button:GetFontString():GetText():find("|cff000000") then
 					button:GetFontString():SetText(gsub(button:GetFontString():GetText(), "|cff000000", "|cffFFFF00"))
 				end
 			end
@@ -33,4 +33,4 @@ local function LoadSkin()
 	end)
 end
 
-S:AddCallback("Greeting", LoadSkin);
+S:AddCallback("Greeting", LoadSkin)

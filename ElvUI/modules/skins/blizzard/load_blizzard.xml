@@ -9,6 +9,7 @@
 	<Script file="bgscore.lua"/>
 	<Script file="binding.lua"/>
 	<Script file="blackmarket.lua"/>
+	<Script file="BlizzardOptions.lua"/>
 	<Script file="calendar.lua"/>
 	<Script file="character.lua"/>
 	<Script file="debug.lua"/>
@@ -42,6 +43,7 @@
 	<Script file="petition.lua"/>
 	<Script file="pvp.lua"/>
 	<Script file="quest.lua"/>
+	<Script file="RaidManager.lua"/>
 	<Script file="raid.lua"/>
 	<Script file="reforge.lua"/>
 	<Script file="socket.lua"/>

@@ -1,16 +1,17 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.nonraid ~= true then return end
 
-	RaidInfoFrame:StripTextures(true);
-	RaidInfoFrame:SetTemplate("Transparent");
+	local RaidInfoFrame = _G["RaidInfoFrame"]
+	RaidInfoFrame:StripTextures(true)
+	RaidInfoFrame:SetTemplate("Transparent")
 	RaidInfoFrame:ClearAllPoints()
 	RaidInfoFrame:Point("TOPLEFT", RaidFrame, "TOPRIGHT", 1, 0)
 
-	RaidInfoInstanceLabel:StripTextures();
-	RaidInfoIDLabel:StripTextures();
+	RaidInfoInstanceLabel:StripTextures()
+	RaidInfoIDLabel:StripTextures()
 
 	local buttons = {
 		"RaidFrameConvertToRaidButton",
@@ -34,7 +35,7 @@ local function LoadSkin()
 	S:HandleCloseButton(RaidInfoCloseButton, RaidInfoFrame)
 	RaidInfoCloseButton:Point("TOPRIGHT", 2, 0)
 
-	S:HandleScrollBar(RaidInfoScrollFrameScrollBar);
+	S:HandleScrollBar(RaidInfoScrollFrameScrollBar)
 
 	S:HandleCheckBox(RaidFrameAllAssistCheckButton)
 end

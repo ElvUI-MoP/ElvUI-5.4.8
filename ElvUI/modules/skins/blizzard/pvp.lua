@@ -287,4 +287,48 @@ local function LoadSkin()
 	end
 end
 
-S:AddCallbackForAddon("Blizzard_PVPUI", "PVPUI", LoadSkin);
+S:AddCallbackForAddon("Blizzard_PVPUI", "PVPUI", LoadSkin)
+
+local function LoadSecondarySkin()
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.pvp ~= true then return end
+
+	-- PvP Ready Dialog
+	PVPReadyDialog:StripTextures()
+	PVPReadyDialog:SetTemplate("Transparent")
+
+	PVPReadyDialog.SetBackdrop = E.noop
+	PVPReadyDialog.filigree:SetAlpha(0)
+	PVPReadyDialog.bottomArt:SetAlpha(0)
+
+	PVPReadyDialogBackground:Kill()
+
+	S:HandleButton(PVPReadyDialogEnterBattleButton)
+	S:HandleButton(PVPReadyDialogLeaveQueueButton)
+
+	S:HandleCloseButton(PVPReadyDialogCloseButton)
+
+	PVPReadyDialogRoleIcon:StripTextures()
+	PVPReadyDialogRoleIcon:CreateBackdrop()
+	PVPReadyDialogRoleIcon.backdrop:Point("TOPLEFT", 7, -7)
+	PVPReadyDialogRoleIcon.backdrop:Point("BOTTOMRIGHT", -7, 7)
+
+	hooksecurefunc("PVPReadyDialog_Display", function(self, _, _, _, queueType, _, role)
+		if role == "DAMAGER" then
+			self.roleIcon.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+		elseif role == "TANK" then
+			self.roleIcon.texture:SetTexture("Interface\\Icons\\Ability_Defend")
+		elseif role == "HEALER" then
+			self.roleIcon.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+		end
+
+		self.roleIcon.texture:SetTexCoord(unpack(E.TexCoords))
+		self.roleIcon.texture:SetInside(self.roleIcon.backdrop)
+		self.roleIcon.texture:SetParent(self.roleIcon.backdrop)
+
+		if queueType == "ARENA" then
+			self:Height(100)
+		end
+	end)
+end
+
+S:AddCallback("PVP", LoadSecondarySkin)

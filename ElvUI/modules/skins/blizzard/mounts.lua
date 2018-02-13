@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
@@ -77,43 +77,44 @@ local function LoadSkin()
 		S:HandleItemButton(button)
 
 		button.icon:Size(40)
-		button.icon:SetTexCoord(unpack(E.TexCoords));
+		button.icon:SetTexCoord(unpack(E.TexCoords))
 
 		button.selectedTexture:SetTexture(1, 1, 1, 0.30)
 		button.selectedTexture:SetInside()
 
-		button.stripe = button:CreateTexture(nil, "BACKGROUND");
-		button.stripe:SetTexture(0.9, 0.9, 1, 0.10);
+		button.stripe = button:CreateTexture(nil, "BACKGROUND")
+		button.stripe:SetTexture(0.9, 0.9, 1, 0.10)
 		button.stripe:SetInside()
 	end
 
 	hooksecurefunc("MountJournal_UpdateMountList", function()
-		local scrollFrame = MountJournal.ListScrollFrame;
-		local offset = HybridScrollFrame_GetOffset(scrollFrame);
-		local buttons = scrollFrame.buttons;
-		local showMounts = true;
+		local scrollFrame = MountJournal.ListScrollFrame
+		local offset = HybridScrollFrame_GetOffset(scrollFrame)
+		local buttons = scrollFrame.buttons
+		local showMounts = true
 
 		for i = 1, #buttons do
-			local button = buttons[i];
-			local displayIndex = i + offset;
-			if(displayIndex <= #MountJournal.cachedMounts and showMounts) then
-				local index = MountJournal.cachedMounts[displayIndex];
-				local _, _, _, icon = GetCompanionInfo("MOUNT", index);
+			local button = buttons[i]
+			local displayIndex = i + offset
+			if displayIndex <= #MountJournal.cachedMounts and showMounts then
+				local index = MountJournal.cachedMounts[displayIndex]
+				local _, _, _, icon = GetCompanionInfo("MOUNT", index)
 
-				button.icon:SetTexture(icon);
+				button.icon:SetTexture(icon)
 			else
-				button.icon:SetTexture(nil);
+				button.icon:SetTexture(nil)
 			end
 		end
 	end)
 
 	local function ColorSelectedMount()
-		local scrollFrame = MountJournal.ListScrollFrame;
-		local offset = HybridScrollFrame_GetOffset(scrollFrame);
+		local scrollFrame = MountJournal.ListScrollFrame
+		local offset = HybridScrollFrame_GetOffset(scrollFrame)
 		for i = 1, #MountJournal.ListScrollFrame.buttons do
 			local button = _G["MountJournalListScrollFrameButton"..i]
 			local name = _G["MountJournalListScrollFrameButton"..i.."Name"]
-			if(button.selectedTexture:IsShown()) then
+
+			if button.selectedTexture:IsShown() then
 				name:SetTextColor(1, 1, 0)
 				button.backdrop:SetBackdropBorderColor(1, 1, 0)
 			else
@@ -121,10 +122,10 @@ local function LoadSkin()
 				button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 			end
 
-			if((i + offset) % 2 == 1) then
-				button.stripe:Show();
+			if (i + offset) % 2 == 1 then
+				button.stripe:Show()
 			else
-				button.stripe:Hide();
+				button.stripe:Hide()
 			end
 		end
 	end
@@ -168,40 +169,40 @@ local function LoadSkin()
 
 		button.dragButton.level:SetTextColor(1, 1, 1)
 		button.dragButton.level:SetParent(button.backdrop)
-		button.dragButton.level:FontTemplate(nil, 12, "OUTLINE");
+		button.dragButton.level:FontTemplate(nil, 12, "OUTLINE")
 
 		button.icon:Size(40)
-		button.icon:SetTexCoord(unpack(E.TexCoords));
+		button.icon:SetTexCoord(unpack(E.TexCoords))
 
 		button.selectedTexture:SetTexture(1, 1, 1, 0.30)
 		button.selectedTexture:SetInside()
 	end
 
 	local function ColorSelectedPet()
-		local petButtons = PetJournal.listScroll.buttons;
-		local isWild = PetJournal.isWild;
+		local petButtons = PetJournal.listScroll.buttons
+		local isWild = PetJournal.isWild
 
 		for i = 1, #petButtons do
-			local index = petButtons[i].index;
-			if(not index) then break; end
+			local index = petButtons[i].index
+			if not index then break end
 
 			local button = _G["PetJournalListScrollFrameButton"..i]
 			local name = _G["PetJournalListScrollFrameButton"..i.."Name"]
-			local petID = C_PetJournal_GetPetInfoByIndex(index, isWild);
+			local petID = C_PetJournal_GetPetInfoByIndex(index, isWild)
 
-			if(petID ~= nil) then
-				local _, _, _, _, rarity = C_PetJournal_GetPetStats(petID);
-				if(rarity) then
+			if petID ~= nil then
+				local _, _, _, _, rarity = C_PetJournal_GetPetStats(petID)
+				if rarity then
 					local color = ITEM_QUALITY_COLORS[rarity-1]
-					button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b);
-					name:SetTextColor(color.r, color.g, color.b);
+					button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+					name:SetTextColor(color.r, color.g, color.b)
 				else
 					button.backdrop:SetBackdropBorderColor(0, 0, 0)
-					name:SetTextColor(1, 1, 1);
+					name:SetTextColor(1, 1, 1)
 				end
 			else
 				button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-				name:SetTextColor(0.6, 0.6, 0.6);
+				name:SetTextColor(0.6, 0.6, 0.6)
 			end
 		end
 	end
@@ -244,9 +245,9 @@ local function LoadSkin()
 		loadoutPet.dragButton:StyleButton()
 		loadoutPetLevel:FontTemplate(nil, 12, "OUTLINE")
 		loadoutPetLevel:SetTextColor(1, 1, 1)
-		loadoutPet.hover = true;
-		loadoutPet.pushed = true;
-		loadoutPet.checked = true;
+		loadoutPet.hover = true
+		loadoutPet.pushed = true
+		loadoutPet.checked = true
 		S:HandleItemButton(loadoutPet)
 
 		loadoutPet.backdrop:SetFrameLevel(loadoutPet.backdrop:GetFrameLevel() + 1)
@@ -261,7 +262,7 @@ local function LoadSkin()
 		loadoutPetXP:CreateBackdrop("Default")	
 		loadoutPetXP:SetStatusBarTexture(E.media.normTex)
 		loadoutPetXP:SetFrameLevel(loadoutPetXP:GetFrameLevel() + 2)
-		E:RegisterStatusBar(loadoutPetXP);
+		E:RegisterStatusBar(loadoutPetXP)
 
 		for index = 1, 3 do
 			local frame = _G["PetJournalLoadoutPet"..i.."Spell"..index]
@@ -276,21 +277,21 @@ local function LoadSkin()
 			local pet = _G["PetJournalLoadoutPet"..i]
 			local petName = _G["PetJournalLoadoutPet"..i.."Name"]
 			local subName = _G["PetJournalLoadoutPet"..i.."SubName"]
-			local petID = C_PetJournal.GetPetLoadOutInfo(i);
+			local petID = C_PetJournal.GetPetLoadOutInfo(i)
 
-			if(petID) then
-				local _, _, _, _, rarity = C_PetJournal.GetPetStats(petID);
+			if petID then
+				local _, _, _, _, rarity = C_PetJournal.GetPetStats(petID)
 
-				if(rarity) then
-					local color = ITEM_QUALITY_COLORS[rarity-1]
+				if rarity then
+					local color = ITEM_QUALITY_COLORS[rarity - 1]
 
-					pet.backdrop:SetBackdropBorderColor(color.r, color.g, color.b);
-					petName:SetTextColor(color.r, color.g, color.b);
-					subName:SetTextColor(color.r, color.g, color.b);
+					pet.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+					petName:SetTextColor(color.r, color.g, color.b)
+					subName:SetTextColor(color.r, color.g, color.b)
 				else
 					pet.backdrop:SetBackdropBorderColor(0, 0, 0)
-					petName:SetTextColor(1, 1, 1);
-					subName:SetTextColor(1, 1, 1);
+					petName:SetTextColor(1, 1, 1)
+					subName:SetTextColor(1, 1, 1)
 				end
 			end
 		end
@@ -339,9 +340,9 @@ local function LoadSkin()
 	PetJournalPetCardTypeInfoTypeIcon:SetInside(PetJournalPetCardTypeInfo)
 
 	hooksecurefunc(PetJournalPetCardPetInfoQualityBorder, "SetVertexColor", function(_, r, g, b)
-		PetJournalPetCardPetInfo.backdrop:SetBackdropBorderColor(r, g, b);
+		PetJournalPetCardPetInfo.backdrop:SetBackdropBorderColor(r, g, b)
 		PetJournalPetCardPetInfo.name:SetTextColor(r, g, b)
-	end);
+	end)
 
 	local tt = PetJournalPrimaryAbilityTooltip
 
@@ -386,4 +387,4 @@ local function LoadSkin()
 	PetJournalPetCardXPBar:SetStatusBarTexture(E.media.normTex)
 end
 
-S:AddCallbackForAddon("Blizzard_PetJournal", "PetJournal", LoadSkin);
+S:AddCallbackForAddon("Blizzard_PetJournal", "PetJournal", LoadSkin)

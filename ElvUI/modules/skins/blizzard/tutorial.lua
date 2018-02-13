@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local unpack = unpack;
@@ -6,17 +6,18 @@ local unpack = unpack;
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tutorial ~= true then return end
 
-	local tutorialbutton = TutorialFrameAlertButton
+	TutorialFrameAlertButton:StripTextures()
+	TutorialFrameAlertButton:SetTemplate("Default", true)
+	TutorialFrameAlertButton:Size(40, 50)
+
+	TutorialFrameAlertButton:HookScript("OnEnter", S.SetModifiedBackdrop)
+	TutorialFrameAlertButton:HookScript("OnLeave", S.SetOriginalBackdrop)
+
 	local tutorialbuttonIcon = TutorialFrameAlertButton:GetNormalTexture()
-
-	tutorialbutton:StripTextures()
-	tutorialbutton:CreateBackdrop("Default", true)
-	tutorialbutton:Size(50)
-
-	tutorialbuttonIcon:SetTexture("INTERFACE\\ICONS\\INV_Letter_18")
 	tutorialbuttonIcon:Point("TOPLEFT", 5, -5)
 	tutorialbuttonIcon:Point("BOTTOMRIGHT", -5, 5)
-	tutorialbuttonIcon:SetTexCoord(unpack(E.TexCoords))
+	tutorialbuttonIcon:SetTexture("Interface\\QuestFrame\\AutoQuest-Parts")
+	tutorialbuttonIcon:SetTexCoord(0.134, 0.171, 0.015, 0.531)
 
 	TutorialFrame:StripTextures()
 	TutorialFrame:SetTemplate("Transparent")
@@ -37,4 +38,4 @@ local function LoadSkin()
 	TutorialFrameCallOut:Kill()
 end
 
-S:AddCallback("Tutorial", LoadSkin);
+S:AddCallback("Tutorial", LoadSkin)

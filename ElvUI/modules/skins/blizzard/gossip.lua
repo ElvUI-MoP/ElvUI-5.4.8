@@ -1,9 +1,9 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local select = select;
-local find, gsub = string.find, string.gsub;
+local _G = _G
+local select = select
+local find, gsub = string.find, string.gsub
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.gossip ~= true then return end
@@ -59,7 +59,7 @@ local function LoadSkin()
 		for i = 1, NUMGOSSIPBUTTONS do
 			local button = _G["GossipTitleButton"..i]
 
-			if(button:GetFontString()) then
+			if button:GetFontString() then
 				if(button:GetFontString():GetText() and button:GetFontString():GetText():find("|cff000000")) then
 					button:GetFontString():SetText(gsub(button:GetFontString():GetText(), "|cff000000", "|cffFFFF00"))
 				end
@@ -73,4 +73,4 @@ local function LoadSkin()
 	NPCFriendshipStatusBar:Point("TOPLEFT", 50, -41)
 end
 
-S:AddCallback("Gossip", LoadSkin);
+S:AddCallback("Gossip", LoadSkin)

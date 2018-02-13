@@ -1,12 +1,16 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local ipairs, pairs, unpack, select = ipairs, pairs, unpack, select;
+local _G = _G
+local next, ipairs, pairs, select, unpack = next, ipairs, pairs, select, unpack
+
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.guild ~= true then return end
 
+	local GuildFrame = _G["GuildFrame"]
 	GuildFrame:StripTextures(true)
 	GuildFrame:SetTemplate("Transparent")
 
@@ -17,12 +21,12 @@ local function LoadSkin()
 
 	S:HandleCloseButton(GuildFrameCloseButton)
 
-	--Bottom Tabs
+	-- Bottom Tabs
 	for i = 1, 5 do
 		S:HandleTab(_G["GuildFrameTab"..i])
 	end
 
-	--XP Bar
+	-- XP Bar
 	GuildXPFrame:ClearAllPoints()
 	GuildXPFrame:Point("TOP", GuildFrame, "TOP", 0, -40)
 
@@ -39,18 +43,18 @@ local function LoadSkin()
 	end
 
 	GuildXPBar:CreateBackdrop("Default")
-	GuildXPBar.backdrop:Point("TOPLEFT", GuildXPBar, "TOPLEFT", 0, -3)
-	GuildXPBar.backdrop:Point("BOTTOMRIGHT", GuildXPBar, "BOTTOMRIGHT", -1, 1)
+	GuildXPBar.backdrop:Point("TOPLEFT", 0, 1)
+	GuildXPBar.backdrop:Point("BOTTOMRIGHT", -1, 4)
 	GuildXPBar.progress:SetTexture(E["media"].normTex)
 
-	--Faction Bar
+	-- Faction Bar
 	GuildFactionFrame:SetTemplate("Default")
 
 	GuildFactionBar:StripTextures()
 	GuildFactionBar:SetAllPoints(GuildFactionFrame)
 	GuildFactionBar.progress:SetTexture(E["media"].normTex)
 
-	--Guild Latest/Next Perks/Updates
+	-- Guild Latest/Next Perks/Updates
 	GuildNewPerksFrame:StripTextures()
 	GuildAllPerksFrame:StripTextures()
 
@@ -59,7 +63,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(GuildPerksContainerScrollBar, 4)
 
-	if(GuildLatestPerkButton) then
+	if GuildLatestPerkButton then
 		GuildLatestPerkButton:StripTextures()
 		GuildLatestPerkButton:CreateBackdrop("Default")
 		GuildLatestPerkButton.backdrop:SetOutside(GuildLatestPerkButtonIconTexture)
@@ -67,7 +71,7 @@ local function LoadSkin()
 		GuildLatestPerkButtonIconTexture:Point("TOPLEFT", 2, -2)
 	end
 
-	if(GuildNextPerkButton) then
+	if GuildNextPerkButton then
 		GuildNextPerkButton:StripTextures()
 		GuildNextPerkButton:CreateBackdrop("Default")
 		GuildNextPerkButton.backdrop:SetOutside(GuildNextPerkButtonIconTexture)
@@ -75,11 +79,15 @@ local function LoadSkin()
 		GuildNextPerkButtonIconTexture:Point("TOPLEFT", 2, -3)
 	end
 
-	for i = 1, 7 do
-		_G["GuildUpdatesButton"..i]:StyleButton()
+	for i = 1, 9 do
+		local button = _G["GuildUpdatesButton"..i]
+		local icon = _G["GuildUpdatesButton"..i.."Icon"]
+
+		button:StyleButton()
+		button:GetHighlightTexture():SetInside()
 	end
 
-	--Perks/Rewards
+	-- Perks/Rewards
 	GuildRewardsFrame:StripTextures()
 
 	GuildRewardsFrameVisitText:ClearAllPoints()
@@ -88,111 +96,111 @@ local function LoadSkin()
 	S:HandleScrollBar(GuildRewardsContainerScrollBar, 5)
 
 	for i = 1, 8 do
-		local Rewards = _G["GuildRewardsContainerButton"..i];
-		local Perks =  _G["GuildPerksContainerButton"..i];
+		local Rewards = _G["GuildRewardsContainerButton"..i]
+		local Perks =  _G["GuildPerksContainerButton"..i]
 
-		Perks.icon:Size(E.PixelMode and 40 or 38);
-		Rewards.icon:Size(E.PixelMode and 43 or 40);
+		Perks.icon:Size(E.PixelMode and 40 or 38)
+		Rewards.icon:Size(E.PixelMode and 43 or 40)
 	end
 
 	for _, Object in pairs({"Rewards", "Perks"}) do
 		for i = 1, 8 do
-			local Button = _G["Guild"..Object.."ContainerButton"..i];
-			local Name = _G["Guild"..Object.."ContainerButton"..i.."Name"];
-			local SubText = _G["Guild"..Object.."ContainerButton"..i.."SubText"];
+			local Button = _G["Guild"..Object.."ContainerButton"..i]
+			local Name = _G["Guild"..Object.."ContainerButton"..i.."Name"]
+			local SubText = _G["Guild"..Object.."ContainerButton"..i.."SubText"]
 
-			Button:StripTextures();
-			Button:CreateBackdrop("Default");
-			Button.backdrop:SetOutside(Button.icon);
+			Button:StripTextures()
+			Button:CreateBackdrop("Default")
+			Button.backdrop:SetOutside(Button.icon)
 
-			Button:StyleButton(nil, true);
+			Button:StyleButton(nil, true)
 
-			Button.icon:SetTexCoord(unpack(E.TexCoords));
-			Button.icon:Point("TOPLEFT", 2, -2);
-			Button.icon:SetParent(Button.backdrop);
+			Button.icon:SetTexCoord(unpack(E.TexCoords))
+			Button.icon:Point("TOPLEFT", 2, -2)
+			Button.icon:SetParent(Button.backdrop)
 
-			if(Object == "Rewards") then
-				SubText:SetTextColor(1, 0.80, 0.10);
+			if Object == "Rewards" then
+				SubText:SetTextColor(1, 0.80, 0.10)
 				Button.backdrop:HookScript("OnUpdate", function(self)
-					local _, itemID = GetGuildRewardInfo(Button.index);
-					if(itemID) then
-						local quality = select(3, GetItemInfo(itemID));
-						if(quality and quality > 1) then
-							self:SetBackdropBorderColor(GetItemQualityColor(quality));
-							Name:SetTextColor(GetItemQualityColor(quality));
+					local _, itemID = GetGuildRewardInfo(Button.index)
+					if itemID then
+						local quality = select(3, GetItemInfo(itemID))
+						if quality then
+							self:SetBackdropBorderColor(GetItemQualityColor(quality))
+							Name:SetTextColor(GetItemQualityColor(quality))
 						else
-							self:SetBackdropBorderColor(unpack(E["media"].bordercolor));
-							Name:SetTextColor(1, 1, 1);
+							self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+							Name:SetTextColor(1, 1, 1)
 						end
 					end
-				end);
+				end)
 			end
 		end
 	end
 
-	--Roster
+	-- Roster
 	for i = 1, 15 do
-		local button = _G["GuildRosterContainerButton"..i];
-		local icon = _G["GuildRosterContainerButton"..i.."Icon"];
+		local button = _G["GuildRosterContainerButton"..i]
+		local icon = _G["GuildRosterContainerButton"..i.."Icon"]
 
-		button:CreateBackdrop("Default", true);
-		button.backdrop:SetAllPoints(icon);
-		button:StyleButton();
+		button:CreateBackdrop("Default", true)
+		button.backdrop:SetAllPoints(icon)
+		button:StyleButton()
 
-		icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes");
-		icon:SetParent(button.backdrop);
-		icon:Size(18);
+		icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+		icon:SetParent(button.backdrop)
+		icon:Size(18)
 
-		_G["GuildRosterContainerButton"..i.."BarTexture"]:SetTexture(E["media"].normTex);
-		S:HandleButton(_G["GuildRosterContainerButton"..i.."HeaderButton"], true);
+		_G["GuildRosterContainerButton"..i.."BarTexture"]:SetTexture(E["media"].normTex)
+		S:HandleButton(_G["GuildRosterContainerButton"..i.."HeaderButton"], true)
 	end
 
-	local VIEW;
+	local VIEW
 	local function viewChanged(view)
-		VIEW = view;
+		VIEW = view
 	end
 	hooksecurefunc("GuildRoster_SetView", viewChanged)
 
 	local function update()
-		VIEW = VIEW or GetCVar("guildRosterView");
-		local playerArea = GetRealZoneText();
-		local buttons = GuildRosterContainer.buttons;
+		VIEW = VIEW or GetCVar("guildRosterView")
+		local playerArea = GetRealZoneText()
+		local buttons = GuildRosterContainer.buttons
 
-		for i, button in ipairs(buttons) do
-			if(button:IsShown() and button.online and button.guildIndex) then
-				if(VIEW == "tradeskill") then
-					local _, _, _, headerName, _, _, _, playerName, _, _, zone = GetGuildTradeSkillInfo(button.guildIndex);
-					if(not headerName and playerName) then
+		for _, button in ipairs(buttons) do
+			if button:IsShown() and button.online and button.guildIndex then
+				if VIEW == "tradeskill" then
+					local _, _, _, headerName, _, _, _, playerName, _, _, zone = GetGuildTradeSkillInfo(button.guildIndex)
+					if not headerName and playerName then
 						if(zone == playerArea) then
-							button.string2:SetText("|cff00ff00"..zone);
+							button.string2:SetText("|cff00ff00"..zone)
 						end
 					end
 				else
-					local _, _, _, level, _, zone = GetGuildRosterInfo(button.guildIndex);
-					local levelTextColor = GetQuestDifficultyColor(level);
+					local _, _, _, level, _, zone = GetGuildRosterInfo(button.guildIndex)
+					local levelTextColor = GetQuestDifficultyColor(level)
 
-					if(VIEW == "playerStatus") then
-						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b);
+					if VIEW == "playerStatus" then
+						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 						if(zone == playerArea) then
-							button.string3:SetText("|cff00ff00"..zone);
+							button.string3:SetText("|cff00ff00"..zone)
 						end
-					elseif(VIEW == "achievement") then
-						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b);
-					elseif(VIEW == "weeklyxp" or VIEW == "totalxp") then
-						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b);
+					elseif VIEW == "achievement" then
+						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
+					elseif VIEW == "weeklyxp" or VIEW == "totalxp" then
+						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 					end
 				end
 			end
 		end
 
 		for i = 1, 15 do
-			local icon = _G["GuildRosterContainerButton"..i.."Icon"];
-			local backdrop = _G["GuildRosterContainerButton"..i].backdrop;
+			local icon = _G["GuildRosterContainerButton"..i.."Icon"]
+			local backdrop = _G["GuildRosterContainerButton"..i].backdrop
 
-			if(icon:IsShown()) then
-				backdrop:Show();
+			if icon:IsShown() then
+				backdrop:Show()
 			else
-				backdrop:Hide();
+				backdrop:Hide()
 			end
 		end
 	end
@@ -210,7 +218,7 @@ local function LoadSkin()
 
 	S:HandleCheckBox(GuildRosterShowOfflineButton)
 
-	--Guild Member
+	-- Guild Member
 	GuildMemberNoteBackground:StripTextures()
 	GuildMemberNoteBackground:SetTemplate("Transparent")
 
@@ -228,7 +236,7 @@ local function LoadSkin()
 
 	S:HandleDropDownBox(GuildMemberRankDropdown, 175)
 
-	--Guild Member Detail
+	-- Guild Member Detail
 	GuildMemberDetailFrame:StripTextures()
 	GuildMemberDetailFrame:SetTemplate("Transparent")
 	GuildMemberDetailFrame:Point("TOPLEFT", GuildFrame, "TOPRIGHT", 1, 0)
@@ -236,10 +244,12 @@ local function LoadSkin()
 	S:HandleCloseButton(GuildMemberDetailCloseButton)
 	GuildMemberDetailCloseButton:Point("TOPRIGHT", 2, 2)
 
-	--Guild News
+	-- Guild News
 	GuildNewsFrame:StripTextures()
 
-	GuildNewsContainer:SetTemplate("Transparent")
+	GuildNewsContainer:CreateBackdrop("Transparent")
+	GuildNewsContainer.backdrop:Point("TOPLEFT", -1, 2)
+	GuildNewsContainer.backdrop:Point("BOTTOMRIGHT", 1, -3)
 
 	GuildNewsBossModel:StripTextures()
 	GuildNewsBossModel:CreateBackdrop("Transparent")
@@ -257,8 +267,9 @@ local function LoadSkin()
 	end
 
 	S:HandleScrollBar(GuildNewsContainerScrollBar, 4)
+	GuildNewsContainerScrollBar:Point("TOPLEFT", GuildNewsContainer, "TOPRIGHT", 4, -17)
 
-	--Guild News Filter
+	-- Guild News Filter
 	GuildNewsFiltersFrame:StripTextures()
 	GuildNewsFiltersFrame:SetTemplate("Transparent")
 	GuildNewsFiltersFrame:Point("TOPLEFT", GuildFrame, "TOPRIGHT", 1, 0)
@@ -272,7 +283,8 @@ local function LoadSkin()
 	S:HandleCloseButton(GuildNewsFiltersFrameCloseButton)
 	GuildNewsFiltersFrameCloseButton:Point("TOPRIGHT", 2, 2)
 
-	--Guild Info
+	-- Guild Info
+	local GuildInfoFrameInfo = _G["GuildInfoFrameInfo"]
 	GuildInfoFrameInfo:StripTextures()
 	GuildInfoFrameApplicants:StripTextures()
 	GuildInfoFrameApplicantsContainer:StripTextures()
@@ -285,53 +297,52 @@ local function LoadSkin()
 	S:HandleButton(GuildAddMemberButton)
 
 	for _, button in next, GuildInfoFrameApplicantsContainer.buttons do
-		button:SetBackdrop(nil);
-		button:GetHighlightTexture():Kill();
+		button:SetBackdrop(nil)
+		button:GetHighlightTexture():Kill()
 
-		button:StripTextures();
-		button:CreateBackdrop("Transparent");
-		button.backdrop:SetAllPoints();
-		button:StyleButton();
+		button:StripTextures()
+		button:CreateBackdrop("Transparent")
+		button.backdrop:SetAllPoints()
+		button:StyleButton()
 
-		button.bg = CreateFrame("Frame", nil, button);
-		button.bg:SetTemplate("Default", true);
-		button.bg:Point("TOPLEFT", button.class, 1, -1);
-		button.bg:Point("BOTTOMRIGHT", button.class, -1, 1);
+		button.bg = CreateFrame("Frame", nil, button)
+		button.bg:SetTemplate("Default", true)
+		button.bg:SetOutside(button.class)
 
-		button.class:SetTexture("Interface\\WorldStateFrame\\Icons-Classes");
-		button.class:SetParent(button.bg);
+		button.class:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+		button.class:SetParent(button.bg)
 
-		button.selectedTex:SetTexture(1, 1, 1, 0.3);
-		button.selectedTex:SetInside();
+		button.selectedTex:SetTexture(1, 1, 1, 0.3)
+		button.selectedTex:SetInside()
 
-		button.name:Point("TOPLEFT", 75, -10);
-		button.name:SetParent(button.backdrop);
+		button.name:Point("TOPLEFT", 75, -10)
+		button.name:SetParent(button.backdrop)
 
-		button.level:Point("TOPLEFT", 58, -10);
-		button.level:SetParent(button.backdrop);
+		button.level:Point("TOPLEFT", 58, -10)
+		button.level:SetParent(button.backdrop)
 
-		button.timeLeft:Point("LEFT", button.name, "RIGHT", -50, 0);
-		button.timeLeft:SetParent(button.backdrop);
+		button.timeLeft:Point("LEFT", button.name, "RIGHT", -50, 0)
+		button.timeLeft:SetParent(button.backdrop)
 
-		button.comment:SetParent(button.backdrop);
+		button.comment:SetParent(button.backdrop)
 		button.comment:Point("BOTTOMRIGHT", 0, 0)
 
-		button.fullComment:SetParent(button.backdrop);
+		button.fullComment:SetParent(button.backdrop)
 
-		button.tankTex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga");
-		button.tankTex:SetTexCoord(unpack(E.TexCoords));
-		button.tankTex:Size(20);
-		button.tankTex:SetParent(button.backdrop);
+		button.tankTex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga")
+		button.tankTex:SetTexCoord(unpack(E.TexCoords))
+		button.tankTex:Size(20)
+		button.tankTex:SetParent(button.backdrop)
 
-		button.healerTex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\healer.tga");
-		button.healerTex:SetTexCoord(unpack(E.TexCoords));
-		button.healerTex:Size(18);
-		button.healerTex:SetParent(button.backdrop);
+		button.healerTex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\healer.tga")
+		button.healerTex:SetTexCoord(unpack(E.TexCoords))
+		button.healerTex:Size(18)
+		button.healerTex:SetParent(button.backdrop)
 
-		button.damageTex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\dps.tga");
-		button.damageTex:SetTexCoord(unpack(E.TexCoords));
-		button.damageTex:Size(16);
-		button.damageTex:SetParent(button.backdrop);
+		button.damageTex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\dps.tga")
+		button.damageTex:SetTexCoord(unpack(E.TexCoords))
+		button.damageTex:Size(16)
+		button.damageTex:SetParent(button.backdrop)
 	end
 
 	local function SkinGuildApplicants()
@@ -351,6 +362,7 @@ local function LoadSkin()
 
 				button.name:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 				button.level:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
+				button.bg:SetBackdropBorderColor(classTextColor.r, classTextColor.g, classTextColor.b)
 			end
 		end
 	end
@@ -368,8 +380,8 @@ local function LoadSkin()
 		headerTab.backdrop:Point("BOTTOMRIGHT", -2, -1)
 		headerTab.backdrop:SetFrameLevel(headerTab:GetFrameLevel() - 1)
 
-		headerTab:HookScript("OnEnter", S.SetModifiedBackdrop);
-		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop);
+		headerTab:HookScript("OnEnter", S.SetModifiedBackdrop)
+		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
 	local backdrop1 = CreateFrame("Frame", nil, GuildInfoFrameInfo)
@@ -390,7 +402,7 @@ local function LoadSkin()
 	backdrop3:Point("BOTTOMRIGHT", 0, 3)
 	backdrop3:SetFrameLevel(GuildInfoFrameInfo:GetFrameLevel() - 1)
 
-	--Text Edit Frame
+	-- Text Edit Frame
 	GuildTextEditFrame:StripTextures()
 	GuildTextEditFrame:SetTemplate("Transparent")
 
@@ -410,22 +422,29 @@ local function LoadSkin()
 		end
 	end
 
-	--Guild Log
+	-- Guild Log
 	S:HandleScrollBar(GuildLogScrollFrameScrollBar, 4)
 
 	GuildLogFrame:StripTextures()
-	GuildLogFrame:SetTemplate("Transparent")
+	GuildLogFrame:CreateBackdrop("Transparent")
+	GuildLogFrame.backdrop:Point("TOPLEFT", 15, 0)
+	GuildLogFrame.backdrop:Point("BOTTOMRIGHT", -15, 0)
+	GuildLogFrame:Point("TOPLEFT", GuildFrame, "TOPRIGHT", -10, 0)
 
 	GuildLogContainer:StripTextures()
 
-	GuildLogScrollFrame:SetTemplate("Transparent")
+	GuildLogScrollFrame:CreateBackdrop("Transparent")
+	GuildLogScrollFrame.backdrop:Point("TOPLEFT", -2, 2)
+	GuildLogScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -3)
 
 	for i = 1, GuildLogFrame:GetNumChildren() do
 		local child = select(i, GuildLogFrame:GetChildren())
-		if(child:GetName() == "GuildLogFrameCloseButton" and child:GetWidth() < 33) then
+		if child:GetName() == "GuildLogFrameCloseButton" and child:GetWidth() < 33 then
 			S:HandleCloseButton(child)
-		elseif(child:GetName() == "GuildLogFrameCloseButton") then
+			child:Point("TOPRIGHT", -10, 5)
+		elseif child:GetName() == "GuildLogFrameCloseButton" then
 			S:HandleButton(child, true)
+			child:Point("BOTTOMRIGHT", -28, 16)
 		end
 	end
 
@@ -481,4 +500,28 @@ local function LoadSkin()
 	GuildRecruitmentDamagerButton.icon:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 end
 
-S:AddCallbackForAddon("Blizzard_GuildUI", "Guild", LoadSkin);
+S:AddCallbackForAddon("Blizzard_GuildUI", "Guild", LoadSkin)
+
+local function LoadSecondarySkin()
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.guild ~= true then return end
+
+	-- Guild Invitation PopUp Frame
+	GuildInviteFrame:SetTemplate("Transparent")
+	GuildInviteFrameBg:Kill()
+	GuildInviteFrameTopLeftCorner:Kill()
+	GuildInviteFrameTopRightCorner:Kill()
+	GuildInviteFrameBottomLeftCorner:Kill()
+	GuildInviteFrameBottomRightCorner:Kill()
+	GuildInviteFrameTopBorder:Kill()
+	GuildInviteFrameBottomBorder:Kill()
+	GuildInviteFrameLeftBorder:Kill()
+	GuildInviteFrameRightBorder:Kill()
+	GuildInviteFrameBackground:Kill()
+	GuildInviteFrameTabardRing:Kill()
+	GuildInviteFrameLevel:StripTextures()
+
+	S:HandleButton(GuildInviteFrameJoinButton)
+	S:HandleButton(GuildInviteFrameDeclineButton)
+end
+
+S:AddCallback("GuildInvite", LoadSecondarySkin)
