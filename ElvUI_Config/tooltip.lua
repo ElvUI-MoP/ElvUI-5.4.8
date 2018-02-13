@@ -2,6 +2,8 @@ local E, L, V, P, G = unpack(ElvUI);
 local TT = E:GetModule('Tooltip')
 
 local _G = _G
+local tonumber, tostring = tonumber, tostring
+
 local GameTooltipStatusBar = _G["GameTooltipStatusBar"]
 
 E.Options.args.tooltip = {
@@ -163,12 +165,12 @@ E.Options.args.tooltip = {
 						}
 					},
 					get = function(info)
-						local t = E.db.tooltip.factionColors[ info[#info] ]
-						local d = P.tooltip.factionColors[ info[#info] ]
+						local t = E.db.tooltip.factionColors[ tonumber(info[#info]) ]
+						local d = P.tooltip.factionColors[ tonumber(info[#info]) ]
 						return t.r, t.g, t.b, t.a, d.r, d.g, d.b
 					end,
 					set = function(info, r, g, b)
-						local t = E.db.tooltip.factionColors[ info[#info] ]
+						local t = E.db.tooltip.factionColors[ tonumber(info[#info]) ];
 						t.r, t.g, t.b = r, g, b
 					end
 				}
@@ -313,7 +315,7 @@ E.Options.args.tooltip = {
 }
 
 for i = 1, 8 do
-	E.Options.args.tooltip.args.general.args.factionColors.args[''..i] = {
+	E.Options.args.tooltip.args.general.args.factionColors.args[tostring(i)] = {
 		order = i,
 		type = 'color',
 		hasAlpha = false,

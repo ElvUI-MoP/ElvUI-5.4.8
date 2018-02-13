@@ -5,10 +5,11 @@ local Masque = LibStub("Masque", true)
 local _G = _G;
 local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring;
 local assert, print, type, collectgarbage, pcall, date = assert, print, type, collectgarbage, pcall, date;
-local twipe, tinsert, tremove = table.wipe, tinsert, tremove;
+local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
 local floor = floor;
 local format, find, match, strrep, len, sub, gsub = string.format, string.find, string.match, strrep, string.len, string.sub, string.gsub;
 
+local UnitGUID = UnitGUID
 local CreateFrame = CreateFrame;
 local C_PetBattles_IsInBattle = C_PetBattles.IsInBattle
 local GetCVar, GetCVarBool = GetCVar, GetCVarBool
@@ -36,7 +37,6 @@ E.myspec = GetSpecialization()
 E.myrace = select(2, UnitRace("player"));
 E.myfaction = select(2, UnitFactionGroup("player"));
 E.myname = UnitName("player");
-E.myguid = UnitGUID("player");
 E.version = GetAddOnMetadata("ElvUI", "Version"); 
 E.myrealm = GetRealmName();
 E.wowbuild = select(2, GetBuildInfo()); E.wowbuild = tonumber(E.wowbuild);
@@ -575,13 +575,6 @@ function E:CopyTable(currentTable, defaultTable)
 	return currentTable;
 end
 
-local function IsTableEmpty(tbl)
-	for _, _ in pairs(tbl) do
-		return false;
-	end
-	return true;
-end
-
 function E:RemoveEmptySubTables(tbl)
 	if(type(tbl) ~= "table") then
 		E:Print("Bad argument #1 to 'RemoveEmptySubTables' (table expected)");
@@ -590,7 +583,7 @@ function E:RemoveEmptySubTables(tbl)
 
 	for k, v in pairs(tbl) do
 		if(type(v) == "table") then
-			if(IsTableEmpty(v)) then
+			if next(v) == nil then
 				tbl[k] = nil;
 			else
 				self:RemoveEmptySubTables(v);
@@ -645,7 +638,7 @@ function E:TableToLuaString(inTable)
 			if(type(v) == "number") then
 				ret = ret .. v .. ",\n"
 			elseif(type(v) == "string") then
-				ret = ret .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"") .. "\",\n"
+				ret = ret .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124") .. "\",\n"
 			elseif(type(v) == "boolean") then
 				if(v) then
 					ret = ret .. "true,\n";
@@ -732,7 +725,7 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 				if(type(v) == "number") then
 					returnString = returnString .. v .. ";\n";
 				elseif(type(v) == "string") then
-					returnString = returnString .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"") .. "\";\n";
+					returnString = returnString .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124") .. "\"\n"
 				elseif(type(v) == "boolean") then
 					if(v) then
 						returnString = returnString .. "true;\n";
@@ -791,8 +784,8 @@ function E:SendMessage()
 	end
 end
 
-local myRealm = gsub(E.myrealm,'[%s%-]','')
-local myName = E.myname..'-'..myRealm
+local myRealm = gsub(E.myrealm,"[%s%-]","")
+local myName = E.myname.."-"..myRealm
 
 local function SendRecieve(_, event, prefix, message, _, sender)
 	if(not E.global.general.versionCheck) then return end
@@ -1019,7 +1012,7 @@ function E:RegisterObjectForVehicleLock(object, originalParent)
 		return;
 	end
 
-	local object = _G[object] or object;
+	object = _G[object] or object
 	if(object.IsProtected and object:IsProtected()) then
 		E:Print("Error. Object is protected and cannot be changed in combat.");
 		return;
@@ -1038,7 +1031,7 @@ function E:UnregisterObjectForVehicleLock(object)
 		return;
 	end
 
-	local object = _G[object] or object;
+	object = _G[object] or object
 	if(not E.VehicleLocks[object]) then
 		return;
 	end
@@ -1125,7 +1118,7 @@ function E:InitializeInitialModules()
 
 	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E["RegisteredInitialModules"]) do
-		local module = self:GetModule(module, true);
+		module = self:GetModule(module, true)
 		if(module and module.Initialize) then
 			local _, catch = pcall(module.Initialize, module);
 			if(catch and GetCVarBool("scriptErrors") == 1) then
@@ -1151,7 +1144,7 @@ function E:InitializeModules()
 
 	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E["RegisteredModules"]) do
-		local module = self:GetModule(module);
+		module = self:GetModule(module)
 		if(module.Initialize) then
 			local _, catch = pcall(module.Initialize, module);
 			if(catch and GetCVarBool("scriptErrors") == 1) then
@@ -1227,7 +1220,7 @@ function E:GetTopCPUFunc(msg)
 	if(module == "all") then
 		for _, registeredModule in pairs(self["RegisteredModules"]) do
 			mod = self:GetModule(registeredModule, true) or self;
-			for name, func in pairs(mod) do
+			for name in pairs(mod) do
 				if(type(mod[name]) == "function" and name ~= "GetModule") then
 					CPU_USAGE[registeredModule .. ":" .. name] = GetFunctionCPUUsage(mod[name], true);
 				end
@@ -1235,7 +1228,7 @@ function E:GetTopCPUFunc(msg)
 		end
 	else
 		mod = self:GetModule(module, true) or self;
-		for name, func in pairs(mod) do
+		for name in pairs(mod) do
 			if(type(mod[name]) == "function" and name ~= "GetModule") then
 				CPU_USAGE[module .. ":" .. name] = GetFunctionCPUUsage(mod[name], true);
 			end
@@ -1251,6 +1244,7 @@ function E:Initialize()
 	twipe(self.global);
 	twipe(self.private)
 
+	self.myguid = UnitGUID("player")
 	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF);
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll");
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll");

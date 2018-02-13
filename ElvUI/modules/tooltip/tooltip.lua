@@ -5,12 +5,11 @@ local _G = _G;
 local unpack, tonumber, select, pairs = unpack, tonumber, select, pairs;
 local twipe, tinsert, tconcat = table.wipe, table.insert, table.concat;
 local floor = math.floor;
-local find, format, sub = string.find, string.format, string.sub;
+local find, format = string.find, string.format
 
 local CreateFrame = CreateFrame;
 local GetTime = GetTime;
 local UnitGUID = UnitGUID;
-local GetScreenWidth = GetScreenWidth;
 local InCombatLockdown = InCombatLockdown;
 local IsShiftKeyDown = IsShiftKeyDown;
 local IsControlKeyDown = IsControlKeyDown;
@@ -302,7 +301,7 @@ function TT:ShowInspectInfo(tt, unit, level, r, g, b, numTries)
 	if(not canInspect or level < 10 or numTries > 1) then return end
 
 	local GUID = UnitGUID(unit)
-	if(GUID == playerGUID) then
+	if(GUID == E.myguid) then
 		tt:AddDoubleLine(L["Talent Specialization:"], self:GetTalentSpec(unit, true), nil, nil, nil, r, g, b)
 		tt:AddDoubleLine(L["Item Level:"], floor(select(2, GetAverageItemLevel())), nil, nil, nil, 1, 1, 1)
 	elseif(inspectCache[GUID]) then
@@ -415,15 +414,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
 			color = TAPPED_COLOR
 		else
-			local unitReaction = UnitReaction(unit, "player")
-			if E.db.tooltip.useCustomFactionColors then
-				if unitReaction then
-					unitReaction = format("%s", unitReaction)
-					color = E.db.tooltip.factionColors[unitReaction]
-				end
-			else
-				color = FACTION_BAR_COLORS[unitReaction]
-			end
+			color = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction(unit, "player")] or FACTION_BAR_COLORS[UnitReaction(unit, "player")]
 		end
 
 		local levelLine = self:GetLevelLine(tt, 2)
@@ -468,7 +459,8 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 			local _, class = UnitClass(unitTarget);
 			targetColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class];
 		else
-			targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[""..UnitReaction(unitTarget, "player")] or FACTION_BAR_COLORS[UnitReaction(unitTarget, "player")]
+			local reaction = UnitReaction(unitTarget, "player") or 4
+			targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[reaction] or FACTION_BAR_COLORS[reaction]
 		end
 
 		GameTooltip:AddDoubleLine(format("%s:", TARGET), format("|cff%02x%02x%02x%s|r", targetColor.r * 255, targetColor.g * 255, targetColor.b * 255, UnitName(unitTarget)))
@@ -602,6 +594,7 @@ function TT:SetUnitAura(tt, ...)
 			local name = UnitName(caster)
 			local _, class = UnitClass(caster)
 			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class];
+			if not color then color = RAID_CLASS_COLORS["PRIEST"] end
 			tt:AddDoubleLine(("|cFFCA3C3C%s|r %d"):format(ID, id), format("%s%s", E:RGBToHex(color.r, color.g, color.b), name))
 		else
 			tt:AddLine(("|cFFCA3C3C%s|r %d"):format(ID, id))
@@ -761,8 +754,6 @@ function TT:Initialize()
 	self:RegisterEvent("MODIFIER_STATE_CHANGED")
 
 	keybindFrame = ElvUI_KeyBinder
-
-	playerGUID = UnitGUID("player")
 end
 
 local function InitializeCallback()

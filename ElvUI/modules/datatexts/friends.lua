@@ -48,7 +48,7 @@ local menuList = {
 	}
 };
 
-local function inviteClick(self, name)
+local function inviteClick(_, name)
 	menuFrame:Hide();
 
 	if(type(name) ~= "number") then
@@ -58,7 +58,7 @@ local function inviteClick(self, name)
 	end
 end
 
-local function whisperClick(self, name)
+local function whisperClick(_, name)
 	menuFrame:Hide();
 
 	if(battleNet) then
@@ -170,7 +170,7 @@ local function OnEvent(self, event, ...)
 	lastPanel = self;
 end
 
-local function OnClick(self, btn)
+local function OnClick(_, btn)
 	DT.tooltip:Hide();
 
 	if(btn == "RightButton") then

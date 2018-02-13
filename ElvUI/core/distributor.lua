@@ -386,6 +386,7 @@ function D:Decode(dataString)
 		end
 
 		profileDataAsString = format("%s%s", profileDataAsString, "}");
+		profileDataAsString = gsub(profileDataAsString, "\124\124", "\124")
 		profileType, profileKey = E:StringSplitMultiDelim(profileInfo, "::");
 
 		local profileToTable = loadstring(format("%s %s", "return", profileDataAsString));

@@ -155,7 +155,7 @@ local eventHandlers = {
 	["PLAYER_GUILD_UPDATE"] = function (self, arg1)
 		GuildRoster()
 	end,
-	["GUILD_MOTD"] = function (self, arg1)
+	["GUILD_MOTD"] = function (_, arg1)
 		guildMotD = arg1
 	end,
 	["ELVUI_FORCE_RUN"] = E.noop,

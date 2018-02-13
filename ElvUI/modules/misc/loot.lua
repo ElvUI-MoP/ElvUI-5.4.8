@@ -180,11 +180,11 @@ function M:UPDATE_MASTER_LOOT_LIST()
 	MasterLooterFrame_UpdatePlayers();
 end
 
-function M:LOOT_OPENED(_, autoloot)
+function M:LOOT_OPENED(_, autoLoot)
 	lootFrame:Show()
 
 	if(not lootFrame:IsShown()) then
-		CloseLoot(not autoLoot)
+		CloseLoot(autoLoot == 0)
 	end
 
 	local items = GetNumLootItems()

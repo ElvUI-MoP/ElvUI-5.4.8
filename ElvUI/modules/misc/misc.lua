@@ -21,7 +21,6 @@ local GetRaidRosterInfo = GetRaidRosterInfo;
 local UninviteUnit = UninviteUnit;
 local UnitName = UnitName;
 local GetCoinTextureString = GetCoinTextureString
-local GetMouseFocus = GetMouseFocus
 local GetUnitSpeed = GetUnitSpeed
 local LeaveParty = LeaveParty;
 local RaidNotice_AddMessage = RaidNotice_AddMessage;
@@ -154,31 +153,11 @@ function M:DisbandRaidGroup()
 	LeaveParty()
 end
 
-local function IsWorldMapFocused(frame)
-	if not frame then return; end
-
-	if(not GetCVarBool("miniWorldMap")) then
-		local frameName = frame:GetName();
-		if(frameName and frameName == "WorldMapFrame") then
-			return true;
-		end
-
-		if not frame:GetParent() or not frame:GetParent():GetName() then return; end
-
-		local parentName = frame:GetParent():GetName();
-		if(parentName and (parentName == "WorldMapFrame" or parentName == "WorldMapButton" or parentName == "WorldMapPOIFrame")) then
-			return true
-		end
-	else
-		return WorldMapFrame:IsMouseOver();
-	end
-end
-
 function M:CheckMovement()
 	if(not WorldMapFrame:IsShown()) then return; end
 
 	if GetUnitSpeed("player") ~= 0 then
-		if(IsWorldMapFocused(GetMouseFocus())) then
+		if WorldMapPositioningGuide:IsMouseOver() then
 			WorldMapFrame:SetAlpha(1)
 		else
 			WorldMapFrame:SetAlpha(E.global.general.mapAlphaWhenMoving)

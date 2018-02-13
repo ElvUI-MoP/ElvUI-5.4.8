@@ -8,54 +8,57 @@ local format, sub, upper, split, utf8sub = string.format, string.sub, string.upp
 local CreateFrame = CreateFrame
 local GetScreenWidth, GetScreenHeight = GetScreenWidth, GetScreenHeight
 
+--Return short value of a number
+local shortValueDec
 function E:ShortValue(v)
+	shortValueDec = format("%%.%df", E.db.general.decimalLength or 1)
 	if E.db.general.numberPrefixStyle == "METRIC" then
 		if abs(v) >= 1e9 then
-			return format("%.1fG", v / 1e9)
+			return format(shortValueDec.."G", v / 1e9)
 		elseif abs(v) >= 1e6 then
-			return format("%.1fM", v / 1e6)
+			return format(shortValueDec.."M", v / 1e6)
 		elseif abs(v) >= 1e3 then
-			return format("%.1fk", v / 1e3)
+			return format(shortValueDec.."k", v / 1e3)
 		else
-			return format("%d", v)
+			return format("%s", v)
 		end
 	elseif E.db.general.numberPrefixStyle == "CHINESE" then
 		if abs(v) >= 1e8 then
-			return format("%.1fY", v / 1e8)
+			return format(shortValueDec.."Y", v / 1e8)
 		elseif abs(v) >= 1e4 then
-			return format("%.1fW", v / 1e4)
+			return format(shortValueDec.."W", v / 1e4)
 		else
-			return format("%d", v)
+			return format("%s", v)
 		end
 	elseif E.db.general.numberPrefixStyle == "KOREAN" then
 		if abs(v) >= 1e8 then
-			return format("%.1f억", v / 1e8)
+			return format(shortValueDec.."억", v / 1e8)
 		elseif abs(v) >= 1e4 then
-			return format("%.1f만", v / 1e4)
+			return format(shortValueDec.."만", v / 1e4)
 		elseif abs(v) >= 1e3 then
-			return format("%.1f천", v / 1e3)
+			return format(shortValueDec.."천", v / 1e3)
 		else
-			return format("%d", v)
+			return format("%s", v)
 		end
 	elseif E.db.general.numberPrefixStyle == "GERMAN" then
 		if abs(v) >= 1e9 then
-			return format("%.1fMrd", v / 1e9)
+			return format(shortValueDec.."Mrd", v / 1e9)
 		elseif abs(v) >= 1e6 then
-			return format("%.1fMio", v / 1e6)
+			return format(shortValueDec.."Mio", v / 1e6)
 		elseif abs(v) >= 1e3 then
-			return format("%.1fTsd", v / 1e3)
+			return format(shortValueDec.."Tsd", v / 1e3)
 		else
-			return format("%d", v)
+			return format("%s", v)
 		end
 	else
 		if abs(v) >= 1e9 then
-			return format("%.1fB", v / 1e9)
+			return format(shortValueDec.."B", v / 1e9)
 		elseif abs(v) >= 1e6 then
-			return format("%.1fM", v / 1e6)
+			return format(shortValueDec.."M", v / 1e6)
 		elseif abs(v) >= 1e3 then
-			return format("%.1fK", v / 1e3)
+			return format(shortValueDec.."K", v / 1e3)
 		else
-			return format("%d", v)
+			return format("%s", v)
 		end
 	end
 end
@@ -186,6 +189,8 @@ function E:GetXYOffset(position, override)
 end
 
 local styles = {
+	-- keep percents in this table with `PERCENT` in the key, and `%.1f%%` in the value somewhere.
+	-- we use these two things to follow our setting for decimal length. they need to be EXACT.
 	["CURRENT"] = "%s",
 	["CURRENT_MAX"] = "%s - %s",
 	["CURRENT_PERCENT"] = "%s - %.1f%%",
@@ -194,6 +199,7 @@ local styles = {
 	["DEFICIT"] = "-%s"
 };
 
+local gftDec, gftUseStyle, gftDeficit
 function E:GetFormattedText(style, min, max)
 	assert(styles[style], "Invalid format style: "..style);
 	assert(min, "You need to provide a current value. Usage: E:GetFormattedText(style, min, max)");
@@ -201,28 +207,26 @@ function E:GetFormattedText(style, min, max)
 
 	if(max == 0) then max = 1; end
 
-	local useStyle = styles[style];
+	gftDec = (E.db.general.decimalLength or 1)
+	if (gftDec ~= 1) and style:find("PERCENT") then
+		gftUseStyle = styles[style]:gsub("%%%.1f%%%%", "%%."..gftDec.."f%%%%")
+	else
+		gftUseStyle = styles[style]
+	end
 
-	if(style == "DEFICIT") then
-		local deficit = max - min;
-		if(deficit <= 0) then
-			return "";
-		else
-			return format(useStyle, E:ShortValue(deficit));
-		end
-	elseif(style == "PERCENT") then
-		local s = format(useStyle, min / max * 100);
-		return s;
-	elseif(style == "CURRENT" or ((style == "CURRENT_MAX" or style == "CURRENT_MAX_PERCENT" or style == "CURRENT_PERCENT") and min == max)) then
-		return format(styles["CURRENT"], E:ShortValue(min));
-	elseif(style == "CURRENT_MAX") then
-		return format(useStyle, E:ShortValue(min), E:ShortValue(max));
-	elseif(style == "CURRENT_PERCENT") then
-		local s = format(useStyle, E:ShortValue(min), min / max * 100);
-		return s;
-	elseif(style == "CURRENT_MAX_PERCENT") then
-		local s = format(useStyle, E:ShortValue(min), E:ShortValue(max), min / max * 100);
-		return s;
+	if style == "DEFICIT" then
+		gftDeficit = max - min
+		return ((gftDeficit > 0) and format(gftUseStyle, E:ShortValue(gftDeficit))) or ""
+	elseif style == "PERCENT" then
+		return format(gftUseStyle, min / max * 100)
+	elseif style == "CURRENT" or ((style == "CURRENT_MAX" or style == "CURRENT_MAX_PERCENT" or style == "CURRENT_PERCENT") and min == max) then
+		return format(styles["CURRENT"], E:ShortValue(min))
+	elseif style == "CURRENT_MAX" then
+		return format(gftUseStyle,  E:ShortValue(min), E:ShortValue(max))
+	elseif style == "CURRENT_PERCENT" then
+		return format(gftUseStyle, E:ShortValue(min), min / max * 100)
+	elseif style == "CURRENT_MAX_PERCENT" then
+		return format(gftUseStyle, E:ShortValue(min), E:ShortValue(max), min / max * 100)
 	end
 end
 
@@ -269,34 +273,34 @@ function E:AbbreviateString(string, allUpper)
 	return newString
 end
 
-local waitTable = {};
-local waitFrame;
+local waitTable = {}
+local waitFrame
 function E:Delay(delay, func, ...)
-	if(type(delay) ~= "number" or type(func) ~= "function") then
-		return false;
+	if (type(delay) ~= "number") or (type(func) ~= "function") then
+		return false
 	end
-	if(waitFrame == nil) then
-		waitFrame = CreateFrame("Frame","WaitFrame", E.UIParent);
+	if waitFrame == nil then
+		waitFrame = CreateFrame("Frame","WaitFrame", E.UIParent)
 		waitFrame:SetScript("onUpdate",function (_, elapse)
-			local count = #waitTable;
-			local i = 1;
-			while(i <= count) do
-				local waitRecord = tremove(waitTable, i);
-				local d = tremove(waitRecord, 1);
-				local f = tremove(waitRecord, 1);
-				local p = tremove(waitRecord, 1);
-				if(d > elapse) then
-					tinsert(waitTable, i, {d-elapse, f, p});
-					i = i + 1;
+			local waitRecord, waitDelay, waitFunc, waitParams
+			local i, count = 1, #waitTable
+			while i <= count do
+				waitRecord = tremove(waitTable,i)
+				waitDelay = tremove(waitRecord,1)
+				waitFunc = tremove(waitRecord,1)
+				waitParams = tremove(waitRecord,1)
+				if waitDelay > elapse then
+					tinsert(waitTable,i,{waitDelay-elapse,waitFunc,waitParams})
+					i = i + 1
 				else
-					count = count - 1;
-					f(unpack(p));
+					count = count - 1
+					waitFunc(unpack(waitParams))
 				end
 			end
-		end);
+		end)
 	end
-	tinsert(waitTable, {delay, func, {...}});
-	return true;
+	tinsert(waitTable, {delay, func, {...}})
+	return true
 end
 
 function E:StringTitle(str)
