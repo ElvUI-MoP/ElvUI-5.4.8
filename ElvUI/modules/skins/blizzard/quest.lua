@@ -79,11 +79,10 @@ local function LoadSkin()
 			quality = select(3, GetItemInfo(link))
 		end
 
-		if frame.objectType == "currency" then
-			if frame then
-				frame:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-				frame.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-			end
+		if frame and frame.objectType == "currency" then
+			frame:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			frame.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+
 			text:SetTextColor(1, 1, 1)
 		else
 			if quality and quality > 1 then
