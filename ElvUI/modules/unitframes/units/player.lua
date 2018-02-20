@@ -22,32 +22,39 @@ function UF:Construct_PlayerFrame(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame);
 	frame.Castbar = self:Construct_Castbar(frame, L["Player Castbar"]);
 
-	if(E.myclass == "PALADIN") then
-		frame.HolyPower = self:Construct_PaladinResourceBar(frame)
-		frame.ClassBar = "HolyPower"
-	elseif(E.myclass == "WARLOCK") then
-		frame.ShardBar = self:Construct_WarlockResourceBar(frame)
-		frame.ClassBar = "ShardBar"
-	elseif(E.myclass == "DEATHKNIGHT") then
-		frame.Runes = self:Construct_DeathKnightResourceBar(frame);
-		frame.ClassBar = "Runes";
-	elseif(E.myclass == "DRUID") then
-		frame.EclipseBar = self:Construct_DruidResourceBar(frame)
-		frame.DruidAltMana = self:Construct_DruidAltManaBar(frame)
-		frame.ClassBar = "EclipseBar"
-	elseif(E.myclass == "MONK") then
-		frame.Harmony = self:Construct_MonkResourceBar(frame)
+	if CAN_HAVE_CLASSBAR then
+		frame.ClassBarHolder = CreateFrame("Frame", nil, frame)
+		frame.ClassBarHolder:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 150)
+	end
+
+	if E.myclass == "PALADIN" then
+		frame.ClassPower = self:Construct_ClassBar(frame)
+		frame.ClassBar = "ClassPower"
+	elseif E.myclass == "MONK" then
+		frame.ClassPower = self:Construct_ClassBar(frame)
+		frame.ClassBar = "ClassPower"
 		frame.Stagger = self:Construct_Stagger(frame)
-		frame.ClassBar = "Harmony"
-	elseif(E.myclass == "PRIEST") then
-		frame.ShadowOrbs = self:Construct_PriestResourceBar(frame)
-		frame.ClassBar = "ShadowOrbs"
-	elseif(E.myclass == "MAGE") then
+	elseif E.myclass == "PRIEST" then
+		frame.ClassPower = self:Construct_ClassBar(frame)
+		frame.ClassBar = "ClassPower"
+	elseif E.myclass == "WARLOCK" then
+		frame.SoulShards = self:Construct_SoulShardsBar(frame)
+		frame.ClassBar = "SoulShards"
+		frame.BurningEmbers = self:Construct_BurningEmbersBar(frame)
+		frame.DemonicFury = self:Construct_DemonicFuryBar(frame)
+	elseif E.myclass == "DEATHKNIGHT" then
+		frame.Runes = self:Construct_DeathKnightResourceBar(frame)
+		frame.ClassBar = "Runes"
+	elseif E.myclass == "MAGE" then
 		frame.ArcaneChargeBar = self:Construct_MageResourceBar(frame)
 		frame.ClassBar = "ArcaneChargeBar"
 	elseif E.myclass == "ROGUE" then
 		frame.Anticipation = self:Construct_RogueResourceBar(frame, nil, UF.UpdateClassBar)
 		frame.ClassBar = "Anticipation"
+	elseif E.myclass == "DRUID"  then
+		frame.EclipseBar = self:Construct_DruidEclipseBar(frame)
+		frame.ClassBar = "EclipseBar"
+		frame.AdditionalPower = self:Construct_AdditionalPowerBar(frame)
 	end
 
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame);

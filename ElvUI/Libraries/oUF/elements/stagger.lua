@@ -101,15 +101,15 @@ local Enable = function(self, unit)
 		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
 		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
 
-		if(element:IsObjectType'StatusBar' and not element:GetStatusBarTexture()) then
+		if(element:IsObjectType('StatusBar') and not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
 		end
 
 		MonkStaggerBar.Show = MonkStaggerBar.Hide
-		MonkStaggerBar:UnregisterEvent'PLAYER_ENTERING_WORLD'
-		MonkStaggerBar:UnregisterEvent'PLAYER_SPECIALIZATION_CHANGED'
-		MonkStaggerBar:UnregisterEvent'UNIT_DISPLAYPOWER'
-		MonkStaggerBar:UnregisterEvent'UPDATE_VEHICLE_ACTION_BAR'
+		MonkStaggerBar:UnregisterEvent('PLAYER_ENTERING_WORLD')
+		MonkStaggerBar:UnregisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+		MonkStaggerBar:UnregisterEvent('UNIT_DISPLAYPOWER')
+		MonkStaggerBar:UnregisterEvent('UPDATE_VEHICLE_ACTION_BAR')
 
 		return true
 	end
@@ -125,10 +125,10 @@ local Disable = function(self)
 
 		MonkStaggerBar.Show = nil
 		MonkStaggerBar:Show()
-		MonkStaggerBar:UnregisterEvent'PLAYER_ENTERING_WORLD'
-		MonkStaggerBar:UnregisterEvent'PLAYER_SPECIALIZATION_CHANGED'
-		MonkStaggerBar:UnregisterEvent'UNIT_DISPLAYPOWER'
-		MonkStaggerBar:UnregisterEvent'UPDATE_VEHICLE_ACTION_BAR'
+		MonkStaggerBar:UnregisterEvent('PLAYER_ENTERING_WORLD')
+		MonkStaggerBar:UnregisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+		MonkStaggerBar:UnregisterEvent('UNIT_DISPLAYPOWER')
+		MonkStaggerBar:UnregisterEvent('UPDATE_VEHICLE_ACTION_BAR')
 	end
 end
 

@@ -349,16 +349,6 @@ function UF:UpdateColors()
 	ElvUF.colors.power.ENERGY = E:GetColorTable(db.power.ENERGY)
 	ElvUF.colors.power.RUNIC_POWER = E:GetColorTable(db.power.RUNIC_POWER)
 
-	ElvUF.colors.runes = {}
-	ElvUF.colors.runes[1] = E:GetColorTable(db.classResources.DEATHKNIGHT[1])
-	ElvUF.colors.runes[2] = E:GetColorTable(db.classResources.DEATHKNIGHT[2])
-	ElvUF.colors.runes[3] = E:GetColorTable(db.classResources.DEATHKNIGHT[3])
-	ElvUF.colors.runes[4] = E:GetColorTable(db.classResources.DEATHKNIGHT[4])
-
-	ElvUF.colors.HolyPower = E:GetColorTable(db.classResources.PALADIN)
-
-	ElvUF.colors.ArcaneChargeBar = E:GetColorTable(db.classResources.MAGE)
-
 	ElvUF.colors.ComboPoints = {}
 	ElvUF.colors.ComboPoints[1] = E:GetColorTable(db.classResources.comboPoints[1])
 	ElvUF.colors.ComboPoints[2] = E:GetColorTable(db.classResources.comboPoints[2])
@@ -366,30 +356,39 @@ function UF:UpdateColors()
 	ElvUF.colors.ComboPoints[4] = E:GetColorTable(db.classResources.comboPoints[4])
 	ElvUF.colors.ComboPoints[5] = E:GetColorTable(db.classResources.comboPoints[5])
 
-	ElvUF.colors.Anticipation = {}
-	ElvUF.colors.Anticipation[1] = E:GetColorTable(db.classResources.ROGUE[1])
-	ElvUF.colors.Anticipation[2] = E:GetColorTable(db.classResources.ROGUE[2])
-	ElvUF.colors.Anticipation[3] = E:GetColorTable(db.classResources.ROGUE[3])
-	ElvUF.colors.Anticipation[4] = E:GetColorTable(db.classResources.ROGUE[4])
-	ElvUF.colors.Anticipation[5] = E:GetColorTable(db.classResources.ROGUE[5])
+	ElvUF.colors.runes = {}
+	ElvUF.colors.runes[1] = E:GetColorTable(db.classResources.DEATHKNIGHT[1])
+	ElvUF.colors.runes[2] = E:GetColorTable(db.classResources.DEATHKNIGHT[2])
+	ElvUF.colors.runes[3] = E:GetColorTable(db.classResources.DEATHKNIGHT[3])
+	ElvUF.colors.runes[4] = E:GetColorTable(db.classResources.DEATHKNIGHT[4])
 
-	ElvUF.colors.ShadowOrbs = E:GetColorTable(db.classResources.PRIEST)
+	ElvUF.colors.ClassBars = {}
+	ElvUF.colors.ClassBars.PALADIN = E:GetColorTable(db.classResources.PALADIN)
+	ElvUF.colors.ClassBars.PRIEST = E:GetColorTable(db.classResources.PRIEST)
+	ElvUF.colors.ClassBars.MAGE = E:GetColorTable(db.classResources.MAGE)
 
-	ElvUF.colors.EclipseBar = {}
-	ElvUF.colors.EclipseBar[1] = E:GetColorTable(db.classResources.DRUID[1])
-	ElvUF.colors.EclipseBar[2] = E:GetColorTable(db.classResources.DRUID[2])
+	ElvUF.colors.ClassBars.DRUID = {}
+	ElvUF.colors.ClassBars.DRUID[1] = E:GetColorTable(db.classResources.DRUID[1])
+	ElvUF.colors.ClassBars.DRUID[2] = E:GetColorTable(db.classResources.DRUID[2])
 
-	ElvUF.colors.Harmony = {}
-	ElvUF.colors.Harmony[1] = E:GetColorTable(db.classResources.MONK[1])
-	ElvUF.colors.Harmony[2] = E:GetColorTable(db.classResources.MONK[2])
-	ElvUF.colors.Harmony[3] = E:GetColorTable(db.classResources.MONK[3])
-	ElvUF.colors.Harmony[4] = E:GetColorTable(db.classResources.MONK[4])
-	ElvUF.colors.Harmony[5] = E:GetColorTable(db.classResources.MONK[5])
+	ElvUF.colors.ClassBars.WARLOCK = {}
+	ElvUF.colors.ClassBars.WARLOCK[1] = E:GetColorTable(db.classResources.WARLOCK[1])
+	ElvUF.colors.ClassBars.WARLOCK[2] = E:GetColorTable(db.classResources.WARLOCK[2])
+	ElvUF.colors.ClassBars.WARLOCK[3] = E:GetColorTable(db.classResources.WARLOCK[3])
 
-	ElvUF.colors.ShardBar = {}
-	ElvUF.colors.ShardBar[1] = E:GetColorTable(db.classResources.WARLOCK[1])
-	ElvUF.colors.ShardBar[2] = E:GetColorTable(db.classResources.WARLOCK[2])
-	ElvUF.colors.ShardBar[3] = E:GetColorTable(db.classResources.WARLOCK[3])
+	ElvUF.colors.ClassBars.MONK = {}
+	ElvUF.colors.ClassBars.MONK[1] = E:GetColorTable(db.classResources.MONK[1])
+	ElvUF.colors.ClassBars.MONK[2] = E:GetColorTable(db.classResources.MONK[2])
+	ElvUF.colors.ClassBars.MONK[3] = E:GetColorTable(db.classResources.MONK[3])
+	ElvUF.colors.ClassBars.MONK[4] = E:GetColorTable(db.classResources.MONK[4])
+	ElvUF.colors.ClassBars.MONK[5] = E:GetColorTable(db.classResources.MONK[5])
+
+	ElvUF.colors.ClassBars.ROGUE = {}
+	ElvUF.colors.ClassBars.ROGUE[1] = E:GetColorTable(db.classResources.ROGUE[1])
+	ElvUF.colors.ClassBars.ROGUE[2] = E:GetColorTable(db.classResources.ROGUE[2])
+	ElvUF.colors.ClassBars.ROGUE[3] = E:GetColorTable(db.classResources.ROGUE[3])
+	ElvUF.colors.ClassBars.ROGUE[4] = E:GetColorTable(db.classResources.ROGUE[4])
+	ElvUF.colors.ClassBars.ROGUE[5] = E:GetColorTable(db.classResources.ROGUE[5])
 
 	ElvUF.colors.reaction[1] = bad
 	ElvUF.colors.reaction[2] = bad

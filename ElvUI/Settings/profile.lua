@@ -903,17 +903,20 @@ P["unitframe"] = {
 				["enable"] = true,
 				["fill"] = "fill",
 				["height"] = 10,
+				["autoHide"] = false,
+				["additionalPowerText"] = true,
 				["detachFromFrame"] = false,
 				["detachedWidth"] = 250,
-				["autoHide"] = false,
 				["parent"] = "FRAME",
 				["verticalOrientation"] = false,
+				["orientation"] = "HORIZONTAL",
+				["spacing"] = 1,
 				["strataAndLevel"] = {
 					["useCustomStrata"] = false,
 					["frameStrata"] = "LOW",
 					["useCustomLevel"] = false,
 					["frameLevel"] = 1
-				},
+				}
 			},
 			["aurabar"] = {
 				["enable"] = true,

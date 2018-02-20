@@ -1,139 +1,140 @@
 if(select(2, UnitClass('player')) ~= 'DRUID') then return end
 
-local parent, ns = ...
+local _, ns = ...
 local oUF = ns.oUF
 
-local ECLIPSE_BAR_SOLAR_BUFF_ID = ECLIPSE_BAR_SOLAR_BUFF_ID
-local ECLIPSE_BAR_LUNAR_BUFF_ID = ECLIPSE_BAR_LUNAR_BUFF_ID
 local SPELL_POWER_ECLIPSE = SPELL_POWER_ECLIPSE
 local MOONKIN_FORM = MOONKIN_FORM
 
-local UNIT_POWER = function(self, event, unit, powerType)
+local function Update(self, event, unit, powerType)
 	if(self.unit ~= unit or (event == 'UNIT_POWER' and powerType ~= 'ECLIPSE')) then return end
 
-	local eb = self.EclipseBar
+	local element = self.EclipseBar
+	if(element.PreUpdate) then element:PreUpdate(unit) end
 
-	local power = UnitPower('player', SPELL_POWER_ECLIPSE)
-	local maxPower = UnitPowerMax('player', SPELL_POWER_ECLIPSE)
+	local cur = UnitPower('player', SPELL_POWER_ECLIPSE)
+	local max = UnitPowerMax('player', SPELL_POWER_ECLIPSE)
 
-	if(eb.LunarBar) then
-		eb.LunarBar:SetMinMaxValues(-maxPower, maxPower)
-		eb.LunarBar:SetValue(power)
+	if(element.LunarBar) then
+		element.LunarBar:SetMinMaxValues(-max, max)
+		element.LunarBar:SetValue(cur)
 	end
 
-	if(eb.SolarBar) then
-		eb.SolarBar:SetMinMaxValues(-maxPower, maxPower)
-		eb.SolarBar:SetValue(power * -1)
+	if(element.SolarBar) then
+		element.SolarBar:SetMinMaxValues(-max, max)
+		element.SolarBar:SetValue(cur * -1)
 	end
 
-	if(eb.PostUpdatePower) then
-		return eb:PostUpdatePower(unit)
+	if(element.PostUpdate) then
+		return element:PostUpdate(unit, cur, max, event)
 	end
 end
 
-local UPDATE_VISIBILITY = function(self, event)
-	local eb = self.EclipseBar
+local function Path(self, ...)
+	return (self.EclipseBar.Override or Update) (self, ...)
+end
 
-	local showBar
-	local form = GetShapeshiftFormID()
-	if(not form) then
-		local ptt = GetSpecialization()
-		if(ptt and ptt == 1) then
-			showBar = true
-		end
-	elseif(form == MOONKIN_FORM) then
-		showBar = true
+local function EclipseDirection(self, event, status)
+	local element = self.EclipseBar
+
+	element.direction = status
+
+	if(element.PostDirectionChange) then
+		return element:PostDirectionChange(status)
+	end
+end
+
+local function EclipseDirectionPath(self, ...)
+	return (self.EclipseBar.OverrideEclipseDirection or EclipseDirection) (self, ...)
+end
+
+local function ElementEnable(self)
+	self:RegisterEvent("UNIT_POWER", Path)
+
+	self.EclipseBar:Show()
+	EclipseDirectionPath(self, 'ElementEnable', GetEclipseDirection())
+
+	if self.EclipseBar.PostUpdateVisibility then
+		self.EclipseBar:PostUpdateVisibility(true, not self.EclipseBar.isEnabled)
 	end
 
-	if(showBar) then
-		eb:Show()
+	self.EclipseBar.isEnabled = true
+
+	Path(self, 'ElementEnable', 'player', SPELL_POWER_ECLIPSE)
+end
+
+local function ElementDisable(self)
+	self:UnregisterEvent("UNIT_POWER", Path)
+
+	self.EclipseBar:Hide()
+
+	if self.EclipseBar.PostUpdateVisibility then
+		self.EclipseBar:PostUpdateVisibility(false, self.EclipseBar.isEnabled)
+	end
+
+	self.EclipseBar.isEnabled = nil
+
+	Path(self, 'ElementDisable', 'player', SPELL_POWER_ECLIPSE)
+end
+
+local function Visibility(self)
+	local shouldEnable
+
+	if not UnitHasVehicleUI('player') then
+		local form = GetShapeshiftFormID()
+		local spec = GetSpecialization()
+
+		if spec and spec == 1 and (form == MOONKIN_FORM or not form) then
+			shouldEnable = true
+		end
+	end
+
+	if(shouldEnable) then
+		ElementEnable(self)
 	else
-		eb:Hide()
-	end
-
-	if(eb.PostUpdateVisibility) then
-		return eb:PostUpdateVisibility(self.unit)
+		ElementDisable(self)
 	end
 end
 
-local UNIT_AURA = function(self, event, unit)
-	if(self.unit ~= unit) or not unit then return end
+local function VisibilityPath(self, ...)
+	return (self.EclipseBar.OverrideVisibility or Visibility) (self, ...)
+end
 
-	local i = 1
-	local hasSolarEclipse, hasLunarEclipse
-	repeat
-		local _, _, _, _, _, _, _, _, _, _, spellID = UnitAura(unit, i, 'HELPFUL')
+local function ForceUpdate(element)
+	EclipseDirectionPath(element.__owner, 'ForceUpdate', GetEclipseDirection())
+	return VisibilityPath(element.__owner, 'ForceUpdate', element.__owner.unit, 'ECLIPSE')
+end
 
-		if(spellID == ECLIPSE_BAR_SOLAR_BUFF_ID) then
-			hasSolarEclipse = true
-		elseif(spellID == ECLIPSE_BAR_LUNAR_BUFF_ID) then
-			hasLunarEclipse = true
+local function Enable(self, unit)
+	local element = self.EclipseBar
+	if(element and unit == 'player') then
+		element.__owner = self
+		element.ForceUpdate = ForceUpdate
+
+		self:RegisterEvent('ECLIPSE_DIRECTION_CHANGE', EclipseDirectionPath, true)
+		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath, true)
+		self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', VisibilityPath, true)
+
+		if(element.LunarBar and element.LunarBar:IsObjectType('StatusBar') and not element.LunarBar:GetStatusBarTexture()) then
+			element.LunarBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
-
-		i = i + 1
-	until not spellID
-
-	local eb = self.EclipseBar
-	eb.hasSolarEclipse = hasSolarEclipse
-	eb.hasLunarEclipse = hasLunarEclipse
-
-	if(eb.PostUnitAura) then
-		return eb:PostUnitAura(unit)
-	end
-end
-
-local ECLIPSE_DIRECTION_CHANGE = function(self, event, isLunar)
-	local eb = self.EclipseBar
-
-	eb.directionIsLunar = isLunar
-
-	if(eb.PostDirectionChange) then
-		return eb:PostDirectionChange(self.unit)
-	end
-end
-
-local Update = function(self, ...)
-	UNIT_POWER(self, ...)
-	UNIT_AURA(self, ...)
-	return UPDATE_VISIBILITY(self, ...)
-end
-
-local ForceUpdate = function(element)
-	return Update(element.__owner, 'ForceUpdate', element.__owner.unit, 'ECLIPSE')
-end
-
-local function Enable(self)
-	local eb = self.EclipseBar
-	if(eb) then
-		eb.__owner = self
-		eb.ForceUpdate = ForceUpdate
-
-		if(eb.LunarBar and eb.LunarBar:IsObjectType'StatusBar' and not eb.LunarBar:GetStatusBarTexture()) then
-			eb.LunarBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
+		if(element.SolarBar and element.SolarBar:IsObjectType('StatusBar') and not element.SolarBar:GetStatusBarTexture()) then
+			element.SolarBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
-		if(eb.SolarBar and eb.SolarBar:IsObjectType'StatusBar' and not eb.SolarBar:GetStatusBarTexture()) then
-			eb.SolarBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
-		end
-
-		self:RegisterEvent('ECLIPSE_DIRECTION_CHANGE', ECLIPSE_DIRECTION_CHANGE, true)
-		self:RegisterEvent('PLAYER_TALENT_UPDATE', UPDATE_VISIBILITY, true)
-		self:RegisterEvent('UNIT_AURA', UNIT_AURA)
-		self:RegisterEvent('UNIT_POWER', UNIT_POWER)
-		self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UPDATE_VISIBILITY, true)
 
 		return true
 	end
 end
 
 local function Disable(self)
-	local eb = self.EclipseBar
-	if(eb) then
-		self:UnregisterEvent('ECLIPSE_DIRECTION_CHANGE', ECLIPSE_DIRECTION_CHANGE)
-		self:UnregisterEvent('PLAYER_TALENT_UPDATE', UPDATE_VISIBILITY)
-		self:UnregisterEvent('UNIT_AURA', UNIT_AURA)
-		self:UnregisterEvent('UNIT_POWER', UNIT_POWER)
-		self:UnregisterEvent('UPDATE_SHAPESHIFT_FORM', UPDATE_VISIBILITY)
+	local element = self.EclipseBar
+	if(element) then
+		ElementDisable(self)
+
+		self:UnregisterEvent('ECLIPSE_DIRECTION_CHANGE', EclipseDirectionPath)
+		self:UnregisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
+		self:UnregisterEvent('UPDATE_SHAPESHIFT_FORM', VisibilityPath)
 	end
 end
 
-oUF:AddElement('EclipseBar', Update, Enable, Disable)
+oUF:AddElement('EclipseBar', VisibilityPath, Enable, Disable)
