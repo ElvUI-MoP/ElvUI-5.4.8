@@ -122,7 +122,7 @@ function mod:SetPlateFrameLevel(frame, level, isTarget)
 		end
 
 		frame:SetFrameLevel(level+1)
-		frame.Glow:SetFrameLevel(level)
+		frame.Glow:SetFrameLevel(frame:GetFrameLevel()-1)
 		frame.Buffs:SetFrameLevel(level+1)
 		frame.Debuffs:SetFrameLevel(level+1)
 	end
