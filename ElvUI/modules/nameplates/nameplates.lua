@@ -844,6 +844,14 @@ function mod:PLAYER_REGEN_ENABLED()
 	mod:ForEachPlate("UpdateElement_Filters", "PLAYER_REGEN_ENABLED")
 end
 
+function mod:UNIT_HEALTH()
+	mod:ForEachPlate("UpdateElement_Filters", "UNIT_HEALTH")
+end
+
+function mod:UNIT_POWER()
+	mod:ForEachPlate("UpdateElement_Filters", "UNIT_POWER")
+end
+
 function mod:SPELL_UPDATE_COOLDOWN()
 	mod:ForEachPlate("UpdateElement_Filters", "SPELL_UPDATE_COOLDOWN")
 end
@@ -902,6 +910,8 @@ function mod:Initialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_LOGOUT") -- used in the StyleFilter
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
+	self:RegisterEvent("UNIT_HEALTH")
+	self:RegisterEvent("UNIT_POWER")
 	self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent("UNIT_AURA")
