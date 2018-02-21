@@ -17,78 +17,78 @@ local function LoadSkin()
 	end
 
 	-- Achievement Alerts
-	S:RawHook("AchievementAlertFrame_GetAlertFrame", function()
-		local frame = S.hooks.AchievementAlertFrame_GetAlertFrame()
-		if frame and not frame.isSkinned then
-			local name = frame:GetName()
+	hooksecurefunc("AlertFrame_SetAchievementAnchors", function()
+		for i = 1, MAX_ACHIEVEMENT_ALERTS do
+			local frame = _G["AchievementAlertFrame"..i]
 
-			frame:DisableDrawLayer("OVERLAY")
-			frame:CreateBackdrop("Transparent")
-			frame.backdrop:Point("TOPLEFT", frame, "TOPLEFT", -2, -6)
-			frame.backdrop:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 6)
+			if frame and not frame.isSkinned then
+				local name = frame:GetName()
+				frame:SetAlpha(1)
+				if not frame.hooked then hooksecurefunc(frame, "SetAlpha", forceAlpha);frame.hooked = true end
 
-			_G[name.."Background"]:Kill()
-			_G[name.."Glow"]:Kill()
-			_G[name.."Shine"]:Kill()
-			_G[name.."OldAchievement"]:Kill()
-			_G[name.."GuildBanner"]:Kill()
-			_G[name.."GuildBorder"]:Kill()
-			_G[name.."IconOverlay"]:Kill()
+				frame:DisableDrawLayer("OVERLAY")
+				frame:CreateBackdrop("Transparent")
+				frame.backdrop:Point("TOPLEFT", frame, "TOPLEFT", -2, -6)
+				frame.backdrop:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 6)
 
-			_G[name.."Unlocked"]:SetTextColor(1, 1, 1)
+				_G[name.."Background"]:Kill()
+				_G[name.."Glow"]:Kill()
+				_G[name.."Shine"]:Kill()
+				_G[name.."OldAchievement"]:Kill()
+				_G[name.."GuildBanner"]:Kill()
+				_G[name.."GuildBorder"]:Kill()
+				_G[name.."IconOverlay"]:Kill()
 
-			_G[name.."IconTexture"]:ClearAllPoints()
-			_G[name.."IconTexture"]:Point("LEFT", frame, 7, 0)
-			_G[name.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
-			_G[name.."IconTexture"].backdrop = CreateFrame("Frame", nil, frame)
-			_G[name.."IconTexture"].backdrop:SetTemplate("Default")
-			_G[name.."IconTexture"].backdrop:SetOutside(_G[name.."IconTexture"])
+				_G[name.."Unlocked"]:SetTextColor(1, 1, 1)
 
-			frame.isSkinned = true
-
-			if tonumber(name:match(".+(%d+)")) == MAX_ACHIEVEMENT_ALERTS then
-				S:Unhook("AchievementAlertFrame_GetAlertFrame")
+				_G[name.."IconTexture"]:ClearAllPoints()
+				_G[name.."IconTexture"]:Point("LEFT", frame, 7, 0)
+				_G[name.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
+				_G[name.."IconTexture"].backdrop = CreateFrame("Frame", nil, frame)
+				_G[name.."IconTexture"].backdrop:SetTemplate("Default")
+				_G[name.."IconTexture"].backdrop:SetOutside(_G[name.."IconTexture"])
+				
+				frame.isSkinned = true
 			end
 		end
-		return frame
-	end, true)
+	end)
 
 	-- Achievement Criteria Alerts
-	S:RawHook("CriteriaAlertFrame_GetAlertFrame", function()
-		local frame = S.hooks.CriteriaAlertFrame_GetAlertFrame()
-		if frame and not frame.isSkinned then
-			local name = frame:GetName()
+	hooksecurefunc("AlertFrame_SetAchievementAnchors", function()
+		for i = 1, MAX_ACHIEVEMENT_ALERTS do
+			local frame = _G["CriteriaAlertFrame"..i]
 
-			frame:DisableDrawLayer("OVERLAY")
-			frame:CreateBackdrop("Transparent")
-			frame.backdrop:Point("TOPLEFT", frame, "TOPLEFT", -2, -6)
-			frame.backdrop:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 6)
+			if frame and not frame.isSkinned then
+				local name = frame:GetName()
+				frame:SetAlpha(1)
+				if not frame.hooked then hooksecurefunc(frame, "SetAlpha", forceAlpha);frame.hooked = true end
 
-			_G[name.."Background"]:Kill()
-			_G[name.."Glow"]:Kill()
-			_G[name.."Shine"]:Kill()
-			_G[name.."IconBling"]:Kill()
-			_G[name.."IconOverlay"]:Kill()
+				frame:DisableDrawLayer("OVERLAY")
+				frame:CreateBackdrop("Transparent")
+				frame.backdrop:Point("TOPLEFT", frame, "TOPLEFT", -2, -6)
+				frame.backdrop:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 6)
 
-			_G[name.."Unlocked"]:SetTextColor(1, 1, 1)
-			_G[name.."Name"]:SetTextColor(1, 0.80, 0.10)
+				_G[name.."Background"]:Kill()
+				_G[name.."Glow"]:Kill()
+				_G[name.."Shine"]:Kill()
+				_G[name.."IconBling"]:Kill()
+				_G[name.."IconOverlay"]:Kill()
 
-			_G[name.."IconTexture"]:ClearAllPoints()
-			_G[name.."IconTexture"]:Point("LEFT", frame, -6, 0)
-			_G[name.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
-			_G[name.."IconTexture"].backdrop = CreateFrame("Frame", nil, frame)
-			_G[name.."IconTexture"].backdrop:SetTemplate("Default")
-			_G[name.."IconTexture"].backdrop:SetOutside(_G[name.."IconTexture"])
-			_G[name.."IconTexture"]:SetParent(_G[name.."IconTexture"].backdrop)
+				_G[name.."Unlocked"]:SetTextColor(1, 1, 1)
+				_G[name.."Name"]:SetTextColor(1, 0.80, 0.10)
 
-			frame.isSkinned = true
+				_G[name.."IconTexture"]:ClearAllPoints()
+				_G[name.."IconTexture"]:Point("LEFT", frame, -6, 0)
+				_G[name.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
+				_G[name.."IconTexture"].backdrop = CreateFrame("Frame", nil, frame)
+				_G[name.."IconTexture"].backdrop:SetTemplate("Default")
+				_G[name.."IconTexture"].backdrop:SetOutside(_G[name.."IconTexture"])
+				_G[name.."IconTexture"]:SetParent(_G[name.."IconTexture"].backdrop)
 
-			if tonumber(name:match(".+(%d+)")) == MAX_ACHIEVEMENT_ALERTS then
-				S:Unhook("CriteriaAlertFrame_GetAlertFrame")
+				frame.isSkinned = true
 			end
 		end
-		return frame
-	end, true)
+	end)
 
 	-- Dungeon Completion Alerts
 	local frame = DungeonCompletionAlertFrame1
