@@ -1,7 +1,7 @@
 -- Russian localization file for ruRU.
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("ElvUI", "ruRU")
-if not L then return; end
+if not L then return end
 
 --*_ADDON locales
 L["INCOMPATIBLE_ADDON"] = "Аддон %s не совместим с модулем %s ElvUI. Пожалуйста, выберите отключить ли несовместимый аддон или модуль."
@@ -71,7 +71,6 @@ L["Download"] = "Загрузка"
 L["DPS"] = "УВС"
 L["Earned:"] = "Заработано"
 L["Friends List"] = "Список друзей"
-L["Friends"] = "Друзья" --Also in Skins
 L["Gold"] = "Золото"
 L["goldabbrev"] = "|cffffd700з|r" --Also used in Bags
 L["Hit"] = "Метк."
@@ -81,8 +80,10 @@ L["HP"] = "+ Исцел."
 L["HPS"] = "ИВС"
 L["lvl"] = "ур."
 L["Mitigation By Level: "] = "Снижение на уровне: "
+L["Mov. Speed:"] = STAT_MOVEMENT_SPEED
 L["No Guild"] = "Нет гильдии"
 L["Profit:"] = "Прибыль:"
+L["Reset Counters: Hold Control + Right Click"] = "Сбросить счётчики: Control + ПКМ"
 L["Reload UI"] = "Перезагрузка"
 L["Reset Data: Hold Shift + Right Click"] = "Сбросить данные: Shift + ПКМ"
 L["Right Click: Reset CPU Usage"] = "ПКМ: Сбросить использование процессора"
@@ -125,7 +126,7 @@ L["Your profile was successfully recieved by the player."] = "Ваш профи�
 --Install
 L["Aura Bars & Icons"] = "Полосы аур и иконки"
 L["Auras Set"] = "Ауры установлены"
-L["Auras"] = "Ауры";
+L["Auras"] = "Ауры"
 L["Caster DPS"] = "Заклинатель"
 L["Chat Set"] = "Чат настроен"
 L["Chat"] = "Чат"
@@ -178,9 +179,8 @@ L["This part of the installation process sets up your World of Warcraft default 
 L["This resolution doesn't require that you change settings for the UI to fit on your screen."] = "Для соответствия интерфейса вашему экрану не требуется изменения настроек."
 L["This resolution requires that you change some settings to get everything to fit on your screen."] = "Для соответствия интерфейса вашему экрану требуется изменение некоторых настроек."
 L["This will change the layout of your unitframes and actionbars."] = "Это изменит расположение ваших рамок юнитов, рейда и панелей команд."
-L["Trade"] = "Торговля"
 L["Welcome to ElvUI version %s!"] = "Добро пожаловать в ElvUI версии %s!"
-L["You are now finished with the installation process. If you are in need of technical support please visit us at https://github.com/ElvUI-MoP."] = "Вы завершили процесс установки. Если Вам требуется техническая поддержка, посетите сайт https://github.com/ElvUI-MoP."
+L["You are now finished with the installation process. If you are in need of technical support please visit us at https://github.com/ElvUI-MoP"] = "Вы завершили процесс установки. Если Вам требуется техническая поддержка, посетите сайт https://github.com/ElvUI-MoP"
 L["You can always change fonts and colors of any element of ElvUI from the in-game configuration."] = "Вы всегда можете изменить шрифты и цвета любого элемента ElvUI из меню конфигурации. Классическая и пиксельная темы не отличаются для русского клиента."
 L["You can now choose what layout you wish to use based on your combat role."] = "Вы можете выбрать используемое расположение, основываясь на Вашей роли."
 L["You may need to further alter these settings depending how low you resolution is."] = "Вам может понадобиться дальнейшее изменение этих настроек в зависимости от того, насколько низким является ваше разрешение."
@@ -253,7 +253,7 @@ L["Player Buffs"] = "Баффы игрока"
 L["Player Castbar"] = "Полоса заклинаний игрока"
 L["Player Debuffs"] = "Дебаффы игрока"
 L["Player Frame"] = "Игрок" --Also used in UnitFrames
-L["PvP"] = true;
+L["PvP"] = true
 L["Raid Frames"] = "Рейд"
 L["Raid Pet Frames"] = "Питомцы рейда"
 L["Raid-40 Frames"] = "Рейд 40"
@@ -264,10 +264,9 @@ L["Target Castbar"] = "Полоса заклинаний цели"
 L["Target Frame"] = "Цель" --Also used in UnitFrames
 L["TargetTarget Frame"] = "Цель цели" --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = "Цель цели цели"
-L["Time Manager Frame"] = true;
+L["Time Manager Frame"] = true
 L["Tooltip"] = "Подсказка"
 L["Vehicle Seat Frame"] = "Техника"
-L["Weapons"] = "Оружие"
 L["DESC_MOVERCONFIG"] = [=[Блокировка отключена. Передвиньте фреймы и нажмите 'Закрепить', когда закончите.
 
 Options:
@@ -304,6 +303,8 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "Настройка, которую Вы только что изменили, будет влиять только на этого персонажа. Она не будет изменяться при смене профиля. Также это изменение требует перезагрузки интерфейса для вступления в силу."
+L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = "Приняв это вы сбросите ваши списки приоритетов для всех аур на индикаторах здоровья. Вы уверены?"
+L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = "Приняв это вы сбросите ваши списки приоритетов для всех аур на рамках юнитов. Вы уверены?"
 L["Are you sure you want to apply this font to all ElvUI elements?"] = "Вы уверены, что хоттите применить этот шрифт ко всем элементам ElvUI?"
 L["Are you sure you want to delete all your gray items?"] = "Вы уверены, что хотите удалить все предметы серого качества?"
 L["Are you sure you want to disband the group?"] = "Вы уверены, что хотите распустить группу?"
@@ -315,8 +316,8 @@ L["Disable Warning"] = "Отключить предупреждение"
 L["Discard"] = "Отменить"
 L["Do you enjoy the new ElvUI?"] = "Вам нравится ElvUI?"
 L["Do you swear not to post in technical support about something not working without first disabling the addon/module combination first?"] = "Клянетесь ли Вы не постить на форуме технической поддержки, что что-то не работает, до того, как отключите другие аддоны/модули?"
-L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP."] = "Ваш ElvUI устарел более, чем на 5 версий. Обновите его на https://github.com/ElvUI-MoP."
-L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP."] = "ElvUI устарел. Вы можете скачать последнюю версию с https://github.com/ElvUI-MoP."
+L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "Ваш ElvUI устарел более, чем на 5 версий. Обновите его на https://github.com/ElvUI-MoP"
+L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI устарел. Вы можете скачать последнюю версию с https://github.com/ElvUI-MoP"
 L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI нужно провести оптимизацию базы данных. Подождите, пожалуйста."
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "Наведите курсор на любую кнопку на панели или в книге заклинаний, чтобы назначит ей клавишу. Нажмите правую кнопку мыши или 'Escape', чтобы сбросить назначение для этой кнопки."
 L["I Swear"] = "Я клянусь!"
@@ -343,7 +344,7 @@ L["Targeted By:"] = "Является целью:"
 --Tutorials
 L["A raid marker feature is available by pressing Escape -> Keybinds scroll to the bottom under ElvUI and setting a keybind for the raid marker."] = 'Функция рейдовых меток доступна в Escape -> Назначение клавиш. Прокрутите вниз до раздела ElvUI и назначьте клавишу для рейдовых меток.'
 L["ElvUI has a dual spec feature which allows you to load different profiles based on your current spec on the fly. You can enable this from the profiles tab."] = 'В ElvUI присутствует функция двойной специализации, которая позволит Вам использовать разные профили для разных наборов талантов. Вы можете включить эту функцию в разделе профилей.'
-L["For technical support visit us at https://github.com/ElvUI-MoP."] = 'За технической поддержкой обращайтесь на https://github.com/ElvUI-MoP.'
+L["For technical support visit us at https://github.com/ElvUI-MoP"] = "За технической поддержкой обращайтесь на https://github.com/ElvUI-MoP"
 L["If you accidently remove a chat frame you can always go the in-game configuration menu, press install, go to the chat portion and reset them."] = 'Если Вы случайно удалили вкладку чата, всегда можно сделать следующее: зайти в конфигурацию, запустить установку, дойти до шага настроек чата и сбросить их.'
 L["If you are experiencing issues with ElvUI try disabling all your addons except ElvUI, remember ElvUI is a full UI replacement addon, you cannot run two addons that do the same thing."] = 'Если Вы испытываете проблемы с ElvUI, попробуйте отключить все аддоны, кроме самого ElvUI. Помните, ElvUI это аддон, полностью заменяющий интерфейс, Вы не можете одновременно использовать два аддона, выполняющих одинаковые функции.'
 L["The focus unit can be set by typing /focus when you are targeting the unit you want to focus. It is recommended you make a macro to do this."] = 'Запомненную цель (фокус) можно установить командой /focus при взятии нужного врага в цель. Для этого рекомендуется сделать макрос.'

@@ -14,7 +14,7 @@ local SHOW, HIDE, DELETE, NONE = SHOW, HIDE, DELETE, NONE
 local SHIFT_KEY, ALT_KEY, CTRL_KEY = SHIFT_KEY, ALT_KEY, CTRL_KEY
 local HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP = HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP
 local RAGE, FOCUS, ENERGY, RUNIC_POWER = RAGE, FOCUS, ENERGY, RUNIC_POWER
-local HOLY_POWER, SOUL_SHARDS, SHADOW_ORBS, CHI_POWER = HOLY_POWER, SOUL_SHARDS, SHADOW_ORBS, CHI_POWER
+local HOLY_POWER, SOUL_SHARDS, DEMONIC_FURY, BURNING_EMBERS, SHADOW_ORBS, CHI_POWER = HOLY_POWER, SOUL_SHARDS, DEMONIC_FURY, BURNING_EMBERS, SHADOW_ORBS, CHI_POWER
 
 local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
 
@@ -6950,9 +6950,9 @@ if(P.unitframe.colors.classResources[E.myclass]) then
 		}
 	elseif E.myclass == "WARLOCK" then
 		local names = {
-			[1] = L["Affliction"],
-			[2] = L["Demonology"],
-			[3] = L["Destruction"]
+			[1] = SOUL_SHARDS,
+			[2] = DEMONIC_FURY,
+			[3] = BURNING_EMBERS
 		}
 		for i = 1, 3 do
 			E.Options.args.unitframe.args.generalOptionsGroup.args.allColorsGroup.args.classResourceGroup.args["resource"..i] = {

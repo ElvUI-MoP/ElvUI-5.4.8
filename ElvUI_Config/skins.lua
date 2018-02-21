@@ -43,7 +43,7 @@ E.Options.args.skins = {
 			args = {
 				achievement = {
 					type = "toggle",
-					name = L["Achievement Frame"],
+					name = ACHIEVEMENTS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				alertframes = {
@@ -58,7 +58,7 @@ E.Options.args.skins = {
 				},
 				auctionhouse = {
 					type = "toggle",
-					name = L["Auction Frame"],
+					name = AUCTIONS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				bags = {
@@ -69,7 +69,7 @@ E.Options.args.skins = {
 				},
 				barber = {
 					type = "toggle",
-					name = L["Barbershop Frame"],
+					name = BARBERSHOP,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				bgmap = {
@@ -84,7 +84,7 @@ E.Options.args.skins = {
 				},
 				binding = {
 					type = "toggle",
-					name = L["KeyBinding Frame"],
+					name = KEY_BINDING,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				BlizzardOptions = {
@@ -94,7 +94,7 @@ E.Options.args.skins = {
 				},
 				bmah = {
 					type = "toggle",
-					name = L["Black Market"],
+					name = BLACK_MARKET_AUCTION_HOUSE,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				calendar = {
@@ -124,7 +124,7 @@ E.Options.args.skins = {
 				},
 				friends = {
 					type = "toggle",
-					name = L["Friends"],
+					name = FRIENDS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				gbank = {
@@ -164,7 +164,7 @@ E.Options.args.skins = {
 				},
 				inspect = {
 					type = "toggle",
-					name = L["Inspect Frame"],
+					name = INSPECT,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				itemUpgrade = {
@@ -179,7 +179,7 @@ E.Options.args.skins = {
 				},
 				lfg = {
 					type = "toggle",
-					name = L["LFG Frame"],
+					name = LFG_TITLE,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				loot = {
@@ -195,12 +195,12 @@ E.Options.args.skins = {
 				},
 				losscontrol = {
 					type = "toggle",
-					name = L["Loss Control"],
+					name = LOSS_OF_CONTROL,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				macro = {
 					type = "toggle",
-					name = L["Macro Frame"],
+					name = MACROS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				mail = {
@@ -281,12 +281,12 @@ E.Options.args.skins = {
 				},
 				spellbook = {
 					type = "toggle",
-					name = L["Spellbook"],
+					name = SPELLBOOK,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				guild = {
 					type = "toggle",
-					name = L["Guild Frame"],
+					name = GUILD,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				stable = {
@@ -301,7 +301,7 @@ E.Options.args.skins = {
 				},
 				talent = {
 					type = "toggle",
-					name = L["Talent Frame"],
+					name = TALENTS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				taxi = {
@@ -316,22 +316,22 @@ E.Options.args.skins = {
 				},
 				timemanager = {
 					type = "toggle",
-					name = L["Time Manager"],
+					name = TIMEMANAGER_TITLE,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				transmogrify = {
 					type = 'toggle',
-					name = L["Transmogrify Frame"],
+					name = TRANSMOGRIFY,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				trade = {
 					type = "toggle",
-					name = L["Trade Frame"],
+					name = TRADE,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				tradeskill = {
 					type = "toggle",
-					name = L["TradeSkill Frame"],
+					name = TRADESKILLS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				trainer = {
