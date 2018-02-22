@@ -2688,6 +2688,52 @@ E.Options.args.unitframe = {
 									set = function(info, value) E.db.unitframe.colors.healPrediction.maxOverflow = value; UF:Update_AllFrames() end
 								}
 							}
+						},
+						debuffHighlight = {
+							order = 9,
+							type = "group",
+							name = L["Debuff Highlighting"],
+							get = function(info)
+								local t = E.db.unitframe.colors.debuffHighlight[ info[#info] ]
+								local d = P.unitframe.colors.debuffHighlight[ info[#info] ]
+								return t.r, t.g, t.b, t.a, d.r, d.g, d.b, d.a
+							end,
+							set = function(info, r, g, b, a)
+								local t = E.db.unitframe.colors.debuffHighlight[ info[#info] ]
+								t.r, t.g, t.b, t.a = r, g, b, a
+								UF:Update_AllFrames()
+							end,
+							args = {
+								header = {
+									order = 1,
+									type = "header",
+									name = L["Debuff Highlighting"]
+								},
+								Magic = {
+									order = 2,
+									type = "color",
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG7,--Magic Effect
+									hasAlpha = true,
+								},
+								Curse = {
+									order = 3,
+									type = "color",
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG8,--Curse Effect
+									hasAlpha = true,
+								},
+								Disease = {
+									order = 4,
+									type = "color",
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG10,--Disease Effect
+									hasAlpha = true,
+								},
+								Poison = {
+									order = 5,
+									type = "color",
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG9,--Poison Effect
+									hasAlpha = true,
+								}
+							}
 						}
 					}
 				},
