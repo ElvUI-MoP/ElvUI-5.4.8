@@ -15,6 +15,8 @@ local SHIFT_KEY, ALT_KEY, CTRL_KEY = SHIFT_KEY, ALT_KEY, CTRL_KEY
 local HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP = HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP
 local RAGE, FOCUS, ENERGY, RUNIC_POWER = RAGE, FOCUS, ENERGY, RUNIC_POWER
 local HOLY_POWER, SOUL_SHARDS, DEMONIC_FURY, BURNING_EMBERS, SHADOW_ORBS, CHI_POWER = HOLY_POWER, SOUL_SHARDS, DEMONIC_FURY, BURNING_EMBERS, SHADOW_ORBS, CHI_POWER
+local COMBAT_TEXT_RUNE_BLOOD, COMBAT_TEXT_RUNE_UNHOLY, COMBAT_TEXT_RUNE_FROST, COMBAT_TEXT_RUNE_DEATH = COMBAT_TEXT_RUNE_BLOOD, COMBAT_TEXT_RUNE_UNHOLY, COMBAT_TEXT_RUNE_FROST, COMBAT_TEXT_RUNE_DEATH
+local BALANCE_NEGATIVE_ENERGY, BALANCE_POSITIVE_ENERGY = BALANCE_NEGATIVE_ENERGY, BALANCE_POSITIVE_ENERGY
 
 local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
 
@@ -7037,8 +7039,8 @@ if(P.unitframe.colors.classResources[E.myclass]) then
 		end
 	elseif E.myclass == "DRUID" then
 		local names = {
-			[1] = L["Lunar"],
-			[2] = L["Solar"]
+			[1] = BALANCE_NEGATIVE_ENERGY,
+			[2] = BALANCE_POSITIVE_ENERGY
 		}
 		for i = 1, 2 do
 			E.Options.args.unitframe.args.generalOptionsGroup.args.allColorsGroup.args.classResourceGroup.args["resource"..i] = {
@@ -7059,10 +7061,10 @@ if(P.unitframe.colors.classResources[E.myclass]) then
 		end
 	elseif E.myclass == "DEATHKNIGHT" then
 		local names = {
-			[1] = L["Blood"],
-			[2] = L["Unholy"],
-			[3] = L["Frost"],
-			[4] = L["Death"]
+			[1] = COMBAT_TEXT_RUNE_BLOOD,
+			[2] = COMBAT_TEXT_RUNE_UNHOLY,
+			[3] = COMBAT_TEXT_RUNE_FROST,
+			[4] = COMBAT_TEXT_RUNE_DEATH
 		}
 		for i = 1, 4 do
 			E.Options.args.unitframe.args.generalOptionsGroup.args.allColorsGroup.args.classResourceGroup.args["resource"..i] = {
