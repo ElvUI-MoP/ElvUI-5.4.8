@@ -118,8 +118,8 @@ local function SetupChat()
 	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_GUILD_XP_GAIN")
 	ChatFrame_AddMessageGroup(ChatFrame3, "CURRENCY")
 	ChatFrame_AddChannel(ChatFrame1, GENERAL)
-	ChatFrame_RemoveChannel(ChatFrame1, L['Trade'])
-	ChatFrame_AddChannel(ChatFrame3, L['Trade'])
+	ChatFrame_RemoveChannel(ChatFrame1, TRADE)
+	ChatFrame_AddChannel(ChatFrame3, TRADE)
 
 	-- enable classcolor automatically on login and on each character without doing /configure each time.
 	ToggleChatColorNamesByClassGroup(true, "SAY")

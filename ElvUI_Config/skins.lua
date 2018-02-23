@@ -149,7 +149,7 @@ E.Options.args.skins = {
 				},
 				guildcontrol = {
 					type = "toggle",
-					name = L["Guild Control Frame"],
+					name = GUILDCONTROL,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				guildregistrar = {
@@ -169,7 +169,7 @@ E.Options.args.skins = {
 				},
 				itemUpgrade = {
 					type = "toggle",
-					name = L["Item Upgrade"],
+					name = ITEM_UPGRADE,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				lfguild = {
@@ -235,7 +235,7 @@ E.Options.args.skins = {
 				},
 				mounts = {
 					type = "toggle",
-					name = L["Pet Journal"],
+					name = MOUNTS_AND_PETS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				petbattleui = {

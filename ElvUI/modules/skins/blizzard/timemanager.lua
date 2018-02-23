@@ -18,7 +18,7 @@ local function LoadSkin()
 
 	S:HandleCloseButton(TimeManagerFrameCloseButton)
 
-	E:CreateMover(TimeManagerFrame, "TimeManagerFrameMover", L["Time Manager Frame"])
+	E:CreateMover(TimeManagerFrame, "TimeManagerFrameMover", TIMEMANAGER_TITLE)
 	TimeManagerFrame.mover:SetFrameLevel(TimeManagerFrame:GetFrameLevel() + 4)
 
 	select(7, TimeManagerFrame:GetRegions()):Point("TOP", 0, -5)

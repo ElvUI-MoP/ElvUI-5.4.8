@@ -263,7 +263,6 @@ L["Target Castbar"] = "目標施法條"
 L["Target Frame"] = "目標框架" --Also used in UnitFrames
 L["TargetTarget Frame"] = "目標的目標框架" --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = "目標的目標的目標框架"
-L["Time Manager Frame"] = true
 L["Tooltip"] = "浮動提示"
 L["Vehicle Seat Frame"] = "載具座位框"
 L["DESC_MOVERCONFIG"] = [=[解除框架移動鎖定. 現在可以移動它們, 移好後請點擊「鎖定」.

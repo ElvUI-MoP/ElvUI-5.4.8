@@ -264,7 +264,6 @@ L["Target Castbar"] = "Barre d'incantation de la cible"
 L["Target Frame"] = "Cadre de la cible" --Also used in UnitFrames
 L["TargetTarget Frame"] = "Cadre de la cible de votre cible" --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = "Cadre de la cible de la cible de la cible";
-L["Time Manager Frame"] = true
 L["Tooltip"] = "Infobulle"
 L["Vehicle Seat Frame"] = "Cadre de siège du véhicule"
 L["DESC_MOVERCONFIG"] = [=[Cadres déverrouillés. Déplacez-les et cliquez sur Verrouiller une fois terminé.

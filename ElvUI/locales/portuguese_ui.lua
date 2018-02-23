@@ -264,7 +264,6 @@ L["Target Castbar"] = "Barra de lançamento do Alvo"
 L["Target Frame"] = "Quadro do Alvo"
 L["TargetTarget Frame"] = "Quadro do Alvo do Alvo"
 L["TargetTargetTarget Frame"] = true
-L["Time Manager Frame"] = true
 L["Tooltip"] = "Tooltip"
 L["Vehicle Seat Frame"] = "Quadro de Assento de Veículo"
 L["DESC_MOVERCONFIG"] = [=[Movedores destravados. Mova-os agora e clique Travar quando acabar.

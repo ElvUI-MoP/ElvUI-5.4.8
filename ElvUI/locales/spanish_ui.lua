@@ -264,7 +264,6 @@ L["Target Castbar"] = "Barra de Lanzamiento del Objetivo"
 L["Target Frame"] = "Marco de Objetivo"
 L["TargetTarget Frame"] = "Marco de Objetivo de Objetivo"
 L["TargetTargetTarget Frame"] = "Marco del Objetivo del Objetivo del Objetivo"
-L["Time Manager Frame"] = true
 L["Tooltip"] = "Descripción Emergente"
 L["Vehicle Seat Frame"] = "Marco del Asiento del Vehículo"
 L["DESC_MOVERCONFIG"] = [=[Fijadores desbloqueados. Muévelos ahora y haz click en Bloquear cuando termines.
