@@ -256,6 +256,7 @@ L["Count yOffset"] = "중첩수 y 좌표"
 L["Defines how the group is sorted."] = "오라를 어떤 기준으로 정렬할지를 결정합니다."
 L["Defines the sort order of the selected sort method."] = "기준을 바탕으로 하여 어떤 순서로 정렬할지를 결정합니다."
 L["Disabled Blizzard"] = "기본 오라창 미사용"
+L["Duration Font Size"] = true
 L["Display the consolidated buffs bar."] = "미니맵 우측의 시너지버프 모음 바를 표시합니다."
 L["Fade Threshold"] = "초읽기 시작 시점"
 L["Filter Consolidated"] = "내게 유용한 것만 표시"

@@ -208,6 +208,7 @@ L["Count yOffset"] = "计数Y偏移"
 L["Defines how the group is sorted."] = "定义组排序方式"
 L["Defines the sort order of the selected sort method."] = "定义排序方式的排序方向"
 L["Disabled Blizzard"] = "禁用暴雪框架"
+L["Duration Font Size"] = true
 L["Display the consolidated buffs bar."] = "显示整合增益条"
 L["Fade Threshold"] = "阈值渐隐"
 L["Filter Consolidated"] = "过滤综合BUFF"

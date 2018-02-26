@@ -208,6 +208,7 @@ L["Count yOffset"] = true
 L["Defines how the group is sorted."] = true
 L["Defines the sort order of the selected sort method."] = true
 L["Disabled Blizzard"] = true
+L["Duration Font Size"] = true
 L["Display the consolidated buffs bar."] = true;
 L["Fade Threshold"] = true
 L["Filter Consolidated"] = true

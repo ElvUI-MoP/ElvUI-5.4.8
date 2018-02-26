@@ -210,6 +210,7 @@ L["Count yOffset"] = "Отступ стаков по Y"
 L["Defines how the group is sorted."] = "Определяет условия сортировки"
 L["Defines the sort order of the selected sort method."] = "Определяет порядок в выбранном методе сортировки."
 L["Disabled Blizzard"] = "Отключить ауры Blizzard"
+L["Duration Font Size"] = true
 L["Display the consolidated buffs bar."] = "Отображать полосу объединенных эффектов."
 L["Fade Threshold"] = "Значение мерцания"
 L["Filter Consolidated"] = "Фильтровать объединенные"

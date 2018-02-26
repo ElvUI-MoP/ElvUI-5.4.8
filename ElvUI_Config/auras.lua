@@ -17,8 +17,20 @@ local function GetAuraOptions(headerName)
 			desc = L["Set the size of the individual auras."],
 			min = 16, max = 60, step = 2
 		},
-		growthDirection = {
+		durationFontSize = {
 			order = 3,
+			type = "range",
+			name = L["Duration Font Size"],
+			min = 4, max = 212, step = 1,
+		},
+		countFontSize = {
+			order = 4,
+			type = "range",
+			name = L["Count Font Size"],
+			min = 4, max = 212, step = 1,
+		},
+		growthDirection = {
+			order = 5,
 			type = "select",
 			name = L["Growth Direction"],
 			desc = L["The direction the auras will grow and then the direction they will grow after they reach the wrap after limit."],
@@ -34,33 +46,33 @@ local function GetAuraOptions(headerName)
 			}
 		},
 		wrapAfter = {
-			order = 4,
+			order = 6,
 			type = "range",
 			name = L["Wrap After"],
 			desc = L["Begin a new row or column after this many auras."],
 			min = 1, max = 32, step = 1
 		},
 		maxWraps = {
-			order = 5,
+			order = 7,
 			type = "range",
 			name = L["Max Wraps"],
 			desc = L["Limit the number of rows or columns."],
 			min = 1, max = 32, step = 1
 		},
 		horizontalSpacing = {
-			order = 6,
+			order = 8,
 			type = "range",
 			name = L["Horizontal Spacing"],
 			min = 0, max = 50, step = 1
 		},
 		verticalSpacing = {
-			order = 7,
+			order = 9,
 			type = "range",
 			name = L["Vertical Spacing"],
 			min = 0, max = 50, step = 1
 		},
 		sortMethod = {
-			order = 8,
+			order = 10,
 			type = "select",
 			name = L["Sort Method"],
 			desc = L["Defines how the group is sorted."],
@@ -71,7 +83,7 @@ local function GetAuraOptions(headerName)
 			}
 		},
 		sortDir = {
-			order = 9,
+			order = 11,
 			type = "select",
 			name = L["Sort Direction"],
 			desc = L["Defines the sort order of the selected sort method."],
@@ -81,7 +93,7 @@ local function GetAuraOptions(headerName)
 			}
 		},
 		seperateOwn = {
-			order = 10,
+			order = 12,
 			type = "select",
 			name = L["Seperate"],
 			desc = L["Indicate whether buffs you cast yourself should be separated before or after."],

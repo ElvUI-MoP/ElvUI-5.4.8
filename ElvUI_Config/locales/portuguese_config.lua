@@ -210,6 +210,7 @@ L["Count yOffset"] = true
 L["Defines how the group is sorted."] = "Define como o grupo é organizado"
 L["Defines the sort order of the selected sort method."] = "Define a ordem de organização do método escolhido"
 L["Disabled Blizzard"] = true
+L["Duration Font Size"] = true
 L["Display the consolidated buffs bar."] = "Exibir a barra de Bônus Consolidados"
 L["Fade Threshold"] = "Limiar para Desvanecer"
 L["Filter Consolidated"] = "Filtrar Consolidado"

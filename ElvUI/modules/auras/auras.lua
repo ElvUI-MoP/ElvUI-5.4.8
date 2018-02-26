@@ -91,6 +91,12 @@ end
 
 function A:CreateIcon(button)
 	local font = LSM:Fetch("font", self.db.font)
+	local header = button:GetParent()
+	local auraType = header:GetAttribute("filter")
+	local db = self.db.debuffs
+	if auraType == "HELPFUL" then
+		db = self.db.buffs
+	end
 
 	-- button:SetFrameLevel(4)
 	button.texture = button:CreateTexture(nil, "BORDER")
@@ -99,11 +105,11 @@ function A:CreateIcon(button)
 
 	button.count = button:CreateFontString(nil, "ARTWORK")
 	button.count:Point("BOTTOMRIGHT", -1 + self.db.countXOffset, 1 + self.db.countYOffset)
-	button.count:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
+	button.count:FontTemplate(font, db.countFontSize, self.db.fontOutline)
 
 	button.time = button:CreateFontString(nil, "ARTWORK")
 	button.time:Point("TOP", button, "BOTTOM", 1 + self.db.timeXOffset, 0 + self.db.timeYOffset)
-	button.time:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
+	button.time:FontTemplate(font, db.durationFontSize, self.db.fontOutline)
 
 	button.highlight = button:CreateTexture(nil, "HIGHLIGHT")
 	button.highlight:SetTexture(1, 1, 1, 0.45)
@@ -131,9 +137,6 @@ function A:CreateIcon(button)
 		Duration = false,
 		AutoCast = nil,
 	}
-
-	local header = button:GetParent()
-	local auraType = header:GetAttribute("filter")
 
 	if auraType == "HELPFUL" then
 		if MasqueGroupBuffs and E.private.auras.masque.buffs then
@@ -280,11 +283,11 @@ function A:UpdateHeader(header)
 			local font = LSM:Fetch("font", self.db.font)
 			child.time:ClearAllPoints()
 			child.time:Point("TOP", child, "BOTTOM", 1 + self.db.timeXOffset, 0 + self.db.timeYOffset)
-			child.time:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
+			child.time:FontTemplate(font, db.durationFontSize, self.db.fontOutline)
 
 			child.count:ClearAllPoints()
 			child.count:Point("BOTTOMRIGHT", -1 + self.db.countXOffset, 0 + self.db.countYOffset)
-			child.count:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
+			child.count:FontTemplate(font, db.countFontSize, self.db.fontOutline)
 		end
 
 		if(index > (db.maxWraps * db.wrapAfter) and child:IsShown()) then
