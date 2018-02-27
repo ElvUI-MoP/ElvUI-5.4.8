@@ -4,6 +4,7 @@ local S = E:GetModule("Skins")
 local _G = _G
 local pairs, unpack = pairs, unpack
 
+local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -21,6 +22,11 @@ local function LoadSkin()
 		S:HandleTab(_G["InspectFrameTab"..i])
 	end
 
+	InspectModelFrame:StripTextures()
+	InspectModelFrame:CreateBackdrop("Default")
+	InspectModelFrame.backdrop:Point("TOPLEFT", E.PixelMode and -1 or -2, E.PixelMode and 1 or 2)
+	InspectModelFrame.backdrop:Point("BOTTOMRIGHT", E.PixelMode and 1 or 2, E.PixelMode and -2 or -3)
+
 	InspectModelFrameBorderTopLeft:Kill()
 	InspectModelFrameBorderTopRight:Kill()
 	InspectModelFrameBorderTop:Kill()
@@ -31,7 +37,6 @@ local function LoadSkin()
 	InspectModelFrameBorderBottom:Kill()
 	InspectModelFrameBorderBottom2:Kill()
 	InspectModelFrameBackgroundOverlay:Kill()
-	InspectModelFrame:CreateBackdrop("Default")
 
 	local slots = {
 		"HeadSlot",
@@ -113,39 +118,46 @@ local function LoadSkin()
 	InspectModelFrameControlFrameRotateLeftButton:Point("LEFT", "InspectModelFrameControlFrameRotateRightButton", "RIGHT", 2, 0)
 	InspectModelFrameControlFrameRotateResetButton:Point("LEFT", "InspectModelFrameControlFrameRotateLeftButton", "RIGHT", 2, 0)
 
-	--Talent Tab
+	-- Talent Tab
 	InspectTalentFrame:StripTextures()
 
-	Specialization.ring:SetTexture("")
 	Specialization:CreateBackdrop()
 	Specialization.backdrop:SetOutside(Specialization.specIcon)
+
 	Specialization.specIcon:SetTexCoord(unpack(E.TexCoords))
+	Specialization.ring:SetTexture("")
 
 	Specialization.bg = CreateFrame("Frame", nil, Specialization)
 	Specialization.bg:SetTemplate("Default", true)
-	Specialization.bg:Point("TOPLEFT", 17, -15)
-	Specialization.bg:Point("BOTTOMRIGHT", 20, 10)
+	Specialization.bg:Point("TOPLEFT", 18, -16)
+	Specialization.bg:Point("BOTTOMRIGHT", 20, 12)
 	Specialization.bg:SetFrameLevel(Specialization.bg:GetFrameLevel() - 2)
 
 	Specialization:HookScript("OnShow", function(self)
+		local spec = nil
+		self.tooltip = nil
+
 		if INSPECTED_UNIT ~= nil then
-			Spec = GetInspectSpecialization(INSPECTED_UNIT)
-			Sex = UnitSex(INSPECTED_UNIT)
+			spec = GetInspectSpecialization(INSPECTED_UNIT)
 		end
 
-		if Spec ~= nil and Spec > 0 and Sex ~= nil then
-			local Role = GetSpecializationRoleByID(Spec)
+		local _, role, description, icon
+		if spec ~= nil and spec > 0 then
+			role = GetSpecializationRoleByID(spec)
 
-			if Role ~= nil then
-				self.specIcon:SetTexture(select(4, GetSpecializationInfoByID(Spec, Sex)))
+			if role ~= nil then
+				_, _, description, icon = GetSpecializationInfoByID(spec)
 
-				if Role == "DAMAGER" then
+				self.specIcon:SetTexture(icon)
+				self.tooltip = description
+
+				if role == "DAMAGER" then
 					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\dps.tga")
 					self.roleIcon:Size(19)
-				elseif Role == "TANK" then
+				elseif role == "TANK" then
 					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga")
 					self.roleIcon:Size(20)
-				elseif Role == "HEALER" then
+				elseif role == "HEALER" then
 					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\healer.tga")
 					self.roleIcon:Size(20)
 				end
@@ -162,12 +174,16 @@ local function LoadSkin()
 
 			if button then
 				button:StripTextures()
-				button:CreateBackdrop()
-				button.backdrop:SetOutside(button.icon)
+				button:CreateBackdrop("Default")
+				button:Size(30)
+				button:StyleButton(nil, true)
+				button:GetHighlightTexture():SetInside(button.backdrop)
+
 				button.icon:SetTexCoord(unpack(E.TexCoords))
+				button.icon:SetInside(button.backdrop)
 
 				hooksecurefunc(button.border, "Show", function()
-					button.backdrop:SetBackdropBorderColor(0, 0.44, .87)
+					button.backdrop:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
 				end)
 
 				hooksecurefunc(button.border, "Hide", function()
@@ -176,6 +192,8 @@ local function LoadSkin()
 			end
 		end
 	end
+
+	TalentsTalentRow1:Point("TOPLEFT", 20, -142)
 
 	InspectTalentFrame:HookScript("OnShow", function(self)
 		if self.isGlyphsDone then return end
@@ -216,26 +234,18 @@ local function LoadSkin()
 	hooksecurefunc("InspectGlyphFrameGlyph_UpdateSlot", function(self)
 		local id = self:GetID()
 		local talentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup
-		local enabled, glyphType, _, glyphSpell, iconFilename = GetGlyphSocketInfo(id, talentGroup, true, INSPECTED_UNIT)
+		local _, glyphType, _, _, iconFilename = GetGlyphSocketInfo(id, talentGroup, true, INSPECTED_UNIT)
 
 		if self.icon then
-			self.icon:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune1")
-		end
-		if not glyphType then
-			return
-		end
-		if not enabled then
-		elseif(not glyphSpell or (clear == true)) then
-		else
-			if self.icon then
-				if iconFilename then
-					self.icon:SetTexture(iconFilename)
-				end
+			if glyphType and iconFilename then
+				self.icon:SetTexture(iconFilename)
+			else
+				self.icon:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune1")
 			end
 		end
 	end)
 
-	--PVP Tab
+	-- PVP Tab
 	InspectPVPFrame:StripTextures()
 
 	for _, Section in pairs({"RatedBG", "Arena2v2", "Arena3v3", "Arena5v5"}) do
@@ -243,16 +253,11 @@ local function LoadSkin()
 		Frame:SetTemplate("Transparent")
 		Frame:EnableMouse(true)
 
-		Frame:SetScript("OnEnter", function(self)
-			self:SetBackdropBorderColor(0, 0.44, .87, 1)
-		end)
-
-		Frame:SetScript("OnLeave", function(self)
-			self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-		end)
+		Frame:HookScript("OnEnter", S.SetModifiedBackdrop)
+		Frame:HookScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
-	--Guild Tab
+	-- Guild Tab
 	InspectGuildFrameBG:SetDesaturated(true)
 end
 
