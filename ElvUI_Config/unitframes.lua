@@ -234,15 +234,8 @@ local function GetOptionsTable_AuraBars(updateFunc, groupName)
 					["NONE"] = NONE
 				}
 			},
-			filters = {
-				order = 500,
-				type = "group",
-				name = FILTERS,
-				guiInline = true,
-				args = {}
-			},
 			friendlyAuraType = {
-				order = 17,
+				order = 16,
 				type = "select",
 				name = L["Friendly Aura Type"],
 				desc = L["Set the type of auras to show when a unit is friendly."],
@@ -252,7 +245,7 @@ local function GetOptionsTable_AuraBars(updateFunc, groupName)
 				}
 			},
 			enemyAuraType = {
-				order = 18,
+				order = 17,
 				type = "select",
 				name = L["Enemy Aura Type"],
 				desc = L["Set the type of auras to show when a unit is a foe."],
@@ -262,17 +255,30 @@ local function GetOptionsTable_AuraBars(updateFunc, groupName)
 				}
 			},
 			uniformThreshold = {
-				order = 19,
+				order = 18,
 				type = "range",
 				name = L["Uniform Threshold"],
 				desc = L["Seconds remaining on the aura duration before the bar starts moving. Set to 0 to disable."],
 				min = 0, max = 3600, step = 1
 			},
 			yOffset = {
-				order = 20,
+				order = 19,
 				type = "range",
 				name = L["yOffset"],
 				min = -1000, max = 1000, step = 1,
+			},
+			spacing = {
+				order = 20,
+				type = "range",
+				name = L["Spacing"],
+				min = 0, softMax = 20, step = 1,
+			},
+			filters = {
+				order = 500,
+				type = "group",
+				name = FILTERS,
+				guiInline = true,
+				args = {}
 			}
 		}
 	};
