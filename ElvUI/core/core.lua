@@ -783,42 +783,50 @@ function E:StringSplitMultiDelim(s, delim)
 end
 
 function E:SendMessage()
-	local _, instanceType = IsInInstance()
 	if IsInRaid() then
 		SendAddonMessage("ELVUI_VERSIONCHK", E.version, (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID")
 	elseif IsInGroup() then
 		SendAddonMessage("ELVUI_VERSIONCHK", E.version, (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY")
 	end
 
-	if(E.SendMSGTimer) then
-		self:CancelTimer(E.SendMSGTimer);
-		E.SendMSGTimer = nil;
+	if E.SendMSGTimer then
+		self:CancelTimer(E.SendMSGTimer)
+		E.SendMSGTimer = nil
 	end
 end
 
+local SendRecieveGroupSize = -1 --this is negative one so that the first check will send (if group size is greater than one; specifically for /reload)
 local myRealm = gsub(E.myrealm,"[%s%-]","")
 local myName = E.myname.."-"..myRealm
-
 local function SendRecieve(_, event, prefix, message, _, sender)
-	if(not E.global.general.versionCheck) then return end
+	if not E.global.general.versionCheck then return end
 
-	if(event == "CHAT_MSG_ADDON") then
-		if(sender == myName) then return; end
-		if(prefix == "ELVUI_VERSIONCHK" and not E.recievedOutOfDateMessage) then
+	if event == "CHAT_MSG_ADDON" then
+		if sender == myName then return end
+
+		if prefix == "ELVUI_VERSIONCHK" and not E.recievedOutOfDateMessage then
 			if(tonumber(message) ~= nil and tonumber(message) > tonumber(E.version)) then
 				E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"]);
 
 				if((tonumber(message) - tonumber(E.version)) >= 0.05) then
-					E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE");
+					E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
 				end
 
-				E.recievedOutOfDateMessage = true;
+				E.recievedOutOfDateMessage = true
 			end
 		end
 	else
-		E.SendMSGTimer = E:ScheduleTimer("SendMessage", 12);
+		local num = GetNumGroupMembers()
+		if num ~= SendRecieveGroupSize then
+			if num > 1 and num > SendRecieveGroupSize then
+				E.SendMSGTimer = E:ScheduleTimer('SendMessage', 12)
+			end
+			SendRecieveGroupSize = num
+		end
 	end
 end
+
+RegisterAddonMessagePrefix("ELVUI_VERSIONCHK")
 
 local f = CreateFrame("Frame");
 f:RegisterEvent("GROUP_ROSTER_UPDATE")
