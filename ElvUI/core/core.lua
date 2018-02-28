@@ -1303,7 +1303,9 @@ function E:Initialize()
 
 	self:UpdateMedia();
 	self:UpdateFrameTemplates();
-
+	self:UpdateBorderColors()
+	self:UpdateBackdropColors()
+	self:UpdateStatusBars()
 	self:RegisterEvent("UNIT_AURA", "CheckRole");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "CheckRole");
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole");
