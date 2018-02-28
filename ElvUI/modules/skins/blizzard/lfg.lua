@@ -95,7 +95,7 @@ local function LoadSkin()
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(0, 0, 0)
+	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture = LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY")
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexCoord(unpack(E.TexCoords))
@@ -125,14 +125,8 @@ local function LoadSkin()
 
 			if button and not button.isSkinned then
 				local icon = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."IconTexture"]
-				local border = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."ShortageBorder"]
 				local count = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."Count"]
-				local nameFrame = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."NameFrame"]
 				local name  = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."Name"]
-				local role1 = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."RoleIcon1"]
-				local role2 = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."RoleIcon2"]
-				local role3 = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."RoleIcon3"]
-
 				local __texture = _G[button:GetName().."IconTexture"]:GetTexture()
 
 				button:StripTextures()
@@ -147,20 +141,25 @@ local function LoadSkin()
 				count:SetDrawLayer("OVERLAY")
 				count:SetParent(button.backdrop)
 
-				if role1 then role1:SetParent(button.backdrop) end
-				if role2 then role2:SetParent(button.backdrop) end
-				if role3 then role3:SetParent(button.backdrop) end
+				for j = 1, 3 do
+					local role = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i.."RoleIcon"..j]
+
+					if role then
+						role:SetParent(button.backdrop)
+					end
+				end
 
 				button:HookScript("OnUpdate", function(self)
-					button.backdrop:SetBackdropBorderColor(0, 0, 0)
-					name:SetTextColor(1, 1, 1)
 					if button.dungeonID then
-						local Link = GetLFGDungeonRewardLink(button.dungeonID, i)
-						if Link then
-							local quality = select(3, GetItemInfo(Link))
+						local link = GetLFGDungeonRewardLink(button.dungeonID, i)
+						if link then
+							local quality = select(3, GetItemInfo(link))
 							if quality and quality > 1 then
 								button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 								name:SetTextColor(GetItemQualityColor(quality))
+							else
+								button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+								name:SetTextColor(1, 1, 1)
 							end
 						end
 					end
@@ -205,7 +204,7 @@ local function LoadSkin()
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(0, 0, 0)
+	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture = ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY")
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
@@ -230,49 +229,42 @@ local function LoadSkin()
 	hooksecurefunc("ScenarioQueueFrameRandom_UpdateFrame", function()
 		for i = 1, LFD_MAX_REWARDS do
 			local button = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i]
-			local icon = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."IconTexture"]
 
-			if button then
-				if not button.isSkinned then
-					local border = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."ShortageBorder"]
-					local count = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."Count"]
-					local nameFrame = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."NameFrame"]
-					local name  = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."Name"]
+			if button and not button.isSkinned then
+				local icon = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."IconTexture"]
+				local count = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."Count"]
+				local name  = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i.."Name"]
+				local tex = _G[button:GetName().."IconTexture"]:GetTexture()
 
-					button.bg = CreateFrame("Frame", nil, button)
-					button.bg:SetTemplate()
-					button.bg:SetOutside(icon)
+				button:StripTextures()
+				button:CreateBackdrop()
+				button.backdrop:SetOutside(icon)
 
-					icon:SetTexCoord(unpack(E.TexCoords))
-					icon:SetDrawLayer("OVERLAY")
-					icon:SetParent(button.bg)
+				icon:SetTexture(tex)
+				icon:SetTexCoord(unpack(E.TexCoords))
+				icon:SetDrawLayer("OVERLAY")
+				icon:SetParent(button.backdrop)
 
-					count:SetDrawLayer("OVERLAY")
-					count:SetParent(button.bg)
+				count:SetDrawLayer("OVERLAY")
+				count:SetParent(button.backdrop)
 
-					nameFrame:SetTexture()
-					nameFrame:Size(118, 39)
-
-					border:SetAlpha(0)
-
-					button:HookScript("OnUpdate", function(self)
-						button.bg:SetBackdropBorderColor(0, 0, 0)
-						name:SetTextColor(1, 1, 1)
-	
-						if button.dungeonID then
-							local Link = GetLFGDungeonRewardLink(button.dungeonID, i)
-							if Link then
-								local quality = select(3, GetItemInfo(Link))
-								if quality and quality > 1 then
-									button.bg:SetBackdropBorderColor(GetItemQualityColor(quality))
-									name:SetTextColor(GetItemQualityColor(quality))
-								end
+				button:HookScript("OnUpdate", function(self)
+					if button.dungeonID then
+						local link = GetLFGDungeonRewardLink(button.dungeonID, i)
+						if link then
+							local quality = select(3, GetItemInfo(link))
+							if quality and quality > 1 then
+								button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+								name:SetTextColor(GetItemQualityColor(quality))
+							else
+								button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+								name:SetTextColor(1, 1, 1)
 							end
 						end
-					end)
+					end
+				end)
 
-					button.isSkinned = true
-				end
+				button.isSkinned = true
 			end
 		end
 	end)
@@ -355,34 +347,23 @@ local function LoadSkin()
 
 	for i = 1, LFD_MAX_REWARDS do
 		local button = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i]
-		local icon = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."IconTexture"]
 
-		if button then
-			if not button.isSkinned then
-				local border = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."ShortageBorder"]
-				local count = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."Count"]
-				local nameFrame = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."NameFrame"]
+		if button and not button.isSkinned then
+			local icon = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."IconTexture"]
+			local count = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."Count"]
 
-				button:StripTextures()
+			button:StripTextures()
+			button:CreateBackdrop()
+			button.backdrop:SetOutside(icon)
 
-				button.bg = CreateFrame("Frame", nil, button)
-				button.bg:SetTemplate()
-				button.bg:SetOutside(icon)
+			icon:SetTexCoord(unpack(E.TexCoords))
+			icon:SetDrawLayer("OVERLAY")
+			icon:SetParent(button.backdrop)
 
-				icon:SetTexCoord(unpack(E.TexCoords))
-				icon:SetDrawLayer("OVERLAY")
-				icon:SetParent(button.bg)
+			count:SetDrawLayer("OVERLAY")
+			count:SetParent(button.backdrop)
 
-				count:SetDrawLayer("OVERLAY")
-				count:SetParent(button.bg)
-
-				nameFrame:SetTexture()
-				nameFrame:Size(118, 39)
-
-				border:SetAlpha(0)
-
-				button.isSkinned = true
-			end
+			button.isSkinned = true
 		end
 	end
 
@@ -682,9 +663,10 @@ local function LoadSkin()
 
 	hooksecurefunc("QueueStatusEntry_SetFullDisplay", function(entry, _, _, _, isTank, isHealer, isDPS, totalTanks, totalHealers, totalDPS, tankNeeds, healerNeeds, dpsNeeds)
 		local nextRoleIcon = 1
+		local icon
 
 		if isDPS then
-			local icon = entry["RoleIcon"..nextRoleIcon]
+			icon = entry["RoleIcon"..nextRoleIcon]
 			icon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\dps.tga")
 			icon:SetTexCoord(unpack(E.TexCoords))
 			icon:Size(17)
@@ -692,7 +674,7 @@ local function LoadSkin()
 		end
 
 		if isHealer then
-			local icon = entry["RoleIcon"..nextRoleIcon]
+			icon = entry["RoleIcon"..nextRoleIcon]
 			icon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\healer.tga")
 			icon:SetTexCoord(unpack(E.TexCoords))
 			icon:Size(20)
@@ -700,7 +682,7 @@ local function LoadSkin()
 		end
 
 		if isTank then
-			local icon = entry["RoleIcon"..nextRoleIcon]
+			icon = entry["RoleIcon"..nextRoleIcon]
 			icon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga")
 			icon:SetTexCoord(unpack(E.TexCoords))
 			icon:Size(22)

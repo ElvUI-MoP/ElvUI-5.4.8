@@ -211,58 +211,64 @@ local function LoadSkin()
 
 	-- Money Won Alerts
 	hooksecurefunc("MoneyWonAlertFrame_SetUp", function(frame)
-		frame:SetAlpha(1)
-		if not frame.hooked then 
-			hooksecurefunc(frame, "SetAlpha", forceAlpha)
-			frame.hooked = true
-		end
+		if frame and not frame.isSkinned then
+			frame:SetAlpha(1)
+			if not frame.hooked then
+				hooksecurefunc(frame, "SetAlpha", forceAlpha)
+				frame.hooked = true
+			end
+			frame:SetTemplate("Transparent")
+			frame:Size(260, 64)
 
-		frame.Background:Kill()
-		frame.Icon:SetTexCoord(unpack(E.TexCoords))
-		frame.IconBorder:Kill()
+			frame.Background:Kill()
+			frame.IconBorder:Kill()
 
-		if not frame.Icon.backdrop then
+			frame.Icon:ClearAllPoints()
+			frame.Icon:Point("LEFT", frame, 6, 0)
+			frame.Icon:SetTexCoord(unpack(E.TexCoords))
 			frame.Icon.backdrop = CreateFrame("Frame", nil, frame)
 			frame.Icon.backdrop:SetTemplate("Default")
 			frame.Icon.backdrop:SetOutside(frame.Icon)
 			frame.Icon:SetParent(frame.Icon.backdrop)
-		end
 
-		if not frame.backdrop then
-			frame:CreateBackdrop("Transparent")
-			frame.backdrop:Point("TOPLEFT", frame.Icon.backdrop, "TOPLEFT", -4, 4)
-			frame.backdrop:Point("BOTTOMRIGHT", frame.Icon.backdrop, "BOTTOMRIGHT", 180, -4)
+			frame.Amount:ClearAllPoints()
+			frame.Amount:Point("LEFT", frame.Icon, 58, 0)
+
+			frame.isSkinned = true
 		end
 	end)
 
 	-- Loot Won Alerts
 	hooksecurefunc("LootWonAlertFrame_SetUp", function(frame)
-		frame:SetAlpha(1)
-		if not frame.hooked then
-			hooksecurefunc(frame, "SetAlpha", forceAlpha)
-			frame.hooked = true
-		end
+		if frame and not frame.isSkinned then
+			frame:SetAlpha(1)
+			if not frame.hooked then
+				hooksecurefunc(frame, "SetAlpha", forceAlpha)
+				frame.hooked = true
+			end
+			frame:SetTemplate("Transparent")
+			frame:Size(260, 64)
 
-		frame.Background:Kill()
-		frame.IconBorder:Kill()
-		frame.glow:Kill()
-		frame.shine:Kill()
-		if frame.SpecRing and frame.SpecIcon and frame.SpecIcon.GetTexture and frame.SpecIcon:GetTexture() == nil then frame.SpecRing:Hide() end
+			frame.Background:Kill()
+			frame.IconBorder:Kill()
+			frame.glow:Kill()
+			frame.shine:Kill()
+			if frame.SpecRing and frame.SpecIcon and frame.SpecIcon.GetTexture and frame.SpecIcon:GetTexture() == nil then frame.SpecRing:Hide() end
 
-		frame.Icon:SetTexCoord(unpack(E.TexCoords))
-		frame.Icon:SetDrawLayer("BORDER")
-
-		if not frame.Icon.backdrop then
+			frame.Icon:ClearAllPoints()
+			frame.Icon:Point("LEFT", frame, 6, 0)
+			frame.Icon:SetTexCoord(unpack(E.TexCoords))
 			frame.Icon.backdrop = CreateFrame("Frame", nil, frame)
 			frame.Icon.backdrop:SetTemplate("Default")
 			frame.Icon.backdrop:SetOutside(frame.Icon)
 			frame.Icon:SetParent(frame.Icon.backdrop)
-		end
 
-		if not frame.backdrop then
-			frame:CreateBackdrop("Transparent")
-			frame.backdrop:Point("TOPLEFT", frame.Icon.backdrop, "TOPLEFT", -4, 4)
-			frame.backdrop:Point("BOTTOMRIGHT", frame.Icon.backdrop, "BOTTOMRIGHT", 180, -4)
+			frame.ItemName:ClearAllPoints()
+			frame.ItemName:Point("LEFT", frame.Icon, 58, 0)
+
+			frame.RollTypeIcon:Point("TOPRIGHT", frame, -2, 0)
+
+			frame.isSkinned = true
 		end
 	end)
 

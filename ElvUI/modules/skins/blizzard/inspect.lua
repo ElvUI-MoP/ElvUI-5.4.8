@@ -80,7 +80,7 @@ local function LoadSkin()
 				local _, _, quality = GetItemInfo(itemID)
 				if not quality then
 					E:Delay(0.1, function()
-						if(InspectFrame.unit) then
+						if InspectFrame.unit then
 							InspectPaperDollItemSlotButton_Update(button)
 						end
 					end)
@@ -121,17 +121,17 @@ local function LoadSkin()
 	-- Talent Tab
 	InspectTalentFrame:StripTextures()
 
-	Specialization:CreateBackdrop()
-	Specialization.backdrop:SetOutside(Specialization.specIcon)
+	Specialization:CreateBackdrop("Default", true)
+	Specialization.backdrop:Point("TOPLEFT", 18, -16)
+	Specialization.backdrop:Point("BOTTOMRIGHT", 20, 12)
 
-	Specialization.specIcon:SetTexCoord(unpack(E.TexCoords))
 	Specialization.ring:SetTexture("")
 
-	Specialization.bg = CreateFrame("Frame", nil, Specialization)
-	Specialization.bg:SetTemplate("Default", true)
-	Specialization.bg:Point("TOPLEFT", 18, -16)
-	Specialization.bg:Point("BOTTOMRIGHT", 20, 12)
-	Specialization.bg:SetFrameLevel(Specialization.bg:GetFrameLevel() - 2)
+	Specialization.specIcon:SetTexCoord(unpack(E.TexCoords))
+	Specialization.specIcon.backdrop = CreateFrame("Frame", nil, Specialization)
+	Specialization.specIcon.backdrop:SetTemplate("Default")
+	Specialization.specIcon.backdrop:SetOutside(Specialization.specIcon)
+	Specialization.specIcon:SetParent(Specialization.specIcon.backdrop)
 
 	Specialization:HookScript("OnShow", function(self)
 		local spec = nil
