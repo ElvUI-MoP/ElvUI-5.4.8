@@ -183,6 +183,12 @@ local smileyKeys = {
 	["</3"]="BrokenHeart",
 }
 
+local rolePaths = {
+	TANK = [[|TInterface\AddOns\ElvUI\media\textures\tank.tga:15:15:0:0:64:64:2:56:2:56|t]],
+	HEALER = [[|TInterface\AddOns\ElvUI\media\textures\healer.tga:15:15:0:0:64:64:2:56:2:56|t]],
+	DAMAGER = [[|TInterface\AddOns\ElvUI\media\textures\dps.tga:15:15|t]]
+}
+
 local specialChatIcons
 do --this can save some main file locals
 	local IconPath = "|TInterface\\AddOns\\ElvUI\\media\\textures\\chatLogos\\"
