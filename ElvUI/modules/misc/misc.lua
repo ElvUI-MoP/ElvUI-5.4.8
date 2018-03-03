@@ -240,6 +240,11 @@ function M:ForceCVars()
 	end
 end
 
+function M:PLAYER_ENTERING_WORLD()
+	self:ForceCVars()
+	self:ToggleChatBubbleScript()
+end
+
 function M:Kill()
 
 end
@@ -261,7 +266,7 @@ function M:Initialize()
 	self:RegisterEvent("PARTY_INVITE_REQUEST", "AutoInvite")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "AutoInvite")
 	self:RegisterEvent("CVAR_UPDATE", "ForceCVars")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ForceCVars")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	if(E.global.general.mapAlphaWhenMoving < 1) then
 		self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)

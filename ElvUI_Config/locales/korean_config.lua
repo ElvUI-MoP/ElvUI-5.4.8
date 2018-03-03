@@ -466,6 +466,7 @@ L["Automatically select greed or disenchant (when available) on green quality it
 L["Automatically vendor gray items when visiting a vendor."] = "상점이 열리면 잡동사니를 자동으로 판매합니다."
 L["Bottom Panel"] = "하단 패널 표시"
 L["Chat Bubbles Style"] = "말풍선 디자인"
+L["Chat Bubble Names"] = true
 L["Chat Bubbles"] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = true
 L["Decimal Length"] = true
@@ -474,6 +475,7 @@ L["Display a panel across the bottom of the screen. This is for cosmetic only."]
 L["Display a panel across the top of the screen. This is for cosmetic only."] = "화면 상단에 꾸미기 용도의 바를 생성합니다."
 L["Display battleground messages in the middle of the screen."] = true
 L["Display emotion icons in chat."] = "메시지 안에 이모티콘이 있으면 그림으로 바꿔 보여줍니다."
+L["Display the name of the unit on the chat bubble. This will not work if backdrop is disabled."] = true
 L["Emotion Icons"] = "이모티콘 전환"
 L["Enable/Disable the loot frame."] = "주사위 굴림 및 전리품 획득 확인창의 사용 여부를 결정합니다.|n|n이 창은 |cff2eb7e4/loot|r 명령어로 볼 수 있습니다."
 L["Enable/Disable the loot roll frame."] = "ElvUI 디자인의 입찰 / 차비 / 마력추출을 선택하는 주사위 굴림창 사용 여부를 결정합니다."

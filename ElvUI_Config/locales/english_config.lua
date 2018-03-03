@@ -407,6 +407,7 @@ L["Automatically select greed or disenchant (when available) on green quality it
 L["Automatically vendor gray items when visiting a vendor."] = true
 L["Bottom Panel"] = true
 L["Chat Bubbles Style"] = true
+L["Chat Bubble Names"] = true
 L["Chat Bubbles"] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = true
 L["Decimal Length"] = true
@@ -415,6 +416,7 @@ L["Display a panel across the bottom of the screen. This is for cosmetic only."]
 L["Display a panel across the top of the screen. This is for cosmetic only."] = true
 L["Display battleground messages in the middle of the screen."] = true
 L["Display emotion icons in chat."] = true
+L["Display the name of the unit on the chat bubble. This will not work if backdrop is disabled."] = true
 L["Emotion Icons"] = true
 L["Enable/Disable the loot frame."] = true
 L["Enable/Disable the loot roll frame."] = true

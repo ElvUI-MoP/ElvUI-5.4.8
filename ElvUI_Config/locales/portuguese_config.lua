@@ -418,6 +418,7 @@ L["Automatically select greed or disenchant (when available) on green quality it
 L["Automatically vendor gray items when visiting a vendor."] = "Vender itens cinzentos automaticamente quando visitar um vendedor"
 L["Bottom Panel"] = "Painel Infeior"
 L["Chat Bubbles Style"] = "Estilo dos Balões de Fala"
+L["Chat Bubble Names"] = true
 L["Chat Bubbles"] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = true
 L["Decimal Length"] = true
@@ -426,6 +427,7 @@ L["Display a panel across the bottom of the screen. This is for cosmetic only."]
 L["Display a panel across the top of the screen. This is for cosmetic only."] = "Mostra um painel na parte superior da tela. Apenas para efeito cosmético."
 L["Display battleground messages in the middle of the screen."] = true
 L["Display emotion icons in chat."] = "Exibir ícones emotivos no bate-papo."
+L["Display the name of the unit on the chat bubble. This will not work if backdrop is disabled."] = true
 L["Emotion Icons"] = "Ícones Emotivos"
 L["Enable/Disable the loot frame."] = "Ativar/Desativar painel de saques."
 L["Enable/Disable the loot roll frame."] = "Ativar/Desativar painel de disputa de saques"
