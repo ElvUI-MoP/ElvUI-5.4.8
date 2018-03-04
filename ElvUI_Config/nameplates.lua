@@ -2808,8 +2808,7 @@ E.Options.args.nameplate = {
 							order = 6,
 							type = "color",
 							name = L["Tagged NPC"],
-							hasAlpha = false,
-							hidden = true
+							hasAlpha = false
 						}
 					}
 				}

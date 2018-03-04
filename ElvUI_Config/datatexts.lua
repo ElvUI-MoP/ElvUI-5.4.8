@@ -443,6 +443,7 @@ E.Options.args.datatexts = {
 				displayedCurrency = {
 					order = 2,
 					type = "select",
+					width = "double",
 					name = L["Displayed Currency"],
 					get = function(info) return E.db.datatexts.currencies.displayedCurrency end,
 					set = function(info, value) E.db.datatexts.currencies.displayedCurrency = value; DT:LoadDataTexts() end,
