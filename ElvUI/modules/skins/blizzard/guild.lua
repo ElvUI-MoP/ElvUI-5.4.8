@@ -48,11 +48,13 @@ local function LoadSkin()
 	GuildXPBar.progress:SetTexture(E["media"].normTex)
 
 	-- Faction Bar
-	GuildFactionFrame:SetTemplate("Default")
-
 	GuildFactionBar:StripTextures()
-	GuildFactionBar:SetAllPoints(GuildFactionFrame)
 	GuildFactionBar.progress:SetTexture(E["media"].normTex)
+	GuildFactionBar.progress.bg = CreateFrame("Frame", nil, GuildFactionBar)
+	GuildFactionBar.progress.bg:SetTemplate()
+	GuildFactionBar.progress.bg:Point("TOPLEFT", 0, -3)
+	GuildFactionBar.progress.bg:Point("BOTTOMRIGHT", 0, 1)
+	GuildFactionBar.progress.bg:SetFrameLevel(GuildFactionBar.progress.bg:GetFrameLevel() - 2)
 
 	-- Guild Latest/Next Perks/Updates
 	GuildNewPerksFrame:StripTextures()

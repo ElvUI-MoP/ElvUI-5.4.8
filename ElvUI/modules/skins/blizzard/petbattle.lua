@@ -156,7 +156,7 @@ local function LoadSkin()
 
 		local nextFrame = 1
 		for i = 1, C_PetBattles_GetNumAuras(self.petOwner, self.petIndex) do
-			local auraID, instanceID, turnsRemaining, isBuff = C_PetBattles_GetAuraInfo(self.petOwner, self.petIndex, i)
+			local _, _, turnsRemaining, isBuff = C_PetBattles_GetAuraInfo(self.petOwner, self.petIndex, i)
 			if (isBuff and self.displayBuffs) or (not isBuff and self.displayDebuffs) then
 				local frame = self.frames[nextFrame]
 
@@ -253,34 +253,34 @@ local function LoadSkin()
 		f.Enemy3
 	}
 
-	for index, infoBar in pairs(extraInfoBars) do
+	for _, infoBar in pairs(extraInfoBars) do
 		infoBar.BorderAlive:SetAlpha(0)
 		infoBar.HealthBarBG:SetAlpha(0)
 		infoBar.HealthDivider:SetAlpha(0)
-		infoBar:Size(40)
+		infoBar.BorderDead:SetAlpha(0)
+
 		infoBar:CreateBackdrop()
+		infoBar:StyleButton(nil, true)
+		infoBar:GetHighlightTexture():SetAllPoints()
+		infoBar:Size(50)
 		infoBar:ClearAllPoints()
 
-		infoBar.bg = CreateFrame("Frame", nil, infoBar)
-		infoBar.bg:SetTemplate()
-		infoBar.bg:Point("TOPLEFT", E.PixelMode and -2 or -3, E.PixelMode and 2 or 3)
-		infoBar.bg:Point("BOTTOMRIGHT", E.PixelMode and 2 or 3, -(E.PixelMode and 2 or 3))
-		infoBar.bg:SetFrameLevel(infoBar.bg:GetFrameLevel() - 2)
-
 		hooksecurefunc(infoBar.BorderAlive, "SetVertexColor", function(_, r, g, b)
-			infoBar.bg:SetBackdropBorderColor(r, g, b)
+			infoBar.backdrop:SetBackdropBorderColor(r, g, b)
 		end)
 
-		infoBar.healthBarWidth = E.PixelMode and 42 or 44
-		infoBar.ActualHealthBar:ClearAllPoints()
-		infoBar.ActualHealthBar:Point("TOPLEFT", infoBar.backdrop, "BOTTOMLEFT", 0, -4)
+		infoBar.healthBarWidth = 50
 
 		infoBar.HealthBarBackdrop = CreateFrame("Frame", nil, infoBar)
-		infoBar.HealthBarBackdrop:SetFrameLevel(infoBar:GetFrameLevel() - 1)
 		infoBar.HealthBarBackdrop:SetTemplate("Default")
-		infoBar.HealthBarBackdrop:Width(infoBar.healthBarWidth + (E.Border*2))
-		infoBar.HealthBarBackdrop:Point("TOPLEFT", infoBar.ActualHealthBar, "TOPLEFT", E.PixelMode and -E.Border or 0, E.PixelMode and E.Border or 0)
-		infoBar.HealthBarBackdrop:Point("BOTTOMRIGHT", infoBar.ActualHealthBar, "BOTTOMRIGHT", E.PixelMode and 1 or 0, E.PixelMode and -E.Spacing or 1)
+		infoBar.HealthBarBackdrop:Size(E.PixelMode and 52 or 54, E.PixelMode and 9 or 11)
+		infoBar.HealthBarBackdrop:Point("TOPLEFT", infoBar, "BOTTOMLEFT", -(E.PixelMode and 1 or 2), -(E.PixelMode and 4 or 6))
+		infoBar.HealthBarBackdrop:SetFrameLevel(infoBar:GetFrameLevel() - 1)
+
+		infoBar.ActualHealthBar:ClearAllPoints()
+		infoBar.ActualHealthBar:Point("TOPLEFT", infoBar.HealthBarBackdrop, "TOPLEFT", E.PixelMode and 1 or 2, E.PixelMode and -1 or -2)
+		infoBar.ActualHealthBar:SetTexture(E["media"].normTex)
+		E:RegisterStatusBar(infoBar.ActualHealthBar)
 	end
 
 	f.Ally2:Point("TOPRIGHT", f.Ally2.iconPoint, "TOPLEFT", -10, -2)

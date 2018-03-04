@@ -109,7 +109,7 @@ local function LoadSkin()
 
 		TradeSkillExpandButtonFrame:Point("TOPLEFT", TradeSkillFrame, "TOPLEFT", 2, -58)
 
-		TradeSkillViewGuildCraftersButton:Point("BOTTOMLEFT", 330, 8)
+		TradeSkillViewGuildCraftersButton:Point("BOTTOMLEFT", 333, 7)
 	end
 
 	S:HandleButton(TradeSkillCancelButton)
