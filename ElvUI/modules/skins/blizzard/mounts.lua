@@ -221,9 +221,9 @@ local function LoadSkin()
 
 	PetJournalLoadoutBorderSlotHeaderText:Point("CENTER", PetJournalLoadoutBorderTop, "TOP", 0, 11)
 
-	PetJournalLoadoutPet1:Point("TOP", 0, 3)
-	PetJournalLoadoutPet2:Point("TOP", 0, -108)
-	PetJournalLoadoutPet3:Point("TOP", 0, -219)
+	PetJournalLoadoutPet1:Point("TOP", 1, 3)
+	PetJournalLoadoutPet2:Point("TOP", 1, -108)
+	PetJournalLoadoutPet3:Point("TOP", 1, -219)
 
 	for i = 1, 3 do
 		local loadoutPet = _G["PetJournalLoadoutPet"..i]
@@ -235,34 +235,39 @@ local function LoadSkin()
 		_G["PetJournalLoadoutPet"..i.."HelpFrame"]:StripTextures()
 
 		loadoutPet:StripTextures()
-		loadoutPet:CreateBackdrop("Transparent")
-		loadoutPet.backdrop:Point("TOPLEFT", -2, 2)
-		loadoutPet.backdrop:Point("BOTTOMRIGHT", 5, 0)
+		loadoutPet:SetTemplate("Transparent")
+		loadoutPet:Width(405)
 
-		loadoutPet.petTypeIcon:SetPoint("BOTTOMLEFT", 5, 5)
-		loadoutPet.dragButton:SetOutside(loadoutPetIcon)
-		loadoutPet.dragButton:SetFrameLevel(loadoutPet.dragButton:GetFrameLevel() + 1)
-		loadoutPet.dragButton:StyleButton()
-		loadoutPetLevel:FontTemplate(nil, 12, "OUTLINE")
-		loadoutPetLevel:SetTextColor(1, 1, 1)
 		loadoutPet.hover = true
 		loadoutPet.pushed = true
 		loadoutPet.checked = true
-		S:HandleItemButton(loadoutPet)
 
+		S:HandleItemButton(loadoutPet)
 		loadoutPet.backdrop:SetFrameLevel(loadoutPet.backdrop:GetFrameLevel() + 1)
 
 		loadoutPet.setButton:StripTextures()
+		loadoutPet.petTypeIcon:Point("BOTTOMLEFT", 5, 5)
+
+		loadoutPet.dragButton:SetOutside(loadoutPetIcon)
+		loadoutPet.dragButton:SetFrameLevel(loadoutPet.dragButton:GetFrameLevel() + 1)
+		loadoutPet.dragButton:StyleButton()
+
+		loadoutPetLevel:FontTemplate(nil, 12, "OUTLINE")
+		loadoutPetLevel:SetTextColor(1, 1, 1)
+		_G["PetJournalLoadoutPet"..i.."LevelBG"]:Point("BOTTOMRIGHT", loadoutPetIcon, "BOTTOMRIGHT", 4, -4)
 
 		loadoutPetHealth.healthBar:StripTextures()
 		loadoutPetHealth.healthBar:CreateBackdrop("Default")
 		loadoutPetHealth.healthBar:SetStatusBarTexture(E.media.normTex)
+		E:RegisterStatusBar(loadoutPetHealth.healthBar)
 
 		loadoutPetXP:StripTextures()
 		loadoutPetXP:CreateBackdrop("Default")	
 		loadoutPetXP:SetStatusBarTexture(E.media.normTex)
 		loadoutPetXP:SetFrameLevel(loadoutPetXP:GetFrameLevel() + 2)
 		E:RegisterStatusBar(loadoutPetXP)
+
+		_G["PetJournalLoadoutPet"..i.."ModelFrame"]:Point("TOPRIGHT", -3, -3)
 
 		for index = 1, 3 do
 			local frame = _G["PetJournalLoadoutPet"..i.."Spell"..index]
@@ -321,6 +326,8 @@ local function LoadSkin()
 	PetJournalPetCardPetInfo:Size(40)
 	PetJournalPetCardPetInfo:Point("TOPLEFT", 2, -2)
 
+	PetJournalPetCardModelFrame:Point("TOPLEFT", 60, -10)
+
 	PetJournalPetCardPetInfoIcon:SetTexCoord(unpack(E.TexCoords))
 	PetJournalPetCardPetInfoIcon:SetInside(PetJournalPetCardPetInfo)
 	PetJournalPetCardPetInfoIcon:SetParent(PetJournalPetCardPetInfo.backdrop)
@@ -348,7 +355,7 @@ local function LoadSkin()
 
 	tt.Background:SetTexture(nil)
 
-	if(tt.Delimiter1) then
+	if tt.Delimiter1 then
 		tt.Delimiter1:SetTexture(nil)
 		tt.Delimiter2:SetTexture(nil)
 	end
