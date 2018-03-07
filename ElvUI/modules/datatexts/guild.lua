@@ -6,6 +6,7 @@ local sort, wipe = table.sort, wipe
 local ceil = math.ceil
 local format, find, join, split = string.format, string.find, string.join, string.split
 
+local Ambiguate = Ambiguate
 local GetNumGuildMembers = GetNumGuildMembers
 local GetGuildRosterInfo = GetGuildRosterInfo
 local GetGuildRosterMOTD = GetGuildRosterMOTD
@@ -80,6 +81,7 @@ local function BuildGuildTable()
 	wipe(guildTable)
 	local statusInfo
 	local _, name, rank, rankIndex, level, zone, note, officernote, connected, memberstatus, class
+	local name2
 
 	local totalMembers = GetNumGuildMembers()
 	for i = 1, totalMembers do
@@ -87,9 +89,10 @@ local function BuildGuildTable()
 		if not name then return end
 
 		statusInfo = onlinestatus[memberstatus]
+		name2 = Ambiguate(name, "guild")
 
 		if connected then
-			guildTable[#guildTable + 1] = {name, rank, level, zone, note, officernote, connected, statusInfo, class, rankIndex}
+			guildTable[#guildTable + 1] = {name2, rank, level, zone, note, officernote, connected, statusInfo, class, rankIndex}
 		end
 	end
 end
