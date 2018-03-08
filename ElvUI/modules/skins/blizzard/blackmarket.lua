@@ -41,7 +41,7 @@ local function LoadSkin()
 
 	S:HandleButton(BlackMarketFrame.BidButton)
 
-	hooksecurefunc("BlackMarketScrollFrame_Update", function()
+	local function SkinBlackMarketItems()
 		local buttons = BlackMarketScrollFrame.buttons
 		local numButtons = #buttons
 		local offset = HybridScrollFrame_GetOffset(BlackMarketScrollFrame)
@@ -65,7 +65,7 @@ local function LoadSkin()
 				button.skinned = true
 			end
 
-			if index <= numItems then
+			if type(numItems) == "number" and index <= numItems then
 				local name, texture, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetItemInfoByIndex(index)
 				if name then
 					button.Item.IconTexture:SetTexture(texture)
@@ -83,7 +83,9 @@ local function LoadSkin()
 				end
 			end
 		end
-	end)
+	end
+	hooksecurefunc("BlackMarketScrollFrame_Update", SkinBlackMarketItems)
+	hooksecurefunc("HybridScrollFrame_Update", SkinBlackMarketItems)
 
 	BlackMarketFrame.HotDeal:StripTextures()
 
