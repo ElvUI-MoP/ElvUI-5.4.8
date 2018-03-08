@@ -50,34 +50,34 @@ function M:ErrorFrameToggle(event)
 	end
 end
 
---[[
+
 function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, _, _, _, _, destName, _, _, _, _, _, spellID, spellName)
-	if(E.db.general.interruptAnnounce == "NONE") then return; end 
-	if not (event == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID('player') or sourceGUID == UnitGUID('pet'))) then return end
+	if E.db.general.interruptAnnounce == "NONE" then return end 
+	if not (event == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet"))) then return end
 
 	local inGroup, inRaid, inPartyLFG = IsInGroup(), IsInRaid(), IsPartyLFG()
-	if(not inGroup) then return end
+	if not inGroup then return end
 
-	if(E.db.general.interruptAnnounce == "PARTY") then
+	if E.db.general.interruptAnnounce == "PARTY" then
 		SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "PARTY")
-	elseif(E.db.general.interruptAnnounce == "RAID") then
-		if(inRaid) then
+	elseif E.db.general.interruptAnnounce == "RAID" then
+		if inRaid then
 			SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "RAID")
 		else
 			SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "PARTY")
 		end
-	elseif(E.db.general.interruptAnnounce == "RAID_ONLY") then
-		if(inRaid) then
+	elseif E.db.general.interruptAnnounce == "RAID_ONLY" then
+		if inRaid then
 			SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "RAID")
 		end
-	elseif(E.db.general.interruptAnnounce == "SAY") then
+	elseif E.db.general.interruptAnnounce == "SAY" then
 		SendChatMessage(format(interruptMsg, destName, spellID, spellName), "SAY")
-	elseif(E.db.general.interruptAnnounce == "EMOTE") then
+	elseif E.db.general.interruptAnnounce == "EMOTE" then
 		SendChatMessage(format(interruptMsg, destName, spellID, spellName), "EMOTE")
 	end
 end
-]]
 
+--[[
 function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, _, sourceName, _, _, _, destName, _, _, _, _, _, spellID, spellName)
 	if(E.db.general.interruptAnnounce == "NONE") then return; end
 	if not (event == "SPELL_INTERRUPT" and destName == UnitName("player")) then return; end
@@ -103,6 +103,7 @@ function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, _, sourceName, _, _, _, d
 		SendChatMessage(format(interruptMsg, sourceName, spellID, spellName), "EMOTE")
 	end
 end
+]]
 
 function M:MERCHANT_SHOW()
 	if E.db.general.vendorGrays then
