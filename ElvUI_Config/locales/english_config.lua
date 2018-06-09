@@ -412,6 +412,7 @@ L["Chat Bubbles"] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = true
 L["Decimal Length"] = true
 L["Direction the bar moves on gains/losses"] = true
+L["Displays a detailed report of every item sold when enabled."] = true
 L["Display a panel across the bottom of the screen. This is for cosmetic only."] = true
 L["Display a panel across the top of the screen. This is for cosmetic only."] = true
 L["Display battleground messages in the middle of the screen."] = true
@@ -460,6 +461,7 @@ L["Thin Border Theme"] = true
 L["Toggle Tutorials"] = true
 L["Top Panel"] = true
 L["Unit Prefix Style"] = true
+L["Vendor Gray Detailed Report"] = true
 L["Version Check"] = true
 L["When you go AFK display the AFK screen."] = true
 

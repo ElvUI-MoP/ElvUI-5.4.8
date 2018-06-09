@@ -423,6 +423,7 @@ L["Chat Bubbles"] = "Облачка сообщений"
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = "Задает количество десятичных долей, используемых на индикаторах здоровья и рамках юнитов."
 L["Decimal Length"] = "Десятичные доли"
 L["Direction the bar moves on gains/losses"] = "направление заполнения полосы"
+L["Displays a detailed report of every item sold when enabled."] = true
 L["Display a panel across the bottom of the screen. This is for cosmetic only."] = "Отображать панель на нижней границе экрана. Это косметический элемент."
 L["Display a panel across the top of the screen. This is for cosmetic only."] = "Отображать панель на верхней границе экрана. Это косметический элемент."
 L["Display battleground messages in the middle of the screen."] = "Отображать сообщения полей боя в центре экрана."
@@ -471,6 +472,7 @@ L["Thin Border Theme"] = "Тонкие границы"
 L["Toggle Tutorials"] = "Показать помощь"
 L["Top Panel"] = "Верхняя панель"
 L["Unit Prefix Style"] = "Стиль сокращений"
+L["Vendor Gray Detailed Report"] = true
 L["Version Check"] = "Проверка версии"
 L["When you go AFK display the AFK screen."] = "Отображать специальный экран, когда вы переходите в состояние \"Отсутствует\"."
 

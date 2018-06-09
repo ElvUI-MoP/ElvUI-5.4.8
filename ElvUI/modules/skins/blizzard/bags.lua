@@ -60,8 +60,10 @@ local function LoadSkin()
 			itemButtonIcon:SetInside()
 			itemButtonIcon:SetTexCoord(unpack(E.TexCoords))
 
+			questTexture:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\bagQuestIcon.tga")
+			questTexture.SetTexture = E.noop
+			questTexture:SetTexCoord(0, 1, 0, 1)
 			questTexture:SetInside()
-			questTexture:SetTexCoord(unpack(E.TexCoords))
 
 			E:RegisterCooldown(cooldown)
 		end
@@ -96,6 +98,7 @@ local function LoadSkin()
 			itemButton = _G[name.."Item"..i]
 			questTexture = _G[name.."Item"..i.."IconQuestTexture"]
 			itemLink = GetContainerItemLink(id, itemButton:GetID())
+			questTexture:Hide()
 
 			if ProfessionColors[bagType] then
 				itemButton:SetBackdropBorderColor(unpack(ProfessionColors[bagType]))
@@ -112,11 +115,10 @@ local function LoadSkin()
 				if questId and not isActive then
 					itemButton:SetBackdropBorderColor(1.0, 1.0, 0.0)
 					itemButton.ignoreBorderColors = true
-					questTexture:SetAlpha(1)
+					questTexture:Show()
 				elseif questId or isQuestItem then
 					itemButton:SetBackdropBorderColor(1.0, 0.3, 0.3)
 					itemButton.ignoreBorderColors = true
-					questTexture:SetAlpha(0)
 				elseif quality and quality > 1 then
 					itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 					itemButton.ignoreBorderColors = true
@@ -149,10 +151,11 @@ local function LoadSkin()
 
 	S:HandleCloseButton(BankFrameCloseButton)
 
-	local button, buttonIcon
+	local button, buttonIcon, questTexture
 	for i = 1, NUM_BANKGENERIC_SLOTS, 1 do
 		button = _G["BankFrameItem"..i]
 		buttonIcon = _G["BankFrameItem"..i.."IconTexture"]
+		questTexture = _G["BankFrameItem"..i.."IconQuestTexture"]
 
 		button:SetNormalTexture(nil)
 		button:SetTemplate("Default", true)
@@ -161,8 +164,10 @@ local function LoadSkin()
 		buttonIcon:SetInside()
 		buttonIcon:SetTexCoord(unpack(E.TexCoords))
 
-		_G["BankFrameItem"..i.."IconQuestTexture"]:SetInside()
-		_G["BankFrameItem"..i.."IconQuestTexture"]:SetTexCoord(unpack(E.TexCoords))
+		questTexture:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\bagQuestIcon.tga")
+		questTexture.SetTexture = E.noop
+		questTexture:SetTexCoord(0, 1, 0, 1)
+		questTexture:SetInside()
 
 		E:RegisterCooldown(_G["BankFrameItem"..i.."Cooldown"])
 	end
@@ -209,14 +214,15 @@ local function LoadSkin()
 			local isQuestItem, questId, isActive = GetContainerItemQuestInfo(BANK_CONTAINER, id)
 			local _, _, quality = GetItemInfo(link)
 
+			questTexture:Hide()
+
 			if questId and not isActive then
 				button:SetBackdropBorderColor(1.0, 1.0, 0.0)
 				button.ignoreBorderColors = true
-				questTexture:SetAlpha(1)
+				questTexture:Show()
 			elseif questId or isQuestItem then
 				button:SetBackdropBorderColor(1.0, 0.3, 0.3)
 				button.ignoreBorderColors = true
-				questTexture:SetAlpha(0)
 			elseif quality and quality > 1 then
 				button:SetBackdropBorderColor(GetItemQualityColor(quality))
 				button.ignoreBorderColors = true
