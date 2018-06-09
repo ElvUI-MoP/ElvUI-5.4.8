@@ -21,13 +21,13 @@ local function GetAuraOptions(headerName)
 			order = 3,
 			type = "range",
 			name = L["Duration Font Size"],
-			min = 4, max = 212, step = 1,
+			min = 4, max = 32, step = 1,
 		},
 		countFontSize = {
 			order = 4,
 			type = "range",
 			name = L["Count Font Size"],
-			min = 4, max = 212, step = 1,
+			min = 4, max = 32, step = 1,
 		},
 		growthDirection = {
 			order = 5,
@@ -157,64 +157,50 @@ E.Options.args.auras = {
 					desc = L["Threshold before text changes red, goes into decimal form, and the icon will fade. Set to -1 to disable."],
 					min = -1, max = 30, step = 1
 				},
-				timeXOffset = {
+				font = {
 					order = 3,
+					type = "select", dialogControl = 'LSM30_Font',
+					name = L["Font"],
+					values = AceGUIWidgetLSMlists.font
+				},
+				fontOutline = {
+					order = 4,
+					type = "select",
+					name = L["Font Outline"],
+					desc = L["Set the font outline."],
+					values = {
+						['NONE'] = NONE,
+						['OUTLINE'] = 'OUTLINE',
+						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+						['THICKOUTLINE'] = 'THICKOUTLINE'
+					}
+				},
+				timeXOffset = {
+					order = 5,
 					type = "range",
 					name = L["Time xOffset"],
 					min = -60, max = 60, step = 1
 				},
 				timeYOffset = {
-					order = 4,
+					order = 6,
 					type = "range",
 					name = L["Time yOffset"],
 					min = -60, max = 60, step = 1
 				},
 				countXOffset = {
-					order = 5,
+					order = 7,
 					type = "range",
 					name = L["Count xOffset"],
 					min = -60, max = 60, step = 1
 				},
 				countYOffset = {
-					order = 6,
+					order = 8,
 					type = "range",
 					name = L["Count yOffset"],
 					min = -60, max = 60, step = 1
 				},
-				fontGroup = {
-					order = 7,
-					type = "group",
-					name = L["Font"],
-					guiInline = true,
-					args = {
-						font = {
-							order = 1,
-							type = "select", dialogControl = "LSM30_Font",
-							name = L["Font"],
-							values = AceGUIWidgetLSMlists.font
-						},
-						fontSize = {
-							order = 2,
-							type = "range",
-							name = FONT_SIZE,
-							min = 6, max = 22, step = 1
-						},
-						fontOutline = {
-							order = 3,
-							type = "select",
-							name = L["Font Outline"],
-							desc = L["Set the font outline."],
-							values = {
-								["NONE"] = NONE,
-								["OUTLINE"] = "OUTLINE",
-								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
-								["THICKOUTLINE"] = "THICKOUTLINE"
-							}
-						}
-					}
-				},
 				masque = {
-					order = 8,
+					order = 9,
 					type = "group",
 					guiInline = true,
 					name = L["Masque Support"],

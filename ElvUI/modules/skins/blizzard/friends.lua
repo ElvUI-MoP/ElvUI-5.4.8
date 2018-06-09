@@ -40,6 +40,22 @@ local function LoadSkin()
 		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
+	local function StyleButton(frame)
+		frame:SetHighlightTexture(nil)
+
+		local leftGrad = frame:CreateTexture(nil, "HIGHLIGHT")
+		leftGrad:Size(frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
+		leftGrad:Point("LEFT", frame, "CENTER")
+		leftGrad:SetTexture(E.media.blankTex)
+		leftGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0.35, 0.9, 0.9, 0.9, 0)
+
+		local rightGrad = frame:CreateTexture(nil, "HIGHLIGHT")
+		rightGrad:Size(frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
+		rightGrad:Point("RIGHT", frame, "CENTER")
+		rightGrad:SetTexture(E.media.blankTex)
+		rightGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0, 0.9, 0.9, 0.9, 0.35)
+	end
+
 	for i = 1, 11 do
 		_G["FriendsFrameFriendsScrollFrameButton"..i.."SummonButtonIcon"]:SetTexCoord(unpack(E.TexCoords))
 		_G["FriendsFrameFriendsScrollFrameButton"..i.."SummonButtonNormalTexture"]:SetAlpha(0)
@@ -103,11 +119,7 @@ local function LoadSkin()
 	WhoFrameListInset:StripTextures()
 	WhoFrameEditBoxInset:StripTextures()
 
-	local function UpdateWhoSkins()
-		WhoListScrollFrame:StripTextures()
-	end
-	WhoFrame:HookScript("OnShow", UpdateWhoSkins)
-	hooksecurefunc("FriendsFrame_OnEvent", UpdateWhoSkins)
+	WhoListScrollFrame:StripTextures()
 
 	for i = 1, 4 do
 		_G["WhoFrameColumnHeader"..i]:StripTextures()
@@ -154,7 +166,7 @@ local function LoadSkin()
 
 		button:CreateBackdrop("Default", true)
 		button.backdrop:SetAllPoints(button.icon)
-		button:StyleButton()
+		StyleButton(button)
 
 		button.stripe = button:CreateTexture(nil, "BACKGROUND")
 		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")
@@ -227,6 +239,7 @@ local function LoadSkin()
 
 	-- Channel Frame
 	ChannelRoster:StripTextures()
+	ChannelRosterScrollFrame:StripTextures()
 	ChannelFrameLeftInset:StripTextures()
 	ChannelFrameRightInset:StripTextures()
 	ChannelListScrollFrame:StripTextures()
@@ -244,27 +257,25 @@ local function LoadSkin()
 	ChannelFrameDaughterFrameChannelName:CreateBackdrop("Default")
 	ChannelFrameDaughterFrameChannelPassword:CreateBackdrop("Default")
 
-	local function UpdateChannel()
-		ChannelRosterScrollFrame:StripTextures()
-	end
-	ChannelFrame:HookScript("OnShow", UpdateChannel)
-	hooksecurefunc("FriendsFrame_OnEvent", UpdateChannel)
-
-	local function Channel()
+	hooksecurefunc("ChannelList_Update", function()
 		for i = 1, MAX_DISPLAY_CHANNEL_BUTTONS do
 			local button = _G["ChannelButton"..i]
 			if button then
 				_G["ChannelButton"..i.."NormalTexture"]:SetAlpha(0)
 				_G["ChannelButton"..i.."Text"]:FontTemplate(nil, 12)
 				_G["ChannelButton"..i.."Collapsed"]:SetTextColor(1, 1, 1)
-				_G["ChannelButton"..i]:StyleButton()
+				
+				if not button.isSkinned then
+					StyleButton(button)
+
+					button.isSkinned = true
+				end
 			end
 		end
-	end
-	hooksecurefunc("ChannelList_Update", Channel)
+	end)
 
 	for i = 1, 22 do
-		_G["ChannelMemberButton"..i]:StyleButton()
+		StyleButton(_G["ChannelMemberButton"..i])
 	end
 
 	S:HandleButton(ChannelFrameDaughterFrameOkayButton)
@@ -300,20 +311,20 @@ local function LoadSkin()
 	S:HandleScrollBar(FriendsFrameIgnoreScrollFrameScrollBar)
 	FriendsFrameIgnoreScrollFrameScrollBar:Point("TOPLEFT", FriendsFrameIgnoreScrollFrame, "TOPRIGHT", 45, 0)
 
-	for i = 2, 19 do
+	for i = 1, 19 do
 		local button = _G["FriendsFrameIgnoreButton"..i]
+
+		button:Width(310)
+		StyleButton(button)
 
 		button.stripe = button:CreateTexture(nil, "OVERLAY")
 		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")
-		if(i % 2 == 1) then
+		if i % 2 == 1 then
 			button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998)
 		else
 			button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921)
 		end
 		button.stripe:SetAllPoints()
-
-		button:StyleButton()
-		button:Width(310)
 	end
 
 	S:HandleScrollBar(FriendsFramePendingScrollFrameScrollBar, 4)

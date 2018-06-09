@@ -463,7 +463,6 @@ P["nameplates"] = {
 --Auras
 P["auras"] = {
 	["font"] = "Homespun",
-	["fontSize"] = 10,
 	["fontOutline"] = "MONOCHROMEOUTLINE",
 	["countYOffset"] = 0,
 	["countXOffset"] = 0,

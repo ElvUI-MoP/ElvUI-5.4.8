@@ -26,10 +26,10 @@ end
 
 local function GetHPS(self)
 	local hps
-	if(healTotal == 0 or combatTime == 0) then
-		hps = "0.0"
+	if healTotal == 0 or combatTime == 0 then
+		hps = 0
 	else
-		hps = (healTotal) / (combatTime)
+		hps = healTotal / combatTime
 	end
 	self.text:SetFormattedText(displayString, L["HPS"], E:ShortValue(hps))
 end

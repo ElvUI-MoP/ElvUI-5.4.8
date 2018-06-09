@@ -27,10 +27,8 @@ local Chat_GetChatCategory = Chat_GetChatCategory;
 local ChatHistory_GetAccessID = ChatHistory_GetAccessID;
 local GetScreenWidth = GetScreenWidth;
 local GetScreenHeight = GetScreenHeight;
-local UnitFactionGroup = UnitFactionGroup;
 local Screenshot = Screenshot;
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS;
 local DND = DND;
 
 local CAMERA_SPEED = 0.035;
@@ -294,13 +292,9 @@ function AFK:Initialize()
 	self.AFKMode.bottom.logo:Point("CENTER", self.AFKMode.bottom, "CENTER", 0, 50);
 	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo");
 
-	local factionGroup = UnitFactionGroup("player");
-	local size, offsetX, offsetY = 140, -20, -16
-	local nameOffsetX, nameOffsetY = -10, -28
-	if(factionGroup == "Neutral") then
-		factionGroup = "Panda"
-		size, offsetX, offsetY = 90, 15, 10
-		nameOffsetX, nameOffsetY = 20, -5
+	local factionGroup, size, offsetX, offsetY, nameOffsetX, nameOffsetY = E.myfaction, 140, -20, -16, -10, -28
+	if factionGroup == "Neutral" then
+		factionGroup, size, offsetX, offsetY, nameOffsetX, nameOffsetY = "Panda", 90, 15, 10, 20, -5
 	end
 
 	self.AFKMode.bottom.faction = self.AFKMode.bottom:CreateTexture(nil, "OVERLAY");

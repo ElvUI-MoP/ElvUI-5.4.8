@@ -102,14 +102,13 @@ local function LoadSkin()
 		_G[roleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
 		_G[roleIcons[i]].backdrop:Point("BOTTOMRIGHT", -3, 3)
 
-		_G[roleIcons[i]].icon = _G[roleIcons[i]]:CreateTexture(nil, "ARTWORK")
-		_G[roleIcons[i]].icon:SetTexCoord(unpack(E.TexCoords))
-		_G[roleIcons[i]].icon:SetInside(_G[roleIcons[i]].backdrop)
+		_G[roleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		_G[roleIcons[i]]:GetNormalTexture():SetInside(_G[roleIcons[i]].backdrop)
 	end
 
-	LookingForGuildTankButton.icon:SetTexture("Interface\\Icons\\Ability_Defend")
-	LookingForGuildHealerButton.icon:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LookingForGuildDamagerButton.icon:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	LookingForGuildTankButton:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	LookingForGuildHealerButton:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	LookingForGuildDamagerButton:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 end
 
 S:AddCallbackForAddon("Blizzard_LookingForGuildUI", "LookingForGuild", LoadSkin)

@@ -33,18 +33,17 @@ local function LoadSkin()
 	-- Side Dressing Room
 	SideDressUpFrame:StripTextures()
 	SideDressUpFrame:CreateBackdrop("Transparent")
-	SideDressUpFrame.backdrop:Point("TOPLEFT", 1, 5)
-	SideDressUpFrame.backdrop:Point("BOTTOMRIGHT", -4, 3)
+	SideDressUpFrame.backdrop:Point("TOPLEFT", 1, 9)
+	SideDressUpFrame.backdrop:Point("BOTTOMRIGHT", -6, 5)
+
+	SideDressUpModel:CreateBackdrop()
+	SideDressUpModel.backdrop:Point("BOTTOMRIGHT", 1, -2)
 
 	S:HandleButton(SideDressUpModelResetButton)
-
-	if SideDressUpFrameUndressButton then
-		SideDressUpModelResetButton:Point("BOTTOM", 43, 0)
-	else
-		SideDressUpModelResetButton:Point("BOTTOM", 0, 0)
-	end
+	SideDressUpModelResetButton:Point("BOTTOM", 0, 2)
 
 	S:HandleCloseButton(SideDressUpModelCloseButton)
+	SideDressUpModelCloseButton:Point("CENTER", SideDressUpFrame, "TOPRIGHT", -18, -2)
 
 	--Model Backgrounds
 	hooksecurefunc("SetDressUpBackground", function(frame)

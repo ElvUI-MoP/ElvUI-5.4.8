@@ -40,6 +40,7 @@ function AB:HandleMicroButton(button)
 	local disabled = button:GetDisabledTexture()
 
 	button:SetParent(ElvUI_MicroBar)
+	button:SetHitRectInsets(0, 0, 26, 0)
 
 	button.Flash:SetTexture(nil)
 	button:GetHighlightTexture():Kill()

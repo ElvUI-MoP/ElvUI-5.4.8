@@ -216,35 +216,15 @@ local function LoadSkin()
 		_G[roleCheckIcons[i]].backdrop:Point("TOPLEFT", 7, -7)
 		_G[roleCheckIcons[i]].backdrop:Point("BOTTOMRIGHT", -7, 7)
 
-		_G[roleCheckIcons[i]].icon = _G[roleCheckIcons[i]]:CreateTexture(nil, "ARTWORK")
-		_G[roleCheckIcons[i]].icon:SetTexCoord(unpack(E.TexCoords))
-		_G[roleCheckIcons[i]].icon:SetInside(_G[roleCheckIcons[i]].backdrop)
+		_G[roleCheckIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		_G[roleCheckIcons[i]]:GetNormalTexture():SetInside(_G[roleCheckIcons[i]].backdrop)
 	end
 
 	RolePollPopupRoleButtonTank:Point("TOPLEFT", 32, -35)
 
-	RolePollPopupRoleButtonTank.icon:SetTexture("Interface\\Icons\\Ability_Defend")
-	RolePollPopupRoleButtonHealer.icon:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	RolePollPopupRoleButtonDPS.icon:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-
-	hooksecurefunc("RolePollPopup_Show", function()
-		local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
-		if canBeTank then
-			RolePollPopupRoleButtonTank.icon:SetDesaturated(false)
-		else
-			RolePollPopupRoleButtonTank.icon:SetDesaturated(true)
-		end
-		if canBeHealer then
-			RolePollPopupRoleButtonHealer.icon:SetDesaturated(false)
-		else
-			RolePollPopupRoleButtonHealer.icon:SetDesaturated(true)
-		end
-		if canBeDamager then
-			RolePollPopupRoleButtonDPS.icon:SetDesaturated(false)
-		else
-			RolePollPopupRoleButtonDPS.icon:SetDesaturated(true)
-		end
-	end)
+	RolePollPopupRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	RolePollPopupRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	RolePollPopupRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 
 	-- Report Player
 	ReportCheatingDialog:StripTextures()

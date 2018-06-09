@@ -15,24 +15,6 @@ local function LoadSkin()
 	SpellBookFrame:SetTemplate("Transparent")
 	SpellBookFrame:Width(460)
 
-	SpellBookFrame:EnableMouseWheel(true)
-	SpellBookFrame:SetScript("OnMouseWheel", function(_, value)
-		if SpellBookFrame.bookType == BOOKTYPE_SPELL then
-
-			local currentPage, maxPages = SpellBook_GetCurrentPage()
-
-			if value > 0 then
-				if currentPage > 1 then
-					SpellBookPrevPageButton_OnClick()
-				end
-			else
-				if currentPage < maxPages then
-					SpellBookNextPageButton_OnClick()
-				end
-			end
-		end
-	end)
-
 	SpellBookFrameInset:StripTextures(true)
 	SpellBookSpellIconsFrame:StripTextures(true)
 	SpellBookSideTabsFrame:StripTextures(true)

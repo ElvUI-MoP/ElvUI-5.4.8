@@ -367,12 +367,9 @@ function M:UpdateSettings()
 		MiniMapBattlefieldFrame:CreateBackdrop()
 		MiniMapBattlefieldFrame:Size(28)
 
+		local factionGroup = E.myfaction
 		MiniMapBattlefieldFrame.texture = MiniMapBattlefieldFrame:CreateTexture(nil, "OVERLAY")
-		if UnitFactionGroup("player") == "Horde" then
-			MiniMapBattlefieldFrame.texture:SetTexture("Interface\\Icons\\PVPCurrency-Honor-Horde")
-		elseif UnitFactionGroup("player") == "Alliance" then
-			MiniMapBattlefieldFrame.texture:SetTexture("Interface\\Icons\\PVPCurrency-Honor-Alliance")
-		end
+		MiniMapBattlefieldFrame.texture:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..factionGroup)
 		MiniMapBattlefieldFrame.texture:SetTexCoord(unpack(E.TexCoords))
 		MiniMapBattlefieldFrame.texture:SetInside(MiniMapBattlefieldFrame.backdrop)
 	end
