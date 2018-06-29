@@ -4,19 +4,23 @@ local S = E:GetModule("Skins")
 local _G = _G
 local unpack, select = unpack, select
 
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
+
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.archaeology ~= true then return end
 
-	--Main Frame
+	-- Main Frame
 	ArchaeologyFrameInset:StripTextures(true)
 
+	local ArchaeologyFrame = _G["ArchaeologyFrame"]
 	ArchaeologyFrame:StripTextures(true)
 	ArchaeologyFrame:SetTemplate("Transparent")
 	ArchaeologyFrame:Width(500)
 
 	S:HandleCloseButton(ArchaeologyFrameCloseButton)
 
-	--Status Rank Bar
+	-- Status Rank Bar
 	ArchaeologyFrameRankBar:StripTextures()
 	ArchaeologyFrameRankBar:CreateBackdrop("Default")
 	ArchaeologyFrameRankBar:SetStatusBarTexture(E["media"].normTex)
@@ -27,7 +31,7 @@ local function LoadSkin()
 	ArchaeologyFrameRankBar:Point("TOP", ArchaeologyFrame, "TOP", 0, -50)
 	ArchaeologyFrameRankBar.SetPoint = E.noop
 
-	--Solve Rank Bar
+	-- Solve Rank Bar
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:StripTextures()
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:CreateBackdrop("Default")
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetStatusBarTexture(E["media"].normTex)
@@ -35,12 +39,12 @@ local function LoadSkin()
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:Width(460)
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:Point("TOP", -15, -40)
 
-	--Help Button
+	-- Help Button
 	ArchaeologyFrameInfoButton:GetHighlightTexture():Kill()
 	ArchaeologyFrameInfoButtonTexture:SetTexCoord(unpack(E.TexCoords))
 	ArchaeologyFrameInfoButton:Point("TOPLEFT", 5, -5)
 
-	--Help Frame
+	-- Help Frame
 	select(2, ArchaeologyFrameHelpPage:GetRegions()):SetTexture("")
 	select(3, ArchaeologyFrameHelpPage:GetRegions()):SetTexture("")
 
@@ -66,7 +70,7 @@ local function LoadSkin()
 
 	ArchaeologyFrameHelpPageHelpScrollHelpText:SetTextColor(1, 1, 1)
 
-	--Artifact Page
+	-- Artifact Page
 	ArchaeologyFrameArtifactPage:CreateBackdrop("Transparent")
 	ArchaeologyFrameArtifactPage.backdrop:Point("TOPLEFT", -45, -45)
 	ArchaeologyFrameArtifactPage.backdrop:Point("BOTTOMRIGHT", 0, 95)
@@ -107,7 +111,7 @@ local function LoadSkin()
 
 	ArchaeologyFrameArtifactPageSolveFrameKeystone1:Point("BOTTOMLEFT", -25, -30)
 
-	--Summary Page
+	-- Summary Page
 	select(2, ArchaeologyFrameSummaryPage:GetRegions()):SetTexture("")
 	select(3, ArchaeologyFrameSummaryPage:GetRegions()):SetTexture("")
 
@@ -117,7 +121,6 @@ local function LoadSkin()
 
 	for i = 1, ARCHAEOLOGY_MAX_RACES do
 		local frame = _G["ArchaeologyFrameSummaryPageRace"..i]
-		local frameIcon = frame:GetNormalTexture()
 
 		if frame then
 			frame:CreateBackdrop("Transparent", true)
@@ -130,39 +133,32 @@ local function LoadSkin()
 		end
 	end
 
-	for i = 1, ArchaeologyFrameSummaryPage:GetNumRegions() do
-		local region = select(i, ArchaeologyFrameSummaryPage:GetRegions())
-		if region:GetObjectType() == "FontString" then
-			region:SetTextColor(1, 0.80, 0.10)
-		end
-	end
+	ArchaeologyFrameSummaryPageTitle:Point("TOP", ArchaeologyFrameSummaryPage, "TOP", -25, -42)
+	ArchaeologyFrameSummaryPageTitle:SetTextColor(1, 0.80, 0.10)
 
-	ArchaeologyFrameSummaryPageTitle:SetAlpha(0)
-
-	--Completed Page
+	-- Completed Page
 	for i = 1, ARCHAEOLOGY_MAX_COMPLETED_SHOWN do
 		local artifact = _G["ArchaeologyFrameCompletedPageArtifact"..i]
-		local icon = _G["ArchaeologyFrameCompletedPageArtifact"..i.."Icon"]
 
 		if artifact then
-			_G["ArchaeologyFrameCompletedPageArtifact"..i.."Border"]:Kill()
-			_G["ArchaeologyFrameCompletedPageArtifact"..i.."Bg"]:Kill()
-			_G["ArchaeologyFrameCompletedPageArtifact"..i.."ArtifactName"]:SetTextColor(1, 0.80, 0.10)
-			_G["ArchaeologyFrameCompletedPageArtifact"..i.."ArtifactSubText"]:SetTextColor(0.6, 0.6, 0.6)
-
 			artifact:SetTemplate("Transparent")
 			artifact:StyleButton()
 
-			icon.bg = CreateFrame("Frame", nil, artifact)
-			icon.bg:SetTemplate()
-			icon.bg:Point("TOPLEFT", icon, -1, 1)
-			icon.bg:Point("BOTTOMRIGHT", icon, 1, -1)
-			icon.bg:SetFrameLevel(icon.bg:GetFrameLevel() + 2)
+			artifact.icon.bg = CreateFrame("Frame", nil, artifact)
+			artifact.icon.bg:SetTemplate()
+			artifact.icon.bg:Point("TOPLEFT", artifact.icon, -1, 1)
+			artifact.icon.bg:Point("BOTTOMRIGHT", artifact.icon, 1, -1)
+			artifact.icon.bg:SetFrameLevel(artifact.icon.bg:GetFrameLevel() + 2)
 
-			icon:SetTexCoord(unpack(E.TexCoords))
-			icon:SetDrawLayer("OVERLAY")
-			icon:Size(42)
-			icon:SetParent(icon.bg)
+			artifact.icon:SetTexCoord(unpack(E.TexCoords))
+			artifact.icon:SetDrawLayer("OVERLAY")
+			artifact.icon:Size(42)
+			artifact.icon:SetParent(artifact.icon.bg)
+
+			artifact.border:Kill()
+
+			artifact.artifactName:SetTextColor(1, 0.80, 0.10)
+			artifact.artifactSubText:SetTextColor(0.6, 0.6, 0.6)
 		end
 	end
 
@@ -194,50 +190,49 @@ local function LoadSkin()
 
 	ArchaeologyFrameCompletedPageArtifact1:Point("TOPLEFT", -10, -85)
 
-	--Summary Tab
+	-- Summary / Complete Tabs
 	ArchaeologyFrameSummarytButton:StripTextures()
 	ArchaeologyFrameSummarytButton:SetTemplate("Transparent")
-	ArchaeologyFrameSummarytButton:GetHighlightTexture():SetTexture(nil)
 	ArchaeologyFrameSummarytButton:Size(45, 38)
+	ArchaeologyFrameSummarytButton:StyleButton()
 	ArchaeologyFrameSummarytButton:Point("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -50)
 
-	ArchaeologyFrameSummarytButton.icon = ArchaeologyFrameSummarytButton:CreateTexture(nil, "OVERLAY")
+	ArchaeologyFrameSummarytButton.icon = ArchaeologyFrameSummarytButton:CreateTexture(nil, "ARTWORK")
 	ArchaeologyFrameSummarytButton.icon:SetTexture("Interface\\ARCHEOLOGY\\ARCH-RACE-TOLVIR")
 	ArchaeologyFrameSummarytButton.icon:SetTexCoord(0, 0.58, 0.100, 0.33)
 	ArchaeologyFrameSummarytButton.icon:Point("TOPLEFT", -5, -6)
 	ArchaeologyFrameSummarytButton.icon:Point("BOTTOMRIGHT", 5, 6)
-	ArchaeologyFrameSummarytButton.icon:SetDesaturated(false)
 
-	--Complete Tab
 	ArchaeologyFrameCompletedButton:StripTextures()
 	ArchaeologyFrameCompletedButton:SetTemplate("Transparent")
-	ArchaeologyFrameCompletedButton:GetHighlightTexture():SetTexture(nil)
 	ArchaeologyFrameCompletedButton:Size(45, 38)
+	ArchaeologyFrameCompletedButton:StyleButton()
 	ArchaeologyFrameCompletedButton:Point("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -100)
 
-	ArchaeologyFrameCompletedButton.icon = ArchaeologyFrameCompletedButton:CreateTexture(nil, "OVERLAY")
+	ArchaeologyFrameCompletedButton.icon = ArchaeologyFrameCompletedButton:CreateTexture(nil, "ARTWORK")
 	ArchaeologyFrameCompletedButton.icon:SetTexture("Interface\\ARCHEOLOGY\\ARCH-RACE-TOLVIR")
 	ArchaeologyFrameCompletedButton.icon:SetTexCoord(0, 0.58, 0.344, 0.68)
 	ArchaeologyFrameCompletedButton.icon:Point("TOPLEFT", -3, -7)
 	ArchaeologyFrameCompletedButton.icon:Point("BOTTOMRIGHT", 3, -18)
-	ArchaeologyFrameCompletedButton.icon:SetDesaturated(true)
 
-	--Clicked Tab Script
-	ArchaeologyFrameSummarytButton:HookScript("OnClick", function()
-		ArchaeologyFrameSummarytButton.icon:SetDesaturated(false)
-		ArchaeologyFrameCompletedButton.icon:SetDesaturated(true)
+	hooksecurefunc("ArchaeologyFrame_OnTabClick", function(self)
+		local archFrame = self:GetParent()
+		archFrame.selectedTab = self:GetID()
+
+		if archFrame.selectedTab ==  ARCHAEOLOGY_HELP_TAB or archFrame.selectedTab ==  ARCHAEOLOGY_SUMMARY_TAB then
+			archFrame["tab"..ARCHAEOLOGY_SUMMARY_TAB].icon:SetDesaturated(false)
+			archFrame["tab"..ARCHAEOLOGY_COMPLETED_TAB].icon:SetDesaturated(true)
+		elseif archFrame.selectedTab ==  ARCHAEOLOGY_COMPLETED_TAB then
+			archFrame["tab"..ARCHAEOLOGY_COMPLETED_TAB].icon:SetDesaturated(false)
+			archFrame["tab"..ARCHAEOLOGY_SUMMARY_TAB].icon:SetDesaturated(true)
+		end
 	end)
 
-	ArchaeologyFrameCompletedButton:HookScript("OnClick", function()
-		ArchaeologyFrameCompletedButton.icon:SetDesaturated(false)
-		ArchaeologyFrameSummarytButton.icon:SetDesaturated(true)
-	end)
-
-	--Filter Dropdown
+	-- Filter Dropdown
 	S:HandleDropDownBox(ArchaeologyFrameRaceFilter, 125)
 	ArchaeologyFrameRaceFilter:Point("TOPRIGHT", -25, -3)
 
-	--Dig Site Progress Bar
+	-- Dig Site Progress Bar
 	ArcheologyDigsiteProgressBar:StripTextures()
 	ArcheologyDigsiteProgressBar:ClearAllPoints()
 	ArcheologyDigsiteProgressBar:Point("TOP", UIParent, "TOP", 0, -400)

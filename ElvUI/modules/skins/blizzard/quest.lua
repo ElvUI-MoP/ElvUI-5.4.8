@@ -31,8 +31,8 @@ local function LoadSkin()
 		questItem:Size(143, 40)
 		questItem:SetFrameLevel(questItem:GetFrameLevel() + 2)
 
-		questIcon:SetDrawLayer("OVERLAY")
 		questIcon:Size(E.PixelMode and 38 or 32)
+		questIcon:SetDrawLayer("OVERLAY")
 		questIcon:Point("TOPLEFT", E.PixelMode and 1 or 4, -(E.PixelMode and 1 or 4))
 		S:HandleIcon(questIcon)
 
@@ -74,6 +74,16 @@ local function LoadSkin()
 		end
 	end
 
+	QuestInfoRewardSpell:SetHitRectInsets(0, 1, 3, -2)
+	QuestInfoSpellObjectiveFrame:SetHitRectInsets(0, 1, 3, -2)
+
+	QuestInfoItemHighlight:StripTextures()
+	QuestInfoItemHighlight:SetTemplate("Default", nil, true)
+	QuestInfoItemHighlight:SetBackdropBorderColor(1, 1, 0)
+	QuestInfoItemHighlight:SetBackdropColor(0, 0, 0, 0)
+	QuestInfoItemHighlight.backdropTexture:SetAlpha(0)
+	QuestInfoItemHighlight:Size(142, 40)
+
 	local function QuestQualityColors(frame, text, quality, link)
 		if link and not quality then
 			quality = select(3, GetItemInfo(link))
@@ -85,7 +95,7 @@ local function LoadSkin()
 
 			text:SetTextColor(1, 1, 1)
 		else
-			if quality and quality > 1 then
+			if quality then
 				if frame then
 					frame:SetBackdropBorderColor(GetItemQualityColor(quality))
 					frame.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
@@ -100,15 +110,6 @@ local function LoadSkin()
 			end
 		end
 	end
-
-	QuestInfoRewardSpell:SetHitRectInsets(0, 1, 3, -2)
-
-	QuestInfoItemHighlight:StripTextures()
-	QuestInfoItemHighlight:SetTemplate("Default", nil, true)
-	QuestInfoItemHighlight:SetBackdropBorderColor(1, 1, 0)
-	QuestInfoItemHighlight:SetBackdropColor(0, 0, 0, 0)
-	QuestInfoItemHighlight.backdropTexture:SetAlpha(0)
-	QuestInfoItemHighlight:Size(142, 40)
 
 	hooksecurefunc("QuestInfoItem_OnClick", function(self)
 		QuestInfoItemHighlight:ClearAllPoints()
@@ -409,19 +410,19 @@ local function LoadSkin()
 	QuestNPCModelTextScrollFrameScrollBarScrollDownButton:Size(18, 16)
 
 	for i = 1, #QuestLogScrollFrame.buttons do
-		local questLogTitle = _G["QuestLogScrollFrameButton" .. i]
-		questLogTitle:SetNormalTexture("Interface\\Buttons\\UI-PlusMinus-Buttons")
+		local questLogTitle = _G["QuestLogScrollFrameButton"..i]
+		questLogTitle:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 		questLogTitle.SetNormalTexture = E.noop
-		questLogTitle:GetNormalTexture():Size(11)
+		questLogTitle:GetNormalTexture():Size(12)
 		questLogTitle:GetNormalTexture():Point("LEFT", 5, 0)
 		questLogTitle:SetHighlightTexture("")
 		questLogTitle.SetHighlightTexture = E.noop
 
 		hooksecurefunc(questLogTitle, "SetNormalTexture", function(self, texture)
 			if find(texture, "MinusButton") then
-				self:GetNormalTexture():SetTexCoord(0.5625, 1, 0, 0.4375)
+				self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
 			elseif find(texture, "PlusButton") then
-				self:GetNormalTexture():SetTexCoord(0, 0.4375, 0, 0.4375)
+				self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 			else
 				self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
  			end

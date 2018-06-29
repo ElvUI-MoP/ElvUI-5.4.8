@@ -87,6 +87,8 @@ function D:ModifyErrorFrame()
 end
 
 function D:ScriptErrorsFrame_UpdateButtons()
+	if not ScriptErrorsFrame.firstButton then return end
+
 	local numErrors = #ScriptErrorsFrame.order;
 	local index = ScriptErrorsFrame.index;
 	if ( index == 0 ) then

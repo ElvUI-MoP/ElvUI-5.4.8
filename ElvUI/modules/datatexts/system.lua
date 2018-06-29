@@ -6,20 +6,23 @@ local sort, wipe = table.sort, wipe
 local floor = math.floor
 local format, join = string.format, string.join
 
-local GetNumAddOns = GetNumAddOns
-local GetAddOnInfo = GetAddOnInfo
-local IsAddOnLoaded = IsAddOnLoaded
-local UpdateAddOnMemoryUsage = UpdateAddOnMemoryUsage
-local UpdateAddOnCPUUsage = UpdateAddOnCPUUsage
-local GetAddOnMemoryUsage = GetAddOnMemoryUsage
 local GetAddOnCPUUsage = GetAddOnCPUUsage
-local ResetCPUUsage = ResetCPUUsage
-local GetCVar = GetCVar
+local GetAddOnInfo = GetAddOnInfo
+local GetAddOnMemoryUsage = GetAddOnMemoryUsage
 local GetAvailableBandwidth = GetAvailableBandwidth
-local GetNetStats = GetNetStats
+local GetCVar = GetCVar
+local GetCVarBool = GetCVarBool
 local GetDownloadedPercentage = GetDownloadedPercentage
-local IsShiftKeyDown = IsShiftKeyDown
 local GetFramerate = GetFramerate
+local GetNetIpTypes = GetNetIpTypes
+local GetNetStats = GetNetStats
+local GetNumAddOns = GetNumAddOns
+local IsAddOnLoaded = IsAddOnLoaded
+local IsShiftKeyDown = IsShiftKeyDown
+local ResetCPUUsage = ResetCPUUsage
+local UpdateAddOnCPUUsage = UpdateAddOnCPUUsage
+local UpdateAddOnMemoryUsage = UpdateAddOnMemoryUsage
+local UNKNOWN = UNKNOWN
 
 local int, int2 = 6, 5
 local statusColors = {
@@ -28,7 +31,6 @@ local statusColors = {
 	"|cffFF9000",
 	"|cffD80909"
 }
-local resetInfoFormatter = join("", "|cffaaaaaa", L["Right Click: Reset CPU Usage"], "|r")
 local enteredFrame = false;
 local bandwidthString = "%.2f Mbps"
 local percentageString = "%.2f%%"
@@ -40,7 +42,7 @@ local bandwidth = 0
 
 local function formatMem(memory)
 	local mult = 10 ^ 1
-	if(memory > 999) then
+	if memory > 999 then
 		local mem = ((memory / 1024) * mult) / mult
 		return format(megaByteString, mem)
 	else
@@ -50,7 +52,7 @@ local function formatMem(memory)
 end
 
 local function sortByMemoryOrCPU(a, b)
-	if(a and b) then
+	if a and b then
 		return a[3] > b[3]
 	end
 end
@@ -59,7 +61,7 @@ local memoryTable = {}
 local cpuTable = {}
 local function RebuildAddonList()
 	local addOnCount = GetNumAddOns()
-	if(addOnCount == #memoryTable) then return end
+	if (addOnCount == #memoryTable) then return end
 
 	wipe(memoryTable)
 	wipe(cpuTable)
@@ -70,7 +72,6 @@ local function RebuildAddonList()
 end
 
 local function UpdateMemory()
-
 	UpdateAddOnMemoryUsage()
 
 	totalMemory = 0
@@ -83,7 +84,6 @@ local function UpdateMemory()
 end
 
 local function UpdateCPU()
-
 	UpdateAddOnCPUUsage()
 
 	local addonCPU
@@ -100,27 +100,30 @@ local function UpdateCPU()
 end
 
 local function ToggleGameMenuFrame()
-	if(GameMenuFrame:IsShown()) then
-		PlaySound("igMainMenuQuit");
-		HideUIPanel(GameMenuFrame);
+	if GameMenuFrame:IsShown() then
+		PlaySound("igMainMenuQuit")
+		HideUIPanel(GameMenuFrame)
 	else
-		PlaySound("igMainMenuOpen");
-		ShowUIPanel(GameMenuFrame);
+		PlaySound("igMainMenuOpen")
+		ShowUIPanel(GameMenuFrame)
 	end
 end
 
 local function OnClick(_, btn)
-	if(btn == "RightButton") then
-		collectgarbage("collect");
-		ResetCPUUsage();
-	elseif(btn == "LeftButton") then
+	if btn == "RightButton" then
+		collectgarbage("collect")
+		ResetCPUUsage()
+	elseif btn == "LeftButton" then
 		ToggleGameMenuFrame()
 	end
 end
 
+local ipTypes = {"IPv4", "IPv6"}
+local ipTypeHome, ipTypeWorld
+local cpuProfiling
 local function OnEnter(self)
-	enteredFrame = true;
-	local cpuProfiling = GetCVar("scriptProfile") == "1"
+	enteredFrame = true
+	cpuProfiling = GetCVar("scriptProfile") == "1"
 	DT:SetupTooltip(self)
 
 	UpdateMemory()
@@ -128,24 +131,30 @@ local function OnEnter(self)
 
 	DT.tooltip:AddDoubleLine(L["Home Latency:"], format(homeLatencyString, select(3, GetNetStats())), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
 
-	if(bandwidth ~= 0) then
+	if GetCVarBool("useIPv6") then
+		ipTypeHome, ipTypeWorld = GetNetIpTypes()
+		DT.tooltip:AddDoubleLine(L["Home Protocol:"], ipTypes[ipTypeHome or 0] or UNKNOWN, 0.69, 0.31, 0.31,0.84, 0.75, 0.65)
+		DT.tooltip:AddDoubleLine(L["World Protocol:"], ipTypes[ipTypeWorld or 0] or UNKNOWN, 0.69, 0.31, 0.31,0.84, 0.75, 0.65)
+	end
+
+	if bandwidth ~= 0 then
 		DT.tooltip:AddDoubleLine(L["Bandwidth"] , format(bandwidthString, bandwidth), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
 		DT.tooltip:AddDoubleLine(L["Download"] , format(percentageString, GetDownloadedPercentage() *100), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
 		DT.tooltip:AddLine(" ")
 	end
 
-	local totalCPU = nil
+	local totalCPU
 	DT.tooltip:AddDoubleLine(L["Total Memory:"], formatMem(totalMemory), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
-	if(cpuProfiling) then
+	if cpuProfiling then
 		totalCPU = UpdateCPU()
 		DT.tooltip:AddDoubleLine(L["Total CPU:"], format(homeLatencyString, totalCPU), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
 	end
 
 	local red, green
-	if(IsShiftKeyDown() or not cpuProfiling) then
+	if IsShiftKeyDown() or not cpuProfiling then
 		DT.tooltip:AddLine(" ")
 		for i = 1, #memoryTable do
-			if(memoryTable[i][4]) then
+			if (memoryTable[i][4]) then
 				red = memoryTable[i][3] / totalMemory
 				green = 1 - red
 				DT.tooltip:AddDoubleLine(memoryTable[i][2], formatMem(memoryTable[i][3]), 1, 1, 1, red, green + .5, 0)
@@ -153,7 +162,7 @@ local function OnEnter(self)
 		end
 	end
 
-	if(cpuProfiling and not IsShiftKeyDown()) then
+	if cpuProfiling and not IsShiftKeyDown() then
 		DT.tooltip:AddLine(" ")
 		for i = 1, #cpuTable do
 			if (cpuTable[i][4]) then
@@ -165,9 +174,6 @@ local function OnEnter(self)
 		DT.tooltip:AddLine(" ")
 		DT.tooltip:AddLine(L["(Hold Shift) Memory Usage"])
 	end
-
-	DT.tooltip:AddLine" "
-	DT.tooltip:AddLine(resetInfoFormatter)
 
 	DT.tooltip:Show()
 end

@@ -41,12 +41,11 @@ function UF:Configure_ClassBar(frame)
 	--We don't want to modify the original frame.CLASSBAR_WIDTH value, as it bugs out when the classbar gains more buttons
 	local CLASSBAR_WIDTH = frame.CLASSBAR_WIDTH
 
-	local color = self.db.colors.classResources.bgColor
-	bars.backdrop.ignoreUpdates = true
-	bars.backdrop.backdropTexture:SetVertexColor(color.r, color.g, color.b)
-
-	color = E.db.unitframe.colors.borderColor
+	local color = E.db.unitframe.colors.borderColor
 	bars.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+
+	color = self.db.colors.classResources.bgColor
+	bars.backdrop.backdropTexture:SetVertexColor(color.r, color.g, color.b)
 
 	if frame.USE_MINI_CLASSBAR and not frame.CLASSBAR_DETACHED then
 		bars:ClearAllPoints()
@@ -58,6 +57,7 @@ function UF:Configure_ClassBar(frame)
 			CLASSBAR_WIDTH = CLASSBAR_WIDTH * (frame.MAX_CLASS_BAR - 1) / frame.MAX_CLASS_BAR
 		end
 
+		bars:SetParent(frame)
 		bars:SetFrameLevel(50) --RaisedElementParent uses 100, we want it lower than this
 
 		if bars.Holder and bars.Holder.mover then
@@ -73,6 +73,7 @@ function UF:Configure_ClassBar(frame)
 			bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING*3)
 		end
 
+		bars:SetParent(frame)
 		bars:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 		if bars.Holder and bars.Holder.mover then
@@ -94,6 +95,12 @@ function UF:Configure_ClassBar(frame)
 			bars:Point("BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
 			bars.Holder.mover:SetScale(1)
 			bars.Holder.mover:SetAlpha(1)
+		end
+
+		if db.classbar.parent == "UIPARENT" then
+			bars:SetParent(E.UIParent)
+		else
+			bars:SetParent(frame)
 		end
 
 		if not db.classbar.strataAndLevel.useCustomStrata then
@@ -119,12 +126,11 @@ function UF:Configure_ClassBar(frame)
 			bars[i].backdrop:Hide()
 
 			if i <= frame.MAX_CLASS_BAR then
-				color = self.db.colors.classResources.bgColor
-				bars[i].backdrop.ignoreUpdates = true
-				bars[i].backdrop.backdropTexture:SetVertexColor(color.r, color.g, color.b)
-
 				color = E.db.unitframe.colors.borderColor
 				bars[i].backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+
+				color = self.db.colors.classResources.bgColor
+				bars[i].backdrop.backdropTexture:SetVertexColor(color.r, color.g, color.b)
 
 				bars[i]:Height(bars:GetHeight())
 				if frame.MAX_CLASS_BAR == 1 then
@@ -133,6 +139,9 @@ function UF:Configure_ClassBar(frame)
 					if frame.CLASSBAR_DETACHED and db.classbar.orientation == "VERTICAL" then
 						bars[i]:SetWidth(CLASSBAR_WIDTH)
 						bars.Holder:SetHeight(((frame.CLASSBAR_HEIGHT + db.classbar.spacing)* frame.MAX_CLASS_BAR) - db.classbar.spacing) -- fix the holder height
+				elseif frame.CLASSBAR_DETACHED and db.classbar.orientation == "HORIZONTAL" then
+						bars[i]:SetWidth((CLASSBAR_WIDTH - ((db.classbar.spacing + (frame.BORDER*2 + frame.SPACING*2))*(frame.MAX_CLASS_BAR - 1)))/frame.MAX_CLASS_BAR)
+						bars.Holder:SetHeight(frame.CLASSBAR_HEIGHT)
 					else
 						bars[i]:SetWidth((CLASSBAR_WIDTH - ((5 + (frame.BORDER*2 + frame.SPACING*2))*(frame.MAX_CLASS_BAR - 1)))/frame.MAX_CLASS_BAR) --Width accounts for 5px spacing between each button, excluding borders
 						bars.Holder:SetHeight(frame.CLASSBAR_HEIGHT) -- set the holder height to default
@@ -206,6 +215,15 @@ function UF:Configure_ClassBar(frame)
 					bars[i]:SetOrientation("HORIZONTAL")
 				end
 
+				--Fix missing backdrop colors on Combo Points when using Spaced style
+				if frame.ClassBar == "ClassPower" or frame.ClassBar == "BurningEmbers" then
+					if frame.USE_MINI_CLASSBAR then
+						bars[i].bg:SetParent(bars[i].backdrop)
+					else
+						bars[i].bg:SetParent(bars)
+					end
+				end
+
 				bars[i]:Show()
 			end
 		end
@@ -259,10 +277,8 @@ function UF:Configure_ClassBar(frame)
 
 	if frame.CLASSBAR_DETACHED and db.classbar.parent == "UIPARENT" then
 		E.FrameLocks[bars] = true
-		bars:SetParent(E.UIParent)
 	else
 		E.FrameLocks[bars] = nil
-		bars:SetParent(frame)
 	end
 
 	if frame.USE_CLASSBAR then

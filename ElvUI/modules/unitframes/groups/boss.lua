@@ -5,7 +5,6 @@ local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 local _G = _G
-local tinsert = table.insert
 
 local CreateFrame = CreateFrame
 local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES
@@ -17,29 +16,21 @@ function UF:Construct_BossFrames(frame)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 100)
 
 	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
-
 	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
-
 	frame.Name = self:Construct_NameText(frame)
-
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 	frame.Buffs = self:Construct_Buffs(frame)
-
 	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.DebuffHighlight = self:Construct_DebuffHighlight(frame)
-	frame.TargetGlow = UF:Construct_TargetGlow(frame)
-	tinsert(frame.__elements, UF.UpdateTargetGlow)
-	frame:RegisterEvent("PLAYER_TARGET_CHANGED", UF.UpdateTargetGlow)
-	frame:RegisterEvent("PLAYER_ENTERING_WORLD", UF.UpdateTargetGlow)
-	frame:RegisterEvent("GROUP_ROSTER_UPDATE", UF.UpdateTargetGlow)
-
 	frame.Castbar = self:Construct_Castbar(frame)
-	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
 	frame.AlternativePower = self:Construct_AltPowerBar(frame)
 	frame.ClassBar = "AlternativePower"
-	frame.Range = UF:Construct_Range(frame)
+	frame.Range = self:Construct_Range(frame)
+	frame.MouseGlow = self:Construct_MouseGlow(frame)
+	frame.TargetGlow = self:Construct_TargetGlow(frame)
 	frame:SetAttribute("type2", "focus")
 	frame.customTexts = {}
 
@@ -87,8 +78,6 @@ function UF:Update_BossFrames(frame, db)
 
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
 
-		frame.USE_TARGET_GLOW = db.targetGlow
-
 		frame.VARIABLES_SET = true
 	end
 
@@ -106,8 +95,6 @@ function UF:Update_BossFrames(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
-
-	UF:Configure_TargetGlow(frame)
 
 	UF:EnableDisable_Auras(frame)
 	UF:Configure_Auras(frame, "Buffs")

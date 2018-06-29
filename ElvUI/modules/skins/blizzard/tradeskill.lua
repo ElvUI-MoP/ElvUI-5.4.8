@@ -16,101 +16,88 @@ local hooksecurefunc = hooksecurefunc
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tradeskill ~= true then return end
 
+	TRADE_SKILLS_DISPLAYED = 26
+
 	local TradeSkillFrame = _G["TradeSkillFrame"]
 	TradeSkillFrame:StripTextures(true)
+	TradeSkillFrame:SetAttribute("UIPanelLayout-width", E:Scale(720))
+	TradeSkillFrame:SetAttribute("UIPanelLayout-height", E:Scale(508))
+	TradeSkillFrame:Size(720, 508)
+
+	TradeSkillFrame:CreateBackdrop("Transparent")
+	TradeSkillFrame.backdrop:Point("TOPLEFT", 5, 0)
+	TradeSkillFrame.backdrop:Point("BOTTOMRIGHT", -60, 0)
+
+	TradeSkillFrame.bg1 = CreateFrame("Frame", nil, TradeSkillFrame)
+	TradeSkillFrame.bg1:SetTemplate("Transparent")
+	TradeSkillFrame.bg1:Point("TOPLEFT", 9, -81)
+	TradeSkillFrame.bg1:Point("BOTTOMRIGHT", -391, 4)
+	TradeSkillFrame.bg1:SetFrameLevel(TradeSkillFrame.bg1:GetFrameLevel() - 1)
+
+	TradeSkillFrame.bg2 = CreateFrame("Frame", nil, TradeSkillFrame)
+	TradeSkillFrame.bg2:SetTemplate("Transparent")
+	TradeSkillFrame.bg2:Point("TOPLEFT", TradeSkillFrame.bg1, "TOPRIGHT", 1, 0)
+	TradeSkillFrame.bg2:Point("BOTTOMRIGHT", TradeSkillFrame, "BOTTOMRIGHT", -64, 4)
+	TradeSkillFrame.bg2:SetFrameLevel(TradeSkillFrame.bg2:GetFrameLevel() - 1)
+
 	TradeSkillFrameInset:StripTextures()
+
+	TradeSkillRankFrame:StripTextures()
+	TradeSkillRankFrame:CreateBackdrop()
+	TradeSkillRankFrame:Size(447, 17)
+	TradeSkillRankFrame:ClearAllPoints()
+	TradeSkillRankFrame:Point("TOP", 0, -25)
+	TradeSkillRankFrame:SetStatusBarTexture(E["media"].normTex)
+	E:RegisterStatusBar(TradeSkillRankFrame)
+
+	TradeSkillRankFrameSkillRank:ClearAllPoints()
+	TradeSkillRankFrameSkillRank:FontTemplate(nil, 12, "OUTLINE")
+	TradeSkillRankFrameSkillRank:Point("CENTER", TradeSkillRankFrame, "CENTER", 0, 0)
+
+	TradeSkillFrameSearchBox:Width(191)
+	TradeSkillFrameSearchBox:Point("TOPLEFT", TradeSkillRankFrame, "BOTTOMLEFT", 0, -9)
+
+	TradeSkillLinkFrame:Point("LEFT", TradeSkillRankFrame, "RIGHT", -18, -23)
+
+	TradeSkillFilterButton:Size(65, 22)
+
 	TradeSkillListScrollFrame:StripTextures()
+	TradeSkillListScrollFrame:Size(285, 405)
+	TradeSkillListScrollFrame:ClearAllPoints()
+	TradeSkillListScrollFrame:Point("TOPLEFT", 17, -95)
+
 	TradeSkillDetailScrollFrame:StripTextures()
-	TradeSkillDetailScrollChildFrame:StripTextures()
+	TradeSkillDetailScrollFrame:Size(300, 381)
+	TradeSkillDetailScrollFrame:ClearAllPoints()
+	TradeSkillDetailScrollFrame:Point("TOPRIGHT", TradeSkillFrame, -90, -95)
+	TradeSkillDetailScrollFrame.scrollBarHideable = nil
 
-	if not E.private.skins.tradeSkillBig then
-		TradeSkillFrame:SetTemplate("Transparent")
-
-		TradeSkillLinkFrame:Point("LEFT", TradeSkillRankFrame, "RIGHT", -18, -21)
-
-		TradeSkillFilterButton:Size(60, 19)
-
-		TradeSkillRankFrame:Size(280, 16)
-		TradeSkillRankFrame:Point("TOPLEFT", TradeSkillFrame, "TOPLEFT", 28, -22)
-
-		TradeSkillFrameSearchBox:Size(170, 17)
-		TradeSkillFrameSearchBox:Point("TOPLEFT", TradeSkillRankFrame, "BOTTOMLEFT", 0, -5)
-
-		TradeSkillExpandButtonFrame:Point("TOPLEFT", TradeSkillFrame, "TOPLEFT", 0, -60)
-
-		TradeSkillDecrementButton:Point("LEFT", TradeSkillCreateAllButton, "RIGHT", 8, 0)
-		TradeSkillIncrementButton:Point("RIGHT", TradeSkillCreateButton, "LEFT", -9, 0)
-	else
-		TRADE_SKILLS_DISPLAYED = 26
-
-		TradeSkillFrame:SetAttribute("UIPanelLayout-width", E:Scale(720))
-		TradeSkillFrame:SetAttribute("UIPanelLayout-height", E:Scale(508))
-		TradeSkillFrame:Size(720, 508)
-
-		TradeSkillFrame:CreateBackdrop("Transparent")
-		TradeSkillFrame.backdrop:Point("TOPLEFT", 5, 0)
-		TradeSkillFrame.backdrop:Point("BOTTOMRIGHT", -60, 0)
-
-		TradeSkillFrame.bg1 = CreateFrame("Frame", nil, TradeSkillFrame)
-		TradeSkillFrame.bg1:SetTemplate("Transparent")
-		TradeSkillFrame.bg1:Point("TOPLEFT", 9, -81)
-		TradeSkillFrame.bg1:Point("BOTTOMRIGHT", -391, 4)
-		TradeSkillFrame.bg1:SetFrameLevel(TradeSkillFrame.bg1:GetFrameLevel() - 1)
-
-		TradeSkillFrame.bg2 = CreateFrame("Frame", nil, TradeSkillFrame)
-		TradeSkillFrame.bg2:SetTemplate("Transparent")
-		TradeSkillFrame.bg2:Point("TOPLEFT", TradeSkillFrame.bg1, "TOPRIGHT", 1, 0)
-		TradeSkillFrame.bg2:Point("BOTTOMRIGHT", TradeSkillFrame, "BOTTOMRIGHT", -64, 4)
-		TradeSkillFrame.bg2:SetFrameLevel(TradeSkillFrame.bg2:GetFrameLevel() - 1)
-
-		TradeSkillRankFrame:Size(447, 17)
-		TradeSkillRankFrame:ClearAllPoints()
-		TradeSkillRankFrame:Point("TOP", 0, -25)
-
-		TradeSkillFrameSearchBox:Width(191)
-		TradeSkillFrameSearchBox:Point("TOPLEFT", TradeSkillRankFrame, "BOTTOMLEFT", 0, -9)
-
-		TradeSkillLinkFrame:Point("LEFT", TradeSkillRankFrame, "RIGHT", -18, -23)
-
-		TradeSkillFilterButton:Size(65, 22)
-
-		TradeSkillListScrollFrame:Size(285, 405)
-		TradeSkillListScrollFrame:ClearAllPoints()
-		TradeSkillListScrollFrame:Point("TOPLEFT", 17, -95)
-
-		TradeSkillDetailScrollFrame:Size(300, 381)
-		TradeSkillDetailScrollFrame:ClearAllPoints()
-		TradeSkillDetailScrollFrame:Point("TOPRIGHT", TradeSkillFrame, -90, -95)
-		TradeSkillDetailScrollFrame.scrollBarHideable = nil
-
-		for i = 9, 26 do
-			CreateFrame("Button", "TradeSkillSkill"..i, TradeSkillFrame, "TradeSkillSkillButtonTemplate"):Point("TOPLEFT", _G["TradeSkillSkill"..i - 1], "BOTTOMLEFT")
-		end
-
-		TradeSkillDetailScrollChildFrame:Size(300, 150)
-
-		TradeSkillSkillName:Point("TOPLEFT", 65, -20)
-
-		TradeSkillDescription:Point("TOPLEFT", 8, -75)
-
-		TradeSkillSkillIcon:Size(47)
-		TradeSkillSkillIcon:Point("TOPLEFT", 5, -1)
-
-		TradeSkillCancelButton:ClearAllPoints()
-		TradeSkillCancelButton:Point("TOPRIGHT", TradeSkillDetailScrollFrame, "BOTTOMRIGHT", 23, -3)
-
-		TradeSkillCreateButton:ClearAllPoints()
-		TradeSkillCreateButton:Point("TOPRIGHT", TradeSkillCancelButton, "TOPLEFT", -3, 0)
-
-		TradeSkillCreateAllButton:ClearAllPoints()
-		TradeSkillCreateAllButton:Point("TOPLEFT", TradeSkillDetailScrollFrame, "BOTTOMLEFT", 4, -3)
-
-		TradeSkillFrameCloseButton:Point("TOPRIGHT", TradeSkillFrame, "TOPRIGHT", -55, 5)
-
-		TradeSkillExpandButtonFrame:Point("TOPLEFT", TradeSkillFrame, "TOPLEFT", 2, -58)
-
-		TradeSkillViewGuildCraftersButton:Point("BOTTOMLEFT", 333, 7)
+	for i = 9, 26 do
+		CreateFrame("Button", "TradeSkillSkill"..i, TradeSkillFrame, "TradeSkillSkillButtonTemplate"):Point("TOPLEFT", _G["TradeSkillSkill"..i - 1], "BOTTOMLEFT")
 	end
+
+	TradeSkillDetailScrollChildFrame:StripTextures()
+	TradeSkillDetailScrollChildFrame:Size(300, 150)
+
+	TradeSkillSkillName:Point("TOPLEFT", 65, -20)
+
+	TradeSkillDescription:Point("TOPLEFT", 8, -75)
+
+	TradeSkillSkillIcon:Size(47)
+	TradeSkillSkillIcon:Point("TOPLEFT", 5, -1)
+
+	TradeSkillCancelButton:ClearAllPoints()
+	TradeSkillCancelButton:Point("TOPRIGHT", TradeSkillDetailScrollFrame, "BOTTOMRIGHT", 23, -3)
+
+	TradeSkillCreateButton:ClearAllPoints()
+	TradeSkillCreateButton:Point("TOPRIGHT", TradeSkillCancelButton, "TOPLEFT", -3, 0)
+
+	TradeSkillCreateAllButton:ClearAllPoints()
+	TradeSkillCreateAllButton:Point("TOPLEFT", TradeSkillDetailScrollFrame, "BOTTOMLEFT", 4, -3)
+
+	TradeSkillFrameCloseButton:Point("TOPRIGHT", TradeSkillFrame, "TOPRIGHT", -55, 5)
+
+	TradeSkillExpandButtonFrame:Point("TOPLEFT", TradeSkillFrame, "TOPLEFT", 2, -58)
 
 	S:HandleButton(TradeSkillCancelButton)
 	S:HandleButton(TradeSkillCreateButton)
@@ -139,16 +126,6 @@ local function LoadSkin()
 	TradeSkillLinkButton:CreateBackdrop("Default")
 	TradeSkillLinkButton:Size(17, 14)
 
-	TradeSkillRankFrame:StripTextures()
-	TradeSkillRankFrame:CreateBackdrop()
-	TradeSkillRankFrame:SetStatusBarTexture(E["media"].normTex)
-	TradeSkillRankFrame:SetStatusBarColor(0.22, 0.39, 0.84)
-	E:RegisterStatusBar(TradeSkillRankFrame)
-
-	TradeSkillRankFrameSkillRank:ClearAllPoints()
-	TradeSkillRankFrameSkillRank:FontTemplate(nil, 12, "OUTLINE")
-	TradeSkillRankFrameSkillRank:Point("CENTER", TradeSkillRankFrame, "CENTER", 0, 0)
-
 	S:HandleEditBox(TradeSkillFrameSearchBox)
 
 	S:HandleScrollBar(TradeSkillListScrollFrameScrollBar)
@@ -166,7 +143,7 @@ local function LoadSkin()
 		local name = _G["TradeSkillReagent"..i.."Name"]
 		local nameFrame = _G["TradeSkillReagent"..i.."NameFrame"]
 
-		reagent:SetTemplate("Transparent", true)
+		reagent:SetTemplate("Default")
 		reagent:StyleButton(nil, true)
 		reagent:Size(143, 40)
 
@@ -195,9 +172,6 @@ local function LoadSkin()
 	TradeSkillReagent6:Point("LEFT", TradeSkillReagent5, "RIGHT", 3, 0)
 	TradeSkillReagent8:Point("LEFT", TradeSkillReagent7, "RIGHT", 3, 0)
 
-	TradeSkillSkillIcon:StyleButton(nil, true)
-	TradeSkillSkillIcon:SetTemplate()
-
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
 		TradeSkillRankFrame:SetStatusBarColor(0.11, 0.50, 1.00)
 
@@ -212,7 +186,7 @@ local function LoadSkin()
 		local skillLink = GetTradeSkillItemLink(id)
 		if skillLink then
 			local quality = select(3, GetItemInfo(skillLink))
-			if quality and quality > 1 then
+			if quality then
 				TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
 				TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
 			else
@@ -231,10 +205,10 @@ local function LoadSkin()
 
 			if reagentLink then
 				local quality = select(3, GetItemInfo(reagentLink))
-				if quality and quality > 1 then
+				if quality then
 					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					reagent:SetBackdropBorderColor(GetItemQualityColor(quality))
-					 if playerReagentCount < reagentCount then
+					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)
 					else
 						name:SetTextColor(GetItemQualityColor(quality))
@@ -249,26 +223,26 @@ local function LoadSkin()
 
 	TradeSkillExpandButtonFrame:StripTextures()
 
-	TradeSkillCollapseAllButton:SetNormalTexture("Interface\\Buttons\\UI-PlusMinus-Buttons")
+	TradeSkillCollapseAllButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 	TradeSkillCollapseAllButton.SetNormalTexture = E.noop
 	TradeSkillCollapseAllButton:GetNormalTexture():Point("LEFT", 3, 2)
-	TradeSkillCollapseAllButton:GetNormalTexture():Size(12)
+	TradeSkillCollapseAllButton:GetNormalTexture():Size(15)
 
 	TradeSkillCollapseAllButton:SetHighlightTexture("")
 	TradeSkillCollapseAllButton.SetHighlightTexture = E.noop
 
-	TradeSkillCollapseAllButton:SetDisabledTexture("Interface\\Buttons\\UI-PlusMinus-Buttons")
+	TradeSkillCollapseAllButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 	TradeSkillCollapseAllButton.SetDisabledTexture = E.noop
 	TradeSkillCollapseAllButton:GetDisabledTexture():Point("LEFT", 3, 2)
-	TradeSkillCollapseAllButton:GetDisabledTexture():Size(12)
-	TradeSkillCollapseAllButton:GetDisabledTexture():SetTexCoord(0, 0.4375, 0, 0.4375)
+	TradeSkillCollapseAllButton:GetDisabledTexture():Size(15)
+	TradeSkillCollapseAllButton:GetDisabledTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 	TradeSkillCollapseAllButton:GetDisabledTexture():SetDesaturated(true)
 
 	hooksecurefunc(TradeSkillCollapseAllButton, "SetNormalTexture", function(self, texture)
 		if find(texture, "MinusButton") then
-			self:GetNormalTexture():SetTexCoord(0.5625, 1, 0, 0.4375)
+			self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
 		else
-			self:GetNormalTexture():SetTexCoord(0, 0.4375, 0, 0.4375)
+			self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 		end
 	end)
 
@@ -276,19 +250,19 @@ local function LoadSkin()
 		local skillButton = _G["TradeSkillSkill"..i]
 		local skillButtonHighlight = _G["TradeSkillSkill"..i.."Highlight"]
 
-		skillButton:SetNormalTexture("Interface\\Buttons\\UI-PlusMinus-Buttons")
+		skillButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 		skillButton.SetNormalTexture = E.noop
-		skillButton:GetNormalTexture():Size(11)
-		skillButton:GetNormalTexture():Point("LEFT", 3, 1)
+		skillButton:GetNormalTexture():Size(13)
+		skillButton:GetNormalTexture():Point("LEFT", 4, 1)
 
 		skillButtonHighlight:SetTexture("")
 		skillButtonHighlight.SetTexture = E.noop
 
 		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
 			if find(texture, "MinusButton") then
-				self:GetNormalTexture():SetTexCoord(0.5625, 1, 0, 0.4375)
+				self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
 			elseif find(texture, "PlusButton") then
-				self:GetNormalTexture():SetTexCoord(0, 0.4375, 0, 0.4375)
+				self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 			else
 				self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
  			end
@@ -304,6 +278,8 @@ local function LoadSkin()
 	TradeSkillGuildFrameContainer:SetTemplate("Default")
 
 	S:HandleButton(TradeSkillViewGuildCraftersButton)
+	TradeSkillViewGuildCraftersButton:Point("BOTTOMLEFT", 333, 7)
+
 	S:HandleCloseButton(TradeSkillGuildFrameCloseButton)
 end
 

@@ -62,9 +62,6 @@ local function LoadSkin()
 	LFDQueueFrameSpecificListScrollFrame:StripTextures()
 
 	-- LFD Role Icons
-	LFDQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 334)
-	LFDQueueFrameRoleButtonLeader:Point("LEFT", LFDQueueFrameRoleButtonDPS, "RIGHT", 34, 0)
-
 	local lfdQueueRoleIcons = {
 		"LFDQueueFrameRoleButtonTank",
 		"LFDQueueFrameRoleButtonHealer",
@@ -79,17 +76,19 @@ local function LoadSkin()
 		_G[lfdQueueRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -5, 5)
 		_G[lfdQueueRoleIcons[i]]:Size(56)
  
-		_G[lfdQueueRoleIcons[i]].texture = _G[lfdQueueRoleIcons[i]]:CreateTexture(nil, "OVERLAY")
-		_G[lfdQueueRoleIcons[i]].texture:SetTexCoord(unpack(E.TexCoords))
-		_G[lfdQueueRoleIcons[i]].texture:SetInside(_G[lfdQueueRoleIcons[i]].backdrop)
+		_G[lfdQueueRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		_G[lfdQueueRoleIcons[i]]:GetNormalTexture():SetInside(_G[lfdQueueRoleIcons[i]].backdrop)
 		
 		S:HandleCheckBox(_G[lfdQueueRoleIcons[i]].checkButton, true)
 	end
 
-	LFDQueueFrameRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend")
-	LFDQueueFrameRoleButtonHealer.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LFDQueueFrameRoleButtonDPS.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-	LFDQueueFrameRoleButtonLeader.texture:SetTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer")
+	LFDQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 334)
+	LFDQueueFrameRoleButtonLeader:Point("LEFT", LFDQueueFrameRoleButtonDPS, "RIGHT", 34, 0)
+
+	LFDQueueFrameRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	LFDQueueFrameRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	LFDQueueFrameRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	LFDQueueFrameRoleButtonLeader:SetNormalTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer")
 
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:StripTextures()
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
@@ -307,9 +306,6 @@ local function LoadSkin()
 	RaidFinderFrameButtonBottomBorder:Hide()
 
 	-- Raid Finder Role Icons
-	RaidFinderQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 336)
-	RaidFinderQueueFrameRoleButtonLeader:Point("LEFT", RaidFinderQueueFrameRoleButtonDPS, "RIGHT", 34, 0)
-
 	local raidFinderQueueRoleIcons = {
 		"RaidFinderQueueFrameRoleButtonTank",
 		"RaidFinderQueueFrameRoleButtonHealer",
@@ -318,23 +314,25 @@ local function LoadSkin()
 	}
 
 	for i = 1, #raidFinderQueueRoleIcons do
+		S:HandleCheckBox(_G[raidFinderQueueRoleIcons[i]].checkButton, true)
+
 		_G[raidFinderQueueRoleIcons[i]]:StripTextures()
 		_G[raidFinderQueueRoleIcons[i]]:CreateBackdrop()
 		_G[raidFinderQueueRoleIcons[i]].backdrop:Point("TOPLEFT", 5, -5)
 		_G[raidFinderQueueRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -5, 5)
 		_G[raidFinderQueueRoleIcons[i]]:Size(56)
  
-		_G[raidFinderQueueRoleIcons[i]].texture = _G[raidFinderQueueRoleIcons[i]]:CreateTexture(nil, "OVERLAY")
-		_G[raidFinderQueueRoleIcons[i]].texture:SetTexCoord(unpack(E.TexCoords))
-		_G[raidFinderQueueRoleIcons[i]].texture:SetInside(_G[raidFinderQueueRoleIcons[i]].backdrop)
-		
-		S:HandleCheckBox(_G[raidFinderQueueRoleIcons[i]].checkButton, true)
+		_G[raidFinderQueueRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		_G[raidFinderQueueRoleIcons[i]]:GetNormalTexture():SetInside(_G[raidFinderQueueRoleIcons[i]].backdrop)
 	end
 
-	RaidFinderQueueFrameRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend")
-	RaidFinderQueueFrameRoleButtonHealer.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	RaidFinderQueueFrameRoleButtonDPS.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-	RaidFinderQueueFrameRoleButtonLeader.texture:SetTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer")
+	RaidFinderQueueFrameRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	RaidFinderQueueFrameRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	RaidFinderQueueFrameRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	RaidFinderQueueFrameRoleButtonLeader:SetNormalTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer")
+
+	RaidFinderQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 336)
+	RaidFinderQueueFrameRoleButtonLeader:Point("LEFT", RaidFinderQueueFrameRoleButtonDPS, "RIGHT", 34, 0)
 
 	S:HandleButton(_G[RaidFinderQueueFrame.PartyBackfill:GetName().."BackfillButton"])
 	S:HandleButton(_G[RaidFinderQueueFrame.PartyBackfill:GetName().."NoBackfillButton"])
@@ -401,6 +399,9 @@ local function LoadSkin()
 	}
 
 	for i = 1, #lfrQueueRoleIcons do
+		S:HandleCheckBox(_G[lfrQueueRoleIcons[i]]:GetChildren())
+		_G[lfrQueueRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfrQueueRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
+
 		_G[lfrQueueRoleIcons[i]]:StripTextures()
 		_G[lfrQueueRoleIcons[i]]:CreateBackdrop()
 		_G[lfrQueueRoleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
@@ -409,9 +410,6 @@ local function LoadSkin()
 		_G[lfrQueueRoleIcons[i]].texture = _G[lfrQueueRoleIcons[i]]:CreateTexture(nil, "OVERLAY")
 		_G[lfrQueueRoleIcons[i]].texture:SetTexCoord(unpack(E.TexCoords))
 		_G[lfrQueueRoleIcons[i]].texture:SetInside(_G[lfrQueueRoleIcons[i]].backdrop)
-		
-		S:HandleCheckBox(_G[lfrQueueRoleIcons[i]]:GetChildren())
-		_G[lfrQueueRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfrQueueRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
 	end
 
 	LFRQueueFrameRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend")
@@ -608,22 +606,21 @@ local function LoadSkin()
 	}
 
 	for i = 1, #lfdRoleCheckRoleIcons do
+		S:HandleCheckBox(_G[lfdRoleCheckRoleIcons[i]]:GetChildren())
+		_G[lfdRoleCheckRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfdRoleCheckRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
+
 		_G[lfdRoleCheckRoleIcons[i]]:StripTextures()
 		_G[lfdRoleCheckRoleIcons[i]]:CreateBackdrop()
 		_G[lfdRoleCheckRoleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
 		_G[lfdRoleCheckRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -3, 3)
  
-		_G[lfdRoleCheckRoleIcons[i]].texture = _G[lfdRoleCheckRoleIcons[i]]:CreateTexture(nil, "OVERLAY")
-		_G[lfdRoleCheckRoleIcons[i]].texture:SetTexCoord(unpack(E.TexCoords))
-		_G[lfdRoleCheckRoleIcons[i]].texture:SetInside(_G[lfdRoleCheckRoleIcons[i]].backdrop)
-		
-		S:HandleCheckBox(_G[lfdRoleCheckRoleIcons[i]]:GetChildren())
-		_G[lfdRoleCheckRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfdRoleCheckRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
+		_G[lfdRoleCheckRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		_G[lfdRoleCheckRoleIcons[i]]:GetNormalTexture():SetInside(_G[lfdRoleCheckRoleIcons[i]].backdrop)
 	end
 
-	LFDRoleCheckPopupRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend")
-	LFDRoleCheckPopupRoleButtonHealer.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LFDRoleCheckPopupRoleButtonDPS.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	LFDRoleCheckPopupRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	LFDRoleCheckPopupRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	LFDRoleCheckPopupRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 
 	-- LFG Invite PopUp
 	LFGInvitePopup:StripTextures()
@@ -645,17 +642,16 @@ local function LoadSkin()
 		_G[lfgInviteRoleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
 		_G[lfgInviteRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -3, 3)
  
-		_G[lfgInviteRoleIcons[i]].texture = _G[lfgInviteRoleIcons[i]]:CreateTexture(nil, "OVERLAY")
-		_G[lfgInviteRoleIcons[i]].texture:SetTexCoord(unpack(E.TexCoords))
-		_G[lfgInviteRoleIcons[i]].texture:SetInside(_G[lfgInviteRoleIcons[i]].backdrop)
+		_G[lfgInviteRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		_G[lfgInviteRoleIcons[i]]:GetNormalTexture():SetInside(_G[lfgInviteRoleIcons[i]].backdrop)
 		
 		S:HandleCheckBox(_G[lfgInviteRoleIcons[i]]:GetChildren())
 		_G[lfgInviteRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfgInviteRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
 	end
 
-	LFGInvitePopupRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend")
-	LFGInvitePopupRoleButtonHealer.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LFGInvitePopupRoleButtonDPS.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	LFGInvitePopupRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	LFGInvitePopupRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	LFGInvitePopupRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 
 	-- Queue Search Status
 	QueueStatusFrame:StripTextures()
@@ -692,49 +688,21 @@ local function LoadSkin()
 		if totalTanks and totalHealers and totalDPS then
 			entry.TanksFound.Texture:SetTexture("Interface\\Icons\\Ability_Defend")
 			entry.TanksFound.Texture:SetTexCoord(unpack(E.TexCoords))
-			entry.TanksFound.Texture:SetDesaturated(tankNeeds ~= 0)
 
 			entry.HealersFound.Texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
 			entry.HealersFound.Texture:SetTexCoord(unpack(E.TexCoords))
-			entry.HealersFound.Texture:SetDesaturated(healerNeeds ~= 0)
 
 			entry.DamagersFound.Texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 			entry.DamagersFound.Texture:SetTexCoord(unpack(E.TexCoords))
-			entry.DamagersFound.Texture:SetDesaturated(dpsNeeds ~= 0)
 		end
 	end)
 
-	-- Desaturate/Incentive Scripts (Role Icons)
+	-- Incentive Role Icons
 	hooksecurefunc("LFG_SetRoleIconIncentive", function(roleButton, incentiveIndex)
 		if incentiveIndex then
 			roleButton.backdrop:SetBackdropBorderColor(1, 0.80, 0.10)
 		else
 			roleButton.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-		end
-	end)
-
-	hooksecurefunc("LFG_PermanentlyDisableRoleButton", function(button)
-		if button.texture then
-			button.texture:SetDesaturated(true)
-		end
-	end)
-
-	hooksecurefunc("LFG_DisableRoleButton", function(button)
-		if button.texture then
-			button.texture:SetDesaturated(true)
-		end
-
-		if button.checkButton:GetChecked() then
-			button.checkButton:SetAlpha(1)
-		else
-			button.checkButton:SetAlpha(0)
-		end
-	end)
-
-	hooksecurefunc("LFG_EnableRoleButton", function(button)
-		if button.texture then
-			button.texture:SetDesaturated(false)
-			button.checkButton:SetAlpha(1)
 		end
 	end)
 end

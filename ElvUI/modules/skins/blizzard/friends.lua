@@ -9,7 +9,6 @@ local hooksecurefunc = hooksecurefunc
 local GetWhoInfo = GetWhoInfo
 local MAX_DISPLAY_CHANNEL_BUTTONS = MAX_DISPLAY_CHANNEL_BUTTONS
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.friends ~= true then return end
@@ -38,22 +37,6 @@ local function LoadSkin()
 
 		headerTab:HookScript("OnEnter", S.SetModifiedBackdrop)
 		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop)
-	end
-
-	local function StyleButton(frame)
-		frame:SetHighlightTexture(nil)
-
-		local leftGrad = frame:CreateTexture(nil, "HIGHLIGHT")
-		leftGrad:Size(frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
-		leftGrad:Point("LEFT", frame, "CENTER")
-		leftGrad:SetTexture(E.media.blankTex)
-		leftGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0.35, 0.9, 0.9, 0.9, 0)
-
-		local rightGrad = frame:CreateTexture(nil, "HIGHLIGHT")
-		rightGrad:Size(frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
-		rightGrad:Point("RIGHT", frame, "CENTER")
-		rightGrad:SetTexture(E.media.blankTex)
-		rightGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0, 0.9, 0.9, 0.9, 0.35)
 	end
 
 	for i = 1, 11 do
@@ -166,7 +149,7 @@ local function LoadSkin()
 
 		button:CreateBackdrop("Default", true)
 		button.backdrop:SetAllPoints(button.icon)
-		StyleButton(button)
+		S:HandleButtonHighlight(button)
 
 		button.stripe = button:CreateTexture(nil, "BACKGROUND")
 		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")
@@ -266,7 +249,7 @@ local function LoadSkin()
 				_G["ChannelButton"..i.."Collapsed"]:SetTextColor(1, 1, 1)
 				
 				if not button.isSkinned then
-					StyleButton(button)
+					S:HandleButtonHighlight(button)
 
 					button.isSkinned = true
 				end
@@ -275,7 +258,7 @@ local function LoadSkin()
 	end)
 
 	for i = 1, 22 do
-		StyleButton(_G["ChannelMemberButton"..i])
+		S:HandleButtonHighlight(_G["ChannelMemberButton"..i])
 	end
 
 	S:HandleButton(ChannelFrameDaughterFrameOkayButton)
@@ -315,7 +298,7 @@ local function LoadSkin()
 		local button = _G["FriendsFrameIgnoreButton"..i]
 
 		button:Width(310)
-		StyleButton(button)
+		S:HandleButtonHighlight(button)
 
 		button.stripe = button:CreateTexture(nil, "OVERLAY")
 		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")

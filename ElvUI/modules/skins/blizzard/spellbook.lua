@@ -52,7 +52,6 @@ local function LoadSkin()
 		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() - 1)
 
 		icon:SetTexCoord(unpack(E.TexCoords))
-		button:Size(40)
 
 		button.bg = CreateFrame("Frame", nil, button)
 		button.bg:CreateBackdrop("Transparent", true)
@@ -60,10 +59,21 @@ local function LoadSkin()
 		button.bg:Point("BOTTOMRIGHT", 170, -12)
 		button.bg:SetFrameLevel(button.bg:GetFrameLevel() - 2)
 
-		if cooldown then
-			E:RegisterCooldown(cooldown)
-		end
+		E:RegisterCooldown(cooldown)
 	end
+
+	SpellButton1:Point("TOPLEFT", SpellBookSpellIconsFrame, "TOPLEFT", 15, -75)
+	SpellButton2:Point("TOPLEFT", SpellButton1, "TOPLEFT", 225, 0)
+	SpellButton3:Point("TOPLEFT", SpellButton1, "BOTTOMLEFT", 0, -27)
+	SpellButton4:Point("TOPLEFT", SpellButton3, "TOPLEFT", 225, 0)
+	SpellButton5:Point("TOPLEFT", SpellButton3, "BOTTOMLEFT", 0, -27)
+	SpellButton6:Point("TOPLEFT", SpellButton5, "TOPLEFT", 225, 0)
+	SpellButton7:Point("TOPLEFT", SpellButton5, "BOTTOMLEFT", 0, -27)
+	SpellButton8:Point("TOPLEFT", SpellButton7, "TOPLEFT", 225, 0)
+	SpellButton9:Point("TOPLEFT", SpellButton7, "BOTTOMLEFT", 0, -27)
+	SpellButton10:Point("TOPLEFT", SpellButton9, "TOPLEFT", 225, 0)
+	SpellButton11:Point("TOPLEFT", SpellButton9, "BOTTOMLEFT", 0, -27)
+	SpellButton12:Point("TOPLEFT", SpellButton11, "TOPLEFT", 225, 0)
 
 	hooksecurefunc("SpellButton_UpdateButton", function(self)
 		local name = self:GetName()
@@ -84,33 +94,12 @@ local function LoadSkin()
 			if spellSubName then
 				spellSubName:SetTextColor(0.6, 0.6, 0.6)
 			end
-		else
-			if spellSubName then
-				spellSubName:SetTextColor(1, 1, 1)
-			end
-		end
-
-		if spellSubName then
-			spellSubName:FontTemplate(nil, 12)
 		end
 
 		if spellLevel then
 			spellLevel:SetTextColor(0.6, 0.6, 0.6)
 		end
 	end)
-
-	SpellButton1:Point("TOPLEFT", SpellBookSpellIconsFrame, "TOPLEFT", 15, -75)
-	SpellButton2:Point("TOPLEFT", SpellButton1, "TOPLEFT", 225, 0)
-	SpellButton3:Point("TOPLEFT", SpellButton1, "BOTTOMLEFT", 0, -27)
-	SpellButton4:Point("TOPLEFT", SpellButton3, "TOPLEFT", 225, 0)
-	SpellButton5:Point("TOPLEFT", SpellButton3, "BOTTOMLEFT", 0, -27)
-	SpellButton6:Point("TOPLEFT", SpellButton5, "TOPLEFT", 225, 0)
-	SpellButton7:Point("TOPLEFT", SpellButton5, "BOTTOMLEFT", 0, -27)
-	SpellButton8:Point("TOPLEFT", SpellButton7, "TOPLEFT", 225, 0)
-	SpellButton9:Point("TOPLEFT", SpellButton7, "BOTTOMLEFT", 0, -27)
-	SpellButton10:Point("TOPLEFT", SpellButton9, "TOPLEFT", 225, 0)
-	SpellButton11:Point("TOPLEFT", SpellButton9, "BOTTOMLEFT", 0, -27)
-	SpellButton12:Point("TOPLEFT", SpellButton11, "TOPLEFT", 225, 0)
 
 	-- What Has Changed Frame
 	local _, class = UnitClass("player")
@@ -215,14 +204,22 @@ local function LoadSkin()
 	end)
 
 	-- Skill Line Tabs
-	local function SkinTab(tab)
+	for i = 1, MAX_SKILLLINE_TABS do
+		local tab = _G["SpellBookSkillLineTab"..i]
+		local flash = _G["SpellBookSkillLineTab"..i.."Flash"]
+
 		tab:StripTextures()
+		tab:SetTemplate()
+		tab:StyleButton(nil, true)
+		tab.pushed = true
+
 		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		tab:GetNormalTexture():SetInside()
 
-		tab.pushed = true;
-		tab:SetTemplate()
-		tab:StyleButton(true)
+		if i == 1 then
+			tab:Point("TOPLEFT", SpellBookSideTabsFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -40)
+		end
+
 		hooksecurefunc(tab:GetHighlightTexture(), "SetTexture", function(self, texPath)
 			if texPath ~= nil then
 				self:SetPushedTexture(nil)
@@ -235,178 +232,146 @@ local function LoadSkin()
 			end
 		end)
 
-		local point, relatedTo, point2, _, y = tab:GetPoint()
-		tab:Point(point, relatedTo, point2, 1, y)
+		flash:Kill()
 	end
 
-	for i = 1, MAX_SKILLLINE_TABS do
-		local tab = _G["SpellBookSkillLineTab"..i]
-
-		_G["SpellBookSkillLineTab"..i.."Flash"]:Kill()
-		SkinTab(tab)
-		tab:StyleButton(nil, true)
-	end
-
-	SpellBookSkillLineTab1:Point("TOPLEFT", SpellBookSideTabsFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -40)
-
-	--Bottom Tabs
+	-- Bottom Tabs
 	for i = 1, 5 do
-		S:HandleTab(_G["SpellBookFrameTabButton"..i])
-	end
+		local tab = _G["SpellBookFrameTabButton"..i]
 
-	SpellBookFrameTabButton1:ClearAllPoints()
-	SpellBookFrameTabButton1:Point("TOPLEFT", SpellBookFrame, "BOTTOMLEFT", 0, 2)
+		S:HandleTab(tab)
+
+		if i == 1 then
+			tab:ClearAllPoints()
+			tab:Point("TOPLEFT", SpellBookFrame, "BOTTOMLEFT", 0, 2)
+		end
+	end
 
 	-- Primary Professions
-	PrimaryProfession1:Point("TOPLEFT", 10, -30)
-	PrimaryProfession2:Point("TOPLEFT", 10, -130)
-
 	for i = 1, 2 do
-		local primaryProf = _G["PrimaryProfession"..i]
-		local primaryBar = _G["PrimaryProfession"..i.."StatusBar"]
-		local primaryRank = _G["PrimaryProfession"..i.."Rank"]
-		local primaryUnlearn = _G["PrimaryProfession"..i.."UnlearnButton"]
-		local primarySpellTop = _G["PrimaryProfession"..i.."SpellButtonTop"]
-		local primarySpellBot = _G["PrimaryProfession"..i.."SpellButtonBottom"]
-		local primaryMissing = _G["PrimaryProfession"..i.."Missing"]
-		local primarySpellButtonTop = _G["PrimaryProfession"..i.."SpellButtonTop"]
-		local primarySpellButtonTopTex = _G["PrimaryProfession"..i.."SpellButtonTopIconTexture"]
-		local primarySpellButtonBot = _G["PrimaryProfession"..i.."SpellButtonBottom"]
-		local primarySpellButtonBotTex = _G["PrimaryProfession"..i.."SpellButtonBottomIconTexture"]
-		local cooldown1 = _G["PrimaryProfession"..i.."SpellButtonTopCooldown"]
-		local cooldown2 = _G["PrimaryProfession"..i.."SpellButtonBottomCooldown"]
+		local primary = _G["PrimaryProfession"..i]
 
-		primaryProf:CreateBackdrop("Transparent")
-		primaryProf:Height(90)
+		primary:StripTextures()
+		primary:CreateBackdrop("Transparent")
+		primary:Height(90)
 
-		primaryBar:StripTextures()
-		primaryBar:CreateBackdrop("Default")
-		primaryBar:SetStatusBarTexture(E["media"].normTex)
-		primaryBar:SetStatusBarColor(0.22, 0.39, 0.84)
-		primaryBar:Size(180, 20)
-		primaryBar:Point("TOPLEFT", 250, -10)
-
-		primaryBar.rankText:Point("CENTER")
-		primaryBar.rankText:FontTemplate(nil, 12, "OUTLINE")
-
-		primaryRank:Point("TOPLEFT", 120, -23)
-		primaryUnlearn:Point("RIGHT", primaryBar, "LEFT", -135, -10)
-
-		primarySpellTop:Point("TOPRIGHT", primaryProf, "TOPRIGHT", -225, -45)
-		primarySpellBot:Point("TOPLEFT", primarySpellTop, "BOTTOMLEFT", 135, 40)
-
-		primaryMissing:SetTextColor(1, 0.80, 0.10)
-
-		primaryProf.missingText:SetTextColor(1, 1, 1)
-		primaryProf.missingText:FontTemplate(nil, 12, "OUTLINE")
-
-		primarySpellButtonTop:StripTextures()
-		primarySpellButtonTop:CreateBackdrop("Default", true)
-		primarySpellButtonTop:GetHighlightTexture():Hide()
-		primarySpellButtonTop:StyleButton(true)
-		primarySpellButtonTop.pushed:SetAllPoints()
-		primarySpellButtonTop.checked:SetAllPoints()
-		primarySpellButtonTop:SetFrameLevel(primarySpellButtonTop:GetFrameLevel() + 2)
-
-		primarySpellButtonTopTex:SetTexCoord(unpack(E.TexCoords))
-		primarySpellButtonTopTex:SetAllPoints()
-
-		primarySpellButtonBot:StripTextures()
-		primarySpellButtonBot:CreateBackdrop("Default", true)
-		primarySpellButtonBot:GetHighlightTexture():Hide()
-		primarySpellButtonBot:StyleButton(true)
-		primarySpellButtonBot.pushed:SetAllPoints()
-		primarySpellButtonBot.checked:SetAllPoints()
-		primarySpellButtonBot:SetFrameLevel(primarySpellButtonBot:GetFrameLevel() + 2)
-
-		primarySpellButtonBotTex:SetTexCoord(unpack(E.TexCoords))
-		primarySpellButtonBotTex:SetAllPoints()
-
-		_G["PrimaryProfession"..i.."SpellButtonTopSubSpellName"]:SetTextColor(1, 1, 1)
-		_G["PrimaryProfession"..i.."SpellButtonBottomSubSpellName"]:SetTextColor(1, 1, 1)
-
-		_G["PrimaryProfession"..i.."IconBorder"]:Hide()
-		_G["PrimaryProfession"..i.."Icon"]:SetTexCoord(unpack(E.TexCoords))
-
-		if cooldown1 then
-			E:RegisterCooldown(cooldown1)
-			cooldown1:SetAllPoints()
+		if i == 1 then
+			primary:Point("TOPLEFT", 10, -30)
+		elseif i == 2 then
+			primary:Point("TOPLEFT", 10, -130)
 		end
 
-		if cooldown2 then
-			E:RegisterCooldown(cooldown2)
-			cooldown2:SetAllPoints()
-		end
+		primary.icon:SetTexCoord(unpack(E.TexCoords))
+
+		primary.missingHeader:SetTextColor(1, 0.80, 0.10)
+
+		primary.missingText:SetTextColor(1, 1, 1)
+		primary.missingText:FontTemplate(nil, 12, "OUTLINE")
+
+		primary.statusBar:StripTextures()
+		primary.statusBar:CreateBackdrop("Default")
+		primary.statusBar:SetStatusBarTexture(E["media"].normTex)
+		primary.statusBar:SetStatusBarColor(0.22, 0.39, 0.84)
+		primary.statusBar:Size(180, 20)
+		primary.statusBar:Point("TOPLEFT", 250, -10)
+
+		primary.statusBar.rankText:Point("CENTER")
+		primary.statusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
+
+		primary.rank:Point("TOPLEFT", 120, -23)
+		primary.unlearn:Point("RIGHT", primary.statusBar, "LEFT", -135, -10)
+
+		primary.button1:StripTextures()
+		primary.button1:CreateBackdrop("Default")
+		primary.button1:Point("TOPLEFT", primary.button2, "BOTTOMLEFT", 135, 40)
+		primary.button1:GetHighlightTexture():Hide()
+		primary.button1:StyleButton(true)
+		primary.button1.pushed:SetAllPoints()
+		primary.button1.checked:SetAllPoints()
+		primary.button1:SetFrameLevel(primary.button1:GetFrameLevel() + 2)
+
+		primary.button1.iconTexture:SetTexCoord(unpack(E.TexCoords))
+		primary.button1.iconTexture:SetAllPoints()
+
+		primary.button1.subSpellString:SetTextColor(1, 1, 1)
+
+		primary.button1.cooldown:SetAllPoints()
+		E:RegisterCooldown(primary.button1.cooldown)
+
+		primary.button2:StripTextures()
+		primary.button2:CreateBackdrop("Default")
+		primary.button2:Point("TOPRIGHT", primary, "TOPRIGHT", -235, -45)
+		primary.button2:GetHighlightTexture():Hide()
+		primary.button2:StyleButton(true)
+		primary.button2.pushed:SetAllPoints()
+		primary.button2.checked:SetAllPoints()
+		primary.button2:SetFrameLevel(primary.button2:GetFrameLevel() + 2)
+
+		primary.button2.iconTexture:SetTexCoord(unpack(E.TexCoords))
+		primary.button2.iconTexture:SetAllPoints()
+
+		primary.button2.subSpellString:SetTextColor(1, 1, 1)
+
+		primary.button2.cooldown:SetAllPoints()
+		E:RegisterCooldown(primary.button2.cooldown)
 	end
 
 	-- Secondary Professions
 	for i = 1, 4 do
-		local secondaryProf = _G["SecondaryProfession"..i]
-		local secondaryBar = _G["SecondaryProfession"..i.."StatusBar"]
-		local spellButtonRight = _G["SecondaryProfession"..i.."SpellButtonRight"]
-		local secondaryMissing =  _G["SecondaryProfession"..i.."Missing"]
-		local secondarySpellButtonLeft = _G["SecondaryProfession"..i.."SpellButtonLeft"]
-		local secondarySpellButtonLeftTex = _G["SecondaryProfession"..i.."SpellButtonLeftIconTexture"]
-		local secondarySpellButtonRight = _G["SecondaryProfession"..i.."SpellButtonRight"]
-		local secondarySpellButtonRightTex = _G["SecondaryProfession"..i.."SpellButtonRightIconTexture"]
-		local cooldown1 = _G["SecondaryProfession"..i.."SpellButtonLeftCooldown"]
-		local cooldown2 = _G["SecondaryProfession"..i.."SpellButtonRightCooldown"]
+		local secondary = _G["SecondaryProfession"..i]
 
-		secondaryProf:CreateBackdrop("Transparent")
-		secondaryProf:Height(60)
+		secondary:CreateBackdrop("Transparent")
+		secondary:Height(60)
 
-		secondaryBar:StripTextures()
-		secondaryBar:CreateBackdrop("Default")
-		secondaryBar:SetStatusBarTexture(E["media"].normTex)
-		secondaryBar:SetStatusBarColor(0.22, 0.39, 0.84)
-		secondaryBar:Size(120, 18)
-		secondaryBar:Point("TOPLEFT", 5, -35)
+		secondary.statusBar:StripTextures()
+		secondary.statusBar:CreateBackdrop("Default")
+		secondary.statusBar:SetStatusBarTexture(E["media"].normTex)
+		secondary.statusBar:SetStatusBarColor(0.22, 0.39, 0.84)
+		secondary.statusBar:Size(120, 18)
+		secondary.statusBar:Point("TOPLEFT", 5, -35)
 
-		secondaryBar.rankText:Point("CENTER")
-		secondaryBar.rankText:FontTemplate(nil, 12, "OUTLINE")
+		secondary.statusBar.rankText:Point("CENTER")
+		secondary.statusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
 
-		spellButtonRight:Point("TOPRIGHT", -90, -10)
+		secondary.missingHeader:SetTextColor(1, 0.80, 0.10)
 
-		secondaryMissing:SetTextColor(1, 0.80, 0.10)
+		secondary.missingText:SetTextColor(1, 1, 1)
+		secondary.missingText:FontTemplate(nil, 12, "OUTLINE")
 
-		secondaryProf.missingText:SetTextColor(1, 1, 1)
-		secondaryProf.missingText:FontTemplate(nil, 12, "OUTLINE")
+		secondary.button1:StripTextures()
+		secondary.button1:CreateBackdrop("Default", true)
+		secondary.button1:Point("TOPRIGHT", -90, -10)
+		secondary.button1:GetHighlightTexture():Hide()
+		secondary.button1:StyleButton(true)
+		secondary.button1.pushed:SetAllPoints()
+		secondary.button1.checked:SetAllPoints()
+		secondary.button1:SetFrameLevel(secondary.button1:GetFrameLevel() + 2)
+		secondary.button1:Point("TOPRIGHT", secondary, "TOPRIGHT", -100, -10)
 
-		secondarySpellButtonLeft:StripTextures()
-		secondarySpellButtonLeft:CreateBackdrop("Default", true)
-		secondarySpellButtonLeft:GetHighlightTexture():Hide()
-		secondarySpellButtonLeft:StyleButton(true)
-		secondarySpellButtonLeft.pushed:SetAllPoints()
-		secondarySpellButtonLeft.checked:SetAllPoints()
-		secondarySpellButtonLeft:SetFrameLevel(secondarySpellButtonLeft:GetFrameLevel() + 2)
-		secondarySpellButtonLeft:Point("TOPRIGHT", secondarySpellButtonRight, "TOPLEFT", -96, 0)
+		secondary.button1.iconTexture:SetTexCoord(unpack(E.TexCoords))
+		secondary.button1.iconTexture:SetAllPoints()
 
-		secondarySpellButtonLeftTex:SetTexCoord(unpack(E.TexCoords))
-		secondarySpellButtonLeftTex:SetAllPoints()
+		secondary.button1.subSpellString:SetTextColor(1, 1, 1)
 
-		secondarySpellButtonRight:StripTextures()
-		secondarySpellButtonRight:CreateBackdrop("Default", true)
-		secondarySpellButtonRight:GetHighlightTexture():Hide()
-		secondarySpellButtonRight:StyleButton(true)
-		secondarySpellButtonRight.pushed:SetAllPoints()
-		secondarySpellButtonRight.checked:SetAllPoints()
-		secondarySpellButtonRight:SetFrameLevel(secondarySpellButtonRight:GetFrameLevel() + 2)
+		secondary.button1.cooldown:SetAllPoints()
+		E:RegisterCooldown(secondary.button1.cooldown)
 
-		secondarySpellButtonRightTex:SetTexCoord(unpack(E.TexCoords))
-		secondarySpellButtonRightTex:SetAllPoints()
+		secondary.button2:StripTextures()
+		secondary.button2:CreateBackdrop("Default", true)
+		secondary.button2:GetHighlightTexture():Hide()
+		secondary.button2:StyleButton(true)
+		secondary.button2.pushed:SetAllPoints()
+		secondary.button2.checked:SetAllPoints()
+		secondary.button2:SetFrameLevel(secondary.button2:GetFrameLevel() + 2)
+		secondary.button2:Point("TOPRIGHT", secondary.button1, "TOPLEFT", -95, 0)
 
-		_G["SecondaryProfession"..i.."SpellButtonRightSubSpellName"]:SetTextColor(1, 1, 1)
-		_G["SecondaryProfession"..i.."SpellButtonLeftSubSpellName"]:SetTextColor(1, 1, 1)
+		secondary.button2.iconTexture:SetTexCoord(unpack(E.TexCoords))
+		secondary.button2.iconTexture:SetAllPoints()
 
-		if cooldown1 then
-			E:RegisterCooldown(cooldown1)
-			cooldown1:SetAllPoints()
-		end
+		secondary.button2.subSpellString:SetTextColor(1, 1, 1)
 
-		if cooldown2 then
-			E:RegisterCooldown(cooldown2)
-			cooldown2:SetAllPoints()
-		end
+		secondary.button2.cooldown:SetAllPoints()
+		E:RegisterCooldown(secondary.button2.cooldown)
 	end
 end
 

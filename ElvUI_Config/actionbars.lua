@@ -382,6 +382,9 @@ local function BuildABConfig()
 				width = "full",
 				multiline = true,
 				set = function(info, value)
+					if value and value:match("[\n\r]") then
+						value = value:gsub("[\n\r]","")
+					end
 					E.db.actionbar["barPet"]["visibility"] = value
 					AB:UpdateButtonSettings()
 				end,
@@ -558,7 +561,7 @@ local function BuildABConfig()
 		}
 	}
 	group["microbar"] = {
-		order = 4,
+		order = 5,
 		type = "group",
 		name = L["Micro Bar"],
 		disabled = function() return not E.ActionBars end,
@@ -579,6 +582,7 @@ local function BuildABConfig()
 				order = 3,
 				type = "execute",
 				name = L["Restore Bar"],
+				desc = L["Restore the actionbars default settings"],
 				buttonElvUI = true,
 				func = function() E:CopyTable(E.db.actionbar["microbar"], P.actionbar["microbar"]) E:ResetMovers(L["Micro Bar"]) AB:UpdateMicroPositionDimensions() end,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
@@ -595,35 +599,37 @@ local function BuildABConfig()
 				desc = L["The frame is not shown unless you mouse over the frame."],
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
-			buttonsPerRow = {
+			buttonSize = {
 				order = 6,
+				type = "range",
+				name = L["Button Size"],
+				desc = L["The size of the action buttons."],
+				min = 15, max = 60, step = 1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			buttonSpacing = {
+				order = 7,
+				type = "range",
+				name = L["Button Spacing"],
+				desc = L["The spacing between buttons."],
+				min = -1, max = 20, step = 1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			buttonsPerRow = {
+				order = 8,
 				type = "range",
 				name = L["Buttons Per Row"],
 				desc = L["The amount of buttons to display per row."],
-				min = 1, max = #MICRO_BUTTONS, step = 1,
+				min = 1, max = 12, step = 1,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
 			alpha = {
-				order = 7,
+				order = 9,
 				type = "range",
 				name = L["Alpha"],
 				isPercent = true,
 				desc = L["Change the alpha level of the frame."],
 				min = 0, max = 1, step = 0.1,
-				disabled = function() return not E.db.actionbar.microbar.enabled end
-			},
-			xOffset = {
-				order = 8,
-				type = "range",
-				name = L["xOffset"],
-				min = 0, max = 60, step = 1,
-				disabled = function() return not E.db.actionbar.microbar.enabled end
-			},
-			yOffset = {
-				order = 9,
-				type = "range",
-				name = L["yOffset"],
-				min = 0, max = 60, step = 1,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
 			visibility = {

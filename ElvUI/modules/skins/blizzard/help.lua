@@ -120,10 +120,10 @@ local function LoadSkin()
 	S:HandleCloseButton(HelpFrameKnowledgebaseErrorFrameCloseButton, HelpFrameKnowledgebaseErrorFrame.backdrop)
 
 	--Hearth Stone Button
-	HelpFrameCharacterStuckHearthstone:SetTemplate("Default", true)
-	HelpFrameCharacterStuckHearthstone:GetHighlightTexture():Hide()
-	HelpFrameCharacterStuckHearthstone.IconTexture:SetInside()
-	HelpFrameCharacterStuckHearthstone.IconTexture:SetTexCoord(unpack(E.TexCoords))
+	S:HandleItemButton(HelpFrameCharacterStuckHearthstone, true)
+	HelpFrameCharacterStuckHearthstone:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
+	HelpFrameCharacterStuckHearthstone.SetHighlightTexture = E.noop
+	E:RegisterCooldown(HelpFrameCharacterStuckHearthstoneCooldown)
 
 	S:HandleButton(HelpFrameGM_ResponseNeedMoreHelp)
 	S:HandleButton(HelpFrameGM_ResponseCancel)
@@ -146,7 +146,7 @@ local function LoadSkin()
 			local lastNav = self.navList[i - 1]
 
 			if navButton and lastNav then
-				navButton:SetFrameLevel(lastNav:GetFrameLevel() - 2)
+				navButton:SetFrameLevel(lastNav:GetFrameLevel() + 2)
 				navButton:ClearAllPoints()
 				navButton:Point("LEFT", lastNav, "RIGHT", 1, 0)
 			end

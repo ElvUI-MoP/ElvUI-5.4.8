@@ -225,10 +225,12 @@ function B:SetSearch(query)
 				local success, result = pcall(Search.Matches, Search, link, query);
 				if(empty or (success and result)) then
 					SetItemButtonDesaturated(button);
+					button.searchOverlay:Hide()
 					button:SetAlpha(1);
 				else
 					SetItemButtonDesaturated(button, 1);
-					button:SetAlpha(0.4);
+					button.searchOverlay:Show()
+					button:SetAlpha(0.5)
 				end
 			end
 		end
@@ -253,10 +255,12 @@ function B:SetGuildBankSearch(query)
 				local success, result = pcall(Search.Matches, Search, link, query);
 				if(empty or (success and result)) then
 					SetItemButtonDesaturated(button);
+					button.searchOverlay:Hide()
 					button:SetAlpha(1);
 				else
 					SetItemButtonDesaturated(button, 1);
-					button:SetAlpha(0.4);
+					button.searchOverlay:Show()
+					button:SetAlpha(0.5)
 				end
 			end
 		end
@@ -327,9 +331,9 @@ local function hideNewItemGlow(slot)
 end
 
 function B:UpdateSlot(bagID, slotID)
-	if(self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return; end
+	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return end
 
-	local slot, _ = self.Bags[bagID][slotID], nil;
+	local slot = self.Bags[bagID][slotID]
 	local bagType = self.Bags[bagID].type;
 	local texture, count, locked, _, readable = GetContainerItemInfo(bagID, slotID);
 	local clink = GetContainerItemLink(bagID, slotID);
@@ -411,7 +415,7 @@ function B:UpdateSlot(bagID, slotID)
 
 	SetItemButtonTexture(slot, texture);
 	SetItemButtonCount(slot, count);
-	SetItemButtonDesaturated(slot, locked, 0.5, 0.5, 0.5);
+	SetItemButtonDesaturated(slot, locked)
 
 	if GameTooltip:GetOwner() == slot and not slot.hasItem then
 		B:Tooltip_Hide()
@@ -608,7 +612,10 @@ function B:Layout(isBank)
 					f.Bags[bagID][slotID].iconTexture:SetInside(f.Bags[bagID][slotID]);
 					f.Bags[bagID][slotID].iconTexture:SetTexCoord(unpack(E.TexCoords));
 
+					f.Bags[bagID][slotID].searchOverlay:SetAllPoints()
+
 					f.Bags[bagID][slotID].cooldown = _G[f.Bags[bagID][slotID]:GetName()..'Cooldown'];
+					f.Bags[bagID][slotID].cooldown.ColorOverride = "bags"
 					E:RegisterCooldown(f.Bags[bagID][slotID].cooldown)
 					f.Bags[bagID][slotID].bagID = bagID
 					f.Bags[bagID][slotID].slotID = slotID
@@ -1253,8 +1260,8 @@ function B:PLAYERBANKBAGSLOTS_CHANGED()
 	self:Layout(true)
 end
 
-function B:GUILDBANKBAGSLOTS_CHANGED()
-	self:SetGuildBankSearch(SEARCH_STRING);
+function B:GuildBankFrame_Update()
+	B:SetGuildBankSearch(SEARCH_STRING)
 end
 
 function B:CloseBank()
@@ -1262,7 +1269,7 @@ function B:CloseBank()
 	self.BankFrame:Hide()
 end
 
-function B:GUILDBANKFRAME_OPENED()
+function B:GUILDBANKFRAME_OPENED(event)
 	if GuildItemSearchBox then
 		GuildItemSearchBox:SetScript("OnEscapePressed", self.ResetAndClear);
 		GuildItemSearchBox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end);
@@ -1270,7 +1277,10 @@ function B:GUILDBANKFRAME_OPENED()
 		GuildItemSearchBox:SetScript("OnTextChanged", self.UpdateSearch);
 		GuildItemSearchBox:SetScript('OnChar', self.UpdateSearch);
 	end
-	self:UnregisterEvent("GUILDBANKFRAME_OPENED")
+
+	hooksecurefunc("GuildBankFrame_Update", B.GuildBankFrame_Update)
+
+	self:UnregisterEvent(event)
 end
 
 function B:PLAYER_ENTERING_WORLD()
@@ -1281,7 +1291,7 @@ function B:PLAYER_ENTERING_WORLD()
 	end)
 end
 
-function B:updateContainerFrameAnchors()
+function B:UpdateContainerFrameAnchors()
 	local frame, xOffset, yOffset, screenHeight, freeScreenHeight, leftMostPoint, column
 	local screenWidth = GetScreenWidth()
 	local containerScale = 1
@@ -1436,7 +1446,6 @@ function B:Initialize()
 	E.Bags = self;
 
 	self:DisableBlizzard();
-	self:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_MONEY", "UpdateGoldText")
 	self:RegisterEvent("PLAYER_TRADE_MONEY", "UpdateGoldText")

@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local AB = E:GetModule("ActionBars");
+local E, L, V, P, G = unpack(select(2, ...))
+local AB = E:GetModule("ActionBars")
 
 local _G = _G
 
@@ -15,7 +15,7 @@ local function FixExtraActionCD(cd)
 end
 
 function AB:Extra_SetAlpha()
-	if not E.private.actionbar.enable then return; end
+	if not E.private.actionbar.enable then return end
 
 	local alpha = E.db.actionbar.extraActionButton.alpha
 	for i = 1, ExtraActionBarFrame:GetNumChildren() do
@@ -27,7 +27,7 @@ function AB:Extra_SetAlpha()
 end
 
 function AB:Extra_SetScale()
-	if not E.private.actionbar.enable then return; end
+	if not E.private.actionbar.enable then return end
 
 	local scale = E.db.actionbar.extraActionButton.scale
 	if ExtraActionBarFrame then
@@ -44,13 +44,12 @@ function AB:SetupExtraButton()
 	ExtraActionBarFrame:SetParent(ExtraActionBarHolder)
 	ExtraActionBarFrame:ClearAllPoints()
 	ExtraActionBarFrame:Point("CENTER", ExtraActionBarHolder, "CENTER")
-
 	ExtraActionBarFrame.ignoreFramePositionManager  = true
 
 	for i = 1, ExtraActionBarFrame:GetNumChildren() do
 		local button = _G["ExtraActionButton"..i]
 		if button then
-			button.noResize = true;
+			button.noResize = true
 			button.pushed = true
 			button.checked = true
 
@@ -70,10 +69,10 @@ function AB:SetupExtraButton()
 	end
 
 	if HasExtraActionBar() then
-		ExtraActionBarFrame:Show();
+		ExtraActionBarFrame:Show()
 	end
 
-	E:CreateMover(ExtraActionBarHolder, "BossButton", L["Boss Button"], nil, nil, nil, "ALL, ACTIONBARS");
+	E:CreateMover(ExtraActionBarHolder, "BossButton", L["Boss Button"], nil, nil, nil, "ALL, ACTIONBARS")
 
 	AB:Extra_SetAlpha()
 	AB:Extra_SetScale()

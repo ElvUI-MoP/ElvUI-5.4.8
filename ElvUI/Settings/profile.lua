@@ -1,4 +1,4 @@
-﻿local E, L, V, P, G = unpack(select(2, ...));
+﻿local E, L, V, P, G = unpack(select(2, ...))
 
 P.gridSize = 64
 P.farmSize = 340
@@ -123,7 +123,7 @@ P["general"] = {
 		["spacing"] = 4
 	},
 	["kittys"] = false
-};
+}
 
 --DataBars
 P["databars"] = {
@@ -156,7 +156,7 @@ P["databars"] = {
 		["reverseFill"] = false,
 		["hideInCombat"] = false
 	}
-};
+}
 
 --Bags
 P["bags"] = {
@@ -181,6 +181,15 @@ P["bags"] = {
 	["clearSearchOnClose"] = false,
 	["disableBagSort"] = false,
 	["disableBankSort"] = false,
+	["cooldown"] = {
+		["threshold"] = 4,
+		["override"] = false,
+		["expiringColor"] = {r = 1, g = 0, b = 0},
+		["secondsColor"] = {r = 1, g = 1, b = 1},
+		["minutesColor"] = {r = 1, g = 1, b = 1},
+		["hoursColor"] = {r = 1, g = 1, b = 1},
+		["daysColor"] = {r = 1, g = 1, b = 1},
+	},
 	["bagBar"] = {
 		["growthDirection"] = "VERTICAL",
 		["sortDirection"] = "ASCENDING",
@@ -191,7 +200,7 @@ P["bags"] = {
 		["mouseover"] = false,
 		["visibility"] = "",
 	}
-};
+}
 
 --NamePlate
 P["nameplates"] = {
@@ -218,10 +227,20 @@ P["nameplates"] = {
 	["showEnemyCombat"] = "DISABLED",
 	["targetGlow"] = "style2",
 	["glowColor"] = {r = 77/255, g = 179/255, b = 255/255, a = 1},
+	["nameColoredGlow"] = false,
 	["alwaysShowTargetHealth"] = true,
 	["castColor"] = {r = 1, g = 208/255, b = 0},
 	["castNoInterruptColor"] = {r = 0.78, g = 0.25, b = 0.25},
 	["comboPoints"] = true,
+	["cooldown"] = {
+		["threshold"] = 4,
+		["override"] = true,
+		["expiringColor"] = {r = 1, g = 0, b = 0},
+		["secondsColor"] = {r = 1, g = 1, b = 1},
+		["minutesColor"] = {r = 1, g = 1, b = 1},
+		["hoursColor"] = {r = 1, g = 1, b = 1},
+		["daysColor"] = {r = 1, g = 1, b = 1},
+	},
 	["reactions"] = {
 		["friendlyPlayer"] = {r = 75/255, g = 175/255, b = 76/255},
 		["tapped"] = {r = 0.6, g = 0.6, b = 0.6},
@@ -247,7 +266,6 @@ P["nameplates"] = {
 			}
 		}
 	},
-
 	["units"] = {
 		["FRIENDLY_PLAYER"] = {
 			["healthbar"] = {
@@ -411,7 +429,7 @@ P["nameplates"] = {
 				["text"] = {
 					["enable"] = false,
 					["format"] = "CURRENT",
-				},
+				}
 			},
 			["showName"] = true,
 			["showLevel"] = true,
@@ -434,7 +452,7 @@ P["nameplates"] = {
 					["minDuration"] = 0,
 					["maxDuration"] = 0,
 					["priority"] = "Blacklist,blockNoDuration,PlayerBuffs,TurtleBuffs" --NamePlate EnemyNPC Buffs
-				},
+				}
 			},
 			["debuffs"] = {
 				["enable"] = true,
@@ -468,7 +486,7 @@ P["auras"] = {
 	["countXOffset"] = 0,
 	["timeYOffset"] = 0,
 	["timeXOffset"] = 0,
-	["fadeThreshold"] = 5,
+	["fadeThreshold"] = 6,
 
 	["consolidatedBuffs"] = {
 		["enable"] = true,
@@ -505,42 +523,51 @@ P["auras"] = {
 		["size"] = 32,
 		["countFontsize"] = 10,
 		["durationFontSize"] = 10,
+	},
+	["cooldown"] = {
+		["threshold"] = 4,
+		["override"] = true,
+		["expiringColor"] = {r = 1, g = 0, b = 0},
+		["secondsColor"] = {r = 1, g = 1, b = 1},
+		["minutesColor"] = {r = 1, g = 1, b = 1},
+		["hoursColor"] = {r = 1, g = 1, b = 1},
+		["daysColor"] = {r = 1, g = 1, b = 1},
 	}
 }
 
 --Chat
-P['chat'] = {
-	['lockPositions'] = true,
-	['url'] = true,
-	['shortChannels'] = true,
-	['hyperlinkHover'] = true,
-	['throttleInterval'] = 45,
-	['scrollDownInterval'] = 15,
-	['fade'] = true,
-	['font'] = 'PT Sans Narrow',
-	['fontOutline'] = 'NONE',
-	['sticky'] = true,
-	['emotionIcons'] = true,
-	['keywordSound'] = 'None',
-	['whisperSound'] = 'Whisper Alert',
+P["chat"] = {
+	["lockPositions"] = true,
+	["url"] = true,
+	["shortChannels"] = true,
+	["hyperlinkHover"] = true,
+	["throttleInterval"] = 45,
+	["scrollDownInterval"] = 15,
+	["fade"] = true,
+	["font"] = "PT Sans Narrow",
+	["fontOutline"] = "NONE",
+	["sticky"] = true,
+	["emotionIcons"] = true,
+	["keywordSound"] = "None",
+	["whisperSound"] = "Whisper Alert",
 	["noAlertInCombat"] = false,
-	['chatHistory'] = true,
-	['lfgIcons'] = false,
-	['timeStampFormat'] = 'NONE',
-	['keywords'] = '%MYNAME%, ElvUI',
-	['separateSizes'] = false,
-	['panelWidth'] = 412,
-	['panelHeight'] = 180,
-	['panelWidthRight'] = 412,
-	['panelHeightRight'] = 180,
-	['panelBackdropNameLeft'] = '',
-	['panelBackdropNameRight'] = '',
-	['panelBackdrop'] = 'SHOWBOTH',
-	['panelTabBackdrop'] = false,
-	['panelTabTransparency'] = false,
-	['editBoxPosition'] = 'BELOW_CHAT',
-	['fadeUndockedTabs'] = true,
-	['fadeTabsNoBackdrop'] = true,
+	["chatHistory"] = true,
+	["lfgIcons"] = false,
+	["timeStampFormat"] = "NONE",
+	["keywords"] = "%MYNAME%, ElvUI",
+	["separateSizes"] = false,
+	["panelWidth"] = 412,
+	["panelHeight"] = 180,
+	["panelWidthRight"] = 412,
+	["panelHeightRight"] = 180,
+	["panelBackdropNameLeft"] = "",
+	["panelBackdropNameRight"] = "",
+	["panelBackdrop"] = "SHOWBOTH",
+	["panelTabBackdrop"] = false,
+	["panelTabTransparency"] = false,
+	["editBoxPosition"] = "BELOW_CHAT",
+	["fadeUndockedTabs"] = true,
+	["fadeTabsNoBackdrop"] = true,
 	["useAltKey"] = false,
 	["classColorMentionsChat"] = true,
 	["numAllowedCombatRepeat"] = 3,
@@ -549,9 +576,9 @@ P['chat'] = {
 	["numScrollMessages"] = 3,
 	["autoClosePetBattleLog"] = true,
 
-	['tabFont'] = 'PT Sans Narrow',
-	['tabFontSize'] = 12,
-	['tabFontOutline'] = 'NONE',
+	["tabFont"] = "PT Sans Narrow",
+	["tabFontSize"] = 12,
+	["tabFontOutline"] = "NONE",
 }
 
 --Datatexts
@@ -573,12 +600,12 @@ P["datatexts"] = {
 		},
 		["LeftMiniPanel"] = "Guild",
 		["RightMiniPanel"] = "Friends",
-		['BottomMiniPanel'] = '',
-		['TopMiniPanel'] = '',
-		['BottomLeftMiniPanel'] = '',
-		['BottomRightMiniPanel'] = '',
-		['TopRightMiniPanel'] = '',
-		['TopLeftMiniPanel'] = '',
+		["BottomMiniPanel"] = "",
+		["TopMiniPanel"] = "",
+		["BottomLeftMiniPanel"] = "",
+		["BottomRightMiniPanel"] = "",
+		["TopRightMiniPanel"] = "",
+		["TopLeftMiniPanel"] = "",
 	},
 	["timeFormat"] = "%I:%M",
 	["dateFormat"] = "",
@@ -606,7 +633,7 @@ P["datatexts"] = {
 	["minimapBottom"] = false,
 	["minimapBottomLeft"] = false,
 	["minimapBottomRight"] = false
-};
+}
 
 --Tooltip
 P["tooltip"] = {
@@ -648,7 +675,7 @@ P["tooltip"] = {
 		[7] = {r = 0, g = 0.6, b = 0.1},
 		[8] = {r = 0, g = 0.6, b = 0.1}
 	}
-};
+}
 
 --UnitFrame
 P["unitframe"] = {
@@ -664,6 +691,15 @@ P["unitframe"] = {
 	["targetOnMouseDown"] = false,
 	["auraBlacklistModifier"] = "SHIFT",
 	["thinBorders"] = false,
+	["cooldown"] = {
+		["threshold"] = 4,
+		["override"] = true,
+		["expiringColor"] = {r = 1, g = 0, b = 0},
+		["secondsColor"] = {r = 1, g = 1, b = 1},
+		["minutesColor"] = {r = 1, g = 1, b = 1},
+		["hoursColor"] = {r = 1, g = 1, b = 1},
+		["daysColor"] = {r = 1, g = 1, b = 1},
+	},
 	["colors"] = {
 		["borderColor"] = {r = 0, g = 0, b = 0},
 		["healthclass"] = false,
@@ -726,31 +762,49 @@ P["unitframe"] = {
 				[3] = {r = 0, g = 1, b = 1},
 				[4] = {r = .9, g = .1, b = 1}
 			},
-			['PALADIN'] = {r = 228/255,g = 225/255,b = 16/255},
-			['MAGE'] = {r = 0, g = 157/255, b = 255/255},
-			['ROGUE'] = {
+			["PALADIN"] = {r = 228/255,g = 225/255,b = 16/255},
+			["MAGE"] = {r = 0, g = 157/255, b = 255/255},
+			["ROGUE"] = {
 				[1] = {r = 0.69, g = 0.31, b = 0.31},
 				[2] = {r = 0.69, g = 0.31, b = 0.31},
 				[3] = {r = 0.65, g = 0.63, b = 0.35},
 				[4] = {r = 0.65, g = 0.63, b = 0.35},
 				[5] = {r = 0.33, g = 0.59, b = 0.33},
 			},
-			['PRIEST'] = {r = 1, g = 1, b = 1},
-			['WARLOCK'] = {
+			["PRIEST"] = {r = 1, g = 1, b = 1},
+			["WARLOCK"] = {
 				[1] = {r = 148/255, g = 130/255, b = 201/255},
 				[2] = {r = 148/255, g = 130/255, b = 201/255},
 				[3] = {r = 230/255, g = 95/255,  b = 95/255}
 			},
-			['DRUID'] = {
+			["DRUID"] = {
 				[1] = {r = .30, g = .52, b = .90},
 				[2] = {r = .80, g = .82,  b = .60},
 			},
-			['MONK'] = {
+			["MONK"] = {
 				[1] = {r = .57, g = .63, b = .35},
 				[2] = {r = .47, g = .63, b = .35},
 				[3] = {r = .37, g = .63, b = .35},
 				[4] = {r = .27, g = .63, b = .33},
 				[5] = {r = .17, g = .63, b = .33}
+			}
+		},
+		["frameGlow"] = {
+			["mainGlow"] = {
+				["enable"] = false,
+				["class"] = false,
+				["color"] = {r = 1, g = 1, b = 1, a = 1}
+			},
+			["targetGlow"] = {
+				["enable"] = true,
+				["class"] = true,
+				["color"] = {r = 1, g = 1, b = 1, a = 1}
+			},
+			["mouseoverGlow"] = {
+				["enable"] = true,
+				["class"] = false,
+				["texture"] = "ElvUI Blank",
+				["color"] = {r = 1, g = 1, b = 1, a = 0.1}
 			}
 		},
 		["debuffHighlight"] = {
@@ -760,7 +814,6 @@ P["unitframe"] = {
 			["Poison"] = {r = 0, g = 0.6, b = 0, a = 0.45}
 		}
 	},
-
 	["units"] = {
 		["player"] = {
 			["enable"] = true,
@@ -773,6 +826,8 @@ P["unitframe"] = {
 			["threatStyle"] = "GLOW",
 			["smartAuraPosition"] = "DISABLED",
 			["colorOverride"] = "USE_DEFAULT",
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = true,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current-percent]",
 				["position"] = "LEFT",
@@ -954,6 +1009,7 @@ P["unitframe"] = {
 			},
 			["stagger"] = {
 				["enable"] = true,
+				["autoHide"] = true,
 				["width"] = 10
 			}
 		},
@@ -968,6 +1024,8 @@ P["unitframe"] = {
 			["rangeCheck"] = true,
 			["healPrediction"] = true,
 			["middleClickFocus"] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = true,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current-percent]",
 				["position"] = "RIGHT",
@@ -1076,9 +1134,18 @@ P["unitframe"] = {
 				["enable"] = true,
 				["fill"] = "fill",
 				["height"] = 10,
+				["autoHide"] = true,
 				["detachFromFrame"] = false,
 				["detachedWidth"] = 250,
-				["autoHide"] = true
+				["parent"] = "FRAME",
+				["orientation"] = "HORIZONTAL",
+				["spacing"] = 5,
+				["strataAndLevel"] = {
+					["useCustomStrata"] = false,
+					["frameStrata"] = "LOW",
+					["useCustomLevel"] = false,
+					["frameLevel"] = 1
+				}
 			},
 			["aurabar"] = {
 				["enable"] = true,
@@ -1122,6 +1189,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 36,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = true,
 			["health"] = {
 				["text_format"] = "",
 				["position"] = "RIGHT",
@@ -1211,6 +1280,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 36,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "",
 				["position"] = "RIGHT",
@@ -1299,6 +1370,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 190,
 			["height"] = 36,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["healPrediction"] = true,
 			["health"] = {
 				["text_format"] = "",
@@ -1430,6 +1503,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 190,
 			["height"] = 26,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "",
 				["position"] = "RIGHT",
@@ -1518,6 +1593,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 36,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = true,
 			["healPrediction"] = true,
 			["health"] = {
 				["text_format"] = "",
@@ -1619,6 +1696,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 26,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "",
 				["position"] = "RIGHT",
@@ -1701,7 +1780,8 @@ P["unitframe"] = {
 			["width"] = 216,
 			["height"] = 46,
 			["spacing"] = 25,
-			['targetGlow'] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current]",
 				["position"] = "LEFT",
@@ -1810,10 +1890,11 @@ P["unitframe"] = {
 			["spacing"] = 25,
 			["width"] = 246,
 			["height"] = 47,
-			['pvpSpecIcon'] = true,
+			["pvpSpecIcon"] = true,
 			["healPrediction"] = true,
 			["colorOverride"] = "USE_DEFAULT",
-			['targetGlow'] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current]",
 				["position"] = "LEFT",
@@ -1921,6 +2002,7 @@ P["unitframe"] = {
 			["growthDirection"] = "UP_RIGHT",
 			["horizontalSpacing"] = 0,
 			["verticalSpacing"] = 3,
+			["groupSpacing"] = 0,
 			["numGroups"] = 1,
 			["groupsPerRowCol"] = 1,
 			["groupBy"] = "GROUP",
@@ -1933,7 +2015,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 184,
 			["height"] = 54,
-			['targetGlow'] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current-percent]",
 				["position"] = "LEFT",
@@ -2107,6 +2190,14 @@ P["unitframe"] = {
 				["position"] = "BOTTOM",
 				["xOffset"] = 0,
 				["yOffset"] = 2
+			},
+			["resurrectIcon"] = {
+				["enable"] = true,
+				["size"] = 30,
+				["attachTo"] = "CENTER",
+				["attachToObject"] = "Frame",
+				["xOffset"] = 0,
+				["yOffset"] = 0
 			}
 		},
 		["raid"] = {
@@ -2118,6 +2209,7 @@ P["unitframe"] = {
 			["growthDirection"] = "RIGHT_DOWN",
 			["horizontalSpacing"] = 3,
 			["verticalSpacing"] = 3,
+			["groupSpacing"] = 0,
 			["numGroups"] = 5,
 			["groupsPerRowCol"] = 1,
 			["groupBy"] = "GROUP",
@@ -2127,7 +2219,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 80,
 			["height"] = 44,
-			['targetGlow'] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:deficit]",
 				["position"] = "BOTTOM",
@@ -2271,6 +2364,14 @@ P["unitframe"] = {
 				["position"] = "BOTTOM",
 				["xOffset"] = 0,
 				["yOffset"] = 2
+			},
+			["resurrectIcon"] = {
+				["enable"] = true,
+				["size"] = 30,
+				["attachTo"] = "CENTER",
+				["attachToObject"] = "Frame",
+				["xOffset"] = 0,
+				["yOffset"] = 0
 			}
 		},
 		["raid40"] = {
@@ -2282,6 +2383,7 @@ P["unitframe"] = {
 			["growthDirection"] = "RIGHT_DOWN",
 			["horizontalSpacing"] = 3,
 			["verticalSpacing"] = 3,
+			["groupSpacing"] = 0,
 			["numGroups"] = 8,
 			["groupsPerRowCol"] = 1,
 			["groupBy"] = "GROUP",
@@ -2291,7 +2393,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 80,
 			["height"] = 27,
-			['targetGlow'] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:deficit]",
 				["position"] = "BOTTOM",
@@ -2435,6 +2538,14 @@ P["unitframe"] = {
 				["position"] = "BOTTOM",
 				["xOffset"] = 0,
 				["yOffset"] = 2
+			},
+			["resurrectIcon"] = {
+				["enable"] = true,
+				["size"] = 30,
+				["attachTo"] = "CENTER",
+				["attachToObject"] = "Frame",
+				["xOffset"] = 0,
+				["yOffset"] = 0
 			}
 		},
 		["raidpet"] = {
@@ -2446,6 +2557,7 @@ P["unitframe"] = {
 			["growthDirection"] = "DOWN_RIGHT",
 			["horizontalSpacing"] = 3,
 			["verticalSpacing"] = 3,
+			["groupSpacing"] = 0,
 			["numGroups"] = 2,
 			["groupsPerRowCol"] = 1,
 			["groupBy"] = "PETNAME",
@@ -2457,7 +2569,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 80,
 			["height"] = 30,
-			['targetGlow'] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:deficit]",
 				["position"] = "BOTTOM",
@@ -2565,6 +2678,8 @@ P["unitframe"] = {
 			["height"] = 28,
 			["disableDebuffHighlight"] = true,
 			["verticalSpacing"] = 7,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["buffs"] = {
 				["enable"] = false,
 				["perrow"] = 6,
@@ -2648,6 +2763,8 @@ P["unitframe"] = {
 			["height"] = 28,
 			["disableDebuffHighlight"] = true,
 			["verticalSpacing"] = 7,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["buffs"] = {
 				["enable"] = false,
 				["perrow"] = 6,
@@ -2722,7 +2839,7 @@ P["unitframe"] = {
 			}
 		}
 	}
-};
+}
 
 P["cooldown"] = {
 	threshold = 3,
@@ -2748,16 +2865,15 @@ P["actionbar"] = {
 	["addNewSpells"] = false,
 	["rightClickSelfCast"] = false,
 	["desaturateOnCooldown"] = false,
-	['noRangeColor'] = {r = 0.8, g = 0.1, b = 0.1},
-	['noPowerColor'] = {r = 0.5, g = 0.5, b = 1},
+	["noRangeColor"] = {r = 0.8, g = 0.1, b = 0.1},
+	["noPowerColor"] = {r = 0.5, g = 0.5, b = 1},
 	["usableColor"] = {r = 1, g = 1, b = 1},
 	["notUsableColor"] = {r = 0.4, g = 0.4, b = 0.4},
 	["microbar"] = {
 		["enabled"] = false,
-		["Scale"] = 1,
-		["xOffset"] = 1,
-		["yOffset"] = 1,
 		["buttonsPerRow"] = 12,
+		["buttonSize"] = 20,
+		["buttonSpacing"] = 2,
 		["alpha"] = 1,
 		["mouseover"] = false,
 		["visibility"] = "show",
@@ -2916,9 +3032,9 @@ P["actionbar"] = {
 		["usePositionOverride"] = true,
 		["visibility"] = "[vehicleui] hide; [petbattle] hide;show",
 	},
-	['extraActionButton'] = {
-		['alpha'] = 1,
+	["extraActionButton"] = {
+		["alpha"] = 1,
 		["scale"] = 0.75,
-		['inheritGlobalFade'] = false,
-	},
-};
+		["inheritGlobalFade"] = false,
+	}
+}

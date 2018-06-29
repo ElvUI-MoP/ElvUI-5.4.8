@@ -120,39 +120,26 @@ local function LoadSkin()
 
 	HonorFrame.RoleInset:StripTextures();
 
-	S:HandleCheckBox(HonorFrame.RoleInset.DPSIcon.checkButton, true);
-	S:HandleCheckBox(HonorFrame.RoleInset.TankIcon.checkButton, true);
-	S:HandleCheckBox(HonorFrame.RoleInset.HealerIcon.checkButton, true);
+	local honorFrameRoleIcons = {
+		HonorFrame.RoleInset.DPSIcon,
+		HonorFrame.RoleInset.TankIcon,
+		HonorFrame.RoleInset.HealerIcon
+	}
 
-	HonorFrame.RoleInset.TankIcon:StripTextures();
-	HonorFrame.RoleInset.TankIcon:CreateBackdrop();
-	HonorFrame.RoleInset.TankIcon:Size(50);
-	HonorFrame.RoleInset.TankIcon.texture = HonorFrame.RoleInset.TankIcon:CreateTexture(nil, "ARTWORK");
-	HonorFrame.RoleInset.TankIcon.texture:SetTexture("Interface\\Icons\\Ability_Defend");
-	HonorFrame.RoleInset.TankIcon.texture:SetTexCoord(unpack(E.TexCoords));
-	HonorFrame.RoleInset.TankIcon.texture:SetInside(HonorFrame.RoleInset.TankIcon.backdrop);
+	for i = 1, #honorFrameRoleIcons do
+		S:HandleCheckBox(honorFrameRoleIcons[i].checkButton, true)
 
-	HonorFrame.RoleInset.HealerIcon:StripTextures();
-	HonorFrame.RoleInset.HealerIcon:CreateBackdrop();
-	HonorFrame.RoleInset.HealerIcon:Size(50);
-	HonorFrame.RoleInset.HealerIcon.texture = HonorFrame.RoleInset.HealerIcon:CreateTexture(nil, "ARTWORK");
-	HonorFrame.RoleInset.HealerIcon.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH");
-	HonorFrame.RoleInset.HealerIcon.texture:SetTexCoord(unpack(E.TexCoords));
-	HonorFrame.RoleInset.HealerIcon.texture:SetInside(HonorFrame.RoleInset.HealerIcon.backdrop);
+		honorFrameRoleIcons[i]:StripTextures()
+		honorFrameRoleIcons[i]:CreateBackdrop()
+		honorFrameRoleIcons[i]:Size(50)
+ 
+		honorFrameRoleIcons[i]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		honorFrameRoleIcons[i]:GetNormalTexture():SetInside(honorFrameRoleIcons[i].backdrop)
+	end
 
-	HonorFrame.RoleInset.DPSIcon:StripTextures();
-	HonorFrame.RoleInset.DPSIcon:CreateBackdrop();
-	HonorFrame.RoleInset.DPSIcon:Size(50);
-	HonorFrame.RoleInset.DPSIcon.texture = HonorFrame.RoleInset.DPSIcon:CreateTexture(nil, "ARTWORK");
-	HonorFrame.RoleInset.DPSIcon.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01");
-	HonorFrame.RoleInset.DPSIcon.texture:SetTexCoord(unpack(E.TexCoords));
-	HonorFrame.RoleInset.DPSIcon.texture:SetInside(HonorFrame.RoleInset.DPSIcon.backdrop);
-
-	hooksecurefunc("LFG_PermanentlyDisableRoleButton", function(self)
-		if(self.texture) then
-			self.texture:SetDesaturated(true);
-		end
-	end)
+	HonorFrame.RoleInset.TankIcon:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	HonorFrame.RoleInset.HealerIcon:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	HonorFrame.RoleInset.DPSIcon:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 
 	for i = 1, 2 do
 		local button = HonorFrame.BonusFrame["WorldPVP"..i.."Button"];
@@ -270,20 +257,20 @@ local function LoadSkin()
 		warGamesIcon:Size(E.PixelMode and 36 or 32);
 		warGamesIcon:SetParent(warGamesEntry.backdrop);
 
-		warGamesHeader:SetNormalTexture("Interface\\Buttons\\UI-PlusMinus-Buttons");
-		warGamesHeader.SetNormalTexture = E.noop;
-		warGamesHeader:GetNormalTexture():Size(13);
-		warGamesHeader:GetNormalTexture():Point("LEFT", 3, 0);
-		warGamesHeader:SetHighlightTexture("");
-		warGamesHeader.SetHighlightTexture = E.noop;
+		warGamesHeader:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		warGamesHeader.SetNormalTexture = E.noop
+		warGamesHeader:GetNormalTexture():Size(14)
+		warGamesHeader:GetNormalTexture():Point("LEFT", 3, 0)
+		warGamesHeader:SetHighlightTexture("")
+		warGamesHeader.SetHighlightTexture = E.noop
 
 		hooksecurefunc(warGamesHeader, "SetNormalTexture", function(self, texture)
-			if(find(texture, "MinusButton")) then
-				self:GetNormalTexture():SetTexCoord(0.5625, 1, 0, 0.4375);
-			elseif(find(texture, "PlusButton")) then
-				self:GetNormalTexture():SetTexCoord(0, 0.4375, 0, 0.4375);
- 			end
-		end);
+			if find(texture, "MinusButton") then
+				self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+			elseif find(texture, "PlusButton") then
+				self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+			end
+		end)
 	end
 end
 

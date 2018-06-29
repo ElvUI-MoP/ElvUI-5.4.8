@@ -47,6 +47,7 @@ local function Size(frame, width, height)
 end
 
 local function Width(frame, width)
+	assert(width)
 	frame:SetWidth(E:Scale(width))
 end
 

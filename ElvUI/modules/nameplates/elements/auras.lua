@@ -15,14 +15,14 @@ local GetSpellTexture = GetSpellTexture
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local RaidIconBit = {
-	["STAR"] = 0x00100000,
-	["CIRCLE"] = 0x00200000,
-	["DIAMOND"] = 0x00400000,
-	["TRIANGLE"] = 0x00800000,
-	["MOON"] = 0x01000000,
-	["SQUARE"] = 0x02000000,
-	["CROSS"] = 0x04000000,
-	["SKULL"] = 0x08000000
+	["STAR"] = 0x00000001,
+	["CIRCLE"] = 0x00000002,
+	["DIAMOND"] = 0x00000004,
+	["TRIANGLE"] = 0x00000008,
+	["MOON"] = 0x00000010,
+	["SQUARE"] = 0x00000020,
+	["CROSS"] = 0x00000040,
+	["SKULL"] = 0x00000080
 }
 
 local RaidIconIndex = {
@@ -53,14 +53,6 @@ local auraDuration = {}
 local auraTexture = {}
 local auraType = {}
 local cachedAuraDurations = {}
-
-local TimeColors = {
-	[0] = "|cffeeeeee",
-	[1] = "|cffeeeeee",
-	[2] = "|cffeeeeee",
-	[3] = "|cffFFEE00",
-	[4] = "|cfffe0000"
-}
 
 local AURA_UPDATE_INTERVAL = 0.1
 
@@ -115,12 +107,18 @@ end
 
 local function UpdateAuraTime(frame, expiration)
 	local timeleft = expiration - GetTime()
-	local timervalue, formatid = E:GetTimeInfo(timeleft, 4)
-	local timeFormat = E.TimeFormats[3][2]
-	if timervalue < 4 then
-		timeFormat = E.TimeFormats[4][2]
+	local timeColors, timeThreshold = E.TimeColors, E.db.cooldown.threshold
+	if mod.db.cooldown.override and E.TimeColors["nameplates"] then
+		timeColors, timeThreshold = E.TimeColors["nameplates"], mod.db.cooldown.threshold
 	end
-	frame.timeLeft:SetFormattedText(("%s%s|r"):format(TimeColors[formatid], timeFormat), timervalue)
+	if not timeThreshold then
+		timeThreshold = E.TimeThreshold
+	end
+	
+	local timervalue, formatid
+	timervalue, formatid = E:GetTimeInfo(timeleft, timeThreshold)
+	
+	frame.timeLeft:SetFormattedText(format("%s%s|r", timeColors[formatid], E.TimeFormats[formatid][2]), timervalue)
 end
 
 local function RemoveAuraInstance(guid, spellID, caster)
@@ -452,7 +450,7 @@ local function GuidIsLocalUnitId(guid)
 	end
 end
 
-function mod:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, sourceGUID, _, _, destGUID, destName, destFlags, ...)
+function mod:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, _, _, _, destGUID, destName, destFlags, ...)
 	if not (event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE" or event == "SPELL_AURA_BROKEN" or event == "SPELL_AURA_BROKEN_SPELL" or event == "SPELL_AURA_REMOVED") then return end
 
 	if not GuidIsLocalUnitId(destGUID) then -- Skip over the aura update if the unit is accessible by a local unitid.

@@ -53,7 +53,6 @@ V["chat"] = {
 }
 
 V["skins"] = {
-	["tradeSkillBig"] = true,
 	["ace3"] = {
 		["enable"] = true
 	},

@@ -21,10 +21,12 @@ function UF:Construct_FocusFrame(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame);
 	frame.HealthPrediction = self:Construct_HealComm(frame)
 	frame.AuraBars = self:Construct_AuraBarHeader(frame);
-	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame);
-	frame.Range = UF:Construct_Range(frame);
-	frame.ThreatIndicator = UF:Construct_Threat(frame);
-	frame.GPS = UF:Construct_GPS(frame);
+	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame);
+	frame.Range = self:Construct_Range(frame);
+	frame.ThreatIndicator = self:Construct_Threat(frame);
+	frame.GPS = self:Construct_GPS(frame);
+	frame.MouseGlow = self:Construct_MouseGlow(frame)
+	frame.TargetGlow = self:Construct_TargetGlow(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame);
 	frame.customTexts = {};
 

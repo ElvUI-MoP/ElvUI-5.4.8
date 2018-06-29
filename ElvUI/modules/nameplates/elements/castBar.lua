@@ -70,6 +70,8 @@ function mod:UpdateElement_CastBarOnHide()
 end
 
 function mod:ConfigureElement_CastBar(frame)
+	if not frame.UnitType then return end
+
 	local castBar = frame.CastBar
 
 	castBar:ClearAllPoints()
@@ -116,6 +118,12 @@ function mod:ConfigureElement_CastBar(frame)
 end
 
 function mod:ConstructElement_CastBar(parent)
+	local function updateGlowPosition()
+		if not parent then return end
+
+		mod:UpdatePosition_Glow(parent)
+	end
+
 	local frame = CreateFrame("StatusBar", "$parentCastBar", parent)
 	self:StyleFrame(frame)
 

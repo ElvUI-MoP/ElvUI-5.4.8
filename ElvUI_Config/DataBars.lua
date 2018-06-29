@@ -28,7 +28,7 @@ E.Options.args.databars = {
 				header = {
  					order = 1,
 					type = "header",
-					name = L["Experience Bar"],
+					name = XPBAR_LABEL
 				},
 				enable = {
 					order = 2,
@@ -64,8 +64,13 @@ E.Options.args.databars = {
 					type = "toggle",
 					name = L["Reverse Fill Direction"],
 				},
-				orientation = {
+				spacer = {
 					order = 8,
+					type = "description",
+					name = " "
+				},
+				orientation = {
+					order = 9,
 					type = "select",
 					name = L["Statusbar Fill Orientation"],
 					desc = L["Direction the bar moves on gains/losses"],
@@ -75,31 +80,31 @@ E.Options.args.databars = {
 					}
 				},
 				width = {
-					order = 9,
+					order = 10,
 					type = "range",
 					name = L["Width"],
 					min = 5, max = ceil(GetScreenWidth() or 800), step = 1
 				},
 				height = {
-					order = 10,
+					order = 11,
 					type = "range",
 					name = L["Height"],
 					min = 5, max = ceil(GetScreenHeight() or 800), step = 1
 				},
 				font = {
-					order = 11,
+					order = 12,
 					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
 					values = AceGUIWidgetLSMlists.font
 				},
 				textSize = {
-					order = 12,
+					order = 13,
 					name = FONT_SIZE,
 					type = "range",
 					min = 6, max = 22, step = 1
 				},
 				fontOutline = {
-					order = 13,
+					order = 14,
 					type = "select",
 					name = L["Font Outline"],
 					values = {
@@ -110,7 +115,7 @@ E.Options.args.databars = {
 					}
 				},
 				textFormat = {
-					order = 14,
+					order = 15,
 					type = "select",
 					name = L["Text Format"],
 					width = "double",
@@ -138,7 +143,7 @@ E.Options.args.databars = {
 				header = {
  					order = 1,
 					type = "header",
-					name = L["Reputation Bar"]
+					name = REPUTATION
 				},
 				enable = {
 					order = 2,

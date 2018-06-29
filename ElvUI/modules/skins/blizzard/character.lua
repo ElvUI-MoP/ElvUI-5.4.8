@@ -24,7 +24,25 @@ local function LoadSkin()
 	CharacterModelFrame:CreateBackdrop("Default")
 	CharacterModelFrame.backdrop:Point("TOPLEFT", -1, 1)
 	CharacterModelFrame.backdrop:Point("BOTTOMRIGHT", 1, -2)
-	CharacterModelFrameBackgroundOverlay:SetTexture(0, 0, 0, 0.6)
+
+	--Re-add the overlay texture which was removed right above via StripTextures
+	CharacterModelFrameBackgroundOverlay:SetTexture(0, 0, 0)
+
+--[[
+	-- Give character frame model backdrop it's color back
+	for _, corner in pairs({"TopLeft", "TopRight", "BotLeft", "BotRight"}) do
+		local bg = _G["CharacterModelFrameBackground"..corner]
+		if bg then
+			bg:SetDesaturated(false)
+			bg.ignoreDesaturated = true -- so plugins can prevent this if they want.
+			hooksecurefunc(bg, "SetDesaturated", function(bckgnd, value)
+				if value and bckgnd.ignoreDesaturated then
+					bckgnd:SetDesaturated(false)
+				end
+			end)
+		end
+	end
+]]
 
 	S:HandleCloseButton(CharacterFrameCloseButton)
 
@@ -70,7 +88,7 @@ local function LoadSkin()
 
 		if popout then
 			popout:StripTextures()
-			popout:SetTemplate()
+			popout:SetTemplate("Default", true)
 			popout:HookScript("OnEnter", S.SetModifiedBackdrop)
 			popout:HookScript("OnLeave", S.SetOriginalBackdrop)
 
@@ -108,7 +126,7 @@ local function LoadSkin()
 
 		local location = button.location
 		if not location then return end
-		if(location and location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION) then return end
+		if location and location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then return end
 
 		local id = EquipmentManager_GetItemInfoByLocation(location)
 		local _, _, quality = GetItemInfo(id)
@@ -138,7 +156,7 @@ local function LoadSkin()
 				SquareButton_SetIcon(self, "DOWN")
 			end
 		else
-			if isReversed  then
+			if isReversed then
 				SquareButton_SetIcon(self, "LEFT")
 			else
 				SquareButton_SetIcon(self, "RIGHT")
@@ -154,7 +172,7 @@ local function LoadSkin()
 
 			if itemId then
 				local rarity = GetInventoryItemQuality("player", slotId)
-				if rarity and rarity > 1 then
+				if rarity then
 					target:SetBackdropBorderColor(GetItemQualityColor(rarity))
 				else
 					target:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -245,8 +263,8 @@ local function LoadSkin()
 			object.BgTop:SetTexture(nil)
 			object.BgBottom:SetTexture(nil)
 			object.BgMiddle:SetTexture(nil)
-
 			object.Check:SetTexture(nil)
+
 			object.SelectedBar:SetTexture(0, 0.7, 1, 0.75)
 			object.SelectedBar:SetInside()
 			object.HighlightBar:SetTexture(1, 1, 1, 0.30)
@@ -277,7 +295,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(PaperDollEquipmentManagerPaneScrollBar)
 
-	--Equipement Manager Popup
+	-- Equipement Manager Popup
 	S:HandleIconSelectionFrame(GearManagerDialogPopup, NUM_GEARSET_ICONS_SHOWN, "GearManagerDialogPopupButton", frameNameOverride)
 
 	S:HandleScrollBar(GearManagerDialogPopupScrollFrameScrollBar)
@@ -305,7 +323,7 @@ local function LoadSkin()
 				tab.Highlight:SetTexture(1, 1, 1, 0.3)
 				tab.Highlight:SetInside(tab.backdrop)
 
-				tab.Hider:SetTexture(0.4, 0.4, 0.4, 0.4)
+				tab.Hider:SetTexture(0, 0, 0, 0.8)
 				tab.Hider:SetInside(tab.backdrop)
 
 				tab.TabBg:Kill()
@@ -350,9 +368,9 @@ local function LoadSkin()
 		factionBar:SetStatusBarTexture(E["media"].normTex)
 		E:RegisterStatusBar(factionBar)
 
-		factionButton:SetNormalTexture("Interface\\Buttons\\UI-PlusMinus-Buttons")
-		factionButton.SetNormalTexture = function() end
-		factionButton:GetNormalTexture():SetInside()
+		factionButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		factionButton.SetNormalTexture = E.noop
+		factionButton:GetNormalTexture():Size(14)
 		factionButton:SetHighlightTexture(nil)
 
 		factionRow.War = factionRow:CreateTexture(nil, "OVERLAY")
@@ -374,9 +392,9 @@ local function LoadSkin()
 				local _, _, _, _, _, _, atWarWith, canToggleAtWar, isHeader, isCollapsed = GetFactionInfo(factionIndex)
 
 				if isCollapsed then
-					Button:GetNormalTexture():SetTexCoord(0, 0.4375, 0, 0.4375)
+					Button:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 				else
-					Button:GetNormalTexture():SetTexCoord(0.5625, 1, 0, 0.4375)
+					Button:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
 				end
 
 				if atWarWith and canToggleAtWar and (not isHeader) then
@@ -404,23 +422,51 @@ local function LoadSkin()
 	ReputationDetailCloseButton:Point("TOPRIGHT", 3, 4)
 
 	-- Currency
-	TokenFrame:HookScript("OnShow", function()
-		for i = 1, GetCurrencyListSize() do
-			local button = _G["TokenFrameContainerButton"..i]
+	hooksecurefunc("TokenFrame_Update", function()
+		if not TokenFrameContainer.buttons then return end
 
-			if button then
+		local scrollFrame = TokenFrameContainer
+		local offset = HybridScrollFrame_GetOffset(scrollFrame)
+		local buttons = scrollFrame.buttons
+		local numButtons = #buttons
+		local name, isHeader, isExpanded
+		local button, index
+
+		for i = 1, numButtons do
+			index = offset + i
+			name, isHeader, isExpanded = GetCurrencyListInfo(index)
+			button = buttons[i]
+
+			if button and not button.isSkinned then
 				button.highlight:Kill()
 				button.categoryMiddle:Kill()
 				button.categoryLeft:Kill()
 				button.categoryRight:Kill()
 
 				button.icon:SetTexCoord(unpack(E.TexCoords))
+
+				button.expandIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+				button.expandIcon:Size(15)
+				button.expandIcon:Point("LEFT", 4, 0)
+
+				button.isSkinned = true
+			end
+
+			if name or name == "" then
+				if isHeader then
+					if isExpanded then
+						button.expandIcon:SetTexCoord(0.540, 0.965, 0.085, 0.920)
+					else
+						button.expandIcon:SetTexCoord(0.040, 0.465, 0.085, 0.920)
+					end
+				end
 			end
 		end
-		TokenFramePopup:StripTextures()
-		TokenFramePopup:SetTemplate("Transparent")
-		TokenFramePopup:Point("TOPLEFT", TokenFrame, "TOPRIGHT", 1, 0)
 	end)
+
+	TokenFramePopup:StripTextures()
+	TokenFramePopup:SetTemplate("Transparent")
+	TokenFramePopup:Point("TOPLEFT", TokenFrame, "TOPRIGHT", 1, 0)
 
 	S:HandleScrollBar(TokenFrameContainerScrollBar)
 
@@ -433,19 +479,21 @@ local function LoadSkin()
 	-- Pet
 	PetModelFrame:CreateBackdrop("Transparent")
 
-	S:HandleRotateButton(PetModelFrameRotateRightButton)
 	S:HandleRotateButton(PetModelFrameRotateLeftButton)
+	PetModelFrameRotateLeftButton:Point("TOPLEFT", 2, -2)
 
-	PetModelFrameRotateRightButton:ClearAllPoints()
-	PetModelFrameRotateRightButton:Point("LEFT", PetModelFrameRotateLeftButton, "RIGHT", 4, 0)
+	S:HandleRotateButton(PetModelFrameRotateRightButton)
+	PetModelFrameRotateRightButton:Point("TOPLEFT", PetModelFrameRotateLeftButton, "TOPRIGHT", 4, 0)
 
-	local xtex = PetPaperDollPetInfo:GetRegions()
-	xtex:SetTexCoord(.12, .63, .15, .55)
-
-	PetPaperDollPetInfo:CreateBackdrop("Default")
-	PetPaperDollPetInfo:Size(24)
+	PetPaperDollPetInfo:CreateBackdrop()
+	PetPaperDollPetInfo:SetFrameLevel(PetPaperDollPetInfo:GetFrameLevel() + 2)
+	PetPaperDollPetInfo:Point("TOPRIGHT", -3, -3)
+	PetPaperDollPetInfo:Size(30)
 
 	PetPaperDollPetModelBg:SetDesaturated(true)
+
+	PetPaperDollPetInfo:GetRegions():SetTexture("Interface\\Icons\\Ability_Hunter_BeastTraining")
+	PetPaperDollPetInfo:GetRegions():SetTexCoord(unpack(E.TexCoords))
 end
 
 S:AddCallback("Character", LoadSkin)
