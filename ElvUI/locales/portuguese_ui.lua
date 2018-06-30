@@ -76,6 +76,7 @@ L["goldabbrev"] = "|cffffd700g|r"
 L["Hit"] = "Acerto"
 L["Hold Shift + Right Click:"] = true
 L["Home Latency:"] = "Latência de Casa:"
+L["Home Protocol:"] = true
 L["HP"] = "PV"
 L["HPS"] = "PVS"
 L["lvl"] = "nível"
@@ -86,7 +87,7 @@ L["Profit:"] = "Lucro:"
 L["Reset Counters: Hold Control + Right Click"] = true
 L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "Redefinir Dados: Segurar Shifr + Clique Direito"
-L["Right Click: Reset CPU Usage"] = true
+L["Saved Dungeon(s)"] = true
 L["Saved Raid(s)"] = "Raide(s) Salva(s)"
 L["Server: "] = "Servidor: "
 L["Session:"] = "Sessão:"
@@ -103,6 +104,7 @@ L["Total Memory:"] = "Memória Total:"
 L["Total: "] = "Total: "
 L["Unhittable:"] = "Inacertável"
 L["Vengeance"] = true
+L["World Protocol:"] = true
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFFClique Esquerdo:|r Altera Especialização de Talento"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFFClique Direito:|r Altera a Especialização de Saque"
 L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true
@@ -302,6 +304,7 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "A definição que você alterou afetará apenas este personagem. Esta definição que você alterou não será afetada por mudanças de perfil. Alterar esta difinição requer que você recarregue a sua interface."
+L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
 L["Are you sure you want to apply this font to all ElvUI elements?"] = true
@@ -318,6 +321,7 @@ L["Do you swear not to post in technical support about something not working wit
 L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = true
 L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = true
 L["ElvUI needs to perform database optimizations please be patient."] = true
+L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "Paire com o seu rato (mouse) sobre qualquer botão de ação ou botão do grimório para fazer uma Ligação. Pressione a tecla Escape ou clique com o botão direito para limpar o atalho atual."
 L["I Swear"] = "Eu Juro"
 L["No, Revert Changes!"] = true

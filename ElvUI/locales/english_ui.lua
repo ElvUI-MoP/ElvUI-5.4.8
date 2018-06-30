@@ -76,6 +76,7 @@ L["goldabbrev"] = "|cffffd700g|r" --Also used in Bags
 L["Hit"] = true
 L["Hold Shift + Right Click:"] = true
 L["Home Latency:"] = true
+L["Home Protocol:"] = true
 L["HP"] = true
 L["HPS"] = true
 L["lvl"] = true
@@ -86,7 +87,7 @@ L["Profit:"] = true
 L["Reset Counters: Hold Control + Right Click"] = true
 L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = true
-L["Right Click: Reset CPU Usage"] = true
+L["Saved Dungeon(s)"] = true
 L["Saved Raid(s)"] = true
 L["Server: "] = true
 L["Session:"] = true
@@ -103,6 +104,7 @@ L["Total Memory:"] = true
 L["Total: "] = true
 L["Unhittable:"] = true
 L["Vengeance"] = true
+L["World Protocol:"] = true
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = true
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = true
 L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true
@@ -302,6 +304,7 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = true
+L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
 L["Are you sure you want to apply this font to all ElvUI elements?"] = true
@@ -318,6 +321,7 @@ L["Do you swear not to post in technical support about something not working wit
 L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = true
 L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = true
 L["ElvUI needs to perform database optimizations please be patient."] = true
+L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = true
 L["I Swear"] = true
 L["No, Revert Changes!"] = true

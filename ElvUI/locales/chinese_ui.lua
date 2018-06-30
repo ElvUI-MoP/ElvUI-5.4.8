@@ -38,7 +38,7 @@ L["Reset Position"] = "重设位置"
 L["Sort Bags"] = "背包整理"
 L["Temporary Move"] = '移动背包'
 L["Toggle Bags"] = "背包开关"
-L["Vendor / Delete Grays"] = true
+L["Vendor / Delete Grays"] = "出售/删除灰色物品"
 
 --Chat
 L["AFK"] = "离开" --Also used in datatexts and tooltip
@@ -76,6 +76,7 @@ L["goldabbrev"] = "|cffffd700金|r"
 L["Hit"] = "命中"
 L["Hold Shift + Right Click:"] = "按住Shift + 右键点击"
 L["Home Latency:"] = "本机延迟:"
+L["Home Protocol:"] = "本地协议:"
 L["HP"] = "生命值"
 L["HPS"] = "治疗输出"
 L["lvl"] = "等级"
@@ -86,7 +87,7 @@ L["Profit:"] = "利润:"
 L["Reset Counters: Hold Control + Right Click"] = "重置计数器: 按住 Ctrl + 右键点击"
 L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "重置数据: 按住 Shift + 右键点击"
-L["Right Click: Reset CPU Usage"] = true
+L["Saved Dungeon(s)"] = "已有进度的地下城"
 L["Saved Raid(s)"] = "已有进度的副本"
 L["Server: "] = "服务器: "
 L["Session:"] = "本次登陆:"
@@ -103,6 +104,7 @@ L["Total Memory:"] = "总内存:"
 L["Total: "] = "合计: "
 L["Unhittable:"] = "未命中:"
 L["Vengeance"] = true
+L["World Protocol:"] ="世界协议:"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFF左键点击:|r 更改当前专精"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFF右键点击:|r 更改拾取专精"
 L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = "|cffFFFFFFShift + 左键:|r 显示专精天赋框架"
@@ -302,6 +304,7 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "你所做的改动只会影响到使用这个插件的本角色, 你需要重新加载界面才能使改动生效."
+L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = "接受这个将重置姓名版中所有光环的过滤器优先级. 你确定吗？"
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = "接受这个将重置单位框架中所有光环的过滤器优先级. 你确定吗？"
 L["Are you sure you want to apply this font to all ElvUI elements?"] = "确定要对所有ElvUI元素使用这个字体?"
@@ -310,7 +313,7 @@ L["Are you sure you want to reset all the settings on this profile?"] = "确定�
 L["Are you sure you want to reset every mover back to it's default position?"] = "确定需要重置所有框架至默认位置?"
 L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "由于大量的改动导致光环系统需要一个新的安装过程. 这是可选的, 最后一步将设置你的光环样式. 点击「完成」将不再提示. 如果由于某些原因反复提示, 请重新开启游戏."
 L["Can't buy anymore slots!"] = "银行背包栏位已达最大值"
-L["Delete gray items?"] = true
+L["Delete gray items?"] = "删除灰色物品?"
 L["Disable Warning"] = '停用警告'
 L["Discard"] = "取消"
 L["Do you enjoy the new ElvUI?"] = "你喜欢新的ElvUI么？"
@@ -318,6 +321,7 @@ L["Do you swear not to post in technical support about something not working wit
 L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI每天有5个或者更多的版本。你可以在https://github.com/ElvUI-MoP下载到最新的版本。购买会员来让Tukui客户端自动更新ElvUI"
 L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = true
 L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI需要进行数据库优化，请耐性等待。"
+L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "移动鼠标到动作条或技能书按钮上绑定快捷键. 按ESC或鼠标右键取消目前快捷键"
 L["I Swear"] = '我承诺'
 L["No, Revert Changes!"] = "不，撤销修改！"

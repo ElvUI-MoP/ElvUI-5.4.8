@@ -76,6 +76,7 @@ L["goldabbrev"] = "|cffffd700金|r" --Also used in Bags
 L["Hit"] = "命中"
 L["Hold Shift + Right Click:"] = "按住 Shift 並按滑鼠右鍵"
 L["Home Latency:"] = "本機延遲:"
+L["Home Protocol:"] = true
 L["HP"] = "生命值"
 L["HPS"] = "治療輸出"
 L["lvl"] = "等級"
@@ -85,7 +86,7 @@ L["Profit:"] = "利潤: "
 L["Reset Counters: Hold Control + Right Click"] = true
 L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "重置數據: 按住 Shift + 右鍵點擊"
-L["Right Click: Reset CPU Usage"] = true
+L["Saved Dungeon(s)"] = "已有進度地城"
 L["Saved Raid(s)"] = "已有進度的副本"
 L["Server: "] = "伺服器: "
 L["Session:"] = "本次登入:"
@@ -102,6 +103,7 @@ L["Total Memory:"] = "總記憶體:"
 L["Total: "] = "合計: "
 L["Unhittable:"] = "未命中:"
 L["Vengeance"] = true
+L["World Protocol:"] = true
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFF左鍵:|r 變更目前職業專精"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFF右鍵k:|r 變更目前拾取專精"
 L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = "|cffFFFFFFShift + 左鍵:|r 顯示天賦專精介面"
@@ -301,6 +303,7 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "你所做的改動只會影響到使用這個插件的本角色, 你需要重新加載介面才能使改動生效."
+L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
 L["Are you sure you want to apply this font to all ElvUI elements?"] = "你確定要將此字型應用到所有 ElvUI 元素嗎?"
@@ -317,6 +320,7 @@ L["Do you swear not to post in technical support about something not working wit
 L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI 以過期超過5個版本. 你可以在 https://github.com/ElvUI-MoP 下載到最新的版本."
 L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI 以過期. 你可以在 https://github.com/ElvUI-MoP 下載到最新的版本."
 L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI 需要進行資料庫優化, 請稍待."
+L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "移動滑鼠到快捷列或技能書按鈕上綁定快捷鍵.按ESC或滑鼠右鍵取消目前快捷鍵."
 L["I Swear"] = "我承諾"
 L["No, Revert Changes!"] = "不, 回復修改!"

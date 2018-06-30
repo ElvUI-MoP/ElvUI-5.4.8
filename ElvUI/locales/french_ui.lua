@@ -76,6 +76,7 @@ L["goldabbrev"] = "|cffffd700g|r" --Also used in Bags
 L["Hit"] = "Toucher"
 L["Hold Shift + Right Click:"] = "Maintenir Majuscule + Clic droit";
 L["Home Latency:"] = "Latence du Domicile:"
+L["Home Protocol:"] = true
 L["HP"] = "PV"
 L["HPS"] = "HPS"
 L["lvl"] = "niveau"
@@ -86,7 +87,7 @@ L["Profit:"] = "Profit:"
 L["Reset Counters: Hold Control + Right Click"] = true
 L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "RAZ des données: MAJ + Clic droit"
-L["Right Click: Reset CPU Usage"] = true
+L["Saved Dungeon(s)"] = "Donjon(s) sauvegardé(s)"
 L["Saved Raid(s)"] = "Raid(s) Sauvegardé(s)"
 L["Server: "] = "Serveur: "
 L["Session:"] = "Session:"
@@ -103,6 +104,7 @@ L["Total Memory:"] = "Mémoire totale:"
 L["Total: "] = "Total: "
 L["Unhittable:"] = "Intouchable:"
 L["Vengeance"] = true
+L["World Protocol:"] = true
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = '|cffFFFFFFClick Gauche:|r Changer de spécialisation des talents'
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = '|cffFFFFFFClick Droit:|r Changer la spécialisation de butin'
 L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = "|cffFFFFFFShift + Click Gauche :|r Voir la spécialisation des talents de l'interface"
@@ -302,6 +304,7 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "Un réglage que vous avez modifié ne s'appliquera que pour ce personnage. La modification de ce réglage ne sera pas affecté par un changement de profil. Changer ce réglage requiert de relancer l'interface."
+L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = "En acceptant, votre liste de priorités des filtres sera réinitialisée pour les auras des barre de noms. Êtes-vous sûr ?"
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = "En acceptant, votre liste de priorités des filtres sera réinitialisée pour les auras des cadres d'unités. Êtes-vous sûr ?"
 L["Are you sure you want to apply this font to all ElvUI elements?"] =  "Êtes-vous sûr de vouloir appliquer cette police à tous les éléments d'ELvUI ?"
@@ -318,6 +321,7 @@ L["Do you swear not to post in technical support about something not working wit
 L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI est périmé d'au moins 5 versions. Vous pouvez télécharger la nouvelle version sur https://github.com/ElvUI-MoP"
 L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI est périmé. Vous pouvez télécharger la nouvelle version sur https://github.com/ElvUI-MoP"
 L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI a besoin d'effectuer des optimisations de la base de données, merci de patienter."
+L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "Passez votre souris sur n'importe quel bouton d'action ou bouton du grimoire pour lui attribuer un raccourcis. Appuyez sur la touche Échap ou le clique droit pour effacer le raccourci en cours."
 L["I Swear"] = "Je le jure"
 L["No, Revert Changes!"] = "Non, annuler les changements!"
