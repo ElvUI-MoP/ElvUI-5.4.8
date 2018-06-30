@@ -79,6 +79,24 @@ local function LoadSkin()
 		end
 	end
 
+	-- Confirmation Popup
+	TransmogrifyConfirmationPopup:SetParent(UIParent)
+	TransmogrifyConfirmationPopup:StripTextures()
+	TransmogrifyConfirmationPopup:SetTemplate("Transparent")
+
+	S:HandleButton(TransmogrifyConfirmationPopup.Button1)
+	S:HandleButton(TransmogrifyConfirmationPopup.Button2)
+
+	S:HandleItemButton(TransmogrifyConfirmationPopupItemFrame1, true)
+	S:HandleItemButton(TransmogrifyConfirmationPopupItemFrame2, true)
+
+	hooksecurefunc("TransmogrifyConfirmationPopup_SetItem", function(itemFrame, itemLink)
+		local _, _, itemQuality = GetItemInfo(itemLink)
+		local r, g, b = GetItemQualityColor(itemQuality or 1)
+		
+		itemFrame.backdrop:SetBackdropBorderColor(r, g, b)
+	end)
+
 	-- Control Frame
 	TransmogrifyModelFrameControlFrame:StripTextures()
 	TransmogrifyModelFrameControlFrame:Size(123, 23)

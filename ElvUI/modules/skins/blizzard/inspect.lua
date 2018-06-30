@@ -36,7 +36,25 @@ local function LoadSkin()
 	InspectModelFrameBorderBottomRight:Kill()
 	InspectModelFrameBorderBottom:Kill()
 	InspectModelFrameBorderBottom2:Kill()
-	InspectModelFrameBackgroundOverlay:Kill()
+
+	--Re-add the overlay texture which was removed via StripTextures
+	InspectModelFrameBackgroundOverlay:SetTexture(0, 0, 0)
+
+--[[
+	-- Give inspect frame model backdrop it's color back
+	for _, corner in pairs({"TopLeft", "TopRight", "BotLeft", "BotRight"}) do
+		local bg = _G["InspectModelFrameBackground"..corner]
+		if bg then
+			bg:SetDesaturated(false)
+			bg.ignoreDesaturated = true -- so plugins can prevent this if they want.
+			hooksecurefunc(bg, "SetDesaturated", function(bckgnd, value)
+				if value and bckgnd.ignoreDesaturated then
+					bckgnd:SetDesaturated(false)
+				end
+			end)
+		end
+	end
+]]
 
 	local slots = {
 		"HeadSlot",
@@ -85,7 +103,7 @@ local function LoadSkin()
 						end
 					end)
 					return
-				elseif quality and quality > 1 then
+				elseif quality then
 					button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					return
  				end
