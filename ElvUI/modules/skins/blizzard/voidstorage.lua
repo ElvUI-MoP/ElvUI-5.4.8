@@ -104,7 +104,7 @@ local function LoadSkin()
 
 				if itemID then
 					local quality = select(3, GetItemInfo(itemID))
-					if quality and quality > 1 then
+					if quality then
 						button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
 						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -122,7 +122,7 @@ local function LoadSkin()
 
 				if itemID then
 					local quality = select(3, GetItemInfo(itemID))
-					if quality and quality > 1 then
+					if quality then
 						button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
 						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -139,7 +139,7 @@ local function LoadSkin()
 
 					if itemID then
 						local quality = select(3, GetItemInfo(itemID))
-						if quality and quality > 1 then
+						if quality then
 							button:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
 							button:SetBackdropBorderColor(unpack(E["media"].bordercolor))

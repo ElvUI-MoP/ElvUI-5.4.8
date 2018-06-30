@@ -72,7 +72,7 @@ local function LoadSkin()
 
 					if link then
 						local quality = select(3, GetItemInfo(link))
-						if quality and quality > 1 then
+						if quality then
 							button.Name:SetTextColor(GetItemQualityColor(quality))
 							button.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
@@ -110,7 +110,7 @@ local function LoadSkin()
 		if name then
 			if link then
 				local quality = select(3, GetItemInfo(link))
-				if quality and quality > 1 then
+				if quality then
 					self.HotDeal.Name:SetTextColor(GetItemQualityColor(quality))
 					self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else

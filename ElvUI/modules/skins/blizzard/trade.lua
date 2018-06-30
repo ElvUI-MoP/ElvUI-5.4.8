@@ -109,7 +109,7 @@ local function LoadSkin()
 		if link then
 			local quality = select(3, GetItemInfo(link))
 
-			if quality and quality > 1 then
+			if quality then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				tradeItemName:SetTextColor(GetItemQualityColor(quality))
 			else
@@ -129,7 +129,7 @@ local function LoadSkin()
 		if link then
 			local quality = select(3, GetItemInfo(link))
 
-			if quality and quality > 1 then
+			if quality then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				tradeItemName:SetTextColor(GetItemQualityColor(quality))
 			else

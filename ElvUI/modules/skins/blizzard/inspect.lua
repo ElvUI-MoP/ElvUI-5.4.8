@@ -85,7 +85,7 @@ local function LoadSkin()
 		slot:CreateBackdrop("Default")
 		slot.backdrop:SetAllPoints()
 		slot:SetFrameLevel(slot:GetFrameLevel() + 2)
-		slot:StyleButton()
+		slot:StyleButton(nil, true)
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside()
@@ -95,7 +95,7 @@ local function LoadSkin()
 		if button.hasItem then
 			local itemID = GetInventoryItemID(InspectFrame.unit, button:GetID())
 			if itemID then
-				local _, _, quality = GetItemInfo(itemID)
+				local quality = GetInventoryItemQuality(InspectFrame.unit, button:GetID())
 				if not quality then
 					E:Delay(0.1, function()
 						if InspectFrame.unit then
@@ -268,7 +268,9 @@ local function LoadSkin()
 
 	for _, Section in pairs({"RatedBG", "Arena2v2", "Arena3v3", "Arena5v5"}) do
 		local Frame = InspectPVPFrame[Section]
-		Frame:SetTemplate("Transparent")
+		Frame:CreateBackdrop("Transparent")
+		Frame.backdrop:Point("TOPLEFT", 0, -1)
+		Frame.backdrop:Point("BOTTOMRIGHT", 0, 1)
 		Frame:EnableMouse(true)
 
 		Frame:HookScript("OnEnter", S.SetModifiedBackdrop)
