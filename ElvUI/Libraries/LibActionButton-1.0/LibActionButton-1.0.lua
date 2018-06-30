@@ -1118,24 +1118,25 @@ function UpdateUsable(self)
 end
 
 function UpdateCount(self)
-	if not self:HasAction() then
-		self.count:SetText("")
-		return
+	local count, charges, maxCharges = 0, 0, 0
+	local isItemAction = false
+
+	if self._state_action and type(self._state_action) == "number" then
+		charges, maxCharges = GetActionCharges(self._state_action)
+		count = self:GetCount()
+		isItemAction = IsItemAction(self._state_action)
 	end
-	if self:IsConsumableOrStackable() then
-		local count = self:GetCount()
+
+	if self:IsConsumableOrStackable() or (not isItemAction and count > 0) then
 		if count > (self.maxDisplayCount or 9999) then
 			self.count:SetText("*")
 		else
 			self.count:SetText(count)
 		end
+	elseif charges and maxCharges and maxCharges > 1 then
+		self.count:SetText(charges)
 	else
-		local charges, maxCharges, chargeStart, chargeDuration = self:GetCharges()
-		if charges and maxCharges and maxCharges > 1 then
-			self.count:SetText(charges)
-		else
-			self.count:SetText("")
-		end
+		self.count:SetText("")
 	end
 end
 

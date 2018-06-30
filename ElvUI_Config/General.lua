@@ -598,7 +598,7 @@ E.Options.args.general = {
 					order = 3,
 					type = "toggle",
 					name = L["Chat Bubble Names"],
-					desc = L["Display the name of the unit on the chat bubble. This will not work if backdrop is disabled."],
+					desc = L["Display the name of the unit on the chat bubble."],
 					get = function(info) return E.private.general.chatBubbleName end,
 					set = function(info, value) E.private.general.chatBubbleName = value; E:StaticPopup_Show("PRIVATE_RL") end,
 					disabled = function() return E.private.general.chatBubbles == "disabled" or E.private.general.chatBubbles == "nobackdrop" end

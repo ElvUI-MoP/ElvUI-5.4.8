@@ -94,6 +94,10 @@ local function LoadSkin()
 			if spellSubName then
 				spellSubName:SetTextColor(0.6, 0.6, 0.6)
 			end
+		else
+			if spellSubName then
+				spellSubName:SetTextColor(1, 1, 1)
+			end
 		end
 
 		if spellLevel then
