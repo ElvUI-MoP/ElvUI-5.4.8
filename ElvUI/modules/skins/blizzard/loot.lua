@@ -5,27 +5,32 @@ local _G = _G
 local unpack, select = unpack, select
 local find = string.find
 
-local UnitName = UnitName
-local IsFishingLoot = IsFishingLoot
+local C_LootHistory_GetNumItems = C_LootHistory.GetNumItems
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
+local GetLootSlotInfo = GetLootSlotInfo
 local GetLootRollItemInfo = GetLootRollItemInfo
 local GetItemQualityColor = GetItemQualityColor
-local SquareButton_SetIcon = SquareButton_SetIcon
-local C_LootHistory_GetNumItems = C_LootHistory.GetNumItems
+local UnitIsDead = UnitIsDead
+local UnitIsFriend = UnitIsFriend
+local UnitName = UnitName
+local IsFishingLoot = IsFishingLoot
 local LOOTFRAME_NUMBUTTONS = LOOTFRAME_NUMBUTTONS
 local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES
-local LOOT = LOOT
+local LOOT, ITEMS = LOOT, ITEMS
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.loot ~= true then return end
 
 	-- Loot History Frame
+	local LootHistoryFrame = _G["LootHistoryFrame"]
 	LootHistoryFrame:StripTextures()
 	LootHistoryFrame:SetTemplate('Transparent')
 
 	LootHistoryFrameScrollFrame:StripTextures()
 
 	LootHistoryFrame.ResizeButton:StripTextures()
-	LootHistoryFrame.ResizeButton:SetTemplate()
+	LootHistoryFrame.ResizeButton:SetTemplate("Default", true)
 	LootHistoryFrame.ResizeButton:HookScript("OnEnter", S.SetModifiedBackdrop)
 	LootHistoryFrame.ResizeButton:HookScript("OnLeave", S.SetOriginalBackdrop)
 	LootHistoryFrame.ResizeButton:Width(LootHistoryFrame:GetWidth())
@@ -60,23 +65,36 @@ local function LoadSkin()
 				frame.Icon:SetTexCoord(unpack(E.TexCoords))
 				frame.Icon:SetParent(frame.backdrop)
 
-				frame.ToggleButton:SetNormalTexture("")
+				frame.ToggleButton:Point("LEFT", 2, 0)
+
+				frame.ToggleButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 				frame.ToggleButton.SetNormalTexture = E.noop
-				frame.ToggleButton:SetPushedTexture("")
+				frame.ToggleButton:GetNormalTexture():Size(14)
+				frame.ToggleButton:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+
+				frame.ToggleButton:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 				frame.ToggleButton.SetPushedTexture = E.noop
+				frame.ToggleButton:GetPushedTexture():Size(14)
+				frame.ToggleButton:GetPushedTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+
+				frame.ToggleButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+				frame.ToggleButton.SetDisabledTexture = E.noop
+				frame.ToggleButton:GetDisabledTexture():Size(14)
+				frame.ToggleButton:GetDisabledTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+
 				frame.ToggleButton:SetHighlightTexture("")
 				frame.ToggleButton.SetHighlightTexture = E.noop
 
-				frame.ToggleButton.Text = frame.ToggleButton:CreateFontString(nil, "OVERLAY")
-				frame.ToggleButton.Text:FontTemplate(nil, 22)
-				frame.ToggleButton.Text:Point("LEFT", -1, 0)
-				frame.ToggleButton.Text:SetText("+")
-
 				hooksecurefunc(frame.ToggleButton, "SetNormalTexture", function(self, texture)
 					if find(texture, "MinusButton") then
-						self.Text:SetText("-")
+						self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+						self:GetPushedTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+					elseif find(texture, "PlusButton") then
+						self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+						self:GetPushedTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 					else
-						self.Text:SetText("+")
+						self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
+						self:GetPushedTexture():SetTexCoord(0, 0, 0, 0)
 					end
 				end)
 
@@ -87,6 +105,7 @@ local function LoadSkin()
 	hooksecurefunc("LootHistoryFrame_FullUpdate", UpdateLoots)
 
 	-- MasterLoot Frame
+	local MasterLooterFrame = _G["MasterLooterFrame"]
 	MasterLooterFrame:StripTextures()
 	MasterLooterFrame:SetTemplate("Transparent")
 	MasterLooterFrame:SetFrameStrata("TOOLTIP")
@@ -125,8 +144,12 @@ local function LoadSkin()
 	end)
 
 	-- Bonus Roll Frame
+	local BonusRollFrame = _G["BonusRollFrame"]
 	BonusRollFrame:StripTextures()
 	BonusRollFrame:SetTemplate("Transparent")
+
+	BonusRollFrame.SpecRing:SetTexture("")
+	BonusRollFrame.CurrentCountFrame.Text:FontTemplate()
 
 	BonusRollFrame.PromptFrame.Icon:SetTexCoord(unpack(E.TexCoords))
 
@@ -135,8 +158,65 @@ local function LoadSkin()
 	BonusRollFrame.PromptFrame.IconBackdrop:SetOutside(BonusRollFrame.PromptFrame.Icon)
 	BonusRollFrame.PromptFrame.IconBackdrop:SetTemplate()
 
-	BonusRollFrame.PromptFrame.Timer.Bar:SetTexture(1, 1, 1)
-	BonusRollFrame.PromptFrame.Timer.Bar:SetVertexColor(1, 1, 1)
+	BonusRollFrame.PromptFrame.Timer:SetStatusBarTexture(E.media.normTex)
+	BonusRollFrame.PromptFrame.Timer:SetStatusBarColor(unpack(E.media.rgbvaluecolor))
+
+	BonusRollFrame.BlackBackgroundHoist.Background:Hide()
+	BonusRollFrame.BlackBackgroundHoist.b = CreateFrame("Frame", nil, BonusRollFrame)
+	BonusRollFrame.BlackBackgroundHoist.b:SetTemplate("Default")
+	BonusRollFrame.BlackBackgroundHoist.b:SetOutside(BonusRollFrame.PromptFrame.Timer)
+
+	BonusRollFrame.SpecIcon.b = CreateFrame("Frame", nil, BonusRollFrame)
+	BonusRollFrame.SpecIcon.b:SetTemplate("Default")
+	BonusRollFrame.SpecIcon.b:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 2)
+	BonusRollFrame.SpecIcon.b:SetSize(BonusRollFrame.SpecIcon:GetSize())
+	BonusRollFrame.SpecIcon.b:SetFrameLevel(6)
+	BonusRollFrame.SpecIcon:SetParent(BonusRollFrame.SpecIcon.b)
+	BonusRollFrame.SpecIcon:SetTexCoord(unpack(E.TexCoords))
+	BonusRollFrame.SpecIcon:SetInside()
+
+	hooksecurefunc(BonusRollFrame.SpecIcon, "Hide", function(specIcon)
+		if specIcon.b and specIcon.b:IsShown() then
+			BonusRollFrame.CurrentCountFrame:ClearAllPoints()
+			BonusRollFrame.CurrentCountFrame:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 1)
+			specIcon.b:Hide()
+		end
+	end)
+	hooksecurefunc(BonusRollFrame.SpecIcon, "Show", function(specIcon)
+		if specIcon.b and not specIcon.b:IsShown() and specIcon:GetTexture() ~= nil then
+			BonusRollFrame.CurrentCountFrame:ClearAllPoints()
+			BonusRollFrame.CurrentCountFrame:SetPoint("RIGHT", BonusRollFrame.SpecIcon.b, "LEFT", -2, -2)
+			specIcon.b:Show()
+		end
+	end)
+
+	hooksecurefunc("BonusRollFrame_StartBonusRoll", function()
+		--keep the status bar a frame above but its increased 1 extra beacuse mera has a grid layer
+		local BonusRollFrameLevel = BonusRollFrame:GetFrameLevel()
+		BonusRollFrame.PromptFrame.Timer:SetFrameLevel(BonusRollFrameLevel+2)
+		if BonusRollFrame.BlackBackgroundHoist.b then
+			BonusRollFrame.BlackBackgroundHoist.b:SetFrameLevel(BonusRollFrameLevel+1)
+		end
+
+		--set currency icons position at bottom right (or left of the spec icon, on the bottom right)
+		BonusRollFrame.CurrentCountFrame:ClearAllPoints()
+		if BonusRollFrame.SpecIcon.b then
+			BonusRollFrame.SpecIcon.b:SetShown(BonusRollFrame.SpecIcon:IsShown() and BonusRollFrame.SpecIcon:GetTexture() ~= nil)
+			if BonusRollFrame.SpecIcon.b:IsShown() then
+				BonusRollFrame.CurrentCountFrame:SetPoint("RIGHT", BonusRollFrame.SpecIcon.b, "LEFT", -2, -2)
+			else
+				BonusRollFrame.CurrentCountFrame:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 1)
+			end
+		else
+			BonusRollFrame.CurrentCountFrame:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 1)
+		end
+
+		--skin currency icons
+		local ccf, pfifc = BonusRollFrame.CurrentCountFrame.Text, BonusRollFrame.PromptFrame.InfoFrame.Cost
+		local text1, text2 = ccf and ccf:GetText(), pfifc and pfifc:GetText()
+		if text1 and text1:find("|t") then ccf:SetText(text1:gsub("|T(.-):.-|t", "|T%1:16:16:0:0:64:64:5:59:5:59|t")) end
+		if text2 and text2:find("|t") then pfifc:SetText(text2:gsub("|T(.-):.-|t", "|T%1:16:16:0:0:64:64:5:59:5:59|t")) end
+	end)
 
 	-- Loot Frame
 	if E.private.general.loot then return end
