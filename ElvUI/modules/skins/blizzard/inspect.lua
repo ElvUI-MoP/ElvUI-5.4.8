@@ -278,7 +278,24 @@ local function LoadSkin()
 	end
 
 	-- Guild Tab
+	InspectGuildFrame.bg = CreateFrame("Frame", nil, InspectGuildFrame)
+	InspectGuildFrame.bg:SetTemplate("Default")	
+	InspectGuildFrame.bg:Point("TOPLEFT", 7, -63)
+	InspectGuildFrame.bg:Point("BOTTOMRIGHT", -9, 27)
+	InspectGuildFrame.bg:SetBackdropColor(0, 0, 0, 0)
+	InspectGuildFrame.bg.backdropTexture:SetAlpha(0)
+
+	InspectGuildFrameBG:SetInside(InspectGuildFrame.bg)
+	InspectGuildFrameBG:SetParent(InspectGuildFrame.bg)
 	InspectGuildFrameBG:SetDesaturated(true)
+
+	InspectGuildFrameBanner:SetParent(InspectGuildFrame.bg)
+	InspectGuildFrameBannerBorder:SetParent(InspectGuildFrame.bg)
+	InspectGuildFrameTabardLeftIcon:SetParent(InspectGuildFrame.bg)
+	InspectGuildFrameTabardRightIcon:SetParent(InspectGuildFrame.bg)
+	InspectGuildFrameGuildName:SetParent(InspectGuildFrame.bg)
+	InspectGuildFrameGuildLevel:SetParent(InspectGuildFrame.bg)
+	InspectGuildFrameGuildNumMembers:SetParent(InspectGuildFrame.bg)
 end
 
 S:AddCallbackForAddon("Blizzard_InspectUI", "Inspect", LoadSkin)

@@ -109,6 +109,32 @@ local function LoadSkin()
 		end
 	end
 
+	hooksecurefunc("EquipmentFlyoutPopoutButton_SetReversed", function(self, isReversed)
+		if not E.private.skins.blizzard.transmogrify then return end
+
+		if self:GetParent().verticalFlyout then
+			if isReversed then
+				SquareButton_SetIcon(self, "UP")
+			else
+				SquareButton_SetIcon(self, "DOWN")
+			end
+		else
+			if isReversed then
+				SquareButton_SetIcon(self, "LEFT")
+			else
+				SquareButton_SetIcon(self, "RIGHT")
+			end
+		end
+	end)
+
+	EquipmentFlyoutFrameHighlight:Kill()
+	EquipmentFlyoutFrame.NavigationFrame:StripTextures()
+	EquipmentFlyoutFrame.NavigationFrame:SetTemplate("Transparent")
+	EquipmentFlyoutFrame.NavigationFrame:Point("TOPLEFT", EquipmentFlyoutFrameButtons, "BOTTOMLEFT", 0, -E.Border - E.Spacing)
+	EquipmentFlyoutFrame.NavigationFrame:Point("TOPRIGHT", EquipmentFlyoutFrameButtons, "BOTTOMRIGHT", 0, -E.Border - E.Spacing)
+	S:HandleNextPrevButton(EquipmentFlyoutFrame.NavigationFrame.PrevButton, nil, true)
+	S:HandleNextPrevButton(EquipmentFlyoutFrame.NavigationFrame.NextButton)
+
 	local function SkinItemFlyouts(button)
 		button.icon = _G[button:GetName().."IconTexture"]
 
@@ -137,30 +163,18 @@ local function LoadSkin()
  	hooksecurefunc("EquipmentFlyout_DisplayButton", SkinItemFlyouts)
 
 	hooksecurefunc("EquipmentFlyout_Show", function(self)
-		EquipmentFlyoutFrameButtons:StripTextures()
-		EquipmentFlyoutFrameHighlight:Kill()
+		local frame = EquipmentFlyoutFrame.buttonFrame
+
+		frame:StripTextures()
+		frame:SetTemplate("Transparent")
+
+		local width, height = frame:GetSize()
+		frame:Size(width + 3, height)
+
 		if self.verticalFlyout then
-			EquipmentFlyoutFrame.buttonFrame:Point("TOPLEFT", self.popoutButton, "BOTTOMLEFT", -10, 0)
+			frame:Point("TOPLEFT", self.popoutButton, "BOTTOMLEFT", -10, 0)
 		else
-			EquipmentFlyoutFrame.buttonFrame:Point("TOPLEFT", self.popoutButton, "TOPRIGHT", 0, 10)
-		end
-	end)
-
-	hooksecurefunc("EquipmentFlyoutPopoutButton_SetReversed", function(self, isReversed)
-		if not E.private.skins.blizzard.transmogrify then return end
-
-		if self:GetParent().verticalFlyout then
-			if isReversed then
-				SquareButton_SetIcon(self, "UP")
-			else
-				SquareButton_SetIcon(self, "DOWN")
-			end
-		else
-			if isReversed then
-				SquareButton_SetIcon(self, "LEFT")
-			else
-				SquareButton_SetIcon(self, "RIGHT")
-			end
+			frame:Point("TOPLEFT", self.popoutButton, "TOPRIGHT", 0, 10)
 		end
 	end)
 
