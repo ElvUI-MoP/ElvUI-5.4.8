@@ -154,20 +154,21 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("NavBar_AddButton", function(self)
-		if self:GetParent():GetName() == "EncounterJournal" then return end
+		if self:GetParent():GetName() == "HelpFrameKnowledgebase" then
+			local navButton = self.navList[#self.navList]
 
-		local navButton = self.navList[#self.navList]
+			if navButton and not navButton.isSkinned then
+				S:HandleButton(navButton, true)
 
-		if not navButton.skinned then
-			S:HandleButton(navButton, true)
-			navButton.skinned = true
+				navButton:HookScript("OnClick", function()
+					navButtonFrameLevel(self)
+				end)
 
-			navButton:HookScript("OnClick", function()
-				navButtonFrameLevel(self)
-			end)
+				navButton.isSkinned = true
+			end
+
+			navButtonFrameLevel(self)
 		end
-
-		navButtonFrameLevel(self)
 	end)
 end
 
