@@ -159,6 +159,7 @@ function mod:SetTargetFrame(frame)
 				frame.Name:ClearAllPoints()
 				frame.Level:ClearAllPoints()
 				frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = nil, nil, nil
+				frame.CastBar:Hide()
 				self:ConfigureElement_HealthBar(frame)
 				self:ConfigureElement_CastBar(frame)
 				self:ConfigureElement_Glow(frame)

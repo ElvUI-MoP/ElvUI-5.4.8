@@ -126,6 +126,8 @@ function mod:ConstructElement_CastBar(parent)
 
 	local frame = CreateFrame("StatusBar", "$parentCastBar", parent)
 	self:StyleFrame(frame)
+	frame:SetScript("OnShow", updateGlowPosition)
+	frame:SetScript("OnHide", updateGlowPosition)
 
 	frame.Icon = CreateFrame("Frame", nil, frame)
 	frame.Icon.texture = frame.Icon:CreateTexture(nil, "BORDER")

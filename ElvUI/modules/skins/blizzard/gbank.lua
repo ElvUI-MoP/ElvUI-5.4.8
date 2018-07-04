@@ -107,7 +107,10 @@ local function LoadSkin()
 
 		button:StripTextures()
 		button:SetTemplate()
-		button:StyleButton(nil, true)
+		button:StyleButton()
+
+		button:GetCheckedTexture():SetTexture(1, 1, 1, 0.3)
+		button:GetCheckedTexture():SetInside()
 
 		texture:SetInside()
 		texture:SetTexCoord(unpack(E.TexCoords))

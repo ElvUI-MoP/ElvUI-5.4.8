@@ -2,17 +2,25 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local pairs, unpack, select = pairs, unpack, select
-local find = string.find
+local pairs, select, unpack = pairs, select, unpack
+
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
+local GetNumSpecializations = GetNumSpecializations
+local GetSpecialization = GetSpecialization
+local GetSpecializationInfo = GetSpecializationInfo
+local GetSpecializationSpells = GetSpecializationSpells
+local GetSpellTexture = GetSpellTexture
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.talent ~= true then return end
 
-	PlayerTalentFrameTalents:StripTextures()
-
+	local PlayerTalentFrame = _G["PlayerTalentFrame"]
 	PlayerTalentFrame:StripTextures()
 	PlayerTalentFrame:CreateBackdrop("Transparent")
 	PlayerTalentFrame.backdrop:Point("BOTTOMRIGHT", PlayerTalentFrame, 0, -6)
+
+	PlayerTalentFrameTalents:StripTextures()
 
 	PlayerTalentFrameInset:StripTextures()
 	PlayerTalentFrameInset:CreateBackdrop("Default")
@@ -108,7 +116,7 @@ local function LoadSkin()
 			button:CreateBackdrop("Default")
 			button.backdrop:SetOutside(icon)
 
-			icon:SetDrawLayer("OVERLAY")
+			icon:SetDrawLayer("OVERLAY", 1)
 			icon:SetTexCoord(unpack(E.TexCoords))
 			icon:Size(48)
 			icon:Point("TOPLEFT", 15, -1)
@@ -118,9 +126,14 @@ local function LoadSkin()
 			button.bg:SetFrameLevel(button:GetFrameLevel() -2)
 			button.bg:Point("TOPLEFT", 15, -1)
 			button.bg:Point("BOTTOMRIGHT", -10, 1)
+
 			button.bg.SelectedTexture = button.bg:CreateTexture(nil, "ARTWORK")
 			button.bg.SelectedTexture:Point("TOPLEFT", button, 15, -1)
 			button.bg.SelectedTexture:Point("BOTTOMRIGHT", button, -10, 1)
+
+			button.ShadowedTexture = button:CreateTexture(nil, "OVERLAY", nil, 2)
+			button.ShadowedTexture:SetAllPoints(button.bg.SelectedTexture)
+			button.ShadowedTexture:SetTexture(0, 0, 0, 0.6)
 
 			button.bg2 = CreateFrame("Frame", nil, button)
 			button.bg2:CreateBackdrop("Default", true)
@@ -138,16 +151,23 @@ local function LoadSkin()
 			for j = 1, NUM_TALENT_COLUMNS do
 				local button = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j]
 
-				if button.knownSelection:IsShown() then
-					button.bg.SelectedTexture:Show()
-					button.bg.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
-				else
-					button.bg.SelectedTexture:Hide()
+				if button.bg and button.knownSelection then
+					if button.knownSelection:IsShown() then
+						button.bg.SelectedTexture:Show()
+						button.bg.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
+						button.ShadowedTexture:Hide()
+					else
+						button.bg.SelectedTexture:Hide()
+						button.ShadowedTexture:Show()
+					end
 				end
 
-				if button.learnSelection:IsShown() then
-					button.bg.SelectedTexture:Show()
-					button.bg.SelectedTexture:SetTexture(1, 1, 1, 0.30)
+				if button.bg and button.learnSelection then
+					if button.learnSelection:IsShown() then
+						button.bg.SelectedTexture:Show()
+						button.bg.SelectedTexture:SetTexture(1, 1, 1, 0.30)
+						button.ShadowedTexture:Hide()
+					end
 				end
 			end
 		end
@@ -210,57 +230,60 @@ local function LoadSkin()
 
 		scrollChild.roleIcon:SetTexCoord(unpack(E.TexCoords))
 
-		local index = 1
 		local bonuses
-
 		if self.isPet then
 			bonuses = {GetSpecializationSpells(shownSpec, nil, self.isPet)}
 		else
 			bonuses = SPEC_SPELLS_DISPLAY[id]
 		end
 
-		for i = 1, #bonuses, 2 do
-			local frame = scrollChild["abilityButton"..index]
+		if bonuses then
+			local index = 1
+			for i = 1, #bonuses, 2 do
+				local frame = scrollChild["abilityButton"..index]
+				if frame then
+					local _, spellTex = GetSpellTexture(bonuses[i])
+					if spellTex then
+						frame.icon:SetTexture(spellTex)
+					end
 
-			if mod(index, 2) == 0 then
-				frame:SetPoint("LEFT", scrollChild["abilityButton"..(index-1)], "RIGHT", 141, 0)
-			else
-				if (#bonuses / 2) > 4 then
-					frame:SetPoint("TOP", scrollChild["abilityButton"..(index-2)], "BOTTOM", 0, -5)
-				else
-					frame:SetPoint("TOP", scrollChild["abilityButton"..(index-2)], "BOTTOM", 0, -5)
+					if mod(index, 2) == 0 then
+						frame:Point("LEFT", scrollChild["abilityButton"..(index - 1)], "RIGHT", 141, 0)
+					else
+						if (#bonuses / 2) > 4 then
+							frame:Point("TOP", scrollChild["abilityButton"..(index - 2)], "BOTTOM", 0, -5)
+						else
+							frame:Point("TOP", scrollChild["abilityButton"..(index - 2)], "BOTTOM", 0, -5)
+						end
+					end
+
+					if not frame.isSkinned then
+						frame:SetTemplate()
+						frame:StyleButton(nil, true)
+						frame:Size(45)
+
+						frame.bg = CreateFrame("Frame", nil, frame)
+						frame.bg:SetTemplate("Transparent", true)
+						frame.bg:Point("TOPLEFT", 44, 0)
+						frame.bg:Point("BOTTOMRIGHT", 137, 0)
+
+						frame.icon:SetTexCoord(unpack(E.TexCoords))
+						frame.icon:SetInside()
+
+						frame.name:SetTextColor(1, 0.80, 0.10)
+						frame.name:Point("LEFT", frame.icon, "RIGHT", 7, 2)
+						frame.name:SetParent(frame.bg)
+
+						frame.subText:SetTextColor(1, 1, 1)
+						frame.subText:SetParent(frame.bg)
+
+						frame.ring:Hide()
+
+						frame.isSkinned = true
+					end
 				end
+				index = index + 1
 			end
-
-			local _, icon = GetSpellTexture(bonuses[i])
-			if frame then
-				frame.icon:SetTexture(icon)
-				frame.name:SetTextColor(1, 0.80, 0.10)
-				frame.subText:SetTextColor(1, 1, 1)
-
-				if not frame.isSkinned then
-					frame:SetTemplate()
-					frame:StyleButton(nil, true)
-					frame:Size(45)
-
-					frame.ring:Hide()
-
-					frame.icon:SetTexCoord(unpack(E.TexCoords))
-					frame.icon:SetInside()
-					frame.name:Point("LEFT", frame.icon, "RIGHT", 7, 2)
-
-					frame.bg = CreateFrame("Frame", nil, frame)
-					frame.bg:SetTemplate("Transparent", true)
-					frame.bg:Point("TOPLEFT", 44, 0)
-					frame.bg:Point("BOTTOMRIGHT", 137, 0)
-
-					frame.name:SetParent(frame.bg)
-					frame.subText:SetParent(frame.bg)
-
-					frame.isSkinned = true
-				end
-			end
-			index = index + 1
 		end
 
 		for i = 1, GetNumSpecializations(nil, self.isPet) do

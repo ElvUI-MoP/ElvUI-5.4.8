@@ -142,6 +142,7 @@ local function LoadSkin()
 	Specialization:CreateBackdrop("Default", true)
 	Specialization.backdrop:Point("TOPLEFT", 18, -16)
 	Specialization.backdrop:Point("BOTTOMRIGHT", 20, 12)
+	Specialization:SetHitRectInsets(18, -20, 16, 12)
 
 	Specialization.ring:SetTexture("")
 
