@@ -143,15 +143,14 @@ local function LoadSkin()
 	-- Roster
 	for i = 1, 15 do
 		local button = _G["GuildRosterContainerButton"..i]
-		local icon = _G["GuildRosterContainerButton"..i.."Icon"]
 
 		button:CreateBackdrop("Default", true)
-		button.backdrop:SetAllPoints(icon)
-		button:StyleButton()
+		button.backdrop:SetAllPoints(button.icon)
+		S:HandleButtonHighlight(button)
 
-		icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-		icon:SetParent(button.backdrop)
-		icon:Size(18)
+		button.icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+		button.icon:SetParent(button.backdrop)
+		button.icon:Size(18)
 
 		_G["GuildRosterContainerButton"..i.."BarTexture"]:SetTexture(E["media"].normTex)
 		S:HandleButton(_G["GuildRosterContainerButton"..i.."HeaderButton"], true)
@@ -173,7 +172,7 @@ local function LoadSkin()
 				if VIEW == "tradeskill" then
 					local _, _, _, headerName, _, _, _, playerName, _, _, zone = GetGuildTradeSkillInfo(button.guildIndex)
 					if not headerName and playerName then
-						if(zone == playerArea) then
+						if zone == playerArea then
 							button.string2:SetText("|cff00ff00"..zone)
 						end
 					end
@@ -183,36 +182,23 @@ local function LoadSkin()
 
 					if VIEW == "playerStatus" then
 						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
-						if(zone == playerArea) then
+						if zone == playerArea then
 							button.string3:SetText("|cff00ff00"..zone)
 						end
-					elseif VIEW == "achievement" then
-						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
-					elseif VIEW == "weeklyxp" or VIEW == "totalxp" then
+					elseif VIEW == "achievement" or VIEW == "weeklyxp" or VIEW == "totalxp" then
 						button.string1:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 					end
 				end
 			end
-		end
 
-		for i = 1, 15 do
-			local icon = _G["GuildRosterContainerButton"..i.."Icon"]
-			local backdrop = _G["GuildRosterContainerButton"..i].backdrop
-
-			if icon:IsShown() then
-				backdrop:Show()
-			else
-				backdrop:Hide()
+			if button.backdrop then
+				if button.icon:IsShown() then
+					button.backdrop:Show()
+				else
+					button.backdrop:Hide()
+				end
 			end
 		end
-
-				--[[if button.backdrop then
-					if button.icon:IsShown() then
-						button.backdrop:Show()
-					else
-						button.backdrop:Hide()
-					end
-				end]]
 	end
 	hooksecurefunc("GuildRoster_Update", update)
 	hooksecurefunc(GuildRosterContainer, "update", update)
