@@ -4,6 +4,10 @@ local S = E:GetModule("Skins")
 local _G = _G
 local unpack, select = unpack, select
 
+local GetItemInfo = GetItemInfo
+local GetVoidItemInfo = GetVoidItemInfo
+local GetVoidTransferDepositInfo = GetVoidTransferDepositInfo
+local GetVoidTransferWithdrawalInfo = GetVoidTransferWithdrawalInfo
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -58,42 +62,39 @@ local function LoadSkin()
 	VoidStorageStorageButton65:Point("LEFT", VoidStorageStorageButton57, "RIGHT", 7, 0)
 
 	for i = 1, 9 do
-		local depositButton = _G["VoidStorageDepositButton"..i]
-		local depositIcon = _G["VoidStorageDepositButton"..i.."IconTexture"]
+		local deposit = _G["VoidStorageDepositButton"..i]
 		local depositBg = _G["VoidStorageDepositButton"..i.."Bg"]
-		local withdrawButton = _G["VoidStorageWithdrawButton"..i]
-		local withdrawIcon = _G["VoidStorageWithdrawButton"..i.."IconTexture"]
+		local withdraw = _G["VoidStorageWithdrawButton"..i]
 		local withdrawBg = _G["VoidStorageWithdrawButton"..i.."Bg"]
 
-		depositButton:SetTemplate("Default", true)
-		depositButton:StyleButton()
+		deposit:SetTemplate("Default", true)
+		deposit:StyleButton()
 
-		depositIcon:SetTexCoord(unpack(E.TexCoords))
-		depositIcon:SetInside()
+		deposit.icon:SetTexCoord(unpack(E.TexCoords))
+		deposit.icon:SetInside()
 
 		depositBg:Hide()
 
-		withdrawButton:SetTemplate("Default", true)
-		withdrawButton:StyleButton()
+		withdraw:SetTemplate("Default", true)
+		withdraw:StyleButton()
 
-		withdrawIcon:SetTexCoord(unpack(E.TexCoords))
-		withdrawIcon:SetInside()
+		withdraw.icon:SetTexCoord(unpack(E.TexCoords))
+		withdraw.icon:SetInside()
 
 		withdrawBg:Hide()
 	end
 
 	for i = 1, 80 do
 		local button = _G["VoidStorageStorageButton"..i]
-		local icon = _G["VoidStorageStorageButton"..i.."IconTexture"]
-		local bg = _G["VoidStorageStorageButton"..i.."Bg"]
+		local buttonBg = _G["VoidStorageStorageButton"..i.."Bg"]
 
-		button:StyleButton()
 		button:SetTemplate("Default", true)
+		button:StyleButton()
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside()
 
-		bg:Hide()
+		buttonBg:Hide()
 	end
 
 	hooksecurefunc("VoidStorage_ItemsUpdate", function(doDeposit, doContents)

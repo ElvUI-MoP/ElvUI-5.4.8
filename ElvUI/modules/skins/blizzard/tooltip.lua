@@ -13,7 +13,7 @@ local function LoadSkin()
 	S:HandleCloseButton(ItemRefCloseButton)
 
 	local GameTooltip = _G["GameTooltip"]
-	local GameTooltipStatusBar =  _G["GameTooltipStatusBar"]
+	local GameTooltipStatusBar = _G["GameTooltipStatusBar"]
 	local tooltips = {
 		GameTooltip,
 		ItemRefTooltip,

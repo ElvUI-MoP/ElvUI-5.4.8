@@ -264,6 +264,7 @@ function E:LoadCommands()
 	self:RegisterChatCommand("farmmode", "FarmMode");
 	self:RegisterChatCommand("cleanguild", "MassGuildKick")
 	self:RegisterChatCommand("enableblizzard", "EnableBlizzardAddOns")
+	self:RegisterChatCommand("estatus", "ShowStatusReport")
 
 	if E:GetModule("ActionBars") and E.private.actionbar.enable then
 		self:RegisterChatCommand("kb", E:GetModule("ActionBars").ActivateBindMode);
