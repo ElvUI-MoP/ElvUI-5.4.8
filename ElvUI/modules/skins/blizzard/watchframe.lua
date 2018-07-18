@@ -103,12 +103,12 @@ local function LoadSkin()
 				frame:SetHitRectInsets(2, 2, 2, 2)
 
 				child.QuestionMark:ClearAllPoints()
-				child.QuestionMark:Point("CENTER", frame.backdrop, "LEFT", 17, 0)
+				child.QuestionMark:Point("CENTER", frame.backdrop, "LEFT", 12, 0)
 				child.QuestionMark:SetParent(frame.backdrop)
 				child.QuestionMark:SetDrawLayer("OVERLAY", 7)
 
 				child.Exclamation:ClearAllPoints()
-				child.Exclamation:Point("CENTER", frame.backdrop, "LEFT", 17, 0)
+				child.Exclamation:Point("CENTER", frame.backdrop, "LEFT", 12, 0)
 				child.Exclamation:SetParent(frame.backdrop)
 				child.Exclamation:SetDrawLayer("OVERLAY", 7)
 
@@ -117,7 +117,7 @@ local function LoadSkin()
 				child.TopText.SetPoint = E.noop
 
 				child.QuestName:ClearAllPoints()
-				child.QuestName:Point("CENTER", frame.backdrop, "CENTER", 0, 0)
+				child.QuestName:Point("LEFT", child.Exclamation, "RIGHT", 2, 0)
 				child.QuestName.SetPoint = E.noop
 
 				child.BottomText:ClearAllPoints()

@@ -19,6 +19,7 @@ local function LoadSkin()
 	WorldMapQuestDetailScrollFrame:CreateBackdrop("Transparent")
 	WorldMapQuestDetailScrollFrame.backdrop:Point("TOPLEFT", 24, 2)
 	WorldMapQuestDetailScrollFrame.backdrop:Point("BOTTOMRIGHT", 23, -3)
+	WorldMapQuestDetailScrollFrame:SetHitRectInsets(24, -23, 0, -2)
 	WorldMapQuestDetailScrollFrame.backdrop:SetFrameLevel(WorldMapQuestDetailScrollFrame:GetFrameLevel())
 
 	WorldMapQuestDetailScrollChildFrame:SetScale(1)

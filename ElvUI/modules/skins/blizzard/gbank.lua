@@ -114,7 +114,7 @@ local function LoadSkin()
 
 		texture:SetInside()
 		texture:SetTexCoord(unpack(E.TexCoords))
-		texture:SetDrawLayer("OVERLAY")
+		texture:SetDrawLayer("ARTWORK")
 	end
 
 	for i = 1, 4 do

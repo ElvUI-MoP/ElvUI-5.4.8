@@ -267,7 +267,7 @@ end
 local function LSMCallback()
 	E:UpdateMedia();
 end
-E.LSM.RegisterCallback(E, "LibSharedMedia_Registered", LSMCallback);
+LSM.RegisterCallback(E, "LibSharedMedia_Registered", LSMCallback)
 
 local MasqueGroupState = {}
 local MasqueGroupToTableElement = {
@@ -303,6 +303,13 @@ end
 
 function E:RequestBGInfo()
 	RequestBattlefieldScoreData();
+end
+
+function E:NEUTRAL_FACTION_SELECT_RESULT()
+	local newFaction, newLocalizedFaction = UnitFactionGroup("player")
+	if E.myfaction ~= newFaction then
+		E.myfaction, E.myLocalizedFaction = newFaction, newLocalizedFaction
+	end
 end
 
 function E:PLAYER_ENTERING_WORLD()
@@ -1321,7 +1328,6 @@ function E:Initialize()
 	self:UpdateBackdropColors()
 	self:UpdateStatusBars()
 	self:RegisterEvent("UNIT_AURA", "CheckRole");
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "CheckRole");
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole");
 	self:RegisterEvent("PLAYER_TALENT_UPDATE", "CheckRole");
 	self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole");
@@ -1329,8 +1335,11 @@ function E:Initialize()
 	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR", "CheckRole");
 	self:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", "UIScale");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
+	self:RegisterEvent("NEUTRAL_FACTION_SELECT_RESULT")
 	self:RegisterEvent("PET_BATTLE_CLOSE", 'AddNonPetBattleFrames');
 	self:RegisterEvent('PET_BATTLE_OPENING_START', "RemoveNonPetBattleFrames");
+	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "EnterVehicleHideFrames")
+	self:RegisterEvent("UNIT_EXITED_VEHICLE", "ExitVehicleShowFrames")
 
 	if(self.myclass == "DRUID") then
 		self:RegisterEvent("SPELLS_CHANGED");

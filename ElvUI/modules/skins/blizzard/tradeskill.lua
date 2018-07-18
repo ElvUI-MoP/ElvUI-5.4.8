@@ -79,12 +79,14 @@ local function LoadSkin()
 	TradeSkillDetailScrollChildFrame:StripTextures()
 	TradeSkillDetailScrollChildFrame:Size(300, 150)
 
-	TradeSkillSkillName:Point("TOPLEFT", 65, -20)
+	TradeSkillSkillName:Point("TOPLEFT", 58, -3)
 
 	TradeSkillDescription:Point("TOPLEFT", 8, -75)
 
+	TradeSkillSkillIcon:SetTemplate("Default")
+	TradeSkillSkillIcon:StyleButton(nil, true)
 	TradeSkillSkillIcon:Size(47)
-	TradeSkillSkillIcon:Point("TOPLEFT", 5, -1)
+	TradeSkillSkillIcon:Point("TOPLEFT", 6, -1)
 
 	TradeSkillCancelButton:ClearAllPoints()
 	TradeSkillCancelButton:Point("TOPRIGHT", TradeSkillDetailScrollFrame, "BOTTOMRIGHT", 23, -3)
@@ -131,9 +133,6 @@ local function LoadSkin()
 	S:HandleScrollBar(TradeSkillListScrollFrameScrollBar)
 	S:HandleScrollBar(TradeSkillDetailScrollFrameScrollBar)
 
-	TradeSkillSkillIcon:StyleButton(nil, true)
-	TradeSkillSkillIcon:SetTemplate("Default")
-
 	TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
 
 	for i = 1, MAX_TRADE_SKILL_REAGENTS do
@@ -166,10 +165,13 @@ local function LoadSkin()
 		nameFrame:Kill()
 	end
 
-	TradeSkillReagent1:Point("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", -3, -3)
+	TradeSkillReagent1:Point("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", 1, -3)
 	TradeSkillReagent2:Point("LEFT", TradeSkillReagent1, "RIGHT", 3, 0)
+	TradeSkillReagent3:Point("TOPLEFT", TradeSkillReagent1, "BOTTOMLEFT", 0, -3)
 	TradeSkillReagent4:Point("LEFT", TradeSkillReagent3, "RIGHT", 3, 0)
+	TradeSkillReagent5:Point("TOPLEFT", TradeSkillReagent3, "BOTTOMLEFT", 0, -3)
 	TradeSkillReagent6:Point("LEFT", TradeSkillReagent5, "RIGHT", 3, 0)
+	TradeSkillReagent7:Point("TOPLEFT", TradeSkillReagent5, "BOTTOMLEFT", 0, -3)
 	TradeSkillReagent8:Point("LEFT", TradeSkillReagent7, "RIGHT", 3, 0)
 
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
@@ -252,7 +254,7 @@ local function LoadSkin()
 
 		skillButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 		skillButton.SetNormalTexture = E.noop
-		skillButton:GetNormalTexture():Size(13)
+		skillButton:GetNormalTexture():Size(14)
 		skillButton:GetNormalTexture():Point("LEFT", 4, 1)
 
 		skillButtonHighlight:SetTexture("")

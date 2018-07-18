@@ -191,14 +191,16 @@ local rolePaths = {
 
 local specialChatIcons
 do --this can save some main file locals
-	local IconPath = "|TInterface\\AddOns\\ElvUI\\media\\textures\\chatLogos\\"
-	local ElvBlue = IconPath.."elvui_blue.tga:13:25|t"
-	local ElvPink = IconPath.."elvui_pink.tga:13:25|t"
-	local ElvRed = IconPath.."elvui_red.tga:13:25|t"
-	local ElvPurple = IconPath.."elvui_purple.tga:13:25|t"
-	local ElvOrange = IconPath.."elvui_orange.tga:13:25|t"
-	local Bathrobe = IconPath.."bathrobe.blp:15:15|t"
-	local MrHankey = IconPath.."mr_hankey.tga:16:18|t"
+	local IconPath	 = "|TInterface\\AddOns\\ElvUI\\media\\textures\\chatLogos\\"
+	local ElvPurple	 = IconPath.."elvui_purple.tga:13:25|t"
+	local ElvPink	 = IconPath.."elvui_pink.tga:13:25|t"
+	local ElvBlue	 = IconPath.."elvui_blue.tga:13:25|t"
+	local ElvGreen	 = IconPath.."elvui_green.tga:13:25|t"
+	local ElvOrange	 = IconPath.."elvui_orange.tga:13:25|t"
+	local ElvRed	 = IconPath.."elvui_red.tga:13:25|t"
+	local ElvRainbow = IconPath.."elvui_rainbow.tga:13:25|t"
+	local Bathrobe	 = IconPath.."bathrobe.blp:15:15|t"
+	local MrHankey	 = IconPath.."mr_hankey.tga:16:18|t"
 	specialChatIcons = {
 		["[EN]".."Evermoon"] = {
 			["Insane"] = ElvOrange,
@@ -215,6 +217,8 @@ local function ChatFrame_OnMouseScroll(frame, delta)
 	if delta < 0 then
 		if IsShiftKeyDown() then
 			frame:ScrollToBottom()
+		elseif IsAltKeyDown() then
+			frame:ScrollDown()
 		else
 			for i = 1, numScrollMessages do
 				frame:ScrollDown()
@@ -223,6 +227,8 @@ local function ChatFrame_OnMouseScroll(frame, delta)
 	elseif delta > 0 then
 		if IsShiftKeyDown() then
 			frame:ScrollToTop()
+		elseif IsAltKeyDown() then
+			frame:ScrollUp()
 		else
 			for i = 1, numScrollMessages do
 				frame:ScrollUp()
@@ -319,7 +325,6 @@ function CH:StyleChat(frame)
 	tab.text:SetTextColor(unpack(E["media"].rgbvaluecolor))
 	hooksecurefunc(tab.text, "SetTextColor", function(self, r, g, b)
 		local rR, gG, bB = unpack(E["media"].rgbvaluecolor)
-
 		if r ~= rR or g ~= gG or b ~= bB then
 			self:SetTextColor(rR, gG, bB)
 		end
@@ -451,7 +456,7 @@ function CH:StyleChat(frame)
 	frame.button:EnableMouse(true)
 	frame.button:SetAlpha(0.35)
 	frame.button:Size(20, 22)
-	frame.button:SetPoint("TOPRIGHT")
+	frame.button:Point("TOPRIGHT")
 	frame.button:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 	frame.button.tex = frame.button:CreateTexture(nil, "OVERLAY")
@@ -473,7 +478,6 @@ function CH:StyleChat(frame)
 		else
 			self:SetAlpha(0)
 		end
-
 	end)
 
 	CreatedFrames = id

@@ -172,7 +172,7 @@ function AB:BindUpdate(button, spellmacro)
 	elseif spellmacro == "MACRO" then
 		bind.button.id = bind.button:GetID()
 
-		if floor(.5+select(2,MacroFrameTab1Text:GetTextColor())*10)/10==.8 then bind.button.id = bind.button.id + MAX_ACCOUNT_MACROS end
+		if floor(.5 + select(2, MacroFrameTab1Text:GetTextColor())*10) / 10 == .8 then bind.button.id = bind.button.id + MAX_ACCOUNT_MACROS end
 
 		bind.button.name = GetMacroInfo(bind.button.id)
 
@@ -232,7 +232,7 @@ function AB:BindUpdate(button, spellmacro)
 		elseif bind.button.keyBoundTarget then
 			bind.button.bindstring = bind.button.keyBoundTarget
 		else
-			local modact = 1+(bind.button.action-1)%12
+			local modact = 1 + (bind.button.action - 1) % 12
 			if bind.button.action < 25 or bind.button.action > 72 then
 				bind.button.bindstring = "ACTIONBUTTON"..modact
 			elseif bind.button.action < 73 and bind.button.action > 60 then
@@ -289,13 +289,13 @@ local elapsed = 0
 function AB:Tooltip_OnUpdate(tooltip, e)
 	elapsed = elapsed + e
 	if elapsed < .2 then return else elapsed = 0 end
-	if (not tooltip.comparing and IsModifiedClick("COMPAREITEMS")) then
+
+	local compareItems = IsModifiedClick("COMPAREITEMS")
+	if not tooltip.comparing and compareItems and tooltip:GetItem() then
 		GameTooltip_ShowCompareItem(tooltip)
 		tooltip.comparing = true
-	elseif (tooltip.comparing and not IsModifiedClick("COMPAREITEMS")) then
-		for _, frame in pairs(tooltip.shoppingTooltips) do
-			frame:Hide()
-		end
+	elseif tooltip.comparing and not compareItems then
+		for _, frame in pairs(tooltip.shoppingTooltips) do frame:Hide() end
 		tooltip.comparing = false
 	end
 end
@@ -355,7 +355,7 @@ function AB:LoadKeyBinder()
 	bind:SetScript("OnLeave", function(self) AB:BindHide() local db = self.button:GetParent().db if db and db.mouseover then AB:Button_OnLeave(self.button) end end)
 	bind:SetScript("OnKeyUp", function(_, key) self:BindListener(key) end)
 	bind:SetScript("OnMouseUp", function(_, key) self:BindListener(key) end)
-	bind:SetScript("OnMouseWheel", function(_, delta) if delta>0 then self:BindListener("MOUSEWHEELUP") else self:BindListener("MOUSEWHEELDOWN") end end)
+	bind:SetScript("OnMouseWheel", function(_, delta) if delta > 0 then self:BindListener("MOUSEWHEELUP") else self:BindListener("MOUSEWHEELDOWN") end end)
 
 	local b = EnumerateFrames()
 	while b do

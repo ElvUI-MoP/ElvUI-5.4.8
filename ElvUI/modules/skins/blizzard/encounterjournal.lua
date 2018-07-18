@@ -281,15 +281,9 @@ local function LoadSkin()
 		item.IconBackdrop:SetOutside(item.icon)
 
 		if i == 1 then
-			item:ClearAllPoints()
-			item:Point("TOPLEFT", EncounterInfo.lootScroll.scrollChild, "TOPLEFT", 3, 0)
+			item:Point("TOPLEFT", EncounterInfo.lootScroll.scrollChild, "TOPLEFT", 4, 0)
 
 			item.icon:Point("TOPLEFT", E.PixelMode and 2 or 5, -(E.PixelMode and 5 or 8))
-		elseif i == 2 then
-			item:ClearAllPoints()
-			item:Point("TOPLEFT", items[1], "TOPLEFT", 1, 0)
-
-			item.icon:Point("TOPLEFT", E.PixelMode and 1 or 4, -(E.PixelMode and 5 or 8))
 		else
 			item.icon:Point("TOPLEFT", E.PixelMode and 1 or 4, -(E.PixelMode and 5 or 8))
 		end

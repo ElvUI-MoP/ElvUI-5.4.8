@@ -262,18 +262,19 @@ function TT:GetTalentSpec(unit, isPlayer)
 		if(not isPlayer) then
 			local role = GetSpecializationRoleByID(spec);
 			if(role ~= nil) then
-				local _, name = GetSpecializationInfoByID(spec);
-				return name
+				local _, name, _, icon = GetSpecializationInfoByID(spec)
+				icon = icon and "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t " or ""
+				return name and icon..name
 			end
 		else
-			local _, name = GetSpecializationInfo(spec)
-
-			return name
+			local _, name, _, icon = GetSpecializationInfo(spec)
+			icon = icon and "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t " or ""
+			return name and icon..name
 		end
 	end
 end
 
-function TT:INSPECT_READY(event, GUID)
+function TT:INSPECT_READY(_, GUID)
 	if(self.lastGUID ~= GUID) then return end
 
 	local unit = "mouseover"

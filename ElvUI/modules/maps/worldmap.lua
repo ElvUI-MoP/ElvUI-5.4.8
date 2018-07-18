@@ -24,6 +24,13 @@ local INVERTED_POINTS = {
 	["BOTTOM"] = "TOP"
 };
 
+local tooltips = {
+	WorldMapTooltip,
+	WorldMapCompareTooltip1,
+	WorldMapCompareTooltip2,
+	WorldMapCompareTooltip3
+}
+
 function M:SetLargeWorldMap()
 	if InCombatLockdown() then return end
 
@@ -34,9 +41,9 @@ function M:SetLargeWorldMap()
 		WorldMapFrame:SetScale(1)
 	end
 
-	WorldMapTooltip:SetFrameStrata("TOOLTIP")
-	WorldMapCompareTooltip1:SetFrameStrata("TOOLTIP")
-	WorldMapCompareTooltip2:SetFrameStrata("TOOLTIP")
+	for _, tt in pairs(tooltips) do
+		if _G[tt] then _G[tt]:SetFrameStrata("TOOLTIP") end
+	end
 
 	if WorldMapFrame:GetAttribute("UIPanelLayout-area") ~= "center" then
 		SetUIPanelAttribute(WorldMapFrame, "area", "center")

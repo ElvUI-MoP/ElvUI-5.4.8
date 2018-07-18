@@ -413,7 +413,7 @@ local function LoadSkin()
 		local questLogTitle = _G["QuestLogScrollFrameButton"..i]
 		questLogTitle:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 		questLogTitle.SetNormalTexture = E.noop
-		questLogTitle:GetNormalTexture():Size(12)
+		questLogTitle:GetNormalTexture():Size(14)
 		questLogTitle:GetNormalTexture():Point("LEFT", 5, 0)
 		questLogTitle:SetHighlightTexture("")
 		questLogTitle.SetHighlightTexture = E.noop

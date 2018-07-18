@@ -55,7 +55,6 @@ local function LoadSkin()
 			itemButton:SetNormalTexture(nil)
 			itemButton:SetTemplate("Default", true)
 			itemButton:StyleButton()
-			itemButton:CreateShadow()
 
 			itemButtonIcon:SetInside()
 			itemButtonIcon:SetTexCoord(unpack(E.TexCoords))
@@ -64,6 +63,11 @@ local function LoadSkin()
 			questTexture.SetTexture = E.noop
 			questTexture:SetTexCoord(0, 1, 0, 1)
 			questTexture:SetInside()
+
+			itemButton.newItemGlow = itemButton:CreateTexture(nil, "OVERLAY")
+			itemButton.newItemGlow:SetInside()
+			itemButton.newItemGlow:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\bagNewItemGlow.tga")
+			itemButton.newItemGlow:Hide()
 
 			E:RegisterCooldown(cooldown)
 		end
@@ -101,6 +105,7 @@ local function LoadSkin()
 			questTexture:Hide()
 
 			if ProfessionColors[bagType] then
+				itemButton.newItemGlow:SetVertexColor(unpack(ProfessionColors[bagType]))
 				itemButton:SetBackdropBorderColor(unpack(ProfessionColors[bagType]))
 				itemButton.ignoreBorderColors = true
 			elseif itemLink then
@@ -109,20 +114,23 @@ local function LoadSkin()
 
 				if quality then
 					r, g, b = GetItemQualityColor(quality)
-					itemButton.shadow:SetBackdropBorderColor(r, g, b)
 				end
 
 				if questId and not isActive then
+					itemButton.newItemGlow:SetVertexColor(1.0, 1.0, 0.0)
 					itemButton:SetBackdropBorderColor(1.0, 1.0, 0.0)
 					itemButton.ignoreBorderColors = true
 					questTexture:Show()
 				elseif questId or isQuestItem then
+					itemButton.newItemGlow:SetVertexColor(1.0, 0.3, 0.3)
 					itemButton:SetBackdropBorderColor(1.0, 0.3, 0.3)
 					itemButton.ignoreBorderColors = true
 				elseif quality then
+					itemButton.newItemGlow:SetVertexColor(r, g, b)
 					itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 					itemButton.ignoreBorderColors = true
 				else
+					itemButton.newItemGlow:SetVertexColor(1, 1, 1)
 					itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					itemButton.ignoreBorderColors = true
 				end
@@ -132,11 +140,11 @@ local function LoadSkin()
 			end
 
 			if C_NewItemsIsNewItem(id, itemButton:GetID()) then
-				itemButton.shadow:Show()
-				E:Flash(itemButton.shadow, 1, true)
+				itemButton.newItemGlow:Show()
+				E:Flash(itemButton.newItemGlow, 0.5, true)
 			else
-				itemButton.shadow:Hide()
-				E:StopFlash(itemButton.shadow)
+				itemButton.newItemGlow:Hide()
+				E:StopFlash(itemButton.newItemGlow)
 			end
 		end
 	end)

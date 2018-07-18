@@ -205,6 +205,14 @@ local function LoadSkin()
 				backdrop:Hide()
 			end
 		end
+
+				--[[if button.backdrop then
+					if button.icon:IsShown() then
+						button.backdrop:Show()
+					else
+						button.backdrop:Hide()
+					end
+				end]]
 	end
 	hooksecurefunc("GuildRoster_Update", update)
 	hooksecurefunc(GuildRosterContainer, "update", update)

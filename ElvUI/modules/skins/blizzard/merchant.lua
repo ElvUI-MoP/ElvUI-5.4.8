@@ -40,46 +40,57 @@ local function LoadSkin()
 
 	for i = 1, 12 do
 		local item = _G["MerchantItem"..i]
-		local itemButton = _G["MerchantItem"..i.."ItemButton"]
-		local iconTexture = _G["MerchantItem"..i.."ItemButtonIconTexture"]
-		local moneyFrame = _G["MerchantItem"..i.."MoneyFrame"]
-		local altCurrencyFrame = _G["MerchantItem"..i.."AltCurrencyFrame"]
-		local altCurrencyItem1 = _G["MerchantItem"..i.."AltCurrencyFrameItem1"]
-		local altCurrencyTex1 = _G["MerchantItem"..i.."AltCurrencyFrameItem1Texture"]
-		local altCurrencyTex2 = _G["MerchantItem"..i.."AltCurrencyFrameItem2Texture"]
+		local button = _G["MerchantItem"..i.."ItemButton"]
+		local icon = _G["MerchantItem"..i.."ItemButtonIconTexture"]
+		local money = _G["MerchantItem"..i.."MoneyFrame"]
+		local currency = _G["MerchantItem"..i.."AltCurrencyFrame"]
 
 		item:StripTextures(true)
 		item:CreateBackdrop("Default")
 
-		itemButton:StripTextures()
-		itemButton:StyleButton()
-		itemButton:SetTemplate("Default", true)
-		itemButton:Size(40)
-		itemButton:Point("TOPLEFT", 2, -2)
+		button:StripTextures()
+		button:StyleButton()
+		button:SetTemplate("Default", true)
+		button:Size(40)
+		button:Point("TOPLEFT", 2, -2)
 
-		iconTexture:SetTexCoord(unpack(E.TexCoords))
-		iconTexture:SetInside()
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside()
 
-		altCurrencyItem1:Point("LEFT", altCurrencyFrame, "LEFT", 15, 4)
+		money:ClearAllPoints()
+		money:Point("BOTTOMLEFT", button, "BOTTOMRIGHT", 3, 0)
 
-		altCurrencyTex1:SetTexCoord(unpack(E.TexCoords))
-		altCurrencyTex2:SetTexCoord(unpack(E.TexCoords))
+		for j = 1, 2 do
+			local currencyItem = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j]
+			local currencyIcon = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"]
 
-		moneyFrame:ClearAllPoints()
-		moneyFrame:Point("BOTTOMLEFT", itemButton, "BOTTOMRIGHT", 3, 0)
+			if j == 1 then
+				currencyItem:Point("LEFT", currency, "LEFT", 15, 4)
+			end
+
+			currencyIcon.backdrop = CreateFrame("Frame", nil, currencyItem)
+			currencyIcon.backdrop:SetTemplate("Default")
+			currencyIcon.backdrop:SetFrameLevel(currencyItem:GetFrameLevel())
+			currencyIcon.backdrop:SetOutside(currencyIcon)
+
+			currencyIcon:SetTexCoord(unpack(E.TexCoords))
+			currencyIcon:SetParent(currencyIcon.backdrop)
+		end
 	end
 
 	hooksecurefunc("MerchantFrame_UpdateCurrencies", function()
 		for i = 1, MAX_MERCHANT_CURRENCIES do
 			local token = _G["MerchantToken"..i]
 
-			if token then
+			if token and not token.isSkinned then
 				token:CreateBackdrop()
 				token.backdrop:SetOutside(token.icon)
 
 				token.icon:Size(14)
 				token.icon:SetTexCoord(unpack(E.TexCoords))
 				token.icon:Point("LEFT", token.count, "RIGHT", 2, 0)
+				
+				token.isSkinned = true
 			end
 		end
 	end)
