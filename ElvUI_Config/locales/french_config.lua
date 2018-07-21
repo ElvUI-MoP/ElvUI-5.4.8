@@ -541,6 +541,7 @@ L["X-Offset"] = "Décalage X"
 L["Y-Offset"] = "Décalage Y"
 
 --Misc
+L["Filters are not allowed to have commas in their name. Stripping commas from filter name."] = true
 L["Install"] = "Installer"
 L["Run the installation process."] = "Démarrer le processus d'installation."
 L["Toggle Anchors"] = "Afficher les ancres"
@@ -732,7 +733,6 @@ L["Table"] = "Tableau"
 
 --Skins
 L["Alert Frames"] = "Fenêtre d'Alerte"
-L["Archaeology Frame"] = "Fenêtre d'Archéologie"
 L["BG Map"] = "Carte Champs de bataille"
 L["BG Score"] = "Scores Champs de bataille"
 L["Calendar Frame"] = "Fenêtre du Calendrier"
@@ -745,21 +745,16 @@ L["Guild Registrar"] = "Bannière de Guilde"
 L["Help Frame"] = "Fenêtre d'Assistance clientèle"
 L["LF Guild Frame"] = "Recherche de Guilde"
 L["Loot Frames"] = "Fenêtre de butin"
-L["Mail Frame"] = "Fenêtre du Courrier"
-L["Merchant Frame"] = "Marchand"
 L["Mirror Timers"] = "Fenêtre des Timers mirroirs" --need review
 L["Misc Frames"] = "Divers"
 L["Non-Raid Frame"] = "Info Raid"
-L["Pet Battle"] = "Combats de mascottes"
 L["Petition Frame"] = "Fenêtre de Charte"
 L["Move Pad"] = true
 L["PvP Frames"] = "Fenêtre JcJ"
 L["Quest Frames"] = "Fenêtre de Quête"
 L["Raid Frame"] = "Fenêtre de Raid"
-L["Reforge Frame"] = "Retouche"
 L["Skins"] = "Habillage"
 L["Socket Frame"] = "Fenêtre de sertissage"
-L["Stable"] = "Écurie"
 L["Tabard Frame"] = "Tabard"
 L["Taxi Frame"] = "Trajets aériens"
 L["Trainer Frame"] = "Entraîneur"

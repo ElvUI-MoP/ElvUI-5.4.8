@@ -347,7 +347,7 @@ L["Hide In Combat"] = true
 L["Setup on-screen display of information bars."] = true
 
 --DataTexts
-L["Add Currency ID"] = true;
+L["Add Currency ID"] = true
 L["Battleground Texts"] = "Textos do Campo de Batalha"
 L["Block Combat Click"] = true
 L["Block Combat Hover"] = true
@@ -541,6 +541,7 @@ L["X-Offset"] = true
 L["Y-Offset"] = true
 
 --Misc
+L["Filters are not allowed to have commas in their name. Stripping commas from filter name."] = true
 L["Install"] = "Instalação"
 L["Run the installation process."] = "Execute o processo de instalação."
 L["Toggle Anchors"] = "Mostrar/Ocultar Fixadores"
@@ -732,7 +733,6 @@ L["Table"] = true
 
 --Skins
 L["Alert Frames"] = "Alertas"
-L["Archaeology Frame"] = "Arqueologia"
 L["BG Map"] = "Mapa do CB"
 L["BG Score"] = "Placar do CB"
 L["Calendar Frame"] = "Calendário"
@@ -745,21 +745,16 @@ L["Guild Registrar"] = "Registrar Guilda"
 L["Help Frame"] = "Ajuda"
 L["LF Guild Frame"] = "Localizador de Guildas"
 L["Loot Frames"] = "Saques"
-L["Mail Frame"] = "Correio"
-L["Merchant Frame"] = "Comerciante"
 L["Mirror Timers"] = true
 L["Misc Frames"] = "Diversos"
 L["Non-Raid Frame"] = "Quadro Não Raide"
-L["Pet Battle"] = "Batalha de Mascote"
 L["Petition Frame"] = "Petição"
 L["Move Pad"] = true
 L["PvP Frames"] = "JxJ"
 L["Quest Frames"] = "Missões"
 L["Raid Frame"] = "Quadro de Raide"
-L["Reforge Frame"] = "Reforja"
 L["Skins"] = "Aparências"
 L["Socket Frame"] = "Engaste"
-L["Stable"] = "Estábulo"
 L["Tabard Frame"] = "Tabardo"
 L["Taxi Frame"] = "Taxi"
 L["Trainer Frame"] = "Instrutores"
@@ -941,7 +936,7 @@ L["Grouping & Sorting"] = true
 L["Groups Per Row/Column"] = "Grupos por Linha/Coluna"
 L["Growth direction from the first unitframe."] = "Direção de crescimento a partir do primeiro quado de unidade."
 L["Growth Direction"] = "Direção de crescimento"
-L["Heal Absorbs"] = true;
+L["Heal Absorbs"] = true
 L["Heal Prediction"] = "Curas por vir"
 L["Health Backdrop"] = "Fundo da Vida"
 L["Health Border"] = "Borda da Vida"

@@ -129,7 +129,7 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 end
 
 function mod:ConstructElement_HealthBar(parent)
-	local frame = CreateFrame("StatusBar", nil, parent)
+	local frame = CreateFrame("StatusBar", "$parentHealthBar", parent)
 	frame:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar), "BORDER")
 	self:StyleFrame(frame)
 

@@ -29,6 +29,7 @@ local function LoadSkin()
 	WorldMapQuestRewardScrollFrame:CreateBackdrop("Transparent")
 	WorldMapQuestRewardScrollFrame.backdrop:Point("TOPLEFT", 20, 2)
 	WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -3)
+	WorldMapQuestRewardScrollFrame:SetHitRectInsets(20, -22, 0, -2)
 	WorldMapQuestRewardScrollFrame.backdrop:SetFrameLevel(WorldMapQuestRewardScrollFrame:GetFrameLevel())
 
 	WorldMapQuestRewardScrollChildFrame:SetScale(1)

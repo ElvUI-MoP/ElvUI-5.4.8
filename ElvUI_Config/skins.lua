@@ -45,7 +45,7 @@ E.Options.args.skins = {
 				},
 				archaeology = {
 					type = "toggle",
-					name = L["Archaeology Frame"],
+					name = PROFESSIONS_ARCHAEOLOGY,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				auctionhouse = {
@@ -197,12 +197,12 @@ E.Options.args.skins = {
 				},
 				mail = {
 					type = "toggle",
-					name = L["Mail Frame"],
+					name = MAIL_LABEL,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				merchant = {
 					type = "toggle",
-					name = L["Merchant Frame"],
+					name = MERCHANT,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				misc = {
@@ -232,7 +232,7 @@ E.Options.args.skins = {
 				},
 				petbattleui = {
 					type = "toggle",
-					name = L["Pet Battle"],
+					name = PET_BATTLE_PVP_QUEUE,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				petition = {
@@ -263,7 +263,7 @@ E.Options.args.skins = {
 				},
 				reforge = {
 					type = "toggle",
-					name = L["Reforging Frame"],
+					name = REFORGE,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				socket = {
@@ -283,7 +283,7 @@ E.Options.args.skins = {
 				},
 				stable = {
 					type = "toggle",
-					name = L["Stable"],
+					name = STABLES,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				tabard = {

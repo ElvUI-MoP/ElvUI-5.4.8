@@ -24,15 +24,31 @@ local MICRO_BUTTONS = {
 	"MainMenuMicroButton"
 }
 
-local function onEnter()
-	if AB.db.microbar.mouseover then
-		E:UIFrameFadeIn(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), AB.db.microbar.alpha)
-	end
-end
-
 local function onLeave()
 	if AB.db.microbar.mouseover then
 		E:UIFrameFadeOut(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), 0)
+	end
+end
+
+local watcher = 0
+local function onUpdate(self, elapsed)
+	if watcher > 0.1 then
+		if not self:IsMouseOver() then
+			self.IsMouseOvered = nil
+			self:SetScript("OnUpdate", nil)
+			onLeave()
+		end
+		watcher = 0
+	else
+		watcher = watcher + elapsed
+	end
+end
+
+local function onEnter()
+	if AB.db.microbar.mouseover and not ElvUI_MicroBar.IsMouseOvered then
+		ElvUI_MicroBar.IsMouseOvered = true
+		ElvUI_MicroBar:SetScript("OnUpdate", onUpdate)
+		E:UIFrameFadeIn(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), AB.db.microbar.alpha)
 	end
 end
 
@@ -53,7 +69,6 @@ function AB:HandleMicroButton(button)
 	button:SetParent(ElvUI_MicroBar)
 	button:GetHighlightTexture():Kill()
 	button:HookScript("OnEnter", onEnter)
-	button:HookScript("OnLeave", onLeave)
 	button:SetHitRectInsets(0, 0, 0, 0)
 
 	if button.Flash then
@@ -171,8 +186,7 @@ end
 function AB:SetupMicroBar()
 	local microBar = CreateFrame("Frame", "ElvUI_MicroBar", E.UIParent)
 	microBar:Point("TOPLEFT", E.UIParent, "TOPLEFT", 4, -48)
-	microBar:SetScript("OnEnter", onEnter)
-	microBar:SetScript("OnLeave", onLeave)
+	microBar:EnableMouse(false)
 
 	microBar.visibility = CreateFrame("Frame", nil, E.UIParent, "SecureHandlerStateTemplate")
 	microBar.visibility:SetScript("OnShow", function() microBar:Show() end)

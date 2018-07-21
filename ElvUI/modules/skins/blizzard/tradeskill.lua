@@ -48,10 +48,11 @@ local function LoadSkin()
 	TradeSkillRankFrame:ClearAllPoints()
 	TradeSkillRankFrame:Point("TOP", 0, -25)
 	TradeSkillRankFrame:SetStatusBarTexture(E["media"].normTex)
+	TradeSkillRankFrame:SetStatusBarColor(0.22, 0.39, 0.84)
+	TradeSkillRankFrame.SetStatusBarColor = E.noop
 	E:RegisterStatusBar(TradeSkillRankFrame)
 
 	TradeSkillRankFrameSkillRank:ClearAllPoints()
-	TradeSkillRankFrameSkillRank:FontTemplate(nil, 12, "OUTLINE")
 	TradeSkillRankFrameSkillRank:Point("CENTER", TradeSkillRankFrame, "CENTER", 0, 0)
 
 	TradeSkillFrameSearchBox:Width(191)
@@ -175,8 +176,6 @@ local function LoadSkin()
 	TradeSkillReagent8:Point("LEFT", TradeSkillReagent7, "RIGHT", 3, 0)
 
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
-		TradeSkillRankFrame:SetStatusBarColor(0.11, 0.50, 1.00)
-
 		if TradeSkillSkillIcon:GetNormalTexture() then
 			TradeSkillSkillIcon:SetAlpha(1)
 			TradeSkillSkillIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
@@ -249,18 +248,28 @@ local function LoadSkin()
 	end)
 
 	for i = 1, TRADE_SKILLS_DISPLAYED do
-		local skillButton = _G["TradeSkillSkill"..i]
-		local skillButtonHighlight = _G["TradeSkillSkill"..i.."Highlight"]
+		local button = _G["TradeSkillSkill"..i]
+		local highlight = _G["TradeSkillSkill"..i.."Highlight"]
 
-		skillButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
-		skillButton.SetNormalTexture = E.noop
-		skillButton:GetNormalTexture():Size(14)
-		skillButton:GetNormalTexture():Point("LEFT", 4, 1)
+		button:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		button.SetNormalTexture = E.noop
+		button:GetNormalTexture():Size(14)
+		button:GetNormalTexture():Point("LEFT", 4, 1)
 
-		skillButtonHighlight:SetTexture("")
-		skillButtonHighlight.SetTexture = E.noop
+		highlight:SetTexture("")
+		highlight.SetTexture = E.noop
 
-		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
+		button.SubSkillRankBar:StripTextures()
+		button.SubSkillRankBar:CreateBackdrop("Default")
+		button.SubSkillRankBar.backdrop:SetOutside()
+		button.SubSkillRankBar:Height(12)
+		button.SubSkillRankBar:SetStatusBarTexture(E["media"].normTex)
+		button.SubSkillRankBar:SetStatusBarColor(0.22, 0.39, 0.84)
+		E:RegisterStatusBar(button.SubSkillRankBar)
+
+		button.SubSkillRankBar.Rank:Point("CENTER", 0, -1)
+
+		hooksecurefunc(button, "SetNormalTexture", function(self, texture)
 			if find(texture, "MinusButton") then
 				self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
 			elseif find(texture, "PlusButton") then
