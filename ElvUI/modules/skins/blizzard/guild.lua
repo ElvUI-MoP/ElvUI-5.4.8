@@ -83,10 +83,8 @@ local function LoadSkin()
 
 	for i = 1, 9 do
 		local button = _G["GuildUpdatesButton"..i]
-		local icon = _G["GuildUpdatesButton"..i.."Icon"]
 
-		button:StyleButton()
-		button:GetHighlightTexture():SetInside()
+		S:HandleButtonHighlight(button)
 	end
 
 	-- Perks/Rewards
@@ -256,9 +254,12 @@ local function LoadSkin()
 	GuildNewsBossModelTextFrame.backdrop:Point("TOPLEFT", GuildNewsBossModel.backdrop, "BOTTOMLEFT", 0, -1)
 
 	for i = 1, 17 do
-		if _G["GuildNewsContainerButton"..i] then
-			_G["GuildNewsContainerButton"..i].header:Kill()
-			_G["GuildNewsContainerButton"..i]:StyleButton()
+		local button = _G["GuildNewsContainerButton"..i]
+
+		if button then
+			button.header:Kill()
+
+			S:HandleButtonHighlight(button)
 		end
 	end
 
@@ -411,9 +412,9 @@ local function LoadSkin()
 
 	for i = 1, GuildTextEditFrame:GetNumChildren() do
 		local child = select(i, GuildTextEditFrame:GetChildren())
-		if(child:GetName() == "GuildTextEditFrameCloseButton" and child:GetWidth() < 33) then
+		if child:GetName() == "GuildTextEditFrameCloseButton" and child:GetWidth() < 33 then
 			S:HandleCloseButton(child)
-		elseif(child:GetName() == "GuildTextEditFrameCloseButton") then
+		elseif child:GetName() == "GuildTextEditFrameCloseButton" then
 			S:HandleButton(child, true)
 		end
 	end
