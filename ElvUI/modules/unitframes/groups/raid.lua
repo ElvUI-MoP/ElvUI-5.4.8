@@ -36,6 +36,7 @@ function UF:Construct_RaidFrames()
 	self.ResurrectIndicator = UF:Construct_ResurrectionIcon(self)
 	self.GroupRoleIndicator = UF:Construct_RoleIcon(self)
 	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
+	self.PhaseIndicator = UF:Construct_PhaseIcon(self)
 	self.MouseGlow = UF:Construct_MouseGlow(self)
 	self.TargetGlow = UF:Construct_TargetGlow(self)
 	self.ThreatIndicator = UF:Construct_Threat(self)
@@ -212,7 +213,9 @@ function UF:Update_RaidFrames(frame, db)
 
 	UF:Configure_ReadyCheckIcon(frame)
 
-	UF:Configure_CustomTexts(frame)
+	UF:Configure_CustomTexts(frame
+
+	UF:Configure_PhaseIcon(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

@@ -1,6 +1,6 @@
 local _G = _G
 local pairs, unpack = pairs, unpack
-local wipe = wipe
+local tcopy, wipe = wipe, table.copy
 local format, strsplit = string.format, string.split
 
 local CreateFrame = CreateFrame
@@ -44,7 +44,7 @@ Engine[4] = AddOn.DF.profile
 Engine[5] = AddOn.DF.global
 
 _G[AddOnName] = Engine
-local tcopy = table.copy
+
 function AddOn:OnInitialize()
 	if not ElvCharacterDB then
 		ElvCharacterDB = {}

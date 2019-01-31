@@ -38,6 +38,7 @@ function UF:Construct_TargetFrame(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
 	frame.AuraBars = self:Construct_AuraBarHeader(frame)
 	frame.Range = self:Construct_Range(frame)
+	frame.PhaseIndicator = self:Construct_PhaseIcon(frame)
 	frame.PvPIndicator = self:Construct_PvPIcon(frame)
 	frame.customTexts = {}
 
@@ -130,6 +131,8 @@ function UF:Update_TargetFrame(frame, db)
 	UF:Configure_AuraBars(frame)
 
 	UF:Configure_Range(frame)
+
+	UF:Configure_PhaseIcon(frame)
 
 	UF:Configure_PVPIcon(frame)
 

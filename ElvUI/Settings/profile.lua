@@ -1245,6 +1245,13 @@ P["unitframe"] = {
 				["yOffset"] = 0,
 				["attachTextTo"] = "Health"
 			},
+			["phaseIndicator"] = {
+				["enable"] = false,
+				["anchorPoint"] = "CENTER",
+				["xOffset"] = 0,
+				["yOffset"] = 0,
+				["scale"] = 0.8
+			},
  			["pvpIcon"] = {
  				["enable"] = false,
  				["anchorPoint"] = "CENTER",
@@ -2298,6 +2305,13 @@ P["unitframe"] = {
 				["yOffset"] = 0,
 				["xOffset"] = 0
 			},
+			["phaseIndicator"] = {
+				["enable"] = false,
+				["anchorPoint"] = "CENTER",
+				["xOffset"] = 0,
+				["yOffset"] = 0,
+				["scale"] = 0.8
+			},
 			["portrait"] = {
 				["enable"] = false,
 				["width"] = 45,
@@ -2529,6 +2543,13 @@ P["unitframe"] = {
 				["yOffset"] = 0,
 				["xOffset"] = 0
 			},
+			["phaseIndicator"] = {
+				["enable"] = false,
+				["anchorPoint"] = "CENTER",
+				["xOffset"] = 0,
+				["yOffset"] = 0,
+				["scale"] = 0.8
+			},
 			["portrait"] = {
 				["enable"] = false,
 				["width"] = 45,
@@ -2708,6 +2729,13 @@ P["unitframe"] = {
 				["yOffset"] = 0,
 				["xOffset"] = 0,
 				["attachTextTo"] = "Health"
+			},
+			["phaseIndicator"] = {
+				["enable"] = false,
+				["anchorPoint"] = "CENTER",
+				["xOffset"] = 0,
+				["yOffset"] = 0,
+				["scale"] = 0.8
 			},
 			["portrait"] = {
 				["enable"] = false,

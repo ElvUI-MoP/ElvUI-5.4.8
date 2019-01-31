@@ -1,6 +1,8 @@
 local _, ns = ...
 local oUF = ns.oUF
 
+local UnitInPhase = UnitInPhase
+
 local function Update(self, event)
 	local element = self.PhaseIndicator
 
