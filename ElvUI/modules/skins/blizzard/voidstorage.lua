@@ -91,8 +91,8 @@ local function LoadSkin()
 		button:SetTemplate("Default", true)
 		button:StyleButton()
 
-		icon:SetTexCoord(unpack(E.TexCoords))
-		icon:SetInside()
+		button.icon:SetTexCoord(unpack(E.TexCoords))
+		button.icon:SetInside()
 
 		buttonBg:Hide()
 	end
