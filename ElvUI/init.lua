@@ -1,6 +1,6 @@
 local _G = _G
 local pairs, unpack = pairs, unpack
-local tcopy, wipe = wipe, table.copy
+local tcopy, wipe = table.copy, wipe
 local format, strsplit = string.format, string.split
 
 local CreateFrame = CreateFrame
