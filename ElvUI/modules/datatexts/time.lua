@@ -195,8 +195,8 @@ local function OnEnter(self)
 	tsort(worldbossLockoutList, function( a,b ) return a[1] < b[1] end)
 	for i = 1,#worldbossLockoutList do
 		name, reset = unpack(worldbossLockoutList[i])
-		if(reset) then
-			if(not addedLine) then
+		if reset then
+			if not addedLine then
 				if DT.tooltip:NumLines() > 0 then
 					DT.tooltip:AddLine(" ")
 				end
@@ -252,6 +252,6 @@ local function ValueColorUpdate(hex)
 		OnUpdate(lastPanel, 20000)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("Time", {"UPDATE_INSTANCE_INFO"}, OnEvent, OnUpdate, OnClick, OnEnter, OnLeave)

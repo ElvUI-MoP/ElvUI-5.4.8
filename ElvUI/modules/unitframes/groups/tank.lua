@@ -38,7 +38,7 @@ function UF:Construct_TankFrames()
 		self.unitframeType = "tanktarget"
 	end
 
-	UF:Update_TankFrames(self, E.db["unitframe"]["units"]["tank"])
+	UF:Update_TankFrames(self, E.db.unitframe.units.tank)
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 
@@ -71,7 +71,7 @@ function UF:Update_TankHeader(header, db)
 		header:ClearAllPoints()
 		header:Point("TOPLEFT", E.UIParent, "TOPLEFT", 4, -186)
 
-		E:CreateMover(header, header:GetName().."Mover", L["MT Frames"], nil, nil, nil, "ALL,RAID")
+		E:CreateMover(header, header:GetName().."Mover", L["MT Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,tank,generalGroup")
 		header.mover.positionOverride = "TOPLEFT"
 		header:SetAttribute("minHeight", header.dirtyHeight)
 		header:SetAttribute("minWidth", header.dirtyWidth)
@@ -145,19 +145,13 @@ function UF:Update_TankFrames(frame, db)
 
 	UF:Configure_HealthBar(frame)
 
-	do
-		local name = frame.Name
-		name:Point("CENTER", frame.Health, "CENTER")
-		if UF.db.colors.healthclass then
-			frame:Tag(name, "[name:medium]")
-		else
-			frame:Tag(name, "[namecolor][name:medium]")
-		end
-	end
+	UF:UpdateNameSettings(frame)
 
 	UF:Configure_Threat(frame)
 
 	UF:Configure_Range(frame)
+
+	UF:Configure_RaidIcon(frame)
 
 	if not frame.isChild then
 		UF:EnableDisable_Auras(frame)
@@ -174,4 +168,4 @@ function UF:Update_TankFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF["headerstoload"]["tank"] = {"MAINTANK", "ELVUI_UNITTARGET"}
+UF.headerstoload.tank = {"MAINTANK", "ELVUI_UNITTARGET"}

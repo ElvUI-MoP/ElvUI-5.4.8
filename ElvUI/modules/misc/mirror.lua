@@ -1,12 +1,12 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local M = E:GetModule('Misc');
+local E, L, V, P, G = unpack(select(2, ...))
+local M = E:GetModule("Misc")
 
 -- Credit Haste
 local position = {
-	['BREATH'] = 'TOP#ElvUIParent#TOP#0#-96';
-	['EXHAUSTION'] = 'TOP#ElvUIParent#TOP#0#-119';
-	['FEIGNDEATH'] = 'TOP#ElvUIParent#TOP#0#-142';
-};
+	["BREATH"] = "TOP#ElvUIParent#TOP#0#-96";
+	["EXHAUSTION"] = "TOP#ElvUIParent#TOP#0#-119";
+	["FEIGNDEATH"] = "TOP#ElvUIParent#TOP#0#-142";
+}
 
 local Spawn, PauseAll
 
@@ -14,24 +14,25 @@ local barPool = {}
 
 local loadPosition = function(self)
 	local pos = position[self.type]
-	local p1, frame, p2, x, y = strsplit('#', pos)
+	local p1, frame, p2, x, y = strsplit("#", pos)
 
 	return self:Point(p1, frame, p2, x, y)
 end
 
 local OnUpdate = function(self, elapsed)
-	if(self.paused) then return end
+	if self.paused then return end
+
 	self.lastupdate = (self.lastupdate or 0) + elapsed
-	if (self.lastupdate < .1) then return end
+	if self.lastupdate < .1 then return end
 	self.lastupdate = 0
-	
+
 	self:SetValue(GetMirrorTimerProgress(self.type) / 1e3)
 end
 
 local Start = function(self, value, maxvalue, scale, paused, text)
-	if(paused > 0) then
+	if paused > 0 then
 		self.paused = 1
-	elseif(self.paused) then
+	elseif self.paused then
 		self.paused = nil
 	end
 
@@ -40,44 +41,44 @@ local Start = function(self, value, maxvalue, scale, paused, text)
 	self:SetMinMaxValues(0, maxvalue / 1e3)
 	self:SetValue(value / 1e3)
 
-	if(not self:IsShown()) then self:Show() end
+	if not self:IsShown() then self:Show() end
 end
 
 local function Spawn(type)
-	if(barPool[type]) then return barPool[type] end
-	local frame = CreateFrame('StatusBar', nil, E.UIParent)
+	if barPool[type] then return barPool[type] end
+	local frame = CreateFrame("StatusBar", nil, E.UIParent)
 
-	frame:SetScript('OnUpdate', OnUpdate)
+	frame:SetScript("OnUpdate", OnUpdate)
 
-	local color = MirrorTimerColors[type];
+	local color = MirrorTimerColors[type]
 
-	local bg = frame:CreateTexture(nil, 'BACKGROUND');
-	bg:SetAllPoints(frame);
-	bg:SetTexture(E['media'].blankTex);
-	bg:SetVertexColor(color.r, color.g, color.b);
+	local bg = frame:CreateTexture(nil, "BACKGROUND")
+	bg:SetAllPoints(frame)
+	bg:SetTexture(E.media.blankTex)
+	bg:SetVertexColor(color.r, color.g, color.b)
 	bg:SetAlpha(0.2)
 
-	local border = CreateFrame('Frame', nil, frame)
+	local border = CreateFrame("Frame", nil, frame)
 	border:SetOutside()
-	border:SetTemplate('Default')
+	border:SetTemplate("Default")
 	border:SetFrameLevel(0)
 
-	local text = frame:CreateFontString(nil, 'OVERLAY')
-	text:FontTemplate(nil, nil, 'OUTLINE')
+	local text = frame:CreateFontString(nil, "OVERLAY")
+	text:FontTemplate(nil, nil, "OUTLINE")
 
-	text:SetJustifyH'CENTER'
+	text:SetJustifyH"CENTER"
 	text:SetTextColor(1, 1, 1)
 
-	text:SetPoint('LEFT', frame)
-	text:SetPoint('RIGHT', frame)
-	text:Point('TOP', frame, 0, 2)
-	text:SetPoint('BOTTOM', frame)
+	text:SetPoint("LEFT", frame)
+	text:SetPoint("RIGHT", frame)
+	text:Point("TOP", frame, 0, 2)
+	text:SetPoint("BOTTOM", frame)
 
 	frame:Size(222, 18)
 
-	frame:SetStatusBarTexture(E['media'].normTex);
-	frame:SetStatusBarColor(color.r, color.g, color.b);
-	E:RegisterStatusBar(frame);
+	frame:SetStatusBarTexture(E.media.normTex)
+	frame:SetStatusBarColor(color.r, color.g, color.b)
+	E:RegisterStatusBar(frame)
 
 	frame.type = type
 	frame.text = text
@@ -98,9 +99,9 @@ local function PauseAll(val)
 end
 
 function M:OnEnterWorld()
-	for i=1, MIRRORTIMER_NUMTIMERS do
+	for i = 1, MIRRORTIMER_NUMTIMERS do
 		local type, value, maxvalue, scale, paused, text = GetMirrorTimerInfo(i)
-		if(type ~= 'UNKNOWN') then
+		if type ~= "UNKNOWN" then
 			Spawn(type):Start(value, maxvalue, scale, paused, text)
 		end
 	end
@@ -119,10 +120,10 @@ function M:MirrorPause(event, duration)
 end
 
 function M:LoadMirrorBars()
-	UIParent:UnregisterEvent('MIRROR_TIMER_START')
+	UIParent:UnregisterEvent("MIRROR_TIMER_START")
 
-	self:RegisterEvent('PLAYER_ENTERING_WORLD', 'OnEnterWorld')
-	self:RegisterEvent('MIRROR_TIMER_START', 'MirrorStart')
-	self:RegisterEvent('MIRROR_TIMER_STOP', 'MirrorStop')
-	self:RegisterEvent('MIRROR_TIMER_PAUSE', 'MirrorPause')
+	self:RegisterEvent("PLAYER_ENTERING_WORLD", "OnEnterWorld")
+	self:RegisterEvent("MIRROR_TIMER_START", "MirrorStart")
+	self:RegisterEvent("MIRROR_TIMER_STOP", "MirrorStop")
+	self:RegisterEvent("MIRROR_TIMER_PAUSE", "MirrorPause")
 end

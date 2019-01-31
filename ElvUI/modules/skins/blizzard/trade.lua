@@ -113,11 +113,11 @@ local function LoadSkin()
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				tradeItemName:SetTextColor(GetItemQualityColor(quality))
 			else
-				tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				tradeItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				tradeItemName:SetTextColor(1, 1, 1)
  			end
 		else
-			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			tradeItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
  		end
 	end)
 
@@ -133,11 +133,11 @@ local function LoadSkin()
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				tradeItemName:SetTextColor(GetItemQualityColor(quality))
 			else
-				tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				tradeItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				tradeItemName:SetTextColor(1, 1, 1)
  			end
 		else
-			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			tradeItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
  		end
 	end)
 end

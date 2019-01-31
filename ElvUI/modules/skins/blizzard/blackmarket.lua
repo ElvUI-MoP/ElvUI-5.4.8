@@ -77,7 +77,7 @@ local function LoadSkin()
 							button.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
 							button.Name:SetTextColor(1, 1, 1)
-							button.Item.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+							button.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 						end
 					end
 				end
@@ -115,7 +115,7 @@ local function LoadSkin()
 					self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else
 					self.HotDeal.Name:SetTextColor(1, 1, 1)
-					self.HotDeal.Item.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					self.HotDeal.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 		end

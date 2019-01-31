@@ -45,11 +45,11 @@ local function LoadSkin()
 	GuildXPBar:CreateBackdrop("Default")
 	GuildXPBar.backdrop:Point("TOPLEFT", 0, 1)
 	GuildXPBar.backdrop:Point("BOTTOMRIGHT", -1, 4)
-	GuildXPBar.progress:SetTexture(E["media"].normTex)
+	GuildXPBar.progress:SetTexture(E.media.normTex)
 
 	-- Faction Bar
 	GuildFactionBar:StripTextures()
-	GuildFactionBar.progress:SetTexture(E["media"].normTex)
+	GuildFactionBar.progress:SetTexture(E.media.normTex)
 	GuildFactionBar.progress.bg = CreateFrame("Frame", nil, GuildFactionBar)
 	GuildFactionBar.progress.bg:SetTemplate()
 	GuildFactionBar.progress.bg:Point("TOPLEFT", 0, -3)
@@ -131,7 +131,7 @@ local function LoadSkin()
 							self:SetBackdropBorderColor(GetItemQualityColor(quality))
 							Name:SetTextColor(GetItemQualityColor(quality))
 						else
-							self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+							self:SetBackdropBorderColor(unpack(E.media.bordercolor))
 							Name:SetTextColor(1, 1, 1)
 						end
 					end
@@ -152,7 +152,7 @@ local function LoadSkin()
 		button.icon:SetParent(button.backdrop)
 		button.icon:Size(18)
 
-		_G["GuildRosterContainerButton"..i.."BarTexture"]:SetTexture(E["media"].normTex)
+		_G["GuildRosterContainerButton"..i.."BarTexture"]:SetTexture(E.media.normTex)
 		S:HandleButton(_G["GuildRosterContainerButton"..i.."HeaderButton"], true)
 	end
 

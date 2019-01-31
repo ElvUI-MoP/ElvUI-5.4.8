@@ -161,6 +161,7 @@ local function LoadSkin()
 	-- Stack Split Frame
 	StackSplitFrame:SetTemplate("Transparent")
 	StackSplitFrame:GetRegions():Hide()
+	StackSplitFrame:SetFrameStrata("DIALOG")
 
 	StackSplitFrame.bg1 = CreateFrame("Frame", nil, StackSplitFrame)
 	StackSplitFrame.bg1:SetTemplate("Transparent")
@@ -310,10 +311,18 @@ local function LoadSkin()
 	-- Dropdown Menu
 	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
 		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
-			_G["DropDownList"..i.."Backdrop"]:SetTemplate("Transparent", true)
-			_G["DropDownList"..i.."MenuBackdrop"]:SetTemplate("Transparent", true)
+			local dropBackdrop = _G["DropDownList"..i.."Backdrop"]
+			local dropMenuBackdrop = _G["DropDownList"..i.."MenuBackdrop"]
+
+			dropBackdrop:SetTemplate("Transparent")
+			dropMenuBackdrop:SetTemplate("Transparent")
+
 			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
-				_G["DropDownList"..i.."Button"..j.."Highlight"]:SetTexture(1, 1, 1, 0.3)
+				local highlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
+				local colorSwatch = _G["DropDownList"..i.."Button"..j.."ColorSwatch"]
+
+				highlight:SetTexture(1, 1, 1, 0.3)
+				S:HandleColorSwatch(colorSwatch, 14)
 			end
 		end
 	end)
@@ -330,14 +339,14 @@ local function LoadSkin()
 		if _G[ChatMenus[i]] == _G["ChatMenu"] then
 			_G[ChatMenus[i]]:HookScript("OnShow", function(self)
 				self:SetTemplate("Transparent", true)
-				self:SetBackdropColor(unpack(E["media"].backdropfadecolor))
+				self:SetBackdropColor(unpack(E.media.backdropfadecolor))
 				self:ClearAllPoints()
 				self:Point("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 30)
 			end)
 		else
 			_G[ChatMenus[i]]:HookScript("OnShow", function(self)
 				self:SetTemplate("Transparent", true)
-				self:SetBackdropColor(unpack(E["media"].backdropfadecolor))
+				self:SetBackdropColor(unpack(E.media.backdropfadecolor))
 			end)
 		end
 	end

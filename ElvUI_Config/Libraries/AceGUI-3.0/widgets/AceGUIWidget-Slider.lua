@@ -57,10 +57,9 @@ local function Frame_OnMouseDown(frame)
 	AceGUI:ClearFocus()
 end
 
-local function Slider_OnValueChanged(frame)
+local function Slider_OnValueChanged(frame, newvalue)
 	local self = frame.obj
 	if not frame.setup then
-		local newvalue = frame:GetValue()
 		if self.step and self.step > 0 then
 			local min_value = self.min or 0
 			newvalue = floor((newvalue - min_value) / self.step + 0.5) * self.step + min_value
@@ -142,6 +141,7 @@ local methods = {
 		self.disabled = disabled
 		if disabled then
 			self.slider:EnableMouse(false)
+			self.slider:GetThumbTexture():SetVertexColor(0.6, 0.6, 0.6, 0.8) -- ElvUI
 			self.label:SetTextColor(.5, .5, .5)
 			self.hightext:SetTextColor(.5, .5, .5)
 			self.lowtext:SetTextColor(.5, .5, .5)
@@ -151,6 +151,7 @@ local methods = {
 			self.editbox:ClearFocus()
 		else
 			self.slider:EnableMouse(true)
+			self.slider:GetThumbTexture():SetVertexColor(1, 0.82, 0, 0.8) -- ElvUI
 			self.label:SetTextColor(1, .82, 0)
 			self.hightext:SetTextColor(1, 1, 1)
 			self.lowtext:SetTextColor(1, 1, 1)

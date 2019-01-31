@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local D = E:NewModule('DebugTools', 'AceEvent-3.0', 'AceHook-3.0');
+local E, L, V, P, G = unpack(select(2, ...))
+local D = E:NewModule("DebugTools", "AceEvent-3.0", "AceHook-3.0")
 
 E.DebugTools = D
 
@@ -10,7 +10,7 @@ function D:ModifyErrorFrame()
 
 	local Orig_ScriptErrorsFrame_Update = ScriptErrorsFrame_Update
 	ScriptErrorsFrame_Update = function(...)
-		if GetCVarBool('scriptErrors') ~= 1 then
+		if GetCVarBool("scriptErrors") ~= 1 then
 			Orig_ScriptErrorsFrame_Update(...)
 			return
 		end
@@ -18,11 +18,11 @@ function D:ModifyErrorFrame()
 		-- Sometimes the locals table does not have an entry for an index, which can cause an argument #6 error
 		-- in Blizzard_DebugTools.lua:430 and then cause a C stack overflow, this will prevent that
 		local index = ScriptErrorsFrame.index
-		if( not index or not ScriptErrorsFrame.order[index] ) then
+		if not index or not ScriptErrorsFrame.order[index] then
 			index = #(ScriptErrorsFrame.order)
 		end
 
-		if( index > 0 ) then
+		if index > 0 then
 			ScriptErrorsFrame.locals[index] = ScriptErrorsFrame.locals[index] or L["No locals to dump"]
 		end
 
@@ -89,13 +89,13 @@ end
 function D:ScriptErrorsFrame_UpdateButtons()
 	if not ScriptErrorsFrame.firstButton then return end
 
-	local numErrors = #ScriptErrorsFrame.order;
-	local index = ScriptErrorsFrame.index;
-	if ( index == 0 ) then
+	local numErrors = #ScriptErrorsFrame.order
+	local index = ScriptErrorsFrame.index
+	if index == 0 then
 		ScriptErrorsFrame.lastButton:Disable()
 		ScriptErrorsFrame.firstButton:Disable()
 	else
-		if ( numErrors == 1 ) then
+		if numErrors == 1 then
 			ScriptErrorsFrame.lastButton:Disable()
 			ScriptErrorsFrame.firstButton:Disable()
 		else
@@ -106,15 +106,15 @@ function D:ScriptErrorsFrame_UpdateButtons()
 end
 
 function D:ScriptErrorsFrame_OnError(_, keepHidden)
-	if keepHidden or self.MessagePrinted or not InCombatLockdown() or GetCVarBool('scriptErrors') ~= 1 then return; end
+	if keepHidden or self.MessagePrinted or not InCombatLockdown() or GetCVarBool("scriptErrors") ~= 1 then return end
 
-	E:Print(L['|cFFE30000Lua error recieved. You can view the error message when you exit combat.'])
-	self.MessagePrinted = true;
+	E:Print(L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."])
+	self.MessagePrinted = true
 end
 
 function D:PLAYER_REGEN_ENABLED()
 	ScriptErrorsFrame:SetParent(UIParent)
-	self.MessagePrinted = nil;
+	self.MessagePrinted = nil
 end
 
 function D:PLAYER_REGEN_DISABLED()
@@ -122,30 +122,30 @@ function D:PLAYER_REGEN_DISABLED()
 end
 
 function D:TaintError(event, addonName, addonFunc)	
-	if GetCVarBool('scriptErrors') ~= 1 or E.db.general.taintLog ~= true then return end
+	if GetCVarBool("scriptErrors") ~= 1 or E.db.general.taintLog ~= true then return end
 	ScriptErrorsFrame_OnError(L["%s: %s tried to call the protected function '%s'."]:format(event, addonName or "<name>", addonFunc or "<func>"), false)
 end
 
 function D:StaticPopup_Show(name)
-	if(name == "ADDON_ACTION_FORBIDDEN" and E.db.general.taintLog ~= true) then
-		StaticPopup_Hide(name);
+	if name == "ADDON_ACTION_FORBIDDEN" and E.db.general.taintLog ~= true then
+		StaticPopup_Hide(name)
 	end
 end
 
 function D:Initialize()
-	self.HideFrame = CreateFrame('Frame')
+	self.HideFrame = CreateFrame("Frame")
 	self.HideFrame:Hide()
 
-	if( not IsAddOnLoaded("Blizzard_DebugTools") ) then
+	if not IsAddOnLoaded("Blizzard_DebugTools") then
 		LoadAddOn("Blizzard_DebugTools")
 	end
 
 	self:ModifyErrorFrame()
-	self:SecureHook('ScriptErrorsFrame_UpdateButtons')
-	self:SecureHook('ScriptErrorsFrame_OnError')
-	self:SecureHook('StaticPopup_Show')
-	self:RegisterEvent('PLAYER_REGEN_DISABLED')
-	self:RegisterEvent('PLAYER_REGEN_ENABLED')
+	self:SecureHook("ScriptErrorsFrame_UpdateButtons")
+	self:SecureHook("ScriptErrorsFrame_OnError")
+	self:SecureHook("StaticPopup_Show")
+	self:RegisterEvent("PLAYER_REGEN_DISABLED")
+	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	self:RegisterEvent("ADDON_ACTION_BLOCKED", "TaintError")
 	self:RegisterEvent("ADDON_ACTION_FORBIDDEN", "TaintError")
 end

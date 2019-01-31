@@ -9,10 +9,10 @@ local function Update(self, event)
 	end
 
 	local isInSamePhase = UnitInPhase(self.unit)
-	if(isInSamePhase) then
-		element:Hide()
-	else
+	if(not isInSamePhase and UnitIsPlayer(self.unit) and UnitIsConnected(self.unit)) then
 		element:Show()
+	else
+		element:Hide()
 	end
 
 	if(element.PostUpdate) then

@@ -103,9 +103,7 @@ function B:SizeAndPositionBagBar()
 end
 
 function B:LoadBagBar()
-	if not E.private.bags.bagBar then
-		return
-	end
+	if not E.private.bags.bagBar then return end
 
 	local ElvUIBags = CreateFrame("Frame", "ElvUIBags", E.UIParent)
 	ElvUIBags:Point("TOPRIGHT", RightChatPanel, "TOPLEFT", -4, 0)
@@ -129,17 +127,17 @@ function B:LoadBagBar()
 	self:SkinBag(MainMenuBarBackpackButton)
 
 	for i = 0, NUM_BAG_FRAMES - 1 do
-		local b = _G["CharacterBag"..i.."Slot"]
+		local slot = _G["CharacterBag"..i.."Slot"]
 
-		b:SetParent(ElvUIBags)
-		b.SetParent = E.dummy
-		b:HookScript("OnEnter", OnEnter)
-		b:HookScript("OnLeave", OnLeave)
+		slot:SetParent(ElvUIBags)
+		slot.SetParent = E.dummy
+		slot:HookScript("OnEnter", OnEnter)
+		slot:HookScript("OnLeave", OnLeave)
 
-		self:SkinBag(b)
-		tinsert(ElvUIBags.buttons, b)
+		self:SkinBag(slot)
+		tinsert(ElvUIBags.buttons, slot)
 	end
 
 	self:SizeAndPositionBagBar()
-	E:CreateMover(ElvUIBags, "BagsMover", L["Bags"])
+	E:CreateMover(ElvUIBags, "BagsMover", L["Bags"], nil, nil, nil, nil, nil, "bags,general")
 end

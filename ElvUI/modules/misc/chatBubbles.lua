@@ -39,8 +39,8 @@ function M:UpdateBubbleBorder()
 
 	if E.private.chat.enable and E.private.general.classColorMentionsSpeech then
 		local classColorTable, lowerCaseWord, isFirstWord, rebuiltString, tempWord, wordMatch, classMatch
-		if text and text:match("%s-[^%s]+%s*") then
-			for word in text:gmatch("%s-[^%s]+%s*") do
+		if text and text:match("%s-%S+%s*") then
+			for word in text:gmatch("%s-%S+%s*") do
 				tempWord = word:gsub("^[%s%p]-([^%s%p]+)([%-]?[^%s%p]-)[%s%p]*$","%1%2")
 				lowerCaseWord = tempWord:lower()
 
@@ -87,9 +87,9 @@ function M:SkinBubble(frame)
 	local mult = E.mult * UIParent:GetScale()
 	for i = 1, frame:GetNumRegions() do
 		local region = select(i, frame:GetRegions())
-		if region:GetObjectType() == "Texture" then
+		if region:IsObjectType("Texture") then
 			region:SetTexture(nil)
-		elseif region:GetObjectType() == "FontString" then
+		elseif region:IsObjectType("FontString") then
 			frame.text = region
 		end
 	end
@@ -109,8 +109,8 @@ function M:SkinBubble(frame)
 	if E.private.general.chatBubbles == "backdrop" then
 		if E.PixelMode then
 			frame:SetBackdrop({
-				bgFile = E["media"].blankTex,
-				edgeFile = E["media"].blankTex,
+				bgFile = E.media.blankTex,
+				edgeFile = E.media.blankTex,
 				tile = false, tileSize = 0, edgeSize = mult,
 				insets = {left = 0, right = 0, top = 0, bottom = 0}
 			})
@@ -255,8 +255,8 @@ function M:ToggleChatBubbleScript()
 		M.BubbleFrame:SetScript("OnEvent", nil)
 		M.BubbleFrame:SetScript("OnUpdate", nil)
 		--Clear caches
-		messageToGUID = {}
-		messageToSender = {}
+		wipe(messageToGUID)
+		wipe(messageToSender)
 	end
 end
 
@@ -265,6 +265,8 @@ function M:LoadChatBubbles()
 
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_SAY")
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_YELL")
+	self.BubbleFrame:RegisterEvent("CHAT_MSG_PARTY")
+	self.BubbleFrame:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_MONSTER_SAY")
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 end

@@ -7,7 +7,7 @@ V["general"] = {
 	["lootRoll"] = true,
 	["normTex"] = "ElvUI Norm",
 	["glossTex"] = "ElvUI Norm",	
-	["dmgfont"] = "Homespun",
+	["dmgfont"] = "PT Sans Narrow",
 	["namefont"] = "PT Sans Narrow",
 	["chatBubbles"] = "backdrop",
 	["chatBubbleFont"] = "PT Sans Narrow",
@@ -56,6 +56,7 @@ V["skins"] = {
 	["ace3"] = {
 		["enable"] = true
 	},
+	["checkBoxSkin"] = true,
 	["blizzard"] = {
 		["enable"] = true,
 		["achievement"] = true,
@@ -150,8 +151,4 @@ V["actionbar"] = {
 		["petBar"] = false,
 		["stanceBar"] = false
 	}
-}
-
-V["cooldown"] = {
-	enable = true
 }

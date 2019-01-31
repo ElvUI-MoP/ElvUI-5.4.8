@@ -89,7 +89,7 @@ function UF:Configure_ClassBar(frame)
 			bars:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER+frame.SPACING)*2))
 			bars:ClearAllPoints()
 			bars:Point("BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
-			E:CreateMover(bars.Holder, "ClassBarMover", L["Classbar"], nil, nil, nil, "ALL,SOLO")
+			E:CreateMover(bars.Holder, "ClassBarMover", L["Classbar"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,player,classbar")
 		else
 			bars:ClearAllPoints()
 			bars:Point("BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
@@ -385,16 +385,16 @@ function UF:Construct_ClassBar(frame)
 	local maxBars = max(UF["classMaxResourceBar"][E.myclass] or 0)
 	for i = 1, maxBars do
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassIconButton"..i, bars)
-		bars[i]:SetStatusBarTexture(E["media"].blankTex) --Dummy really, this needs to be set so we can change the color
+		bars[i]:SetStatusBarTexture(E.media.blankTex) --Dummy really, this needs to be set so we can change the color
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		UF["statusbars"][bars[i]] = true
+		UF.statusbars[bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
 
 		bars[i].bg = bars:CreateTexture(nil, "OVERLAY")
 		bars[i].bg:SetAllPoints(bars[i])
-		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg:SetTexture(E.media.blankTex)
 	end
 
 	bars.PostUpdate = UF.UpdateClassBar
@@ -453,18 +453,18 @@ function UF:Construct_MageResourceBar(frame)
 	local bars = CreateFrame("Frame", nil, frame)
 	bars:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
-	for i = 1, UF["classMaxResourceBar"][E.myclass] do
+	for i = 1, UF.classMaxResourceBar[E.myclass] do
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassBarButton"..i, bars)
-		bars[i]:SetStatusBarTexture(E["media"].blankTex)
+		bars[i]:SetStatusBarTexture(E.media.blankTex)
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		UF["statusbars"][bars[i]] = true
+		UF.statusbars[bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
 
 		bars[i].bg = bars[i]:CreateTexture(nil, "BORDER")
 		bars[i].bg:SetAllPoints()
-		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg:SetTexture(E.media.blankTex)
 		bars[i].bg.multiplier = 0.3
 	end
 
@@ -478,7 +478,7 @@ end
 function UF:UpdateArcaneCharges(event, arcaneCharges, maxCharges)
 	local frame = self.origParent or self:GetParent()
 	local db = frame.db
-	if not db then return; end
+	if not db then return end
 
 	if(E.myspec == 1 and arcaneCharges == 0) then
 		if db.classbar.autoHide then
@@ -501,18 +501,18 @@ function UF:Construct_RogueResourceBar(frame)
 	local bars = CreateFrame("Frame", nil, frame)
 	bars:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
-	for i = 1, UF["classMaxResourceBar"][E.myclass] do
+	for i = 1, UF.classMaxResourceBar[E.myclass] do
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassBarButton"..i, bars)
-		bars[i]:SetStatusBarTexture(E["media"].blankTex)
+		bars[i]:SetStatusBarTexture(E.media.blankTex)
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		UF["statusbars"][bars[i]] = true
+		UF.statusbars[bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
 
 		bars[i].bg = bars[i]:CreateTexture(nil, "BORDER")
 		bars[i].bg:SetAllPoints()
-		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg:SetTexture(E.media.blankTex)
 		bars[i].bg.multiplier = 0.3
 	end
 
@@ -550,12 +550,12 @@ function UF:Construct_DemonicFuryBar(frame)
 	demonicFury:SetFrameLevel(demonicFury:GetFrameLevel() + 1)
 	demonicFury.PostUpdateVisibility = UF.VisibilityUpdateDemonicFury
 	demonicFury:CreateBackdrop("Default")
-	UF["statusbars"][demonicFury] = true
-	demonicFury:SetStatusBarTexture(E["media"].blankTex)
+	UF.statusbars[demonicFury] = true
+	demonicFury:SetStatusBarTexture(E.media.blankTex)
 
 	demonicFury.bg = demonicFury:CreateTexture(nil, "BORDER")
 	demonicFury.bg:SetAllPoints(demonicFury)
-	demonicFury.bg:SetTexture(E["media"].blankTex)
+	demonicFury.bg:SetTexture(E.media.blankTex)
 	demonicFury.bg.multiplier = 0.3
 
 	demonicFury:SetScript("OnShow", ToggleResourceBar)
@@ -584,19 +584,19 @@ function UF:Construct_BurningEmbersBar(frame)
 	local bars = CreateFrame("Frame", nil, frame)
 	bars:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
-	local maxBars = max(UF["classMaxResourceBar"][E.myclass] or 0)
+	local maxBars = max(UF.classMaxResourceBar[E.myclass] or 0)
 	for i = 1, maxBars do
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassIconButton"..i, bars)
-		bars[i]:SetStatusBarTexture(E["media"].blankTex) --Dummy really, this needs to be set so we can change the color
+		bars[i]:SetStatusBarTexture(E.media.blankTex) --Dummy really, this needs to be set so we can change the color
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		UF["statusbars"][bars[i]] = true
+		UF.statusbars[bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
 
 		bars[i].bg = bars:CreateTexture(nil, "OVERLAY")
 		bars[i].bg:SetAllPoints(bars[i])
-		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg:SetTexture(E.media.blankTex)
 		bars[i].bg.multiplier = 0.3
 	end
 
@@ -628,19 +628,19 @@ function UF:Construct_SoulShardsBar(frame)
 	local bars = CreateFrame("Frame", nil, frame)
 	bars:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
-	local maxBars = max(UF["classMaxResourceBar"][E.myclass] or 0)
+	local maxBars = max(UF.classMaxResourceBar[E.myclass] or 0)
 	for i = 1, maxBars do
 		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassIconButton"..i, bars)
-		bars[i]:SetStatusBarTexture(E["media"].blankTex) --Dummy really, this needs to be set so we can change the color
+		bars[i]:SetStatusBarTexture(E.media.blankTex) --Dummy really, this needs to be set so we can change the color
 		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		UF["statusbars"][bars[i]] = true
+		UF.statusbars[bars[i]] = true
 
 		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 		bars[i].backdrop:SetParent(bars)
 
 		bars[i].bg = bars[i]:CreateTexture(nil, "OVERLAY")
 		bars[i].bg:SetAllPoints(bars[i])
-		bars[i].bg:SetTexture(E["media"].blankTex)
+		bars[i].bg:SetTexture(E.media.blankTex)
 		bars[i].bg.multiplier = 0.3
 	end
 
@@ -675,10 +675,10 @@ function UF:Construct_DeathKnightResourceBar(frame)
 	local runes = CreateFrame("Frame", nil, frame)
 	runes:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
-	for i = 1, UF["classMaxResourceBar"][E.myclass] do
+	for i = 1, UF.classMaxResourceBar[E.myclass] do
 		runes[i] = CreateFrame("StatusBar", frame:GetName().."RuneButton"..i, runes)
-		UF["statusbars"][runes[i]] = true
-		runes[i]:SetStatusBarTexture(E["media"].blankTex)
+		UF.statusbars[runes[i]] = true
+		runes[i]:SetStatusBarTexture(E.media.blankTex)
 		runes[i]:GetStatusBarTexture():SetHorizTile(false)
 
 		runes[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
@@ -686,7 +686,7 @@ function UF:Construct_DeathKnightResourceBar(frame)
 
 		runes[i].bg = runes[i]:CreateTexture(nil, "BORDER")
 		runes[i].bg:SetAllPoints()
-		runes[i].bg:SetTexture(E["media"].blankTex)
+		runes[i].bg:SetTexture(E.media.blankTex)
 		runes[i].bg.multiplier = 0.2
 	end
 
@@ -726,12 +726,12 @@ function UF:Construct_DruidEclipseBar(frame)
 
 	eclipseBar.LunarBar = CreateFrame("StatusBar", "LunarBar", eclipseBar)
 	eclipseBar.LunarBar:Point("LEFT", eclipseBar)
-	eclipseBar.LunarBar:SetStatusBarTexture(E["media"].blankTex)
-	UF["statusbars"][eclipseBar.LunarBar] = true
+	eclipseBar.LunarBar:SetStatusBarTexture(E.media.blankTex)
+	UF.statusbars[eclipseBar.LunarBar] = true
 
 	eclipseBar.SolarBar = CreateFrame("StatusBar", "SolarBar", eclipseBar)
-	eclipseBar.SolarBar:SetStatusBarTexture(E["media"].blankTex)
-	UF["statusbars"][eclipseBar.SolarBar] = true
+	eclipseBar.SolarBar:SetStatusBarTexture(E.media.blankTex)
+	UF.statusbars[eclipseBar.SolarBar] = true
 
 	eclipseBar.Text = eclipseBar.LunarBar:CreateFontString(nil, "OVERLAY")
 	eclipseBar.Text:FontTemplate(nil, 20)
@@ -782,12 +782,12 @@ function UF:Construct_AdditionalPowerBar(frame)
 	additionalPower.PostUpdate = UF.PostUpdateAdditionalPower
 	additionalPower.PostUpdateVisibility = UF.PostVisibilityAdditionalPower
 	additionalPower:CreateBackdrop("Default")
-	UF["statusbars"][additionalPower] = true
-	additionalPower:SetStatusBarTexture(E["media"].blankTex)
+	UF.statusbars[additionalPower] = true
+	additionalPower:SetStatusBarTexture(E.media.blankTex)
 
 	additionalPower.bg = additionalPower:CreateTexture(nil, "BORDER")
 	additionalPower.bg:SetAllPoints(additionalPower)
-	additionalPower.bg:SetTexture(E["media"].blankTex)
+	additionalPower.bg:SetTexture(E.media.blankTex)
 	additionalPower.bg.multiplier = 0.3
 
 	additionalPower.Text = additionalPower:CreateFontString(nil, "OVERLAY")
@@ -809,7 +809,7 @@ function UF:PostUpdateAdditionalPower(_, min, max, event)
 			local powerValueText = powerValue:GetText()
 			local powerValueParent = powerValue:GetParent()
 			local powerTextPosition = db.power.position
-			local color = ElvUF["colors"].power["MANA"]
+			local color = ElvUF.colors.power.MANA
 			color = E:RGBToHex(color[1], color[2], color[3])
 
 			--Attempt to remove |cFFXXXXXX color codes in order to determine if power text is really empty

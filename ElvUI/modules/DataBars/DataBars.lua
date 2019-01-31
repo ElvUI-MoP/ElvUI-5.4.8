@@ -4,6 +4,7 @@ E.DataBars = mod
 
 local _G = _G
 
+local CreateFrame = CreateFrame
 local GetExpansionLevel = GetExpansionLevel;
 local MAX_PLAYER_LEVEL_TABLE = MAX_PLAYER_LEVEL_TABLE;
 

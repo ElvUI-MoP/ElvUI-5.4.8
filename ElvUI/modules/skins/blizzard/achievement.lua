@@ -2,7 +2,12 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local unpack, pairs = unpack, pairs
+local pairs, select, unpack = pairs, select, unpack
+
+local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
+local GetAchievementNumCriteria = GetAchievementNumCriteria
+local hooksecurefunc = hooksecurefunc
+local IsAddOnLoaded = IsAddOnLoaded
 
 local function LoadSkin(event)
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.achievement ~= true then return end
@@ -28,7 +33,7 @@ local function LoadSkin(event)
 				if self.player and self.player.accountWide or self.accountWide then
 					self:SetBackdropBorderColor(ACHIEVEMENTUI_BLUEBORDER_R, ACHIEVEMENTUI_BLUEBORDER_G, ACHIEVEMENTUI_BLUEBORDER_B)
 				else
-					self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					self:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end)
 		end
@@ -58,10 +63,10 @@ local function LoadSkin(event)
 		end
 
 		hooksecurefunc(achievement, "Saturate", function()
-			achievement:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			achievement:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end)
 		hooksecurefunc(achievement, "Desaturate", function()
-			achievement:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			achievement:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end)
 
 		achievement.isSkinned = true
@@ -94,8 +99,8 @@ local function LoadSkin(event)
 							achievement.player:SetBackdropBorderColor(ACHIEVEMENTUI_BLUEBORDER_R, ACHIEVEMENTUI_BLUEBORDER_G, ACHIEVEMENTUI_BLUEBORDER_B)
 							achievement.friend:SetBackdropBorderColor(ACHIEVEMENTUI_BLUEBORDER_R, ACHIEVEMENTUI_BLUEBORDER_G, ACHIEVEMENTUI_BLUEBORDER_B)
 						else
-							achievement.player:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-							achievement.friend:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+							achievement.player:SetBackdropBorderColor(unpack(E.media.bordercolor))
+							achievement.friend:SetBackdropBorderColor(unpack(E.media.bordercolor))
 						end
 					end)
 				end
@@ -178,7 +183,7 @@ local function LoadSkin(event)
 	local function SkinStatusBar(bar)
 		bar:StripTextures()
 		bar:CreateBackdrop("Default")
-		bar:SetStatusBarTexture(E["media"].normTex)
+		bar:SetStatusBarTexture(E.media.normTex)
 		bar:SetStatusBarColor(0.22, 0.39, 0.84)
 		E:RegisterStatusBar(bar)
 
@@ -274,7 +279,7 @@ local function LoadSkin(event)
 				frame:StripTextures()
 				frame:SetTemplate("Default")
 
-				frame:SetStatusBarTexture(E["media"].normTex)
+				frame:SetStatusBarTexture(E.media.normTex)
 				frame:SetStatusBarColor(0.22, 0.39, 0.84)
 				frame:GetStatusBarTexture():SetInside()
 				E:RegisterStatusBar(frame)
@@ -398,8 +403,8 @@ local function LoadSkin(event)
 				achievement.player:SetBackdropBorderColor(ACHIEVEMENTUI_BLUEBORDER_R, ACHIEVEMENTUI_BLUEBORDER_G, ACHIEVEMENTUI_BLUEBORDER_B)
 				achievement.friend:SetBackdropBorderColor(ACHIEVEMENTUI_BLUEBORDER_R, ACHIEVEMENTUI_BLUEBORDER_G, ACHIEVEMENTUI_BLUEBORDER_B)
 			else
-				achievement.player:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-				achievement.friend:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				achievement.player:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				achievement.friend:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 		end)
 

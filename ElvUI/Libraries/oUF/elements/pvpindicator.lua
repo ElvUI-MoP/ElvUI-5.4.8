@@ -14,14 +14,14 @@ local function Update(self, event, unit)
 	end
 
 	local status
-	local factionGroup = UnitFactionGroup(unit)
+	local factionGroup = UnitFactionGroup(unit) or 'Neutral'
 
 	if(UnitIsPVPFreeForAll(unit)) then
 		element:SetTexture(FFA_ICON)
 		element:SetTexCoord(0, 0.65625, 0, 0.65625)
 
 		status = 'ffa'
-	elseif(factionGroup and factionGroup ~= 'Neutral' and UnitIsPVP(unit)) then
+	elseif(factionGroup ~= 'Neutral' and UnitIsPVP(unit)) then
 		element:SetTexture(FACTION_ICON .. factionGroup)
 		element:SetTexCoord(0, 0.65625, 0, 0.65625)
 

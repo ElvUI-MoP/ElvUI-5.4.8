@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(ElvUI);
-local DT = E:GetModule("DataTexts");
+local E, L, V, P, G = unpack(ElvUI)
+local DT = E:GetModule("DataTexts")
 
 local _G = _G
 local pairs = pairs
@@ -18,41 +18,41 @@ function DT:PanelLayoutOptions()
 	for name, data in pairs(DT.RegisteredDataTexts) do
 		datatexts[name] = data.localizedName or L[name]
 	end
-	datatexts[""] = NONE;
+	datatexts[""] = NONE
 
-	local order;
-	local table = E.Options.args.datatexts.args.panels.args;
+	local order
+	local table = E.Options.args.datatexts.args.panels.args
 	for pointLoc, tab in pairs(P.datatexts.panels) do
-		if(not _G[pointLoc]) then table[pointLoc] = nil; return; end
-		if(type(tab) == "table") then
+		if not _G[pointLoc] then table[pointLoc] = nil return end
+		if type(tab) == "table" then
 			if pointLoc:find("Chat") then
-				order = 15;
+				order = 15
 			else
-				order = 20;
+				order = 20
 			end
 			table[pointLoc] = {
 				order = order,
 				type = "group",
 				name = L[pointLoc] or pointLoc,
 				args = {}
-			};
+			}
 			for option in pairs(tab) do
 				table[pointLoc].args[option] = {
 					type = "select",
 					name = L[option] or option:upper(),
 					values = datatexts,
-					get = function(info) return E.db.datatexts.panels[pointLoc][ info[#info] ]; end,
-					set = function(info, value) E.db.datatexts.panels[pointLoc][ info[#info] ] = value; DT:LoadDataTexts(); end
-				};
+					get = function(info) return E.db.datatexts.panels[pointLoc][ info[#info] ] end,
+					set = function(info, value) E.db.datatexts.panels[pointLoc][ info[#info] ] = value DT:LoadDataTexts() end
+				}
 			end
-		elseif(type(tab) == "string") then
+		elseif type(tab) == "string" then
 			table.smallPanels.args[pointLoc] = {
 				type = "select",
 				name = L[pointLoc] or pointLoc,
 				values = datatexts,
-				get = function(info) return E.db.datatexts.panels[pointLoc]; end,
-				set = function(info, value) E.db.datatexts.panels[pointLoc] = value; DT:LoadDataTexts(); end
-			};
+				get = function(info) return E.db.datatexts.panels[pointLoc] end,
+				set = function(info, value) E.db.datatexts.panels[pointLoc] = value DT:LoadDataTexts() end
+			}
 		end
 	end
 end
@@ -99,7 +99,7 @@ local function CreateCustomCurrencyOptions(currencyID)
 						["ICON"] = L["Icons Only"],
 						["ICON_TEXT"] = L["Icons and Text"],
 						["ICON_TEXT_ABBR"] = L["Icons and Text (Short)"]
-					},
+					}
 				},
 				showMax = {
 					order = 4,
@@ -110,7 +110,7 @@ local function CreateCustomCurrencyOptions(currencyID)
 						E.global.datatexts.customCurrencies[currencyID].SHOW_MAX = value
 						DT:UpdateCustomCurrencySettings(currency.NAME, "SHOW_MAX", value)
 						DT:LoadDataTexts()
-					end,
+					end
 				},
 				useTooltip = {
 					order = 5,
@@ -149,8 +149,8 @@ E.Options.args.datatexts = {
 	type = "group",
 	name = L["DataTexts"],
 	childGroups = "tab",
-	get = function(info) return E.db.datatexts[ info[#info] ]; end,
-	set = function(info, value) E.db.datatexts[ info[#info] ] = value; DT:LoadDataTexts(); end,
+	get = function(info) return E.db.datatexts[ info[#info] ] end,
+	set = function(info, value) E.db.datatexts[ info[#info] ] = value DT:LoadDataTexts() end,
 	args = {
 		intro = {
 			order = 1,
@@ -189,8 +189,8 @@ E.Options.args.datatexts = {
 							name = L["Panel Transparency"],
 							type = "toggle",
 							set = function(info, value)
-								E.db.datatexts[ info[#info] ] = value;
-								E:GetModule("Layout"):SetDataPanelStyle();
+								E.db.datatexts[ info[#info] ] = value
+								E:GetModule("Layout"):SetDataPanelStyle()
 							end
 						},
 						panelBackdrop = {
@@ -276,9 +276,9 @@ E.Options.args.datatexts = {
 			}
 		},
 		panels = {
+			order = 4,
 			type = "group",
 			name = L["Panels"],
-			order = 4,
 			args = {
 				header = {
 					order = 1,
@@ -291,13 +291,13 @@ E.Options.args.datatexts = {
 					name = L["Datatext Panel (Left)"],
 					desc = L["Display data panels below the chat, used for datatexts."],
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
+						E.db.datatexts[ info[#info] ] = value
 						if(E.db.LeftChatPanelFaded) then
-							E.db.LeftChatPanelFaded = true;
-							HideLeftChat();
+							E.db.LeftChatPanelFaded = true
+							HideLeftChat()
 						end
-						E:GetModule("Chat"):UpdateAnchors();
-						E:GetModule("Layout"):ToggleChatPanels();
+						E:GetModule("Chat"):UpdateAnchors()
+						E:GetModule("Layout"):ToggleChatPanels()
 					end
 				},
 				rightChatPanel = {
@@ -306,13 +306,13 @@ E.Options.args.datatexts = {
 					name = L["Datatext Panel (Right)"],
 					desc = L["Display data panels below the chat, used for datatexts."],
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
+						E.db.datatexts[ info[#info] ] = value
 						if(E.db.RightChatPanelFaded) then
-							E.db.RightChatPanelFaded = true;
-							HideRightChat();
+							E.db.RightChatPanelFaded = true
+							HideRightChat()
 						end
-						E:GetModule("Chat"):UpdateAnchors();
-						E:GetModule("Layout"):ToggleChatPanels();
+						E:GetModule("Chat"):UpdateAnchors()
+						E:GetModule("Layout"):ToggleChatPanels()
 					end
 				},
 				minimapPanels = {
@@ -321,8 +321,8 @@ E.Options.args.datatexts = {
 					name = L["Minimap Panels"],
 					desc = L["Display minimap panels below the minimap, used for datatexts."],
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[#info] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapTop = {
@@ -330,8 +330,8 @@ E.Options.args.datatexts = {
 					name = L["TopMiniPanel"],
 					type = "toggle",
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[#info] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapTopLeft = {
@@ -339,8 +339,8 @@ E.Options.args.datatexts = {
 					type = "toggle",
 					name = L["TopLeftMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[#info] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end,
 				},
 				minimapTopRight = {
@@ -348,8 +348,8 @@ E.Options.args.datatexts = {
 					type = "toggle",
 					name = L["TopRightMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[#info] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapBottom = {
@@ -357,8 +357,8 @@ E.Options.args.datatexts = {
 					type = "toggle",
 					name = L["BottomMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[#info] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapBottomLeft = {
@@ -366,8 +366,8 @@ E.Options.args.datatexts = {
 					type = "toggle",
 					name = L["BottomLeftMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[#info] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapBottomRight = {
@@ -375,8 +375,8 @@ E.Options.args.datatexts = {
 					name = L["BottomRightMiniPanel"],
 					type = "toggle",
 					set = function(info, value)
-						E.db.datatexts[ info[#info] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[#info] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				spacer = {
@@ -448,7 +448,7 @@ E.Options.args.datatexts = {
 					width = "double",
 					name = L["Displayed Currency"],
 					get = function(info) return E.db.datatexts.currencies.displayedCurrency end,
-					set = function(info, value) E.db.datatexts.currencies.displayedCurrency = value; DT:LoadDataTexts() end,
+					set = function(info, value) E.db.datatexts.currencies.displayedCurrency = value DT:LoadDataTexts() end,
 					values = function() return DT:Currencies_GetCurrencyList() end
 				},
 				displayStyle = {
@@ -456,7 +456,7 @@ E.Options.args.datatexts = {
 					type = "select",
 					name = L["Currency Format"],
 					get = function(info) return E.db.datatexts.currencies.displayStyle end,
-					set = function(info, value) E.db.datatexts.currencies.displayStyle = value; DT:LoadDataTexts() end,
+					set = function(info, value) E.db.datatexts.currencies.displayStyle = value DT:LoadDataTexts() end,
 					disabled = function() return (E.db.datatexts.currencies.displayedCurrency == "GOLD") end,
 					values = {
 						["ICON"] = L["Icons Only"],
@@ -489,12 +489,12 @@ E.Options.args.datatexts = {
 					get = function() return "" end,
 					set = function(info, value)
 						local currencyID = tonumber(value)
-						if not currencyID then return; end
+						if not currencyID then return end
 						DT:RegisterCustomCurrencyDT(currencyID)
 						CreateCustomCurrencyOptions(currencyID)
 						DT:PanelLayoutOptions()
 						DT:LoadDataTexts()
-					end,
+					end
 				},
 				spacer = {
 					order = 4,
@@ -535,14 +535,14 @@ E.Options.args.datatexts = {
 							type = "toggle",
 							name = AFK,
 							get = function(info) return E.db.datatexts.friends.hideAFK end,
-							set = function(info, value) E.db.datatexts.friends.hideAFK = value; DT:LoadDataTexts() end
+							set = function(info, value) E.db.datatexts.friends.hideAFK = value DT:LoadDataTexts() end
 						},
 						hideDND = {
 							order = 2,
 							type = "toggle",
 							name = DND,
 							get = function(info) return E.db.datatexts.friends.hideDND end,
-							set = function(info, value) E.db.datatexts.friends.hideDND = value; DT:LoadDataTexts() end
+							set = function(info, value) E.db.datatexts.friends.hideDND = value DT:LoadDataTexts() end
 						}
 					}
 				}
@@ -551,5 +551,5 @@ E.Options.args.datatexts = {
 	}
 }
 
-DT:PanelLayoutOptions();
+DT:PanelLayoutOptions()
 SetupCustomCurrencies()

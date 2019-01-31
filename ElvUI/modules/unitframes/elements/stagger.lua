@@ -5,14 +5,14 @@ local CreateFrame = CreateFrame
 
 function UF:Construct_Stagger(frame)
 	local stagger = CreateFrame("Statusbar", nil, frame)
-	UF["statusbars"][stagger] = true
+	UF.statusbars[stagger] = true
 	stagger:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 	stagger:SetOrientation("VERTICAL")
 	stagger:SetFrameLevel(50)
 
 	stagger.bg = stagger:CreateTexture(nil, "BORDER")
 	stagger.bg:SetAllPoints(stagger)
-	stagger.bg:SetTexture(E["media"].blankTex)
+	stagger.bg:SetTexture(E.media.blankTex)
 	stagger.bg.multiplier = 0.3
 
 	stagger.PostUpdate = UF.PostUpdateStagger

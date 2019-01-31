@@ -47,7 +47,7 @@ local function LoadSkin()
 		infoBar.HealthBarBackdrop:Width(infoBar.healthBarWidth + (E.Border * 2))
 
 		infoBar.ActualHealthBar:ClearAllPoints()
-		infoBar.ActualHealthBar:SetTexture(E["media"].normTex)
+		infoBar.ActualHealthBar:SetTexture(E.media.normTex)
 		E:RegisterStatusBar(infoBar.ActualHealthBar)
 
 		infoBar.Name:ClearAllPoints()
@@ -155,7 +155,7 @@ local function LoadSkin()
 
 		infoBar.ActualHealthBar:ClearAllPoints()
 		infoBar.ActualHealthBar:Point("TOPLEFT", infoBar.HealthBarBackdrop, "TOPLEFT", E.PixelMode and 1 or 2, E.PixelMode and -1 or -2)
-		infoBar.ActualHealthBar:SetTexture(E["media"].normTex)
+		infoBar.ActualHealthBar:SetTexture(E.media.normTex)
 		E:RegisterStatusBar(infoBar.ActualHealthBar)
 	end
 
@@ -343,7 +343,7 @@ local function LoadSkin()
 	bf.xpBar:Point("BOTTOM", bf.TurnTimer.SkipButton, "TOP", 0, E.PixelMode and 0 or 3)
 	bf.xpBar:SetScript("OnShow", function(self)
 		self:StripTextures()
-		self:SetStatusBarTexture(E["media"].normTex) 
+		self:SetStatusBarTexture(E.media.normTex) 
 	end)
 	E:RegisterStatusBar(bf.xpBar)
 
@@ -414,7 +414,7 @@ local function LoadSkin()
 
 		pet.ActualHealthBar:ClearAllPoints()
 		pet.ActualHealthBar:Point("BOTTOMLEFT", pet.Icon, E.PixelMode and 31 or 32, 0)
-		pet.ActualHealthBar:SetTexture(E["media"].normTex)
+		pet.ActualHealthBar:SetTexture(E.media.normTex)
 		E:RegisterStatusBar(pet.ActualHealthBar)
 
 		pet.MouseoverHighlight:SetTexture(1, 1, 1, 0.40)

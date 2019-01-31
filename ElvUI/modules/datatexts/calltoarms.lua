@@ -12,9 +12,9 @@ local BATTLEGROUND_HOLIDAY = BATTLEGROUND_HOLIDAY
 local DUNGEONS = DUNGEONS
 local RAID_FINDER = RAID_FINDER
 
-local TANK_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\tank.tga:14:14|t"
-local HEALER_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\healer.tga:14:14|t"
-local DPS_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\dps.tga:14:14|t"
+local TANK_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\tank:14:14|t"
+local HEALER_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\healer:14:14|t"
+local DPS_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\dps:14:14|t"
 local NOBONUSREWARDS = BATTLEGROUND_HOLIDAY..": N/A"
 local lastPanel
 local enteredFrame = false
@@ -79,7 +79,7 @@ local function ValueColorUpdate(hex)
 		OnEvent(lastPanel)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 local function OnEnter(self)
 	if not enteredFrame then

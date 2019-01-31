@@ -1,4 +1,4 @@
-﻿local E, L, V, P, G = unpack(select(2, ...));
+﻿local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
 local select, pairs = select, pairs
@@ -39,9 +39,9 @@ local function OnEvent(self)
 end
 
 local function OnEnter(self)
-	if not CustomCurrencies[self.name].USE_TOOLTIP then return; end
+	if not CustomCurrencies[self.name].USE_TOOLTIP then return end
 	local index = CurrencyListNameToIndex[self.name]
-	if not index then return; end
+	if not index then return end
 
 	DT:SetupTooltip(self)
 	DT.tooltip:SetCurrencyToken(index)
@@ -53,7 +53,7 @@ local function AddCurrencyNameToIndex(name)
 		local currencyName = GetCurrencyListInfo(index)
 		if currencyName == name then
 			CurrencyListNameToIndex[name] = index
-			break;
+			break
 		end
 	end
 end
@@ -82,7 +82,7 @@ function DT:RegisterCustomCurrencyDT(currencyID)
 end
 
 function DT:UpdateCustomCurrencySettings(currencyName, option, value)
-	if not currencyName or not option then return; end
+	if not currencyName or not option then return end
 
 	if option == "DISPLAY_STYLE" then
 		CustomCurrencies[currencyName].DISPLAY_STYLE = value

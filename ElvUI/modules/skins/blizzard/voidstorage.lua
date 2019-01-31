@@ -108,10 +108,10 @@ local function LoadSkin()
 					if quality then
 						button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				else
-					button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 		end
@@ -126,10 +126,10 @@ local function LoadSkin()
 					if quality then
 						button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				else
-					button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 
@@ -143,10 +143,10 @@ local function LoadSkin()
 						if quality then
 							button:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
-							button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+							button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 						end
 					else
-						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				end
 			end)

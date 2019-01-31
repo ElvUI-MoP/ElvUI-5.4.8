@@ -35,10 +35,11 @@ local function LoadSkin()
 		else
 			ReforgingFrame.ItemButton.IconTexture:SetTexture(nil)
 		end
+
 		if quality then
 			ReforgingFrame.ItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 		else
-			ReforgingFrame.ItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			ReforgingFrame.ItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 

@@ -68,19 +68,20 @@ local function LoadSkin()
 	}
 
 	for _, slot in pairs(slots) do
+		local item = _G["Character"..slot]
 		local icon = _G["Character"..slot.."IconTexture"]
 		local cooldown = _G["Character"..slot.."Cooldown"]
 		local popout = _G["Character"..slot.."PopoutButton"]
 
-		slot = _G["Character"..slot]
-		slot:StripTextures()
-		slot:StyleButton(false)
-		slot.ignoreTexture:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-LeaveItem-Transparent]])
-		slot:SetTemplate("Default", true, true)
+		item:StripTextures()
+		item:StyleButton(false)
+		item.ignoreTexture:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-LeaveItem-Transparent]])
+		item:SetTemplate("Default", true, true)
+
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside()
 
-		slot:SetFrameLevel(PaperDollFrame:GetFrameLevel() + 2)
+		item:SetFrameLevel(PaperDollFrame:GetFrameLevel() + 2)
 
 		if cooldown then
 			E:RegisterCooldown(cooldown)
@@ -97,14 +98,14 @@ local function LoadSkin()
 			popout.icon:Point("CENTER")
 			popout.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
 
-			if slot.verticalFlyout then
+			if item.verticalFlyout then
 				popout:Size(27, 11)
 				SquareButton_SetIcon(popout, "DOWN")
-				popout:Point("TOP", slot, "BOTTOM", 0, 5)
+				popout:Point("TOP", item, "BOTTOM", 0, 5)
 			else
 				popout:Size(11, 27)
 				SquareButton_SetIcon(popout, "RIGHT")
-				popout:Point("LEFT", slot, "RIGHT", -5, 0)
+				popout:Point("LEFT", item, "RIGHT", -5, 0)
 			end
 		end
 	end
@@ -189,10 +190,10 @@ local function LoadSkin()
 				if rarity then
 					target:SetBackdropBorderColor(GetItemQualityColor(rarity))
 				else
-					target:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					target:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			else
-				target:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				target:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 		end
 	end
@@ -379,7 +380,7 @@ local function LoadSkin()
 
 		factionBar:StripTextures()
 		factionBar:CreateBackdrop("Default")
-		factionBar:SetStatusBarTexture(E["media"].normTex)
+		factionBar:SetStatusBarTexture(E.media.normTex)
 		E:RegisterStatusBar(factionBar)
 
 		factionButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")

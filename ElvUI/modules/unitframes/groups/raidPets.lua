@@ -41,18 +41,18 @@ function UF:Construct_RaidpetFrames()
 
 	self.unitframeType = "raidpet"
 
-	UF:Update_RaidpetFrames(self, UF.db["units"]["raidpet"])
+	UF:Update_RaidpetFrames(self, UF.db.units.raidpet)
 
 	return self
 end
 
 function UF:RaidPetsSmartVisibility(event)
 	if not self.db or (self.db and not self.db.enable) or (UF.db and not UF.db.smartRaidFilter) or self.isForced then return end
-	if(event == "PLAYER_REGEN_ENABLED") then self:UnregisterEvent("PLAYER_REGEN_ENABLED") end
+	if event == "PLAYER_REGEN_ENABLED" then self:UnregisterEvent("PLAYER_REGEN_ENABLED") end
 
 	if not InCombatLockdown() then
 		local inInstance, instanceType = IsInInstance()
-		if(inInstance and instanceType == "raid") then
+		if inInstance and instanceType == "raid" then
 			UnregisterStateDriver(self, "visibility")
 			self:Show()
 		elseif self.db.visibility then
@@ -74,12 +74,12 @@ function UF:Update_RaidpetHeader(header, db)
 		headerHolder:ClearAllPoints()
 		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 574)
 
-		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid Pet Frames"], nil, nil, nil, "ALL,RAID")
+		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid Pet Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,raidpet,generalGroup")
 		headerHolder.positioned = true
 
 		headerHolder:RegisterEvent("PLAYER_ENTERING_WORLD")
 		headerHolder:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-		headerHolder:SetScript("OnEvent", UF["RaidPetsSmartVisibility"])
+		headerHolder:SetScript("OnEvent", UF.RaidPetsSmartVisibility)
 	end
 
 	UF.RaidPetsSmartVisibility(headerHolder)
@@ -162,4 +162,4 @@ function UF:Update_RaidpetFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF["headerstoload"]["raidpet"] = {nil, nil, "SecureGroupPetHeaderTemplate"}
+UF.headerstoload.raidpet = {nil, nil, "SecureGroupPetHeaderTemplate"}

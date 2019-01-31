@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local UF = E:GetModule('UnitFrames');
+local E, L, V, P, G = unpack(select(2, ...))
+local UF = E:GetModule("UnitFrames")
 
 function UF:Construct_ReadyCheckIcon(frame)
 	local tex = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY", nil, 7)
@@ -13,9 +13,9 @@ function UF:Configure_ReadyCheckIcon(frame)
 	local ReadyCheckIndicator = frame.ReadyCheckIndicator
 	local db = frame.db
 
-	if (db.readycheckIcon.enable) then
-		if not frame:IsElementEnabled('ReadyCheckIndicator') then
-			frame:EnableElement('ReadyCheckIndicator')
+	if db.readycheckIcon.enable then
+		if not frame:IsElementEnabled("ReadyCheckIndicator") then
+			frame:EnableElement("ReadyCheckIndicator")
 		end
 
 		local attachPoint = self:GetObjectAnchorPoint(frame, db.readycheckIcon.attachTo)
@@ -23,6 +23,6 @@ function UF:Configure_ReadyCheckIcon(frame)
 		ReadyCheckIndicator:Point(db.readycheckIcon.position, attachPoint, db.readycheckIcon.position, db.readycheckIcon.xOffset, db.readycheckIcon.yOffset)
 		ReadyCheckIndicator:Size(db.readycheckIcon.size)
 	else
-		frame:DisableElement('ReadyCheckIndicator')
+		frame:DisableElement("ReadyCheckIndicator")
 	end
 end

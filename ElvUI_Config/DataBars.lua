@@ -23,7 +23,7 @@ E.Options.args.databars = {
 			type = "group",
 			name = XPBAR_LABEL,
 			get = function(info) return mod.db.experience[ info[#info] ] end,
-			set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperienceDimensions() end,
+			set = function(info, value) mod.db.experience[ info[#info] ] = value mod:UpdateExperienceDimensions() end,
 			args = {
 				header = {
  					order = 1,
@@ -34,7 +34,7 @@ E.Options.args.databars = {
 					order = 2,
 					type = "toggle",
 					name = L["Enable"],
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:EnableDisable_ExperienceBar() end
+					set = function(info, value) mod.db.experience[ info[#info] ] = value mod:EnableDisable_ExperienceBar() end
 				},
 				mouseover = {
 					order = 3,
@@ -45,19 +45,19 @@ E.Options.args.databars = {
 					order = 4,
 					type = "toggle",
 					name = L["Hide At Max Level"],
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end,
+					set = function(info, value) mod.db.experience[ info[#info] ] = value mod:UpdateExperience() end,
 				},
 				hideInVehicle = {
 					order = 5,
 					type = "toggle",
 					name = L["Hide In Vehicle"],
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end,
+					set = function(info, value) mod.db.experience[ info[#info] ] = value mod:UpdateExperience() end,
 				},
 				hideInCombat = {
 					order = 6,
 					type = "toggle",
 					name = L["Hide In Combat"],
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end,
+					set = function(info, value) mod.db.experience[ info[#info] ] = value mod:UpdateExperience() end,
 				},
 				reverseFill = {
 					order = 7,
@@ -129,7 +129,7 @@ E.Options.args.databars = {
 						CURREM = L["Current - Remaining"],
 						CURPERCREM = L["Current - Percent (Remaining)"],
 					},
-					set = function(info, value) mod.db.experience[ info[#info] ] = value; mod:UpdateExperience() end
+					set = function(info, value) mod.db.experience[ info[#info] ] = value mod:UpdateExperience() end
 				}
 			}
 		},
@@ -138,7 +138,7 @@ E.Options.args.databars = {
 			type = "group",
 			name = REPUTATION,
 			get = function(info) return mod.db.reputation[ info[#info] ] end,
-			set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputationDimensions() end,
+			set = function(info, value) mod.db.reputation[ info[#info] ] = value mod:UpdateReputationDimensions() end,
 			args = {
 				header = {
  					order = 1,
@@ -149,7 +149,7 @@ E.Options.args.databars = {
 					order = 2,
 					type = "toggle",
 					name = L["Enable"],
-					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:EnableDisable_ReputationBar() end
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value mod:EnableDisable_ReputationBar() end
 				},
 				mouseover = {
 					order = 3,
@@ -160,13 +160,13 @@ E.Options.args.databars = {
 					order = 4,
 					type = "toggle",
 					name = L["Hide In Vehicle"],
-					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value mod:UpdateReputation() end
 				},
 				hideInCombat = {
 					order = 5,
 					type = "toggle",
 					name = L["Hide In Combat"],
-					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value mod:UpdateReputation() end
 				},
 				reverseFill = {
 					order = 6,
@@ -238,9 +238,9 @@ E.Options.args.databars = {
 						CURREM = L["Current - Remaining"],
 						CURPERCREM = L["Current - Percent (Remaining)"],
 					},
-					set = function(info, value) mod.db.reputation[ info[#info] ] = value; mod:UpdateReputation() end
+					set = function(info, value) mod.db.reputation[ info[#info] ] = value mod:UpdateReputation() end
 				}
 			}
 		}
 	}
-};
+}

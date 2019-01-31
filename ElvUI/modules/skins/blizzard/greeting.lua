@@ -24,6 +24,13 @@ local function LoadSkin()
 
 		for i = 1, MAX_NUM_QUESTS do
 			local button = _G["QuestTitleButton"..i]
+
+			if not button.isSkinned then
+				S:HandleButtonHighlight(button)
+
+				button.isSkinned = true
+			end
+
 			if button:GetFontString() then
 				if button:GetFontString():GetText() and button:GetFontString():GetText():find("|cff000000") then
 					button:GetFontString():SetText(gsub(button:GetFontString():GetText(), "|cff000000", "|cffFFFF00"))

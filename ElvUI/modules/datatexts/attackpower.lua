@@ -48,11 +48,11 @@ local function OnEnter(self)
 		local petSpellDmgBonus = ComputePetBonus("PET_BONUS_RAP_TO_SPELLDMG", pwr)
 
 		if petAPBonus > 0 then
-			line = line .. "\n" .. format(PET_BONUS_TOOLTIP_RANGED_ATTACK_POWER, petAPBonus)
+			line = line.."\n"..format(PET_BONUS_TOOLTIP_RANGED_ATTACK_POWER, petAPBonus)
 		end
 
 		if petSpellDmgBonus > 0 then
-			line = line .. "\n" .. format(PET_BONUS_TOOLTIP_SPELLDAMAGE, petSpellDmgBonus)
+			line = line.."\n"..format(PET_BONUS_TOOLTIP_SPELLDAMAGE, petSpellDmgBonus)
 		end
 
 		DT.tooltip:AddLine(line, nil, nil, nil, true)
@@ -71,6 +71,6 @@ local function ValueColorUpdate(hex)
 		OnEvent(lastPanel)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("Attack Power", {"UNIT_ATTACK_POWER", "UNIT_RANGED_ATTACK_POWER"}, OnEvent, nil, nil, OnEnter, nil, STAT_ATTACK_POWER)

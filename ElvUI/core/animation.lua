@@ -1,12 +1,12 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 
-local tremove = tremove;
-local random = math.random;
+local tremove = tremove
+local random = math.random
 
 function E:SetUpAnimGroup(object, type, ...)
-	if not type then type = 'Flash' end
+	if not type then type = "Flash" end
 
-	if type == 'Flash' then
+	if type == "Flash" then
 		object.anim = object:CreateAnimationGroup("Flash")
 		object.anim.fadein = object.anim:CreateAnimation("ALPHA", "FadeIn")
 		object.anim.fadein:SetChange(1)
@@ -15,7 +15,7 @@ function E:SetUpAnimGroup(object, type, ...)
 		object.anim.fadeout = object.anim:CreateAnimation("ALPHA", "FadeOut")
 		object.anim.fadeout:SetChange(-1)
 		object.anim.fadeout:SetOrder(1)
-	elseif type == 'FlashLoop' then
+	elseif type == "FlashLoop" then
 		object.anim = object:CreateAnimationGroup("Flash")
 		object.anim.fadein = object.anim:CreateAnimation("ALPHA", "FadeIn")
 		object.anim.fadein:SetChange(1)
@@ -26,11 +26,11 @@ function E:SetUpAnimGroup(object, type, ...)
 		object.anim.fadeout:SetOrder(1)
 
 		object.anim:SetScript("OnFinished", function(_, requested)
-			if(not requested) then
+			if not requested then
 				object.anim:Play()
 			end
 		end)
-	elseif type == 'Shake' then
+	elseif type == "Shake" then
 		object.shake = object:CreateAnimationGroup("Shake")
 		object.shake:SetLooping("REPEAT")
 		object.shake.path = object.shake:CreateAnimation("Path")
@@ -54,7 +54,7 @@ function E:SetUpAnimGroup(object, type, ...)
 		object.shake.path[5]:SetOrder(5)
 		object.shake.path[6]:SetOffset(random(-9, 7), random(-9, 5))
 		object.shake.path[6]:SetOrder(6)
-	elseif type == 'Shake_Horizontal' then
+	elseif type == "Shake_Horizontal" then
 		object.shakeh = object:CreateAnimationGroup("ShakeH")
 		object.shakeh:SetLooping("REPEAT")
 		object.shakeh.path = object.shakeh:CreateAnimation("Path")
@@ -81,7 +81,7 @@ function E:SetUpAnimGroup(object, type, ...)
 	else
 		local x, y, duration, customName = ...
 		if not customName then
-			customName = 'anim'
+			customName = "anim"
 		end
 		object[customName] = object:CreateAnimationGroup("Move_In")
 		object[customName].in1 = object[customName]:CreateAnimation("Translation")
@@ -105,7 +105,7 @@ end
 
 function E:Shake(object)
 	if not object.shake then
-		E:SetUpAnimGroup(object, 'Shake')
+		E:SetUpAnimGroup(object, "Shake")
 	end
 
 	object.shake:Play()	
@@ -119,7 +119,7 @@ end
 
 function E:ShakeHorizontal(object)
 	if not object.shakeh then
-		E:SetUpAnimGroup(object, 'Shake_Horizontal')
+		E:SetUpAnimGroup(object, "Shake_Horizontal")
 	end
 
 	object.shakeh:Play()
@@ -133,7 +133,7 @@ end
 
 function E:Flash(object, duration, loop)
 	if not object.anim then
-		E:SetUpAnimGroup(object, loop and "FlashLoop" or 'Flash')
+		E:SetUpAnimGroup(object, loop and "FlashLoop" or "Flash")
 	end
 
 	if not object.anim.playing then
@@ -147,13 +147,13 @@ end
 function E:StopFlash(object)
 	if object.anim and object.anim.playing then
 		object.anim:Stop()
-		object.anim.playing = nil;
+		object.anim.playing = nil
 	end
 end
 
 function E:SlideIn(object, customName)
 	if not customName then
-		customName = 'anim'
+		customName = "anim"
 	end
 	if not object[customName] then return end
 
@@ -164,7 +164,7 @@ end
 
 function E:SlideOut(object, customName)
 	if not customName then
-		customName = 'anim'
+		customName = "anim"
 	end
 	if not object[customName] then return end
 
@@ -173,123 +173,122 @@ function E:SlideOut(object, customName)
 	object[customName].out1:Play()
 end
 
-local frameFadeManager = CreateFrame("FRAME");
-local FADEFRAMES = {};
+local frameFadeManager = CreateFrame("FRAME")
+local FADEFRAMES = {}
 
 function E:UIFrameFade_OnUpdate(elapsed)
-	local index = 1;
-	local frame, fadeInfo;
+	local index = 1
+	local frame, fadeInfo
+
 	while FADEFRAMES[index] do
-		frame = FADEFRAMES[index];
-		fadeInfo = FADEFRAMES[index].fadeInfo;
+		frame = FADEFRAMES[index]
+		fadeInfo = FADEFRAMES[index].fadeInfo
 		-- Reset the timer if there isn't one, this is just an internal counter
-		fadeInfo.fadeTimer = (fadeInfo.fadeTimer or 0) + elapsed;
-		fadeInfo.fadeTimer = fadeInfo.fadeTimer + elapsed;
+		fadeInfo.fadeTimer = (fadeInfo.fadeTimer or 0) + elapsed
+		fadeInfo.fadeTimer = fadeInfo.fadeTimer + elapsed
 
 		-- If the fadeTimer is less then the desired fade time then set the alpha otherwise hold the fade state, call the finished function, or just finish the fade
-		if ( fadeInfo.fadeTimer < fadeInfo.timeToFade ) then
-			if ( fadeInfo.mode == "IN" ) then
-				frame:SetAlpha((fadeInfo.fadeTimer / fadeInfo.timeToFade) * (fadeInfo.endAlpha - fadeInfo.startAlpha) + fadeInfo.startAlpha);
-			elseif ( fadeInfo.mode == "OUT" ) then
-				frame:SetAlpha(((fadeInfo.timeToFade - fadeInfo.fadeTimer) / fadeInfo.timeToFade) * (fadeInfo.startAlpha - fadeInfo.endAlpha)  + fadeInfo.endAlpha);
+		if fadeInfo.fadeTimer < fadeInfo.timeToFade then
+			if fadeInfo.mode == "IN" then
+				frame:SetAlpha((fadeInfo.fadeTimer / fadeInfo.timeToFade) * (fadeInfo.endAlpha - fadeInfo.startAlpha) + fadeInfo.startAlpha)
+			elseif fadeInfo.mode == "OUT" then
+				frame:SetAlpha(((fadeInfo.timeToFade - fadeInfo.fadeTimer) / fadeInfo.timeToFade) * (fadeInfo.startAlpha - fadeInfo.endAlpha)  + fadeInfo.endAlpha)
 			end
 		else
-			frame:SetAlpha(fadeInfo.endAlpha);
+			frame:SetAlpha(fadeInfo.endAlpha)
 			-- If there is a fadeHoldTime then wait until its passed to continue on
-			if(fadeInfo.fadeHoldTime and fadeInfo.fadeHoldTime > 0) then
-				fadeInfo.fadeHoldTime = fadeInfo.fadeHoldTime - elapsed;
+			if fadeInfo.fadeHoldTime and fadeInfo.fadeHoldTime > 0 then
+				fadeInfo.fadeHoldTime = fadeInfo.fadeHoldTime - elapsed
 			else
 				-- Complete the fade and call the finished function if there is one
-				E:UIFrameFadeRemoveFrame(frame);
-				if ( fadeInfo.finishedFunc ) then
-					fadeInfo.finishedFunc(fadeInfo.finishedArg1, fadeInfo.finishedArg2, fadeInfo.finishedArg3, fadeInfo.finishedArg4);
-					fadeInfo.finishedFunc = nil;
+				E:UIFrameFadeRemoveFrame(frame)
+				if fadeInfo.finishedFunc then
+					fadeInfo.finishedFunc(fadeInfo.finishedArg1, fadeInfo.finishedArg2, fadeInfo.finishedArg3, fadeInfo.finishedArg4)
+					fadeInfo.finishedFunc = nil
 				end
 			end
 		end
 
-		index = index + 1;
+		index = index + 1
 	end
 
-	if ( #FADEFRAMES == 0 ) then
-		frameFadeManager:SetScript("OnUpdate", nil);
+	if #FADEFRAMES == 0 then
+		frameFadeManager:SetScript("OnUpdate", nil)
 	end
 end
 
 -- Generic fade function
 function E:UIFrameFade(frame, fadeInfo)
-	if (not frame) then
-		return;
-	end
-	if ( not fadeInfo.mode ) then
-		fadeInfo.mode = "IN";
-	end
-	if ( fadeInfo.mode == "IN" ) then
-		if ( not fadeInfo.startAlpha ) then
-			fadeInfo.startAlpha = 0;
-		end
-		if ( not fadeInfo.endAlpha ) then
-			fadeInfo.endAlpha = 1.0;
-		end
-	elseif ( fadeInfo.mode == "OUT" ) then
-		if ( not fadeInfo.startAlpha ) then
-			fadeInfo.startAlpha = 1.0;
-		end
-		if ( not fadeInfo.endAlpha ) then
-			fadeInfo.endAlpha = 0;
-		end
-	end
-	frame:SetAlpha(fadeInfo.startAlpha);
+	if not frame then return end
 
-	frame.fadeInfo = fadeInfo;
+	if not fadeInfo.mode then
+		fadeInfo.mode = "IN"
+	end
+	if fadeInfo.mode == "IN" then
+		if not fadeInfo.startAlpha then
+			fadeInfo.startAlpha = 0
+		end
+		if not fadeInfo.endAlpha then
+			fadeInfo.endAlpha = 1.0
+		end
+	elseif fadeInfo.mode == "OUT" then
+		if not fadeInfo.startAlpha then
+			fadeInfo.startAlpha = 1.0
+		end
+		if not fadeInfo.endAlpha then
+			fadeInfo.endAlpha = 0
+		end
+	end
+	frame:SetAlpha(fadeInfo.startAlpha)
+
+	frame.fadeInfo = fadeInfo
 	if not frame:IsProtected() then
-		frame:Show();
+		frame:Show()
 	end
 
-	local index = 1;
+	local index = 1
 	while FADEFRAMES[index] do
 		-- If frame is already set to fade then return
-		if ( FADEFRAMES[index] == frame ) then
-			return;
-		end
-		index = index + 1;
+		if FADEFRAMES[index] == frame then return end
+
+		index = index + 1
 	end
 	FADEFRAMES[#FADEFRAMES + 1] = frame
-	frameFadeManager:SetScript("OnUpdate", E.UIFrameFade_OnUpdate);
+	frameFadeManager:SetScript("OnUpdate", E.UIFrameFade_OnUpdate)
 end
 
 -- Convenience function to do a simple fade in
 function E:UIFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "IN";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	E:UIFrameFade(frame, fadeInfo);
+	local fadeInfo = {}
+	fadeInfo.mode = "IN"
+	fadeInfo.timeToFade = timeToFade
+	fadeInfo.startAlpha = startAlpha
+	fadeInfo.endAlpha = endAlpha
+	E:UIFrameFade(frame, fadeInfo)
 end
 
 -- Convenience function to do a simple fade out
 function E:UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "OUT";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	E:UIFrameFade(frame, fadeInfo);
+	local fadeInfo = {}
+	fadeInfo.mode = "OUT"
+	fadeInfo.timeToFade = timeToFade
+	fadeInfo.startAlpha = startAlpha
+	fadeInfo.endAlpha = endAlpha
+	E:UIFrameFade(frame, fadeInfo)
 end
 
 function E:tDeleteItem(table, item)
-	local index = 1;
+	local index = 1
 	while table[index] do
-		if ( item == table[index] ) then
-			tremove(table, index);
+		if item == table[index] then
+			tremove(table, index)
 			break
 		else
-			index = index + 1;
+			index = index + 1
 		end
 	end
 end
 
 function E:UIFrameFadeRemoveFrame(frame)
-	E:tDeleteItem(FADEFRAMES, frame);
+	E:tDeleteItem(FADEFRAMES, frame)
 end

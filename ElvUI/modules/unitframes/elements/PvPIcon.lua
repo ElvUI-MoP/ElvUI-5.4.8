@@ -43,7 +43,7 @@ function UF:UpdateOverride(event, unit)
 		element:SetTexCoord(0, 0.65625, 0, 0.65625)
 
 		status = "ffa"
-	elseif(factionGroup and factionGroup ~= "Neutral" and UnitIsPVP(unit)) then
+	elseif factionGroup and factionGroup ~= "Neutral" and UnitIsPVP(unit) then
 		element:SetTexture("Interface\\PVPFrame\\PVP-Conquest-Misc")
 
 		if factionGroup == "Alliance"  then

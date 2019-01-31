@@ -225,6 +225,19 @@ local function LoadSkin()
 	LootFrame:StripTextures()
 	LootFrame:SetTemplate("Transparent")
 
+	LootFrame:EnableMouseWheel(true)
+	LootFrame:SetScript("OnMouseWheel", function(_, value)
+		if value > 0 then
+			if LootFrameUpButton:IsShown() and LootFrameUpButton:IsEnabled() == 1 then
+				LootFrame_PageUp()
+			end
+		else
+			if LootFrameDownButton:IsShown() and LootFrameDownButton:IsEnabled() == 1 then
+				LootFrame_PageDown()
+			end
+		end
+	end)
+
 	LootFrameInset:Kill()
 	LootFramePortraitOverlay:SetParent(E.HiddenFrame)
 
@@ -309,7 +322,7 @@ local function LoadSkin()
 					elseif quality then
 						button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				end
 			end
@@ -359,7 +372,7 @@ local function LoadRollSkin()
 		local statusBar = _G[frameName.."Timer"]
 		statusBar:StripTextures()
 		statusBar:CreateBackdrop("Default")
-		statusBar:SetStatusBarTexture(E["media"].normTex)
+		statusBar:SetStatusBarTexture(E.media.normTex)
 		E:RegisterStatusBar(statusBar)
 
 		local decoration = _G[frameName.."Decoration"]

@@ -16,9 +16,9 @@ function UF:Construct_RoleIcon(frame)
 end
 
 local roleIconTextures = {
-	TANK = [[Interface\AddOns\ElvUI\media\textures\tank.tga]],
-	HEALER = [[Interface\AddOns\ElvUI\media\textures\healer.tga]],
-	DAMAGER = [[Interface\AddOns\ElvUI\media\textures\dps.tga]]
+	TANK = [[Interface\AddOns\ElvUI\media\textures\tank]],
+	HEALER = [[Interface\AddOns\ElvUI\media\textures\healer]],
+	DAMAGER = [[Interface\AddOns\ElvUI\media\textures\dps]]
 }
 
 function UF:UpdateRoleIcon()

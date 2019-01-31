@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local UF = E:GetModule('UnitFrames');
+local E, L, V, P, G = unpack(select(2, ...))
+local UF = E:GetModule("UnitFrames")
 
 local CreateFrame = CreateFrame
 
@@ -33,9 +33,9 @@ function UF:Configure_PVPSpecIcon(frame)
 			specIcon.bg:Point("BOTTOMRIGHT", frame.Power.backdrop, "BOTTOMLEFT", (frame.BORDER - frame.SPACING*3) - frame.PORTRAIT_WIDTH, 0)
 		end
 	end
-	if frame.db.pvpSpecIcon and not frame:IsElementEnabled('PVPSpecIcon') then
-		frame:EnableElement('PVPSpecIcon')
-	elseif not frame.db.pvpSpecIcon and frame:IsElementEnabled('PVPSpecIcon') then
-		frame:DisableElement('PVPSpecIcon')
+	if frame.db.pvpSpecIcon and not frame:IsElementEnabled("PVPSpecIcon") then
+		frame:EnableElement("PVPSpecIcon")
+	elseif not frame.db.pvpSpecIcon and frame:IsElementEnabled("PVPSpecIcon") then
+		frame:DisableElement("PVPSpecIcon")
 	end
 end

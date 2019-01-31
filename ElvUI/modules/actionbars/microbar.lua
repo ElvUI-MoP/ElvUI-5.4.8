@@ -24,31 +24,35 @@ local MICRO_BUTTONS = {
 	"MainMenuMicroButton"
 }
 
-local function onLeave()
+local function onEnterBar()
+	if AB.db.microbar.mouseover then
+		E:UIFrameFadeIn(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), AB.db.microbar.alpha)
+	end
+end
+
+local function onLeaveBar()
 	if AB.db.microbar.mouseover then
 		E:UIFrameFadeOut(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), 0)
 	end
 end
 
-local watcher = 0
-local function onUpdate(self, elapsed)
-	if watcher > 0.1 then
-		if not self:IsMouseOver() then
-			self.IsMouseOvered = nil
-			self:SetScript("OnUpdate", nil)
-			onLeave()
-		end
-		watcher = 0
-	else
-		watcher = watcher + elapsed
+local function onEnterButton(button)
+	if AB.db.microbar.mouseover then
+		E:UIFrameFadeIn(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), AB.db.microbar.alpha)
+	end
+
+	if button.backdrop then
+		button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 	end
 end
 
-local function onEnter()
-	if AB.db.microbar.mouseover and not ElvUI_MicroBar.IsMouseOvered then
-		ElvUI_MicroBar.IsMouseOvered = true
-		ElvUI_MicroBar:SetScript("OnUpdate", onUpdate)
-		E:UIFrameFadeIn(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), AB.db.microbar.alpha)
+local function onLeaveButton(button)
+	if AB.db.microbar.mouseover then
+		E:UIFrameFadeOut(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), 0)
+	end
+
+	if button.backdrop then
+		button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 	end
 end
 
@@ -60,15 +64,15 @@ function AB:HandleMicroButton(button)
 	local disabled = button:GetDisabledTexture()
 
 	local f = CreateFrame("Frame", nil, button)
-	f:SetFrameLevel(1)
-	f:SetFrameStrata("BACKGROUND")
+	f:SetFrameLevel(button:GetFrameLevel() - 1)
 	f:SetTemplate("Default", true)
 	f:SetOutside(button)
 	button.backdrop = f
 
 	button:SetParent(ElvUI_MicroBar)
 	button:GetHighlightTexture():Kill()
-	button:HookScript("OnEnter", onEnter)
+	button:HookScript("OnEnter", onEnterButton)
+	button:HookScript("OnLeave", onLeaveButton)
 	button:SetHitRectInsets(0, 0, 0, 0)
 
 	if button.Flash then
@@ -89,8 +93,8 @@ function AB:HandleMicroButton(button)
 end
 
 function AB:UpdateMicroButtonsParent()
-	for i=1, #MICRO_BUTTONS do
-		_G[MICRO_BUTTONS[i]]:SetParent(ElvUI_MicroBar);
+	for i = 1, #MICRO_BUTTONS do
+		_G[MICRO_BUTTONS[i]]:SetParent(ElvUI_MicroBar)
 	end
 end
 
@@ -119,7 +123,7 @@ function AB:UpdateMicroPositionDimensions()
 
 	for i = 1, #MICRO_BUTTONS do
 		local button = _G[MICRO_BUTTONS[i]]
-		local lastColumnButton = i-self.db.microbar.buttonsPerRow
+		local lastColumnButton = i - self.db.microbar.buttonsPerRow
 		lastColumnButton = _G[MICRO_BUTTONS[lastColumnButton]]
 
 		button:Size(self.db.microbar.buttonSize, self.db.microbar.buttonSize * 1.4)
@@ -187,12 +191,14 @@ function AB:SetupMicroBar()
 	local microBar = CreateFrame("Frame", "ElvUI_MicroBar", E.UIParent)
 	microBar:Point("TOPLEFT", E.UIParent, "TOPLEFT", 4, -48)
 	microBar:EnableMouse(false)
+	microBar:SetScript("OnEnter", onEnterBar)
+	microBar:SetScript("OnLeave", onLeaveBar)
 
 	microBar.visibility = CreateFrame("Frame", nil, E.UIParent, "SecureHandlerStateTemplate")
 	microBar.visibility:SetScript("OnShow", function() microBar:Show() end)
 	microBar.visibility:SetScript("OnHide", function() microBar:Hide() end)
 
-	E.FrameLocks["ElvUI_MicroBar"] = true
+	E.FrameLocks.ElvUI_MicroBar = true
 
 	for i = 1, #MICRO_BUTTONS do
 		self:HandleMicroButton(_G[MICRO_BUTTONS[i]])
@@ -217,5 +223,5 @@ function AB:SetupMicroBar()
 	self:UpdateMicroPositionDimensions()
 	MainMenuBarPerformanceBar:Kill()
 
-	E:CreateMover(microBar, "MicrobarMover", L["Micro Bar"], nil, nil, nil, "ALL, ACTIONBARS")
+	E:CreateMover(microBar, "MicrobarMover", L["Micro Bar"], nil, nil, nil, "ALL, ACTIONBARS", nil, "actionbar,microbar")
 end

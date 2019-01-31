@@ -119,7 +119,7 @@ local function LoadSkin()
 				button.backdrop:SetBackdropBorderColor(1, 1, 0)
 			else
 				name:SetTextColor(1, 1, 1)
-				button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 
 			if (i + offset) % 2 == 1 then
@@ -201,7 +201,7 @@ local function LoadSkin()
 					name:SetTextColor(1, 1, 1)
 				end
 			else
-				button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				name:SetTextColor(0.6, 0.6, 0.6)
 			end
 		end

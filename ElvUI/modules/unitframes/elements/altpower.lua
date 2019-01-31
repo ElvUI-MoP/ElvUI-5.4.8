@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local UF = E:GetModule('UnitFrames');
+local E, L, V, P, G = unpack(select(2, ...))
+local UF = E:GetModule("UnitFrames")
 
 local select = select
 local floor = math.floor
@@ -8,14 +8,14 @@ local CreateFrame = CreateFrame
 
 function UF:Construct_AltPowerBar(frame)
 	local altpower = CreateFrame("StatusBar", nil, frame)
-	altpower:SetStatusBarTexture(E['media'].blankTex)
-	UF['statusbars'][altpower] = true
+	altpower:SetStatusBarTexture(E.media.blankTex)
+	UF.statusbars[altpower] = true
 	altpower:GetStatusBarTexture():SetHorizTile(false)
 
 	altpower.PostUpdate = UF.AltPowerBarPostUpdate
 	altpower:CreateBackdrop("Default", true)
 
-	altpower.text = altpower:CreateFontString(nil, 'OVERLAY')
+	altpower.text = altpower:CreateFontString(nil, "OVERLAY")
 	altpower.text:Point("CENTER")
 	altpower.text:SetJustifyH("CENTER")
 	UF:Configure_FontString(altpower.text)
@@ -66,7 +66,7 @@ function UF:Configure_AltPower(frame)
 	local altpower = frame.AlternativePower
 
 	if frame.USE_POWERBAR then
-		frame:EnableElement('AlternativePower')
+		frame:EnableElement("AlternativePower")
 		altpower.text:SetAlpha(1)
 		altpower:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING+frame.BORDER)
 		if not frame.USE_PORTRAIT_OVERLAY then
@@ -76,7 +76,7 @@ function UF:Configure_AltPower(frame)
 		end
 		altpower.Smooth = UF.db.smoothbars
 	else
-		frame:DisableElement('AlternativePower')
+		frame:DisableElement("AlternativePower")
 		altpower.text:SetAlpha(0)
 		altpower:Hide()
 	end

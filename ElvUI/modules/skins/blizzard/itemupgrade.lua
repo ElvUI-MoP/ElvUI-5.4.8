@@ -52,7 +52,7 @@ local function LoadSkin()
 		if quality then
 			ItemUpgradeFrame.ItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 		else
-			ItemUpgradeFrame.ItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			ItemUpgradeFrame.ItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 end

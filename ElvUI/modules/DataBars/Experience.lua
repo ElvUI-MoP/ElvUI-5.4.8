@@ -25,7 +25,7 @@ function mod:UpdateExperience(event)
 	if not mod.db.experience.enable then return end
 
 	local bar = self.expBar
-	local hideXP = ((UnitLevel('player') == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] and self.db.experience.hideAtMaxLevel) or IsXPUserDisabled())
+	local hideXP = ((UnitLevel("player") == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] and self.db.experience.hideAtMaxLevel) or IsXPUserDisabled())
 
 	if hideXP or (event == "PLAYER_REGEN_DISABLED" and self.db.experience.hideInCombat) then
 		E:DisableMover(self.expBar.mover:GetName())
@@ -95,7 +95,7 @@ function mod:UpdateExperience(event)
 end
 
 function mod:ExperienceBar_OnEnter()
-	if(mod.db.experience.mouseover) then
+	if mod.db.experience.mouseover then
 		E:UIFrameFadeIn(self, 0.4, self:GetAlpha(), 1)
 	end
 	GameTooltip:ClearLines()
@@ -116,9 +116,7 @@ function mod:ExperienceBar_OnEnter()
 	GameTooltip:Show()
 end
 
-function mod:ExperienceBar_OnClick()
-
-end
+function mod:ExperienceBar_OnClick() end
 
 function mod:UpdateExperienceDimensions()
 	self.expBar:Width(self.db.experience.width)
@@ -131,7 +129,15 @@ function mod:UpdateExperienceDimensions()
 	self.expBar.statusBar:SetOrientation(self.db.experience.orientation)
 	self.expBar.rested:SetReverseFill(self.db.experience.reverseFill)
 
-	if(self.db.experience.mouseover) then
+	if self.db.experience.orientation == "HORIZONTAL" then
+		self.expBar.rested:SetRotatesTexture(false)
+		self.expBar.statusBar:SetRotatesTexture(false)
+	else
+		self.expBar.rested:SetRotatesTexture(true)
+		self.expBar.statusBar:SetRotatesTexture(true)
+	end
+
+	if self.db.experience.mouseover then
 		self.expBar:SetAlpha(0)
 	else
 		self.expBar:SetAlpha(1)
@@ -176,6 +182,6 @@ function mod:LoadExperienceBar()
 
 	self:UpdateExperienceDimensions()
 
-	E:CreateMover(self.expBar, "ExperienceBarMover", L["Experience Bar"])
+	E:CreateMover(self.expBar, "ExperienceBarMover", L["Experience Bar"], nil, nil, nil, nil, nil, "databars,experience")
 	self:EnableDisable_ExperienceBar()
 end

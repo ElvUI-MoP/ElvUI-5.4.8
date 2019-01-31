@@ -1,8 +1,8 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G;
-local ipairs, unpack = ipairs, unpack;
+local _G = _G
+local ipairs, unpack = ipairs, unpack
 
 local CLASS_SORT_ORDER = CLASS_SORT_ORDER
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
@@ -71,18 +71,18 @@ local function LoadSkin()
 
 	for i = 1, 42 do
 		local button = _G["CalendarDayButton"..i]
-		local eventTexture = _G["CalendarDayButton" .. i .. "EventTexture"];
-		local overlayFrame = _G["CalendarDayButton" .. i .. "OverlayFrame"];
+		local eventTexture = _G["CalendarDayButton"..i.."EventTexture"]
+		local overlayFrame = _G["CalendarDayButton"..i.."OverlayFrame"]
 
-		button:SetFrameLevel(button:GetFrameLevel() + 1);
-		button:Size(91 - E.Border);
-		button:StripTextures();
-		button:CreateBackdrop("Default");
-		button:GetHighlightTexture():SetInside();
-		button:GetHighlightTexture():SetTexture(1, 1, 1, 0.10);
+		button:SetFrameLevel(button:GetFrameLevel() + 1)
+		button:Size(91 - E.Border)
+		button:StripTextures()
+		button:CreateBackdrop("Default")
+		button:GetHighlightTexture():SetInside()
+		button:GetHighlightTexture():SetTexture(1, 1, 1, 0.10)
 
-		eventTexture:SetInside();
-		overlayFrame:SetInside();
+		eventTexture:SetInside()
+		overlayFrame:SetInside()
 
 		for j = 1, 4 do
 			local EventButton = _G["CalendarDayButton"..i.."EventButton"..j]
@@ -90,14 +90,14 @@ local function LoadSkin()
 			EventButton:StyleButton()
 		end
 
-		button:ClearAllPoints();
+		button:ClearAllPoints()
 
-		if(i == 1) then
-			button:Point("TOPLEFT", CalendarWeekday1Background, "BOTTOMLEFT", E.Spacing, 0);
-		elseif(mod(i, 7) == 1) then
-			button:Point("TOPLEFT", _G["CalendarDayButton" .. (i - 7)], "BOTTOMLEFT", 0, -E.Border);
+		if i == 1 then
+			button:Point("TOPLEFT", CalendarWeekday1Background, "BOTTOMLEFT", E.Spacing, 0)
+		elseif mod(i, 7) == 1 then
+			button:Point("TOPLEFT", _G["CalendarDayButton"..(i - 7)], "BOTTOMLEFT", 0, -E.Border)
 		else
-			button:Point("TOPLEFT", _G["CalendarDayButton" .. (i - 1)], "TOPRIGHT", E.Border, 0);
+			button:Point("TOPLEFT", _G["CalendarDayButton"..(i - 1)], "TOPRIGHT", E.Border, 0)
 		end
 	end
 
@@ -282,4 +282,4 @@ local function LoadSkin()
 	S:HandleButton(CalendarEventPickerCloseButton, true)
 end
 
-S:AddCallbackForAddon("Blizzard_Calendar", "Calendar", LoadSkin);
+S:AddCallbackForAddon("Blizzard_Calendar", "Calendar", LoadSkin)

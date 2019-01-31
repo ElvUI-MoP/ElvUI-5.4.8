@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
 local time = time
@@ -15,7 +15,7 @@ local combatTime = 0
 local timeStamp = 0
 local lastSegment = 0
 local lastPanel
-local displayString = "";
+local displayString = ""
 
 local function Reset()
 	timeStamp = 0
@@ -37,11 +37,11 @@ end
 local function OnEvent(self, event, ...)
 	lastPanel = self
 
-	if(event == "PLAYER_ENTERING_WORLD") then
+	if event == "PLAYER_ENTERING_WORLD" then
 		playerID = E.myguid
 	elseif event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_LEAVE_COMBAT" then
 		local now = time()
-		if(now - lastSegment > 20) then
+		if now - lastSegment > 20 then
 			Reset()
 		end
 		lastSegment = now
@@ -51,14 +51,14 @@ local function OnEvent(self, event, ...)
 		local id = select(4, ...)
 
 		if id == playerID or id == petID then
-			if(timeStamp == 0) then timeStamp = select(1, ...) end
+			if timeStamp == 0 then timeStamp = select(1, ...) end
 			local overHeal = select(16, ...)
 			lastSegment = timeStamp
 			combatTime = select(1, ...) - timeStamp
 			lastHealAmount = select(15, ...)
 			healTotal = healTotal + max(0, lastHealAmount - overHeal)
 		end
-	elseif(event == "UNIT_PET") then
+	elseif event == "UNIT_PET" then
 		petID = UnitGUID("pet")
 	end
 
@@ -73,10 +73,10 @@ end
 local function ValueColorUpdate(hex)
 	displayString = join("", "%s: ", hex, "%s")
 
-	if(lastPanel ~= nil) then
+	if lastPanel ~= nil then
 		OnEvent(lastPanel)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true;
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("HPS", {"PLAYER_ENTERING_WORLD", "COMBAT_LOG_EVENT_UNFILTERED", "PLAYER_LEAVE_COMBAT", "PLAYER_REGEN_DISABLED", "UNIT_PET"}, OnEvent, nil, OnClick, nil, nil, L["HPS"])

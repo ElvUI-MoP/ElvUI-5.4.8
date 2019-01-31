@@ -24,7 +24,7 @@ local function LoadSkin()
 			if frame and not frame.isSkinned then
 				local name = frame:GetName()
 				frame:SetAlpha(1)
-				if not frame.hooked then hooksecurefunc(frame, "SetAlpha", forceAlpha);frame.hooked = true end
+				if not frame.hooked then hooksecurefunc(frame, "SetAlpha", forceAlpha) frame.hooked = true end
 
 				frame:DisableDrawLayer("OVERLAY")
 				frame:CreateBackdrop("Transparent")
@@ -61,7 +61,7 @@ local function LoadSkin()
 			if frame and not frame.isSkinned then
 				local name = frame:GetName()
 				frame:SetAlpha(1)
-				if not frame.hooked then hooksecurefunc(frame, "SetAlpha", forceAlpha);frame.hooked = true end
+				if not frame.hooked then hooksecurefunc(frame, "SetAlpha", forceAlpha) frame.hooked = true end
 
 				frame:DisableDrawLayer("OVERLAY")
 				frame:CreateBackdrop("Transparent")

@@ -51,7 +51,7 @@ function UF:Construct_Raid40Frames()
 	UF:Update_FontStrings()
 	self.unitframeType = "raid40"
 
-	UF:Update_Raid40Frames(self, UF.db["units"]["raid40"])
+	UF:Update_Raid40Frames(self, UF.db.units.raid40)
 
 	return self
 end
@@ -68,11 +68,11 @@ function UF:Raid40SmartVisibility(event)
 	if not InCombatLockdown() then
 		self.isInstanceForced = nil
 		local inInstance, instanceType = IsInInstance()
-		if(inInstance and (instanceType == "raid" or instanceType == "pvp")) then
-			local _, _, _, _, maxPlayers, _, _, mapID = GetInstanceInfo()
+		if inInstance and (instanceType == "raid" or instanceType == "pvp") then
+			local _, _, _, _, maxPlayers, _, _, instanceMapID = GetInstanceInfo()
 
-			if(UF.mapIDs[mapID]) then
-				maxPlayers = UF.mapIDs[mapID]
+			if UF.instanceMapIDs[instanceMapID] then
+				maxPlayers = UF.instanceMapIDs[instanceMapID]
 			end
 
 			UnregisterStateDriver(self, "visibility")
@@ -81,17 +81,17 @@ function UF:Raid40SmartVisibility(event)
 				self:Show()
 				self.isInstanceForced = true
 				self.blockVisibilityChanges = false
-				if(ElvUF_Raid40.numGroups ~= E:Round(maxPlayers/5) and event) then
+				if ElvUF_Raid40.numGroups ~= E:Round(maxPlayers/5) and event then
 					UF:CreateAndUpdateHeaderGroup("raid40")
 				end
 			else
-				self:Hide();
+				self:Hide()
 				self.blockVisibilityChanges = true
 			end
 		elseif self.db.visibility then
 			RegisterStateDriver(self, "visibility", self.db.visibility)
 			self.blockVisibilityChanges = false
-			if(ElvUF_Raid40.numGroups ~= self.db.numGroups) then
+			if ElvUF_Raid40.numGroups ~= self.db.numGroups then
 				UF:CreateAndUpdateHeaderGroup("raid40")
 			end
 		end
@@ -111,11 +111,11 @@ function UF:Update_Raid40Header(header, db)
 		headerHolder:ClearAllPoints()
 		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
-		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid-40 Frames"], nil, nil, nil, "ALL,RAID")
+		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid-40 Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,raid40,generalGroup")
 
 		headerHolder:RegisterEvent("PLAYER_ENTERING_WORLD")
 		headerHolder:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-		headerHolder:SetScript("OnEvent", UF["Raid40SmartVisibility"])
+		headerHolder:SetScript("OnEvent", UF.Raid40SmartVisibility)
 		headerHolder.positioned = true
 	end
 
@@ -130,7 +130,7 @@ function UF:Update_Raid40Frames(frame, db)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
 
 	do
-		if(self.thinBorders) then
+		if self.thinBorders then
 			frame.SPACING = 0
 			frame.BORDER = E.mult
 		else
@@ -217,4 +217,4 @@ function UF:Update_Raid40Frames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF["headerstoload"]["raid40"] = true
+UF.headerstoload.raid40 = true

@@ -53,9 +53,9 @@ function AB:DeactivateBindMode(save)
 end
 
 function AB:BindHide()
-	bind:ClearAllPoints();
-	bind:Hide();
-	GameTooltip:Hide();
+	bind:ClearAllPoints()
+	bind:Hide()
+	GameTooltip:Hide()
 end
 
 function AB:BindListener(key)
@@ -68,7 +68,7 @@ function AB:BindListener(key)
 		end
 		E:Print(format(L["All keybindings cleared for |cff00ff00%s|r."], bind.button.name))
 		self:BindUpdate(bind.button, bind.spellmacro)
-		if bind.spellmacro~="MACRO" then GameTooltip:Hide() end
+		if bind.spellmacro ~= "MACRO" then GameTooltip:Hide() end
 		return
 	end
 
@@ -121,14 +121,14 @@ end
 function AB:BindUpdate(button, spellmacro)
 	if not bind.active or InCombatLockdown() then return end
 
-	bind.button = button;
-	bind.spellmacro = spellmacro;
+	bind.button = button
+	bind.spellmacro = spellmacro
 
-	bind:ClearAllPoints();
-	bind:SetAllPoints(button);
-	bind:Show();
+	bind:ClearAllPoints()
+	bind:SetAllPoints(button)
+	bind:Show()
 
-	ShoppingTooltip1:Hide();
+	ShoppingTooltip1:Hide()
 
 	if spellmacro == "FLYOUT" then
 		bind.button.name = GetSpellInfo(button.spellID)
@@ -138,15 +138,16 @@ function AB:BindUpdate(button, spellmacro)
 		GameTooltip:SetPoint("BOTTOM", bind, "TOP", 0, 1)
 		GameTooltip:AddLine(bind.button.name, 1, 1, 1)
 		bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
-			if #bind.button.bindings == 0 then
-				GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
-			else
-				GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
-				for i = 1, #bind.button.bindings do
-					GameTooltip:AddDoubleLine(i, bind.button.bindings[i])
-				end
+
+		if #bind.button.bindings == 0 then
+			GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
+		else
+			GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+			for i = 1, #bind.button.bindings do
+				GameTooltip:AddDoubleLine(i, bind.button.bindings[i])
 			end
-			GameTooltip:Show()
+		end
+		GameTooltip:Show()
 	elseif spellmacro == "SPELL" then
 		bind.button.id = SpellBook_GetSpellBookSlot(bind.button)
 		bind.button.name = GetSpellBookItemName(bind.button.id, SpellBookFrame.bookType)
@@ -271,7 +272,8 @@ function AB:RegisterButton(b, override)
 	local stance = StanceButton1:GetScript("OnClick")
 	local pet = PetActionButton1:GetScript("OnClick")
 	local button = SecureActionButton_OnClick
-	if b.IsProtected and b.GetObjectType and b.GetScript and b:GetObjectType() == "CheckButton" and b:IsProtected() then
+
+	if b.IsProtected and b.IsObjectType and b.GetScript and b:IsObjectType("CheckButton") and b:IsProtected() then
 		local script = b:GetScript("OnClick")
 		if override then
 			b:HookScript("OnEnter", function(b) self:BindUpdate(b) end)

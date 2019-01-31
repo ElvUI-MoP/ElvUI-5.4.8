@@ -407,12 +407,12 @@ local function LoadSkin()
 					if quality then
 						r, g, b = GetItemQualityColor(quality)
 					else
-						r, g, b = unpack(E["media"].bordercolor)
+						r, g, b = unpack(E.media.bordercolor)
 					end
 				end
 
 				if stype == 4 then
-					result.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					result.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					result.icon:SetTexCoord(0.16796875, 0.51171875, 0.03125, 0.71875)
 				else
 					result.backdrop:SetBackdropBorderColor(r, g, b)

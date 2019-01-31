@@ -17,7 +17,7 @@ function UF:Construct_PartyFrames()
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
 	self.RaisedElementParent = CreateFrame("Frame", nil, self)
-	self.RaisedElementParent.TextureParent = CreateFrame('Frame', nil, self.RaisedElementParent)
+	self.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, self.RaisedElementParent)
 	self.RaisedElementParent:SetFrameLevel(self:GetFrameLevel() + 100)
 	self.BORDER = E.Border
 	self.SPACING = E.Spacing
@@ -27,6 +27,8 @@ function UF:Construct_PartyFrames()
 		self.MouseGlow = UF:Construct_MouseGlow(self)
 		self.TargetGlow = UF:Construct_TargetGlow(self)
 		self.Name = UF:Construct_NameText(self)
+		self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
+
 		self.originalParent = self:GetParent()
 
 		self.childType = "pet"
@@ -59,6 +61,7 @@ function UF:Construct_PartyFrames()
 		self.ReadyCheckIndicator = UF:Construct_ReadyCheckIcon(self)
 		self.HealthPrediction = UF:Construct_HealComm(self)
 		self.GPS = UF:Construct_GPS(self)
+		self.Castbar = UF:Construct_Castbar(self)
 		self.customTexts = {}
 
 		self.unitframeType = "party"
@@ -69,7 +72,7 @@ function UF:Construct_PartyFrames()
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 
-	UF:Update_PartyFrames(self, UF.db["units"]["party"])
+	UF:Update_PartyFrames(self, UF.db.units.party)
 
 	return self
 end
@@ -84,11 +87,11 @@ function UF:Update_PartyHeader(header, db)
 		headerHolder:ClearAllPoints()
 		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
-		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY,ARENA")
+		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY,ARENA", nil, "unitframe,party,generalGroup")
 
 		headerHolder:RegisterEvent("PLAYER_ENTERING_WORLD")
 		headerHolder:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-		headerHolder:SetScript("OnEvent", UF["PartySmartVisibility"])
+		headerHolder:SetScript("OnEvent", UF.PartySmartVisibility)
 		headerHolder.positioned = true
 	end
 
@@ -123,10 +126,10 @@ function UF:Update_PartyFrames(frame, db)
 
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame.colors = ElvUF.colors
-	frame:RegisterForClicks(self.db.targetOnMouseDown and 'AnyDown' or 'AnyUp')
+	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
 
 	do
-		if(self.thinBorders) then
+		if self.thinBorders then
 			frame.SPACING = 0
 			frame.BORDER = E.mult
 		else
@@ -140,8 +143,8 @@ function UF:Update_PartyFrames(frame, db)
 
 		frame.USE_POWERBAR = db.power.enable
 		frame.POWERBAR_DETACHED = db.power.detachFromFrame
-		frame.USE_INSET_POWERBAR = not frame.POWERBAR_DETACHED and db.power.width == 'inset' and frame.USE_POWERBAR
-		frame.USE_MINI_POWERBAR = (not frame.POWERBAR_DETACHED and db.power.width == 'spaced' and frame.USE_POWERBAR)
+		frame.USE_INSET_POWERBAR = not frame.POWERBAR_DETACHED and db.power.width == "inset" and frame.USE_POWERBAR
+		frame.USE_MINI_POWERBAR = (not frame.POWERBAR_DETACHED and db.power.width == "spaced" and frame.USE_POWERBAR)
 		frame.USE_POWERBAR_OFFSET = db.power.offset ~= 0 and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
 		frame.POWERBAR_OFFSET = frame.USE_POWERBAR_OFFSET and db.power.offset or 0
 
@@ -202,6 +205,8 @@ function UF:Update_PartyFrames(frame, db)
 
 		UF:Configure_HealthBar(frame)
 
+		UF:Configure_RaidIcon(frame)
+
 		UF:UpdateNameSettings(frame, frame.childType)
 	else
 		if not InCombatLockdown() then
@@ -221,10 +226,12 @@ function UF:Update_PartyFrames(frame, db)
 		UF:Configure_Threat(frame)
 
 		UF:EnableDisable_Auras(frame)
-		UF:Configure_Auras(frame, 'Buffs')
-		UF:Configure_Auras(frame, 'Debuffs')
+		UF:Configure_Auras(frame, "Buffs")
+		UF:Configure_Auras(frame, "Debuffs")
 
 		UF:Configure_RaidDebuffs(frame)
+
+		UF:Configure_Castbar(frame)
 
 		UF:Configure_RaidIcon(frame)
 
@@ -252,4 +259,4 @@ function UF:Update_PartyFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF["headerstoload"]["party"] = {nil, "ELVUI_UNITPET, ELVUI_UNITTARGET"};
+UF.headerstoload.party = {nil, "ELVUI_UNITPET, ELVUI_UNITTARGET"}

@@ -77,8 +77,8 @@ local UNKNOWN = UNKNOWN
 ------------------------------------------------------------------------
 
 local function UnitName(unit)
-	local name, realm = _G.UnitName(unit);
-	if(name == UNKNOWN and E.myclass == "MONK" and UnitIsUnit(unit, "pet")) then
+	local name, realm = _G.UnitName(unit)
+	if name == UNKNOWN and E.myclass == "MONK" and UnitIsUnit(unit, "pet") then
 		name = UNITNAME_SUMMON_TITLE17:format(_G.UnitName("player"))
 	else
 		return name, realm
@@ -373,7 +373,7 @@ end
 ElvUF.Tags.Events["powercolor"] = "UNIT_DISPLAYPOWER UNIT_POWER_FREQUENT UNIT_MAXPOWER"
 ElvUF.Tags.Methods["powercolor"] = function(unit)
 	local _, pToken, altR, altG, altB = UnitPowerType(unit)
-	local color = ElvUF["colors"].power[pToken]
+	local color = ElvUF.colors.power[pToken]
 	if color then
 		return Hex(color[1], color[2], color[3])
 	else
@@ -453,8 +453,8 @@ ElvUF.Tags.Methods["power:max"] = function(unit)
 end
 
 ElvUF.Tags.Methods["manacolor"] = function()
-	local altR, altG, altB = PowerBarColor["MANA"].r, PowerBarColor["MANA"].g, PowerBarColor["MANA"].b
-	local color = ElvUF["colors"].power["MANA"]
+	local altR, altG, altB = PowerBarColor.MANA.r, PowerBarColor.MANA.g, PowerBarColor.MANA.b
+	local color = ElvUF.colors.power.MANA
 	if color then
 		return Hex(color[1], color[2], color[3])
 	else
@@ -540,7 +540,7 @@ ElvUF.Tags.Methods["difficultycolor"] = function(unit)
 			local c = GetRelativeDifficultyColor(teamLevel, level)
 			r, g, b = c.r, c.g, c.b
 		else
-			local c = QuestDifficultyColors["difficult"]
+			local c = QuestDifficultyColors.difficult
 			r, g, b = c.r, c.g, c.b
 		end
 	else
@@ -570,7 +570,7 @@ ElvUF.Tags.Methods["namecolor"] = function(unit)
 		if not class then return "" end
 		return Hex(class[1], class[2], class[3])
 	elseif unitReaction then
-		local reaction = ElvUF["colors"].reaction[unitReaction]
+		local reaction = ElvUF.colors.reaction[unitReaction]
 		return Hex(reaction[1], reaction[2], reaction[3])
 	else
 		return "|cFFC2C2C2"
@@ -662,7 +662,7 @@ end
 ElvUF.Tags.Events["threat:percent"] = "UNIT_THREAT_LIST_UPDATE GROUP_ROSTER_UPDATE"
 ElvUF.Tags.Methods["threat:percent"] = function(unit)
 	local _, _, percent = UnitDetailedThreatSituation("player", unit)
-	if(percent and percent > 0) and (IsInGroup() or UnitExists("pet")) then
+	if (percent and percent > 0) and (IsInGroup() or UnitExists("pet")) then
 		return format("%.0f%%", percent)
 	else 
 		return nil
@@ -672,7 +672,7 @@ end
 ElvUF.Tags.Events["threat:current"] = "UNIT_THREAT_LIST_UPDATE GROUP_ROSTER_UPDATE"
 ElvUF.Tags.Methods["threat:current"] = function(unit)
 	local _, _, percent, _, threatvalue = UnitDetailedThreatSituation("player", unit)
-	if(percent and percent > 0) and (IsInGroup() or UnitExists("pet")) then
+	if (percent and percent > 0) and (IsInGroup() or UnitExists("pet")) then
 		return E:ShortValue(threatvalue)
 	else 
 		return nil
@@ -682,7 +682,7 @@ end
 ElvUF.Tags.Events["threatcolor"] = "UNIT_THREAT_LIST_UPDATE GROUP_ROSTER_UPDATE"
 ElvUF.Tags.Methods["threatcolor"] = function(unit)
 	local _, status = UnitDetailedThreatSituation("player", unit)
-	if(status) and (IsInGroup() or UnitExists("pet")) then
+	if (status) and (IsInGroup() or UnitExists("pet")) then
 		return Hex(GetThreatStatusColor(status))
 	else 
 		return nil
@@ -692,21 +692,22 @@ end
 local unitStatus = {}
 ElvUF.Tags.OnUpdateThrottle["statustimer"] = 1
 ElvUF.Tags.Methods["statustimer"] = function(unit)
-	if not UnitIsPlayer(unit) then return; end
+	if not UnitIsPlayer(unit) then return end
+
 	local guid = UnitGUID(unit)
-	if(UnitIsAFK(unit)) then
+	if UnitIsAFK(unit) then
 		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "AFK" then
 			unitStatus[guid] = {"AFK", GetTime()}
 		end
-	elseif(UnitIsDND(unit)) then
+	elseif UnitIsDND(unit) then
 		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "DND" then
 			unitStatus[guid] = {"DND", GetTime()}
 		end
-	elseif(UnitIsDead(unit)) or (UnitIsGhost(unit))then
+	elseif UnitIsDead(unit) or UnitIsGhost(unit) then
 		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Dead" then
 			unitStatus[guid] = {"Dead", GetTime()}
 		end
-	elseif(not UnitIsConnected(unit)) then
+	elseif not UnitIsConnected(unit) then
 		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Offline" then
 			unitStatus[guid] = {"Offline", GetTime()}
 		end
@@ -727,7 +728,7 @@ end
 
 ElvUF.Tags.OnUpdateThrottle["pvptimer"] = 1
 ElvUF.Tags.Methods["pvptimer"] = function(unit)
-	if(UnitIsPVPFreeForAll(unit) or UnitIsPVP(unit)) then
+	if UnitIsPVPFreeForAll(unit) or UnitIsPVP(unit) then
 		local timer = GetPVPTimer()
 
 		if timer ~= 301000 and timer ~= -1 then
@@ -754,38 +755,38 @@ local Harmony = {
 local function GetClassPower(class)
 	local min, max, r, g, b = 0, 0, 0, 0, 0
 	local spec = GetSpecialization()
-	if(class == "PALADIN") then
-		min = UnitPower("player", SPELL_POWER_HOLY_POWER);
-		max = UnitPowerMax("player", SPELL_POWER_HOLY_POWER);
+	if class == "PALADIN" then
+		min = UnitPower("player", SPELL_POWER_HOLY_POWER)
+		max = UnitPowerMax("player", SPELL_POWER_HOLY_POWER)
 		r, g, b = 228/255, 225/255, 16/255
-	elseif(class == "MONK") then
+	elseif class == "MONK" then
 		min = UnitPower("player", SPELL_POWER_CHI)
 		max = UnitPowerMax("player", SPELL_POWER_CHI)
 		r, g, b = unpack(Harmony[min])
-	elseif(class == "DRUID" and GetShapeshiftFormID() == MOONKIN_FORM) then
+	elseif class == "DRUID" and GetShapeshiftFormID() == MOONKIN_FORM then
 		min = UnitPower("player", SPELL_POWER_ECLIPSE)
 		max = UnitPowerMax("player", SPELL_POWER_ECLIPSE)
-		if(GetEclipseDirection() == "moon") then
+		if GetEclipseDirection() == "moon" then
 			r, g, b = .80, .82,  .60
 		else
 			r, g, b = .30, .52, .90
 		end
-	elseif(class == "PRIEST" and spec == SPEC_PRIEST_SHADOW and UnitLevel("player") > SHADOW_ORBS_SHOW_LEVEL) then
+	elseif class == "PRIEST" and spec == SPEC_PRIEST_SHADOW and UnitLevel("player") > SHADOW_ORBS_SHOW_LEVEL then
 		min = UnitPower("player", SPELL_POWER_SHADOW_ORBS)
 		max = UnitPowerMax("player", SPELL_POWER_SHADOW_ORBS)
 		r, g, b = 1, 1, 1
-	elseif(class == "WARLOCK") then
-		if(spec == SPEC_WARLOCK_DESTRUCTION) then
+	elseif class == "WARLOCK" then
+		if spec == SPEC_WARLOCK_DESTRUCTION then
 			min = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true)
 			max = UnitPowerMax("player", SPELL_POWER_BURNING_EMBERS, true)
 			min = floor(min / 10)
 			max = floor(max / 10)
 			r, g, b = 230/255, 95/255,  95/255
-		elseif(spec == SPEC_WARLOCK_AFFLICTION) then
+		elseif spec == SPEC_WARLOCK_AFFLICTION then
 			min = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
 			max = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
 			r, g, b = 148/255, 130/255, 201/255
-		elseif(spec == SPEC_WARLOCK_DEMONOLOGY) then
+		elseif spec == SPEC_WARLOCK_DEMONOLOGY then
 			min = UnitPower("player", SPELL_POWER_DEMONIC_FURY)
 			max = UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY)
 			r, g, b = 148/255, 130/255, 201/255
@@ -911,10 +912,10 @@ f:SetScript("OnEvent", function()
 	local groupType, groupSize
 	twipe(GroupUnits)
 
-	if(IsInRaid()) then
+	if IsInRaid() then
 		groupType = "raid"
 		groupSize = GetNumGroupMembers()
-	elseif(IsInGroup()) then
+	elseif IsInGroup() then
 		groupType = "party"
 		groupSize = GetNumGroupMembers() - 1
 		GroupUnits["player"] = true
@@ -925,7 +926,7 @@ f:SetScript("OnEvent", function()
 
 	for index = 1, groupSize do
 		local unit = groupType..index
-		if(not UnitIsUnit(unit, "player")) then
+		if not UnitIsUnit(unit, "player") then
 			GroupUnits[unit] = true
 		end
 	end
@@ -934,11 +935,11 @@ end)
 ElvUF.Tags.OnUpdateThrottle["nearbyplayers:8"] = 0.25
 ElvUF.Tags.Methods["nearbyplayers:8"] = function(unit)
 	local unitsInRange, d = 0
-	if(UnitIsConnected(unit)) then
-		for groupUnit, _ in pairs(GroupUnits) do
-			if(not UnitIsUnit(unit, groupUnit) and UnitIsConnected(groupUnit)) then
+	if UnitIsConnected(unit) then
+		for groupUnit in pairs(GroupUnits) do
+			if not UnitIsUnit(unit, groupUnit) and UnitIsConnected(groupUnit) then
 				d = E:GetDistance(unit, groupUnit)
-				if(d and d <= 8) then
+				if d and d <= 8 then
 					unitsInRange = unitsInRange + 1
 				end
 			end
@@ -951,11 +952,11 @@ end
 ElvUF.Tags.OnUpdateThrottle["nearbyplayers:10"] = 0.25
 ElvUF.Tags.Methods["nearbyplayers:10"] = function(unit)
 	local unitsInRange, d = 0
-	if(UnitIsConnected(unit)) then
-		for groupUnit, _ in pairs(GroupUnits) do
-			if(not UnitIsUnit(unit, groupUnit) and UnitIsConnected(groupUnit)) then
+	if UnitIsConnected(unit) then
+		for groupUnit in pairs(GroupUnits) do
+			if not UnitIsUnit(unit, groupUnit) and UnitIsConnected(groupUnit) then
 				d = E:GetDistance(unit, groupUnit)
-				if(d and d <= 10) then
+				if d and d <= 10 then
 					unitsInRange = unitsInRange + 1
 				end
 			end
@@ -968,11 +969,11 @@ end
 ElvUF.Tags.OnUpdateThrottle["nearbyplayers:30"] = 0.25
 ElvUF.Tags.Methods["nearbyplayers:30"] = function(unit)
 	local unitsInRange, d = 0
-	if(UnitIsConnected(unit)) then
-		for groupUnit, _ in pairs(GroupUnits) do
-			if(not UnitIsUnit(unit, groupUnit) and UnitIsConnected(groupUnit)) then
+	if UnitIsConnected(unit) then
+		for groupUnit in pairs(GroupUnits) do
+			if not UnitIsUnit(unit, groupUnit) and UnitIsConnected(groupUnit) then
 				d = E:GetDistance(unit, groupUnit)
-				if(d and d <= 30) then
+				if d and d <= 30 then
 					unitsInRange = unitsInRange + 1
 				end
 			end
@@ -985,10 +986,10 @@ end
 ElvUF.Tags.OnUpdateThrottle["distance"] = 0.1
 ElvUF.Tags.Methods["distance"] = function(unit)
 	local d
-	if(UnitIsConnected(unit) and not UnitIsUnit(unit, "player")) then
+	if UnitIsConnected(unit) and not UnitIsUnit(unit, "player") then
 		d = E:GetDistance("player", unit)
 
-		if(d) then
+		if d then
 			d = format("%.1f", d)
 		end
 	end
@@ -996,8 +997,8 @@ ElvUF.Tags.Methods["distance"] = function(unit)
 	return d or ""
 end
 
-local baseSpeed = 7;
-local speedText = SPEED;
+local baseSpeed = 7
+local speedText = SPEED
 
 ElvUF.Tags.OnUpdateThrottle["speed:percent"] = 0.1
 ElvUF.Tags.Methods["speed:percent"] = function(unit)
@@ -1070,9 +1071,9 @@ end
 ElvUF.Tags.Events["classificationcolor"] = "UNIT_CLASSIFICATION_CHANGED"
 ElvUF.Tags.Methods["classificationcolor"] = function(unit)
 	local c = UnitClassification(unit)
-	if(c == "rare" or c == "elite") then
+	if c == "rare" or c == "elite" then
 		return Hex(1, 0.5, 0.25) --Orange
-	elseif(c == "rareelite" or c == "worldboss") then
+	elseif c == "rareelite" or c == "worldboss" then
 		return Hex(1, 0, 0) --Red
 	end
 end

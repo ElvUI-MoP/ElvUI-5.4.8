@@ -52,7 +52,7 @@ function UF:Construct_RaidFrames()
 
 	self.unitframeType = "raid"
 
-	UF:Update_RaidFrames(self, UF.db["units"]["raid"])
+	UF:Update_RaidFrames(self, UF.db.units.raid)
 
 	return self
 end
@@ -68,11 +68,11 @@ function UF:RaidSmartVisibility(event)
 	if not InCombatLockdown() then
 		self.isInstanceForced = nil
 		local inInstance, instanceType = IsInInstance()
-		if(inInstance and (instanceType == "raid" or instanceType == "pvp")) then
-			local _, _, _, _, maxPlayers, _, _, mapID = GetInstanceInfo()
+		if inInstance and (instanceType == "raid" or instanceType == "pvp") then
+			local _, _, _, _, maxPlayers, _, _, instanceMapID = GetInstanceInfo()
 
-			if UF.mapIDs[mapID] then
-				maxPlayers = UF.mapIDs[mapID]
+			if UF.instanceMapIDs[instanceMapID] then
+				maxPlayers = UF.instanceMapIDs[instanceMapID]
 			end
 
 			UnregisterStateDriver(self, "visibility")
@@ -81,7 +81,7 @@ function UF:RaidSmartVisibility(event)
 				self:Show()
 				self.isInstanceForced = true
 				self.blockVisibilityChanges = false
-				if(ElvUF_Raid.numGroups ~= E:Round(maxPlayers/5) and event) then
+				if ElvUF_Raid.numGroups ~= E:Round(maxPlayers/5) and event then
 					UF:CreateAndUpdateHeaderGroup("raid")
 				end
 			else
@@ -111,11 +111,11 @@ function UF:Update_RaidHeader(header, db)
 		headerHolder:ClearAllPoints()
 		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
-		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID")
+		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,raid,generalGroup")
 
 		headerHolder:RegisterEvent("PLAYER_ENTERING_WORLD")
 		headerHolder:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-		headerHolder:SetScript("OnEvent", UF["RaidSmartVisibility"])
+		headerHolder:SetScript("OnEvent", UF.RaidSmartVisibility)
 		headerHolder.positioned = true
 	end
 
@@ -217,4 +217,4 @@ function UF:Update_RaidFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF["headerstoload"]["raid"] = true
+UF.headerstoload.raid = true

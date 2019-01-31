@@ -367,9 +367,8 @@ function M:UpdateSettings()
 		MiniMapBattlefieldFrame:CreateBackdrop()
 		MiniMapBattlefieldFrame:Size(28)
 
-		local factionGroup = E.myfaction
 		MiniMapBattlefieldFrame.texture = MiniMapBattlefieldFrame:CreateTexture(nil, "OVERLAY")
-		MiniMapBattlefieldFrame.texture:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..factionGroup)
+		MiniMapBattlefieldFrame.texture:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..E.myfaction)
 		MiniMapBattlefieldFrame.texture:SetTexCoord(unpack(E.TexCoords))
 		MiniMapBattlefieldFrame.texture:SetInside(MiniMapBattlefieldFrame.backdrop)
 	end
@@ -583,7 +582,7 @@ function M:Initialize()
 		FeedbackUIButton:Kill()
 	end
 
-	E:CreateMover(MMHolder, "MinimapMover", L["Minimap"], nil, nil, MinimapPostDrag)
+	E:CreateMover(MMHolder, "MinimapMover", L["Minimap"], nil, nil, MinimapPostDrag, nil, nil, "maps,minimap")
 
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)

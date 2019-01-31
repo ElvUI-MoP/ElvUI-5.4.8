@@ -11,14 +11,18 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 function UF:Construct_PowerBar(frame, bg, text, textPos)
 	local power = CreateFrame("StatusBar", nil, frame)
-	UF["statusbars"][power] = true
+	UF.statusbars[power] = true
+
+	power.RaisedElementParent = CreateFrame("Frame", nil, power)
+	power.RaisedElementParent:SetFrameLevel(power:GetFrameLevel() + 100)
+	power.RaisedElementParent:SetAllPoints()
 
 	power.PostUpdate = self.PostUpdatePower
 
 	if bg then
 		power.bg = power:CreateTexture(nil, "BORDER")
 		power.bg:SetAllPoints()
-		power.bg:SetTexture(E["media"].blankTex)
+		power.bg:SetTexture(E.media.blankTex)
 		power.bg.multiplier = 0.2
 	end
 
@@ -34,9 +38,9 @@ function UF:Construct_PowerBar(frame, bg, text, textPos)
 		power.value:Point(textPos, frame.Health, textPos, x, 0)
 	end
 
-	power.colorDisconnected = false;
-	power.colorTapping = false;
-	power:CreateBackdrop("Default", nil, nil, self.thinBorders, true);
+	power.colorDisconnected = false
+	power.colorTapping = false
+	power:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
 	return power
 end
@@ -56,27 +60,37 @@ function UF:Configure_Power(frame)
 		power.Smooth = self.db.smoothbars
 		power.SmoothSpeed = self.db.smoothSpeed * 10
 
+		--Text
 		local attachPoint = self:GetObjectAnchorPoint(frame, db.power.attachTextTo)
 		power.value:ClearAllPoints()
 		power.value:Point(db.power.position, attachPoint, db.power.position, db.power.xOffset, db.power.yOffset)
 		frame:Tag(power.value, db.power.text_format)
 
 		if db.power.attachTextTo == "Power" then
-			power.value:SetParent(power)
+			power.value:SetParent(power.RaisedElementParent)
 		else
 			power.value:SetParent(frame.RaisedElementParent)
 		end
 
+		if db.power.reverseFill then
+			power:SetReverseFill(true)
+		else
+			power:SetReverseFill(false)
+		end
+
+		--Colors
 		power.colorClass = nil
 		power.colorReaction = nil
 		power.colorPower = nil
-		if self.db["colors"].powerclass then
+
+		if self.db.colors.powerclass then
 			power.colorClass = true
 			power.colorReaction = true
 		else
 			power.colorPower = true
 		end
 
+		--Fix height in case it is lower than the theme allows
 		local heightChanged = false
 		if (not self.thinBorders and not E.PixelMode) and frame.POWERBAR_HEIGHT < 7 then --A height of 7 means 6px for borders and just 1px for the actual power statusbar
 			frame.POWERBAR_HEIGHT = 7
@@ -93,6 +107,7 @@ function UF:Configure_Power(frame)
 			UF:Configure_HealthBar(frame)
 		end
 
+		--Position
 		power:ClearAllPoints()
 		if frame.POWERBAR_DETACHED then
 			power:Width(frame.POWERBAR_WIDTH - ((frame.BORDER + frame.SPACING)*2))
@@ -105,9 +120,9 @@ function UF:Configure_Power(frame)
 				power:Point("BOTTOMLEFT", power.Holder, "BOTTOMLEFT", frame.BORDER+frame.SPACING, frame.BORDER+frame.SPACING)
 				--Currently only Player and Target can detach power bars, so doing it this way is okay for now
 				if frame.unitframeType and frame.unitframeType == "player" then
-					E:CreateMover(power.Holder, "PlayerPowerBarMover", L["Player Powerbar"], nil, nil, nil, "ALL,SOLO")
+					E:CreateMover(power.Holder, "PlayerPowerBarMover", L["Player Powerbar"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,player,power")
 				elseif frame.unitframeType and frame.unitframeType == "target" then
-					E:CreateMover(power.Holder, "TargetPowerBarMover", L["Target Powerbar"], nil, nil, nil, "ALL,SOLO")
+					E:CreateMover(power.Holder, "TargetPowerBarMover", L["Target Powerbar"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,target,power")
 				end
 			else
 				power.Holder:Size(frame.POWERBAR_WIDTH, frame.POWERBAR_HEIGHT)
@@ -120,13 +135,13 @@ function UF:Configure_Power(frame)
 			power:SetFrameLevel(50) --RaisedElementParent uses 100, we want lower value to allow certain icons and texts to appear above power
 		elseif frame.USE_POWERBAR_OFFSET then
 			if frame.ORIENTATION == "LEFT" then
-				power:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.POWERBAR_OFFSET + frame.STAGGER_WIDTH, -frame.POWERBAR_OFFSET)
+				power:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.POWERBAR_OFFSET + (frame.STAGGER_WIDTH or 0), -frame.POWERBAR_OFFSET)
 				power:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 			elseif frame.ORIENTATION == "MIDDLE" then
-				power:Point("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.POWERBAR_OFFSET -frame.CLASSBAR_YOFFSET)
+				power:Point("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.POWERBAR_OFFSET - frame.CLASSBAR_YOFFSET)
 				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -frame.BORDER - frame.SPACING, frame.BORDER)
 			else
-				power:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.POWERBAR_OFFSET - frame.STAGGER_WIDTH, -frame.POWERBAR_OFFSET)
+				power:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.POWERBAR_OFFSET - (frame.STAGGER_WIDTH or 0), -frame.POWERBAR_OFFSET)
 				power:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 			end
 			power:SetFrameLevel(frame.Health:GetFrameLevel() -5) --Health uses 10
@@ -136,17 +151,17 @@ function UF:Configure_Power(frame)
 			power:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -(frame.BORDER + (frame.BORDER*2)), frame.BORDER + (frame.BORDER*2))
 			power:SetFrameLevel(50)
 		elseif frame.USE_MINI_POWERBAR then
-			power:Height(frame.POWERBAR_HEIGHT  - ((frame.BORDER + frame.SPACING)*2));
+			power:Height(frame.POWERBAR_HEIGHT  - ((frame.BORDER + frame.SPACING)*2))
 
 			if frame.ORIENTATION == "LEFT" then
-				power:Width(frame.POWERBAR_WIDTH - frame.BORDER*2);
-				power:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER*2 + 4) -frame.STAGGER_WIDTH, ((frame.POWERBAR_HEIGHT-frame.BORDER)/2))
+				power:Width(frame.POWERBAR_WIDTH - frame.BORDER*2)
+				power:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER*2 + 4) - (frame.STAGGER_WIDTH or 0), ((frame.POWERBAR_HEIGHT - frame.BORDER)/2))
 			elseif frame.ORIENTATION == "RIGHT" then
-				power:Width(frame.POWERBAR_WIDTH - frame.BORDER*2);
-				power:Point("LEFT", frame, "BOTTOMLEFT", (frame.BORDER*2 + 4) +frame.STAGGER_WIDTH, ((frame.POWERBAR_HEIGHT-frame.BORDER)/2))
+				power:Width(frame.POWERBAR_WIDTH - frame.BORDER*2)
+				power:Point("LEFT", frame, "BOTTOMLEFT", (frame.BORDER*2 + 4) + (frame.STAGGER_WIDTH or 0), ((frame.POWERBAR_HEIGHT - frame.BORDER)/2))
 			else
-				power:Point("LEFT", frame, "BOTTOMLEFT", (frame.BORDER*2 + 4), ((frame.POWERBAR_HEIGHT-frame.BORDER)/2));
-				power:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER*2 + 4) -frame.STAGGER_WIDTH, ((frame.POWERBAR_HEIGHT-frame.BORDER)/2))
+				power:Point("LEFT", frame, "BOTTOMLEFT", (frame.BORDER*2 + 4), ((frame.POWERBAR_HEIGHT - frame.BORDER)/2))
+				power:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER*2 + 4 + (frame.PVPINFO_WIDTH or 0)) - (frame.STAGGER_WIDTH or 0), ((frame.POWERBAR_HEIGHT - frame.BORDER)/2))
 			end
 
 			power:SetFrameLevel(50)
@@ -189,26 +204,17 @@ function UF:Configure_Power(frame)
 		frame:Tag(power.value, "")
 	end
 
-	if frame.DruidAltMana then
-		if db.power.druidMana then
-			frame:EnableElement("DruidAltMana")
-		else
-			frame:DisableElement("DruidAltMana")
-			frame.DruidAltMana:Hide()
-		end
-	end
-
 	--Transparency Settings
 	UF:ToggleTransparentStatusBar(UF.db.colors.transparentPower, frame.Power, frame.Power.bg)
 end
 
 local tokens = {[0] = "MANA", "RAGE", "FOCUS", "ENERGY", "RUNIC_POWER"}
 function UF:PostUpdatePower(unit, _, _, max)
-	local parent = self:GetParent()
+	local parent = self.origParent or self:GetParent()
 
 	if parent.isForced then
 		local pType = random(0, 4)
-		local color = ElvUF['colors'].power[tokens[pType]]
+		local color = ElvUF.colors.power[tokens[pType]]
 		local min = random(1, max)
 		self:SetValue(min)
 
@@ -222,5 +228,10 @@ function UF:PostUpdatePower(unit, _, _, max)
 	local db = parent.db
 	if db and db.power and db.power.hideonnpc then
 		UF:PostNamePosition(parent, unit)
+	end
+
+	--Force update to AdditionalPower in order to reposition text if necessary
+	if parent:IsElementEnabled("AdditionalPower") then
+		E:Delay(0.01, parent.AdditionalPower.ForceUpdate, parent.AdditionalPower) --Delay it slightly so Power text has a chance to clear itself first
 	end
 end

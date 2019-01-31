@@ -140,7 +140,7 @@ function TOTEMS:Initialize()
 
 	self:PositionAndSize()
 
-	E:CreateMover(bar, "TotemBarMover", L["Class Totems"])
+	E:CreateMover(bar, "TotemBarMover", L["Class Totems"], nil, nil, nil, nil, nil, "general,totems")
 	self:ToggleEnable()
 end
 

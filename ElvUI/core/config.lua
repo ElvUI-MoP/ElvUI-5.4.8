@@ -1,27 +1,27 @@
-﻿local E, L, V, P, G = unpack(select(2, ...));
+﻿local E, L, V, P, G = unpack(select(2, ...))
 
-local _G = _G;
-local type, ipairs, tonumber = type, ipairs, tonumber;
-local floor = math.floor;
+local _G = _G
+local type, ipairs, tonumber = type, ipairs, tonumber
+local floor = math.floor
 
-local CreateFrame = CreateFrame;
-local IsAddOnLoaded = IsAddOnLoaded;
-local GetScreenWidth = GetScreenWidth;
-local GetScreenHeight = GetScreenHeight;
-local InCombatLockdown = InCombatLockdown;
-local RESET = RESET;
+local CreateFrame = CreateFrame
+local IsAddOnLoaded = IsAddOnLoaded
+local GetScreenWidth = GetScreenWidth
+local GetScreenHeight = GetScreenHeight
+local InCombatLockdown = InCombatLockdown
+local RESET = RESET
 
 local grid
-local selectedValue = 'ALL'
+local selectedValue = "ALL"
 
 E.ConfigModeLayouts = {
-	'ALL',
-	'GENERAL',
-	'SOLO',
-	'PARTY',
-	'ARENA',
-	'RAID',
-	'ACTIONBARS'
+	"ALL",
+	"GENERAL",
+	"SOLO",
+	"PARTY",
+	"ARENA",
+	"RAID",
+	"ACTIONBARS"
 }
 
 E.ConfigModeLocalizedStrings = {
@@ -35,13 +35,13 @@ E.ConfigModeLocalizedStrings = {
 }
 
 function E:Grid_Show()
-	if(not grid) then
-		E:Grid_Create();
-	elseif(grid.boxSize ~= E.db.gridSize) then
-		grid:Hide();
-		E:Grid_Create();
+	if not grid then
+		E:Grid_Create()
+	elseif grid.boxSize ~= E.db.gridSize then
+		grid:Hide()
+		E:Grid_Create()
 	else
-		grid:Show();
+		grid:Show()
 	end
 end
 
@@ -52,145 +52,177 @@ function E:Grid_Hide()
 end
 
 function E:ToggleConfigMode(override, configType)
-	if InCombatLockdown() then return; end
-	if override ~= nil and override ~= '' then E.ConfigurationMode = override end
+	if InCombatLockdown() then return end
+
+	if override ~= nil and override ~= "" then E.ConfigurationMode = override end
 
 	if E.ConfigurationMode ~= true then
-		if not grid then
-			E:Grid_Create()
-		elseif grid.boxSize ~= E.db.gridSize then
-			grid:Hide()
-			E:Grid_Create()
-		else
-			grid:Show()
-		end
+		E:Grid_Show()
 
 		if not ElvUIMoverPopupWindow then
 			E:CreateMoverPopup()
 		end
 
 		ElvUIMoverPopupWindow:Show()
-		if(IsAddOnLoaded("ElvUI_Config")) then
-			LibStub("AceConfigDialog-3.0-ElvUI"):Close("ElvUI");
-			GameTooltip:Hide();
+
+		if IsAddOnLoaded("ElvUI_Config") then
+			--if E.Libs.AceConfigDialog then
+				LibStub("AceConfigDialog-3.0-ElvUI"):Close("ElvUI")
+			--end
+
+			if not GameTooltip:IsForbidden() then
+				GameTooltip:Hide()
+			end
 		end
 
 		E.ConfigurationMode = true
 	else
+		E:Grid_Hide()
+
 		if ElvUIMoverPopupWindow then
 			ElvUIMoverPopupWindow:Hide()
-		end
-
-		if grid then
-			grid:Hide()
 		end
 
 		E.ConfigurationMode = false
 	end
 
-	if type(configType) ~= 'string' then
+	if type(configType) ~= "string" then
 		configType = nil
 	end
 
-	self:ToggleMovers(E.ConfigurationMode, configType or 'ALL')
+	self:ToggleMovers(E.ConfigurationMode, configType or "ALL")
+end
+
+function E:Grid_GetRegion()
+	if grid then
+		if grid.regionCount and grid.regionCount > 0 then
+			local line = select(grid.regionCount, grid:GetRegions())
+			grid.regionCount = grid.regionCount - 1
+			line:SetAlpha(1)
+			return line
+		else
+			return grid:CreateTexture()
+		end
+	end
 end
 
 function E:Grid_Create()
-	grid = CreateFrame('Frame', 'EGrid', UIParent)
+	if not grid then
+		grid = CreateFrame("Frame", "ElvUIGrid", UIParent)
+		grid:SetFrameStrata("BACKGROUND")
+	else
+		grid.regionCount = 0
+		local numRegions = grid:GetNumRegions()
+		for i = 1, numRegions do
+			local region = select(i, grid:GetRegions())
+			if region and region.IsObjectType and region:IsObjectType("Texture") then
+				grid.regionCount = grid.regionCount + 1
+				region:SetAlpha(0)
+			end
+		end
+	end
+
 	grid.boxSize = E.db.gridSize
 	grid:SetAllPoints(E.UIParent)
 	grid:Show()
 
 	local size = 1
-	local width = E.eyefinity or GetScreenWidth()
-	local ratio = width / GetScreenHeight()
-	local height = GetScreenHeight() * ratio
+	local width = E.eyefinity or E.screenwidth
+	local ratio = width / E.screenheight
+	local height = E.screenheight * ratio
 
 	local wStep = width / E.db.gridSize
 	local hStep = height / E.db.gridSize
 
-	for i = 0, E.db.gridSize do 
-		local tx = grid:CreateTexture(nil, 'BACKGROUND')
-		if i == E.db.gridSize / 2 then 
-			tx:SetTexture(1, 0, 0) 
+	for i = 0, E.db.gridSize do
+		local tx = E:Grid_GetRegion()
+		if i == E.db.gridSize / 2 then
+			tx:SetTexture(1, 0, 0)
+			tx:SetDrawLayer("BACKGROUND", 1)
 		else
-			tx:SetTexture(0, 0, 0) 
+			tx:SetTexture(0, 0, 0)
+			tx:SetDrawLayer("BACKGROUND", 0)
 		end
-		tx:SetPoint("TOPLEFT", grid, "TOPLEFT", i*wStep - (size/2), 0)
-		tx:SetPoint('BOTTOMRIGHT', grid, 'BOTTOMLEFT', i*wStep + (size/2), 0)
+		tx:ClearAllPoints()
+		tx:Point("TOPLEFT", grid, "TOPLEFT", i*wStep - (size/2), 0)
+		tx:Point("BOTTOMRIGHT", grid, "BOTTOMLEFT", i*wStep + (size/2), 0)
 	end
-	height = GetScreenHeight()
+	height = E.screenheight
 
 	do
-		local tx = grid:CreateTexture(nil, 'BACKGROUND')
+		local tx = E:Grid_GetRegion()
 		tx:SetTexture(1, 0, 0)
-		tx:SetPoint("TOPLEFT", grid, "TOPLEFT", 0, -(height/2) + (size/2))
-		tx:SetPoint('BOTTOMRIGHT', grid, 'TOPRIGHT', 0, -(height/2 + size/2))
+		tx:SetDrawLayer("BACKGROUND", 1)
+		tx:ClearAllPoints()
+		tx:Point("TOPLEFT", grid, "TOPLEFT", 0, -(height/2) + (size/2))
+		tx:Point("BOTTOMRIGHT", grid, "TOPRIGHT", 0, -(height/2 + size/2))
 	end
 
 	for i = 1, floor((height/2)/hStep) do
-		local tx = grid:CreateTexture(nil, 'BACKGROUND')
+		local tx = E:Grid_GetRegion()
 		tx:SetTexture(0, 0, 0)
+		tx:SetDrawLayer("BACKGROUND", 0)
+		tx:ClearAllPoints()
+		tx:Point("TOPLEFT", grid, "TOPLEFT", 0, -(height/2+i*hStep) + (size/2))
+		tx:Point("BOTTOMRIGHT", grid, "TOPRIGHT", 0, -(height/2+i*hStep + size/2))
 
-		tx:SetPoint("TOPLEFT", grid, "TOPLEFT", 0, -(height/2+i*hStep) + (size/2))
-		tx:SetPoint('BOTTOMRIGHT', grid, 'TOPRIGHT', 0, -(height/2+i*hStep + size/2))
-
-		tx = grid:CreateTexture(nil, 'BACKGROUND')
+		tx = E:Grid_GetRegion()
 		tx:SetTexture(0, 0, 0)
-
-		tx:SetPoint("TOPLEFT", grid, "TOPLEFT", 0, -(height/2-i*hStep) + (size/2))
-		tx:SetPoint('BOTTOMRIGHT', grid, 'TOPRIGHT', 0, -(height/2-i*hStep + size/2))
+		tx:SetDrawLayer("BACKGROUND", 0)
+		tx:ClearAllPoints()
+		tx:Point("TOPLEFT", grid, "TOPLEFT", 0, -(height/2-i*hStep) + (size/2))
+		tx:Point("BOTTOMRIGHT", grid, "TOPRIGHT", 0, -(height/2-i*hStep + size/2))
 	end
 end
 
 local function ConfigMode_OnClick(self)
 	selectedValue = self.value
 	E:ToggleConfigMode(false, self.value)
-	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, self.value);
+	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, self.value)
 end
 
 local function ConfigMode_Initialize()
-	local info = UIDropDownMenu_CreateInfo();
-	info.func = ConfigMode_OnClick;
+	local info = UIDropDownMenu_CreateInfo()
+	info.func = ConfigMode_OnClick
 
 	for _, configMode in ipairs(E.ConfigModeLayouts) do
-		info.text = E.ConfigModeLocalizedStrings[configMode];
-		info.value = configMode;
-		UIDropDownMenu_AddButton(info);
+		info.text = E.ConfigModeLocalizedStrings[configMode]
+		info.value = configMode
+		UIDropDownMenu_AddButton(info)
 	end
 
-	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, selectedValue);
+	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, selectedValue)
 end
 
 function E:NudgeMover(nudgeX, nudgeY)
-	local mover = ElvUIMoverNudgeWindow.child;
+	local mover = ElvUIMoverNudgeWindow.child
+	local x, y, point = E:CalculateMoverPoints(mover, nudgeX, nudgeY)
 
-	local x, y, point = E:CalculateMoverPoints(mover, nudgeX, nudgeY);
+	mover:ClearAllPoints()
+	mover:Point(mover.positionOverride or point, E.UIParent, mover.positionOverride and "BOTTOMLEFT" or point, x, y)
+	E:SaveMoverPosition(mover.name)
 
-	mover:ClearAllPoints();
-	mover:Point(mover.positionOverride or point, E.UIParent, mover.positionOverride and "BOTTOMLEFT" or point, x, y);
-	E:SaveMoverPosition(mover.name);
-
-	E:UpdateNudgeFrame(mover, x, y);
+	--Update coordinates in Nudge Window
+	E:UpdateNudgeFrame(mover, x, y)
 end
 
 function E:UpdateNudgeFrame(mover, x, y)
 	if not(x and y) then
-		x, y = E:CalculateMoverPoints(mover);
+		x, y = E:CalculateMoverPoints(mover)
 	end
 
-	x = E:Round(x, 0);
-	y = E:Round(y, 0);
+	x = E:Round(x, 0)
+	y = E:Round(y, 0)
 
-	ElvUIMoverNudgeWindow.xOffset:SetText(x);
-	ElvUIMoverNudgeWindow.yOffset:SetText(y);
-	ElvUIMoverNudgeWindow.xOffset.currentValue = x;
-	ElvUIMoverNudgeWindow.yOffset.currentValue = y;
-	ElvUIMoverNudgeWindowHeader.title:SetText(mover.textString);
+	ElvUIMoverNudgeWindow.xOffset:SetText(x)
+	ElvUIMoverNudgeWindow.yOffset:SetText(y)
+	ElvUIMoverNudgeWindow.xOffset.currentValue = x
+	ElvUIMoverNudgeWindow.yOffset.currentValue = y
+	ElvUIMoverNudgeWindow.title:SetText(mover.textString)
 end
 
 function E:AssignFrameToNudge()
-	ElvUIMoverNudgeWindow.child = self;
+	ElvUIMoverNudgeWindow.child = self
 	E:UpdateNudgeFrame(self)
 end
 
@@ -202,44 +234,45 @@ function E:CreateMoverPopup()
 	f:SetMovable(true)
 	f:SetFrameLevel(99)
 	f:SetClampedToScreen(true)
-	f:SetWidth(360)
-	f:SetHeight(170)
-	f:SetTemplate('Transparent')
-	f:SetPoint("BOTTOM", UIParent, 'CENTER', 0, 100)
-	f:SetScript('OnHide', function()
+	f:Width(360)
+	f:Height(185)
+	f:SetTemplate("Transparent")
+	f:Point("BOTTOM", UIParent, "CENTER", 0, 100)
+	f:SetScript("OnHide", function()
 		if ElvUIMoverPopupWindowDropDown then
-			UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, 'ALL');
+			UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, "ALL")
 		end
 	end)
 	f:Hide()
 
-	local S = E:GetModule('Skins')
+	local S = E:GetModule("Skins")
 
-	local header = CreateFrame('Button', nil, f)
-	header:SetTemplate('Default', true)
-	header:SetWidth(100); header:SetHeight(25)
-	header:SetPoint("CENTER", f, 'TOP')
+	local header = CreateFrame("Button", nil, f)
+	header:SetTemplate("Default", true)
+	header:Width(100)
+	header:Height(25)
+	header:Point("CENTER", f, "TOP")
 	header:SetFrameLevel(header:GetFrameLevel() + 2)
 	header:EnableMouse(true)
-	header:RegisterForClicks('AnyUp', 'AnyDown')
-	header:SetScript('OnMouseDown', function() f:StartMoving() end)
-	header:SetScript('OnMouseUp', function() f:StopMovingOrSizing() end)
+	header:RegisterForClicks("AnyUp", "AnyDown")
+	header:SetScript("OnMouseDown", function() f:StartMoving() end)
+	header:SetScript("OnMouseUp", function() f:StopMovingOrSizing() end)
 
 	local title = header:CreateFontString("OVERLAY")
 	title:FontTemplate()
-	title:SetPoint("CENTER", header, "CENTER")
-	title:SetText('ElvUI')
+	title:Point("CENTER", header, "CENTER")
+	title:SetText("ElvUI")
 
 	local desc = f:CreateFontString("ARTWORK")
 	desc:SetFontObject("GameFontHighlight")
 	desc:SetJustifyV("TOP")
 	desc:SetJustifyH("LEFT")
-	desc:SetPoint("TOPLEFT", 18, -20)
-	desc:SetPoint("BOTTOMRIGHT", -18, 48)
+	desc:Point("TOPLEFT", 18, -32)
+	desc:Point("BOTTOMRIGHT", -18, 48)
 	desc:SetText(L["DESC_MOVERCONFIG"])
 
-	local snapping = CreateFrame("CheckButton", f:GetName()..'CheckButton', f, "OptionsCheckButtonTemplate")
-	_G[snapping:GetName() .. "Text"]:SetText(L["Sticky Frames"])
+	local snapping = CreateFrame("CheckButton", f:GetName().."CheckButton", f, "OptionsCheckButtonTemplate")
+	_G[snapping:GetName().."Text"]:SetText(L["Sticky Frames"])
 
 	snapping:SetScript("OnShow", function(self)
 		self:SetChecked(E.db.general.stickyFrames)
@@ -249,21 +282,21 @@ function E:CreateMoverPopup()
 		E.db.general.stickyFrames = self:GetChecked()
 	end)
 
-	local lock = CreateFrame("Button", f:GetName()..'CloseButton', f, "OptionsButtonTemplate")
-	_G[lock:GetName() .. "Text"]:SetText(L["Lock"])
+	local lock = CreateFrame("Button", f:GetName().."CloseButton", f, "OptionsButtonTemplate")
+	_G[lock:GetName().."Text"]:SetText(L["Lock"])
 
 	lock:SetScript("OnClick", function()
 		E:ToggleConfigMode(true)
 
-		if(IsAddOnLoaded("ElvUI_Config")) then
-			LibStub("AceConfigDialog-3.0-ElvUI"):Open("ElvUI");
+		if IsAddOnLoaded("ElvUI_Config") then
+			LibStub("AceConfigDialog-3.0-ElvUI"):Open("ElvUI")
 		end
 
-		selectedValue = 'ALL'
-		UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, selectedValue);
+		selectedValue = "ALL"
+		UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, selectedValue)
 	end)
 
-	local align = CreateFrame('EditBox', f:GetName()..'EditBox', f, 'InputBoxTemplate')
+	local align = CreateFrame("EditBox", f:GetName().."EditBox", f, "InputBoxTemplate")
 	align:Width(24)
 	align:Height(17)
 	align:SetAutoFocus(false)
@@ -289,26 +322,26 @@ function E:CreateMoverPopup()
 		self:SetText(E.db.gridSize)
 	end)
 	align:SetScript("OnEditFocusGained", align.HighlightText)
-	align:SetScript('OnShow', function(self)
+	align:SetScript("OnShow", function(self)
 		EditBox_ClearFocus(self)
 		self:SetText(E.db.gridSize)
 	end)
 
-	align.text = align:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-	align.text:SetPoint('RIGHT', align, 'LEFT', -4, 0)
-	align.text:SetText(L['Grid Size:'])
+	align.text = align:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	align.text:Point("RIGHT", align, "LEFT", -4, 0)
+	align.text:SetText(L["Grid Size:"])
 
 	--position buttons
-	snapping:SetPoint("BOTTOMLEFT", 14, 10)
-	lock:SetPoint("BOTTOMRIGHT", -14, 14)
-	align:SetPoint('TOPRIGHT', lock, 'TOPLEFT', -4, -2)
+	snapping:Point("BOTTOMLEFT", 14, 10)
+	lock:Point("BOTTOMRIGHT", -14, 14)
+	align:Point("TOPRIGHT", lock, "TOPLEFT", -4, -2)
 
 	S:HandleCheckBox(snapping)
 	S:HandleButton(lock)
 	S:HandleEditBox(align)
 
-	f:RegisterEvent('PLAYER_REGEN_DISABLED')
-	f:SetScript('OnEvent', function(self)
+	f:RegisterEvent("PLAYER_REGEN_DISABLED")
+	f:SetScript("OnEvent", function(self)
 		if self:IsShown() then
 			self:Hide()
 			E:Grid_Hide()
@@ -316,40 +349,49 @@ function E:CreateMoverPopup()
 		end
 	end)
 
-	local configMode = CreateFrame('Frame', f:GetName()..'DropDown', f, 'UIDropDownMenuTemplate')
-	configMode:Point('BOTTOMRIGHT', lock, 'TOPRIGHT', 8, -5)
+	local configMode = CreateFrame("Frame", f:GetName().."DropDown", f, "UIDropDownMenuTemplate")
+	configMode:Point("BOTTOMRIGHT", lock, "TOPRIGHT", 8, -5)
 	S:HandleDropDownBox(configMode, 148)
-	configMode.text = configMode:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-	configMode.text:SetPoint('RIGHT', configMode.backdrop, 'LEFT', -2, 0)
-	configMode.text:SetText(L['Config Mode:'])	
+	configMode.text = configMode:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	configMode.text:Point("RIGHT", configMode.backdrop, "LEFT", -2, 0)
+	configMode.text:SetText(L["Config Mode:"])
 
-	UIDropDownMenu_Initialize(configMode, ConfigMode_Initialize);
+	UIDropDownMenu_Initialize(configMode, ConfigMode_Initialize)
 
-	local nudgeFrame = CreateFrame('Frame', 'ElvUIMoverNudgeWindow', E.UIParent)
+	local nudgeFrame = CreateFrame("Frame", "ElvUIMoverNudgeWindow", E.UIParent)
 	nudgeFrame:SetFrameStrata("DIALOG")
-	nudgeFrame:SetWidth(200)
-	nudgeFrame:SetHeight(110)
-	nudgeFrame:SetTemplate('Transparent')
-	nudgeFrame:Point('TOP', ElvUIMoverPopupWindow, 'BOTTOM', 0, -15)
+	nudgeFrame:Width(200)
+	nudgeFrame:Height(110)
+	nudgeFrame:SetTemplate("Transparent")
+	nudgeFrame:Point("TOP", ElvUIMoverPopupWindow, "BOTTOM", 0, -15)
 	nudgeFrame:SetFrameLevel(100)
 	nudgeFrame:Hide()
 	nudgeFrame:EnableMouse(true)
 	nudgeFrame:SetClampedToScreen(true)
-	ElvUIMoverPopupWindow:HookScript('OnHide', function() ElvUIMoverNudgeWindow:Hide() end)
+	ElvUIMoverPopupWindow:HookScript("OnHide", function() ElvUIMoverNudgeWindow:Hide() end)
 
-	local header = CreateFrame('Button', 'ElvUIMoverNudgeWindowHeader', nudgeFrame)
-	header:SetTemplate('Default', true)
-	header:SetWidth(100); header:SetHeight(25)
-	header:SetPoint("CENTER", nudgeFrame, 'TOP')
+	desc = nudgeFrame:CreateFontString("ARTWORK")
+	desc:SetFontObject("GameFontHighlight")
+	desc:SetJustifyV("TOP")
+	desc:SetJustifyH("LEFT")
+	desc:Point("TOPLEFT", 18, -15)
+	desc:Point("BOTTOMRIGHT", -18, 28)
+	desc:SetJustifyH("CENTER")
+	nudgeFrame.title = desc
+
+	header = CreateFrame("Button", nil, nudgeFrame)
+	header:SetTemplate("Default", true)
+	header:Width(100)
+	header:Height(25)
+	header:Point("CENTER", nudgeFrame, "TOP")
 	header:SetFrameLevel(header:GetFrameLevel() + 2)
 
-	local title = header:CreateFontString("OVERLAY")
+	title = header:CreateFontString("OVERLAY")
 	title:FontTemplate()
-	title:SetPoint("CENTER", header, "CENTER")
-	title:SetText(L['Nudge'])
-	header.title = title
+	title:Point("CENTER", header, "CENTER")
+	title:SetText(L["Nudge"])
 
-	local xOffset = CreateFrame('EditBox', nudgeFrame:GetName()..'XEditBox', nudgeFrame, 'InputBoxTemplate')
+	local xOffset = CreateFrame("EditBox", nudgeFrame:GetName().."XEditBox", nudgeFrame, "InputBoxTemplate")
 	xOffset:Width(50)
 	xOffset:Height(17)
 	xOffset:SetAutoFocus(false)
@@ -359,11 +401,11 @@ function E:CreateMoverPopup()
 		EditBox_ClearFocus(self)
 	end)
 	xOffset:SetScript("OnEnterPressed", function(self)
-		local num = self:GetText();
-		if(tonumber(num)) then
-			local diff = num - xOffset.currentValue;
-			xOffset.currentValue = num;
-			E:NudgeMover(diff);
+		local num = self:GetText()
+		if tonumber(num) then
+			local diff = num - xOffset.currentValue
+			xOffset.currentValue = num
+			E:NudgeMover(diff)
 		end
 		self:SetText(E:Round(xOffset.currentValue))
 		EditBox_ClearFocus(self)
@@ -372,19 +414,19 @@ function E:CreateMoverPopup()
 		self:SetText(E:Round(xOffset.currentValue))
 	end)
 	xOffset:SetScript("OnEditFocusGained", xOffset.HighlightText)
-	xOffset:SetScript('OnShow', function(self)
+	xOffset:SetScript("OnShow", function(self)
 		EditBox_ClearFocus(self)
 		self:SetText(E:Round(xOffset.currentValue))
 	end)
 
-	xOffset.text = xOffset:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-	xOffset.text:SetPoint('RIGHT', xOffset, 'LEFT', -4, 0)
-	xOffset.text:SetText('X:')	
-	xOffset:SetPoint('BOTTOMRIGHT', nudgeFrame, 'CENTER', -6, 8)
+	xOffset.text = xOffset:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	xOffset.text:Point("RIGHT", xOffset, "LEFT", -4, 0)
+	xOffset.text:SetText("X:")
+	xOffset:Point("BOTTOMRIGHT", nudgeFrame, "CENTER", -6, 8)
 	nudgeFrame.xOffset = xOffset
 	S:HandleEditBox(xOffset)
 
-	local yOffset = CreateFrame('EditBox', nudgeFrame:GetName()..'YEditBox', nudgeFrame, 'InputBoxTemplate')
+	local yOffset = CreateFrame("EditBox", nudgeFrame:GetName().."YEditBox", nudgeFrame, "InputBoxTemplate")
 	yOffset:Width(50)
 	yOffset:Height(17)
 	yOffset:SetAutoFocus(false)
@@ -394,11 +436,11 @@ function E:CreateMoverPopup()
 		EditBox_ClearFocus(self)
 	end)
 	yOffset:SetScript("OnEnterPressed", function(self)
-		local num = self:GetText();
-		if(tonumber(num)) then
-			local diff = num - yOffset.currentValue;
-			yOffset.currentValue = num;
-			E:NudgeMover(nil, diff);
+		local num = self:GetText()
+		if tonumber(num) then
+			local diff = num - yOffset.currentValue
+			yOffset.currentValue = num
+			E:NudgeMover(nil, diff)
 		end
 		self:SetText(E:Round(yOffset.currentValue))
 		EditBox_ClearFocus(self)
@@ -407,26 +449,25 @@ function E:CreateMoverPopup()
 		self:SetText(E:Round(yOffset.currentValue))
 	end)
 	yOffset:SetScript("OnEditFocusGained", yOffset.HighlightText)
-	yOffset:SetScript('OnShow', function(self)
+	yOffset:SetScript("OnShow", function(self)
 		EditBox_ClearFocus(self)
 		self:SetText(E:Round(yOffset.currentValue))
 	end)
 
-	yOffset.text = yOffset:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-	yOffset.text:SetPoint('RIGHT', yOffset, 'LEFT', -4, 0)
-	yOffset.text:SetText('Y:')	
-	yOffset:SetPoint('BOTTOMLEFT', nudgeFrame, 'CENTER', 16, 8)
+	yOffset.text = yOffset:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	yOffset.text:Point("RIGHT", yOffset, "LEFT", -4, 0)
+	yOffset.text:SetText("Y:")
+	yOffset:Point("BOTTOMLEFT", nudgeFrame, "CENTER", 16, 8)
 	nudgeFrame.yOffset = yOffset
 	S:HandleEditBox(yOffset)
 
-	local resetButton = CreateFrame("Button", nudgeFrame:GetName()..'ResetButton', nudgeFrame, "UIPanelButtonTemplate")
+	local resetButton = CreateFrame("Button", nudgeFrame:GetName().."ResetButton", nudgeFrame, "UIPanelButtonTemplate")
 	resetButton:SetText(RESET)
-	resetButton:SetPoint("TOP", nudgeFrame, "CENTER", 0, 2)
+	resetButton:Point("TOP", nudgeFrame, "CENTER", 0, 2)
 	resetButton:Size(100, 25)
 	resetButton:SetScript("OnClick", function()
-		if(ElvUIMoverNudgeWindow.child.textString) then
-			E:ResetMovers(ElvUIMoverNudgeWindow.child.textString);
-			E:UpdateNudgeFrame(ElvUIMoverNudgeWindow.child);
+		if ElvUIMoverNudgeWindow.child.textString then
+			E:ResetMovers(ElvUIMoverNudgeWindow.child.textString)
 		end
 	end)
 	S:HandleButton(resetButton)
@@ -436,7 +477,7 @@ function E:CreateMoverPopup()
 	upButton:SetScript("OnClick", function()
 		E:NudgeMover(nil, 1)
 	end)
-	SquareButton_SetIcon(upButton, "UP");
+	SquareButton_SetIcon(upButton, "UP")
 	S:HandleButton(upButton)
 
 	local downButton = CreateFrame("Button", nudgeFrame:GetName().."DownButton", nudgeFrame, "UIPanelSquareButton")
@@ -444,7 +485,7 @@ function E:CreateMoverPopup()
 	downButton:SetScript("OnClick", function()
 		E:NudgeMover(nil, -1)
 	end)
-	SquareButton_SetIcon(downButton, "DOWN");
+	SquareButton_SetIcon(downButton, "DOWN")
 	S:HandleButton(downButton)
 
 	local leftButton = CreateFrame("Button", nudgeFrame:GetName().."LeftButton", nudgeFrame, "UIPanelSquareButton")
@@ -452,7 +493,7 @@ function E:CreateMoverPopup()
 	leftButton:SetScript("OnClick", function()
 		E:NudgeMover(-1)
 	end)
-	SquareButton_SetIcon(leftButton, "LEFT");
+	SquareButton_SetIcon(leftButton, "LEFT")
 	S:HandleButton(leftButton)
 
 	local rightButton = CreateFrame("Button", nudgeFrame:GetName().."RightButton", nudgeFrame, "UIPanelSquareButton")
@@ -460,6 +501,6 @@ function E:CreateMoverPopup()
 	rightButton:SetScript("OnClick", function()
 		E:NudgeMover(1)
 	end)
-	SquareButton_SetIcon(rightButton, "RIGHT");
+	SquareButton_SetIcon(rightButton, "RIGHT")
 	S:HandleButton(rightButton)
 end

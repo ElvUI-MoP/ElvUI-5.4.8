@@ -133,7 +133,7 @@ local function LoadSkin()
 	-- Core Abilities Frame
 	SpellBookCoreAbilitiesFrame:Point("TOPLEFT", -80, 5)
 
-	SpellBookCoreAbilitiesFrame.SpecName:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b);
+	SpellBookCoreAbilitiesFrame.SpecName:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 	SpellBookCoreAbilitiesFrame.SpecName:Point("TOP", 37, -30)
 
 	hooksecurefunc("SpellBook_UpdateCoreAbilitiesTab", function()
@@ -274,7 +274,7 @@ local function LoadSkin()
 
 		primary.statusBar:StripTextures()
 		primary.statusBar:CreateBackdrop("Default")
-		primary.statusBar:SetStatusBarTexture(E["media"].normTex)
+		primary.statusBar:SetStatusBarTexture(E.media.normTex)
 		primary.statusBar:SetStatusBarColor(0.22, 0.39, 0.84)
 		primary.statusBar:Size(180, 20)
 		primary.statusBar:Point("TOPLEFT", 250, -10)
@@ -329,7 +329,7 @@ local function LoadSkin()
 
 		secondary.statusBar:StripTextures()
 		secondary.statusBar:CreateBackdrop("Default")
-		secondary.statusBar:SetStatusBarTexture(E["media"].normTex)
+		secondary.statusBar:SetStatusBarTexture(E.media.normTex)
 		secondary.statusBar:SetStatusBarColor(0.22, 0.39, 0.84)
 		secondary.statusBar:Size(120, 18)
 		secondary.statusBar:Point("TOPLEFT", 5, -35)

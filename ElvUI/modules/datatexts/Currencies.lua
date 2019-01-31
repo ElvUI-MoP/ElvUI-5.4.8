@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
 local select, pairs = select, pairs
@@ -32,7 +32,7 @@ function DT:Currencies_GetCurrencyList()
 	for currency, data in pairs(Currencies) do
 		currencyList[currency] = data.NAME
 	end
-	currencyList["GOLD"] = BONUS_ROLL_REWARD_MONEY
+	currencyList.GOLD = BONUS_ROLL_REWARD_MONEY
 
 	return currencyList
 end
@@ -41,7 +41,7 @@ local gold
 local chosenCurrency, currencyAmount
 
 local function OnEvent(self)
-	gold = GetMoney();
+	gold = GetMoney()
 	if E.db.datatexts.currencies.displayedCurrency == "GOLD" then
 		self.text:SetText(E:FormatMoney(gold, E.db.datatexts.goldFormat or "BLIZZARD", not E.db.datatexts.goldCoins))
 	else
@@ -83,7 +83,7 @@ local function OnEnter(self)
 	for currencyID, info in pairs(E.global.datatexts.customCurrencies) do
 		if info.DISPLAY_IN_MAIN_TOOLTIP then
 			if shouldAddHeader then
-				DT.tooltip:AddLine(' ')
+				DT.tooltip:AddLine(" ")
 				DT.tooltip:AddLine(L["Custom Currency"])
 				shouldAddHeader = false
 			end

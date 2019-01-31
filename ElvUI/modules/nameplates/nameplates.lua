@@ -161,12 +161,14 @@ function mod:SetTargetFrame(frame)
 				frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = nil, nil, nil
 				frame.CastBar:Hide()
 				self:ConfigureElement_HealthBar(frame)
+				self:ConfigureElement_CutawayHealth(frame)
 				self:ConfigureElement_CastBar(frame)
 				self:ConfigureElement_Glow(frame)
 				self:ConfigureElement_Elite(frame)
 				self:ConfigureElement_Highlight(frame)
 				self:ConfigureElement_Level(frame)
 				self:ConfigureElement_Name(frame)
+				self:ConfigureElement_CPoints(frame)
 				self:RegisterEvents(frame)
 
 				self:UpdateElement_All(frame, true)
@@ -249,7 +251,7 @@ function mod:StyleFrame(parent, noBackdrop, point)
 	if not noBackdrop then
 		point.backdrop = parent:CreateTexture(nil, "BACKGROUND")
 		point.backdrop:SetAllPoints(point)
-		point.backdrop:SetTexture(unpack(E["media"].backdropfadecolor))
+		point.backdrop:SetTexture(unpack(E.media.backdropfadecolor))
 	end
 
 	if E.PixelMode then
@@ -257,25 +259,25 @@ function mod:StyleFrame(parent, noBackdrop, point)
 		point.bordertop:SetPoint("TOPLEFT", point, "TOPLEFT", -noscalemult, noscalemult)
 		point.bordertop:SetPoint("TOPRIGHT", point, "TOPRIGHT", noscalemult, noscalemult)
 		point.bordertop:SetHeight(noscalemult)
-		point.bordertop:SetTexture(unpack(E["media"].bordercolor))
+		point.bordertop:SetTexture(unpack(E.media.bordercolor))
 
 		point.borderbottom = parent:CreateTexture()
 		point.borderbottom:SetPoint("BOTTOMLEFT", point, "BOTTOMLEFT", -noscalemult, -noscalemult)
 		point.borderbottom:SetPoint("BOTTOMRIGHT", point, "BOTTOMRIGHT", noscalemult, -noscalemult)
 		point.borderbottom:SetHeight(noscalemult)
-		point.borderbottom:SetTexture(unpack(E["media"].bordercolor))
+		point.borderbottom:SetTexture(unpack(E.media.bordercolor))
 
 		point.borderleft = parent:CreateTexture()
 		point.borderleft:SetPoint("TOPLEFT", point, "TOPLEFT", -noscalemult, noscalemult)
 		point.borderleft:SetPoint("BOTTOMLEFT", point, "BOTTOMLEFT", noscalemult, -noscalemult)
 		point.borderleft:SetWidth(noscalemult)
-		point.borderleft:SetTexture(unpack(E["media"].bordercolor))
+		point.borderleft:SetTexture(unpack(E.media.bordercolor))
 
 		point.borderright = parent:CreateTexture()
 		point.borderright:SetPoint("TOPRIGHT", point, "TOPRIGHT", noscalemult, noscalemult)
 		point.borderright:SetPoint("BOTTOMRIGHT", point, "BOTTOMRIGHT", -noscalemult, -noscalemult)
 		point.borderright:SetWidth(noscalemult)
-		point.borderright:SetTexture(unpack(E["media"].bordercolor))
+		point.borderright:SetTexture(unpack(E.media.bordercolor))
 	else
 		point.bordertop = parent:CreateTexture(nil, "OVERLAY")
 		point.bordertop:SetPoint("TOPLEFT", point, "TOPLEFT", -noscalemult, noscalemult*2)
@@ -420,8 +422,11 @@ function mod:OnShow()
 	self.UnitFrame.Level:ClearAllPoints()
 	self.UnitFrame.Name:ClearAllPoints()
 
+	self.UnitFrame.CutawayHealth:Hide()
+
 	if mod.db.units[unitType].healthbar.enable or mod.db.alwaysShowTargetHealth then
 		mod:ConfigureElement_HealthBar(self.UnitFrame)
+		mod:ConfigureElement_CutawayHealth(self.UnitFrame)
 		mod:ConfigureElement_CastBar(self.UnitFrame)
 		mod:ConfigureElement_Glow(self.UnitFrame)
 
@@ -436,6 +441,7 @@ function mod:OnShow()
 		end
 	end
 
+	mod:ConfigureElement_CPoints(self.UnitFrame)
 	mod:ConfigureElement_Level(self.UnitFrame)
 	mod:ConfigureElement_Name(self.UnitFrame)
 	mod:ConfigureElement_Elite(self.UnitFrame)
@@ -577,6 +583,7 @@ function mod:OnCreated(frame)
 	frame.UnitFrame.plateID = plateID
 
 	frame.UnitFrame.HealthBar = self:ConstructElement_HealthBar(frame.UnitFrame)
+	frame.UnitFrame.CutawayHealth = self:ConstructElement_CutawayHealth(frame.UnitFrame)
 	frame.UnitFrame.Level = self:ConstructElement_Level(frame.UnitFrame)
 	frame.UnitFrame.Name = self:ConstructElement_Name(frame.UnitFrame)
 	frame.UnitFrame.CastBar = self:ConstructElement_CastBar(frame.UnitFrame)
@@ -679,7 +686,7 @@ function mod:QueueObject(object)
 	object:Hide()
 end
 
-function mod:OnUpdate(elapsed)
+function mod:OnUpdate()
 	local count = select("#", WorldGetChildren(WorldFrame))
 	if count ~= numChildren then
 		local frame
@@ -782,21 +789,18 @@ end
 function mod:PLAYER_ENTERING_WORLD()
 	self:CleanAuraLists()
 	twipe(self.Healers)
+
 	local inInstance, instanceType = IsInInstance()
 	if inInstance and (instanceType == "pvp") and self.db.units.ENEMY_PLAYER.markHealers then
-		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 3)
-		self:CheckBGHealers()
-	elseif inInstance and instanceType == "arena" and self.db.units.ENEMY_PLAYER.markHealers then
+		self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE", "CheckBGHealers")
+	elseif inInstance and (instanceType == "arena") and self.db.units.ENEMY_PLAYER.markHealers then
 		self:RegisterEvent("UNIT_NAME_UPDATE", "CheckArenaHealers")
 		self:RegisterEvent("ARENA_OPPONENT_UPDATE", "CheckArenaHealers")
 		self:CheckArenaHealers()
 	else
 		self:UnregisterEvent("UNIT_NAME_UPDATE")
 		self:UnregisterEvent("ARENA_OPPONENT_UPDATE")
-		if self.CheckHealerTimer then
-			self:CancelTimer(self.CheckHealerTimer)
-			self.CheckHealerTimer = nil
-		end
+		self:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE")
 	end
 end
 
@@ -863,6 +867,10 @@ function mod:SPELL_UPDATE_COOLDOWN()
 	mod:ForEachPlate("UpdateElement_Filters", "SPELL_UPDATE_COOLDOWN")
 end
 
+function mod:UNIT_FACTION()
+	self:ForEachVisiblePlate("UpdateAllFrame")
+end
+
 function mod:UpdateFonts(plate)
 	if not plate then return end
 
@@ -900,9 +908,9 @@ function mod:UpdatePlateFonts()
 end
 
 function mod:Initialize()
-	self.db = E.db["nameplates"]
+	self.db = E.db.nameplates
 
-	if E.private["nameplates"].enable ~= true then return end
+	if E.private.nameplates.enable ~= true then return end
 
 	self.hasTarget = false
 
@@ -929,6 +937,7 @@ function mod:Initialize()
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent("UNIT_AURA")
 	self:RegisterEvent("UNIT_COMBO_POINTS")
+	self:RegisterEvent("UNIT_FACTION")
 
 	self:ScheduleRepeatingTimer("ForEachVisiblePlate", 0.1, "SetTargetFrame")
 

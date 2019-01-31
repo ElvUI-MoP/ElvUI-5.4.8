@@ -64,7 +64,7 @@ local function LoadSkin()
 		button:StripTextures()
 
 		if button.Checked then
-			button.Checked:SetTexture(unpack(E["media"].rgbvaluecolor))
+			button.Checked:SetTexture(unpack(E.media.rgbvaluecolor))
 			button.Checked:SetAllPoints(icon)
 			button.Checked:SetAlpha(0.3)
 		end

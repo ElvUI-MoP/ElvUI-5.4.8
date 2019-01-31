@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...));
+local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
 local select = select
@@ -21,7 +21,7 @@ local SELECT_LOOT_SPECIALIZATION = SELECT_LOOT_SPECIALIZATION
 local LOOT_SPECIALIZATION_DEFAULT = LOOT_SPECIALIZATION_DEFAULT
 
 local lastPanel, active
-local displayString = "";
+local displayString = ""
 local activeString = join("", "|cff00FF00" , ACTIVE_PETS, "|r")
 local inactiveString = join("", "|cffFF0000", FACTION_INACTIVE, "|r")
 
@@ -38,9 +38,9 @@ local menuList = {
 local function OnEvent(self)
 	lastPanel = self
 
-	local specIndex = GetSpecialization();
+	local specIndex = GetSpecialization()
 
-	if(not specIndex) then 
+	if not specIndex then 
 		self.text:SetText("N/A")
 		return
 	end
@@ -49,19 +49,19 @@ local function OnEvent(self)
 
 	local talent, loot = "", ""
 	local i = GetSpecialization(false, false, active)
-	if(i) then
+	if i then
 		i = select(4, GetSpecializationInfo(i))
-		if(i) then
+		if i then
 			talent = format("|T%s:14:14:0:0:64:64:4:60:4:60|t", i)
 		end
 	end
 
 	local specialization = GetLootSpecialization()
-	if(specialization == 0) then
-		local specIndex = GetSpecialization();
+	if specialization == 0 then
+		local specIndex = GetSpecialization()
 
-		if(specIndex) then
-			local _, _, _, texture = GetSpecializationInfo(specIndex);
+		if specIndex then
+			local _, _, _, texture = GetSpecializationInfo(specIndex)
 			if texture then
 				loot = format("|T%s:14:14:0:0:64:64:4:60:4:60|t", texture)
 			else
@@ -71,8 +71,8 @@ local function OnEvent(self)
 			loot = "N/A"
 		end
 	else
-		local _, _, _, texture = GetSpecializationInfoByID(specialization);
-		if(texture) then
+		local _, _, _, texture = GetSpecializationInfoByID(specialization)
+		if texture then
 			loot = format("|T%s:14:14:0:0:64:64:4:60:4:60|t", texture)
 		else
 			loot = "N/A"
@@ -93,16 +93,16 @@ local function OnEnter(self)
 
 	DT.tooltip:AddLine(" ")
 	local specialization = GetLootSpecialization()
-	if(specialization == 0) then
-		local specIndex = GetSpecialization();
+	if specialization == 0 then
+		local specIndex = GetSpecialization()
 
-		if(specIndex) then
-			local _, name = GetSpecializationInfo(specIndex);
+		if specIndex then
+			local _, name = GetSpecializationInfo(specIndex)
 			DT.tooltip:AddLine(format("|cffFFFFFF%s:|r %s", SELECT_LOOT_SPECIALIZATION, format(LOOT_SPECIALIZATION_DEFAULT, name)))
 		end
 	else
-		local specID, name = GetSpecializationInfoByID(specialization);
-		if(specID) then
+		local specID, name = GetSpecializationInfoByID(specialization)
+		if specID then
 			DT.tooltip:AddLine(format("|cffFFFFFF%s:|r %s", SELECT_LOOT_SPECIALIZATION, name))
 		end
 	end
@@ -116,16 +116,16 @@ local function OnEnter(self)
 end
 
 local function OnClick(_, button)
-	local specIndex = GetSpecialization();
-	if(not specIndex) then return end
+	local specIndex = GetSpecialization()
+	if not specIndex then return end
 
-	if(button == "LeftButton") then
+	if button == "LeftButton" then
 		DT.tooltip:Hide()
-		if(not PlayerTalentFrame) then
+		if not PlayerTalentFrame then
 			LoadAddOn("Blizzard_TalentUI")
 		end
-		if(IsShiftKeyDown()) then
-			if(not PlayerTalentFrame:IsShown()) then
+		if IsShiftKeyDown() then
+			if not PlayerTalentFrame:IsShown() then
 				ShowUIPanel(PlayerTalentFrame)
 			else
 				HideUIPanel(PlayerTalentFrame)
@@ -135,12 +135,12 @@ local function OnClick(_, button)
 		end
 	else
 		DT.tooltip:Hide()
-		local _, specName = GetSpecializationInfo(specIndex);
-		menuList[2].text = format(LOOT_SPECIALIZATION_DEFAULT, specName);
+		local _, specName = GetSpecializationInfo(specIndex)
+		menuList[2].text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
 
 		for index = 1, 4 do
-			local id, name = GetSpecializationInfo(index);
-			if(id) then
+			local id, name = GetSpecializationInfo(index)
+			if id then
 				menuList[index + 2].text = name
 				menuList[index + 2].func = function() SetLootSpecialization(id) end
 			else
@@ -155,10 +155,10 @@ end
 local function ValueColorUpdate(hex)
 	displayString = join("", "|cffFFFFFF%s:|r ")
 
-	if(lastPanel ~= nil) then
+	if lastPanel ~= nil then
 		OnEvent(lastPanel)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("Talent/Loot Specialization", {"PLAYER_ENTERING_WORLD", "CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE", "ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_LOOT_SPEC_UPDATED"}, OnEvent, nil, OnClick, OnEnter, nil, L["Talent/Loot Specialization"])

@@ -1,4 +1,4 @@
-﻿local E, L, V, P, G, _ = unpack(ElvUI);
+﻿local E, L, V, P, G = unpack(ElvUI)
 local A = E:GetModule("Auras")
 
 local format = string.format
@@ -113,7 +113,7 @@ E.Options.args.auras = {
 	name = BUFFOPTIONS_LABEL,
 	childGroups = "tab",
 	get = function(info) return E.db.auras[ info[#info] ] end,
-	set = function(info, value) E.db.auras[ info[#info] ] = value; A:UpdateHeader(ElvUIPlayerBuffs); A:UpdateHeader(ElvUIPlayerDebuffs) end,
+	set = function(info, value) E.db.auras[ info[#info] ] = value A:UpdateHeader(ElvUIPlayerBuffs) A:UpdateHeader(ElvUIPlayerDebuffs) end,
 	args = {
 		intro = {
 			order = 1,
@@ -126,7 +126,7 @@ E.Options.args.auras = {
 			name = L["Enable"],
 			get = function(info) return E.private.auras[ info[#info] ] end,
 			set = function(info, value) 
-				E.private.auras[ info[#info] ] = value; 
+				E.private.auras[ info[#info] ] = value 
 				E:StaticPopup_Show("PRIVATE_RL")
 			end
 		},
@@ -136,7 +136,7 @@ E.Options.args.auras = {
 			name = L["Disabled Blizzard"],
 			get = function(info) return E.private.auras[ info[#info] ] end,
 			set = function(info, value) 
-				E.private.auras[ info[#info] ] = value; 
+				E.private.auras[ info[#info] ] = value 
 				E:StaticPopup_Show("PRIVATE_RL")
 			end
 		},
@@ -159,7 +159,7 @@ E.Options.args.auras = {
 				},
 				font = {
 					order = 3,
-					type = "select", dialogControl = 'LSM30_Font',
+					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
 					values = AceGUIWidgetLSMlists.font
 				},
@@ -169,10 +169,10 @@ E.Options.args.auras = {
 					name = L["Font Outline"],
 					desc = L["Set the font outline."],
 					values = {
-						['NONE'] = NONE,
-						['OUTLINE'] = 'OUTLINE',
-						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
-						['THICKOUTLINE'] = 'THICKOUTLINE'
+						["NONE"] = NONE,
+						["OUTLINE"] = "OUTLINE",
+						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
+						["THICKOUTLINE"] = "THICKOUTLINE"
 					}
 				},
 				timeXOffset = {
@@ -205,7 +205,7 @@ E.Options.args.auras = {
 					guiInline = true,
 					name = L["Masque Support"],
 					get = function(info) return E.private.auras.masque[info[#info]] end,
-					set = function(info, value) E.private.auras.masque[info[#info]] = value; E:StaticPopup_Show("PRIVATE_RL") end,
+					set = function(info, value) E.private.auras.masque[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
 					disabled = function() return not E.private.auras.enable end,
 					args = {
 						buffs = {
@@ -230,107 +230,29 @@ E.Options.args.auras = {
 				}
 			}
 		},
-		cooldownGroup = {
-			order = 5,
-			type = "group",
-			name = L["Cooldown Override"],
-			get = function(info)
-				local t = E.db.auras.cooldown[ info[#info] ]
-				local d = P.auras.cooldown[ info[#info] ]
-				return t.r, t.g, t.b, t.a, d.r, d.g, d.b
-			end,
-			set = function(info, r, g, b)
-				local t = E.db.auras.cooldown[ info[#info] ]
-				t.r, t.g, t.b = r, g, b
-				E:UpdateCooldownSettings("auras")
-			end,
-			args = {
-				header = {
-					order = 1,
-					type = "header",
-					name = L["Cooldown Override"]
-				},
-				override = {
-					order = 2,
-					type = "toggle",
-					name = L["Use Override"],
-					desc = L["This will override the global cooldown settings."],
-					get = function(info) return E.db.auras.cooldown[ info[#info] ] end,
-					set = function(info, value) E.db.auras.cooldown[ info[#info] ] = value end
-				},
-				threshold = {
-					order = 3,
-					type = "range",
-					name = L["Low Threshold"],
-					desc = L["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"],
-					min = -1, max = 20, step = 1,
-					disabled = function() return not E.db.auras.cooldown.override end,
-					get = function(info) return E.db.auras.cooldown[ info[#info] ] end,
-					set = function(info, value)
-						E.db.auras.cooldown[ info[#info] ] = value
-						E:UpdateCooldownSettings("auras")
-					end
-				},
-				expiringColor = {
-					order = 4,
-					type = "color",
-					name = L["Expiring"],
-					desc = L["Color when the text is about to expire"],
-					disabled = function() return not E.db.auras.cooldown.override end
-				},
-				secondsColor = {
-					order = 5,
-					type = "color",
-					name = L["Seconds"],
-					desc = L["Color when the text is in the seconds format."],
-					disabled = function() return not E.db.auras.cooldown.override end
-				},
-				minutesColor = {
-					order = 6,
-					type = "color",
-					name = L["Minutes"],
-					desc = L["Color when the text is in the minutes format."],
-					disabled = function() return not E.db.auras.cooldown.override end
-				},
-				hoursColor = {
-					order = 7,
-					type = "color",
-					name = L["Hours"],
-					desc = L["Color when the text is in the hours format."],
-					disabled = function() return not E.db.auras.cooldown.override end
-				},
-				daysColor = {
-					order = 8,
-					type = "color",
-					name = L["Days"],
-					desc = L["Color when the text is in the days format."],
-					disabled = function() return not E.db.auras.cooldown.override end
-				}
-			}
-		},
 		buffs = {
-			order = 6,
+			order = 5,
 			type = "group",
 			name = L["Buffs"],
 			get = function(info) return E.db.auras.buffs[ info[#info] ] end,
-			set = function(info, value) E.db.auras.buffs[ info[#info] ] = value; A:UpdateHeader(ElvUIPlayerBuffs) end,
+			set = function(info, value) E.db.auras.buffs[ info[#info] ] = value A:UpdateHeader(ElvUIPlayerBuffs) end,
 			args = GetAuraOptions(L["Buffs"])
 		},
 		debuffs = {
-			order = 7,
+			order = 6,
 			type = "group",
 			name = L["Debuffs"],
 			get = function(info) return E.db.auras.debuffs[ info[#info] ] end,
-			set = function(info, value) E.db.auras.debuffs[ info[#info] ] = value; A:UpdateHeader(ElvUIPlayerDebuffs) end,
+			set = function(info, value) E.db.auras.debuffs[ info[#info] ] = value A:UpdateHeader(ElvUIPlayerDebuffs) end,
 			args = GetAuraOptions(L["Debuffs"])
 		},
 		consolidatedBuffs = {
-			order = 8,
+			order = 7,
 			type = "group",
 			name = L["Consolidated Buffs"],
 			disabled = function() return (E.private.general.minimap.enable ~= true or E.private.auras.disableBlizzard ~= true) end,
 			get = function(info) return E.db.auras.consolidatedBuffs[ info[#info] ] end,
-			set = function(info, value) E.db.auras.consolidatedBuffs[ info[#info] ] = value; E:GetModule("Minimap"):UpdateSettings() end,
+			set = function(info, value) E.db.auras.consolidatedBuffs[ info[#info] ] = value E:GetModule("Minimap"):UpdateSettings() end,
 			args = {
 				header = {
 					order = 1,
@@ -369,7 +291,7 @@ E.Options.args.auras = {
 					order = 6,
 					type = "select",
 					name = L["Position"],
-					set = function(info, value) E.db.auras.consolidatedBuffs[ info[#info] ] = value; A:UpdatePosition(); end,
+					set = function(info, value) E.db.auras.consolidatedBuffs[ info[#info] ] = value A:UpdatePosition() end,
 					values = {
 						["LEFT"] = L["Left"],
 						["RIGHT"] = L["Right"]

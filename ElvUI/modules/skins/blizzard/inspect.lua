@@ -202,11 +202,11 @@ local function LoadSkin()
 				button.icon:SetInside(button.backdrop)
 
 				hooksecurefunc(button.border, "Show", function()
-					button.backdrop:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
+					button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 				end)
 
 				hooksecurefunc(button.border, "Hide", function()
-					button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end)
 			end
 		end

@@ -5,7 +5,7 @@ local print, unpack = print, unpack
 local GetSpellInfo = GetSpellInfo
 
 local function SpellName(id)
-	local name, _, _, _, _, _, _, _, _ = GetSpellInfo(id)
+	local name = GetSpellInfo(id)
 	if not name then
 		print("|cff1784d1ElvUI:|r SpellID is not valid: "..id..". Please check for an updated version, if none exists report to ElvUI author.")
 		return "Impale"
@@ -567,9 +567,30 @@ local function ClassBuff(id, point, color, anyUnit, onlyShowMissing, style, disp
 		r2, g2, b2 = unpack(textColor)
 	end
 
-	return {["enabled"] = true, ["id"] = id, ["point"] = point, ["color"] = {["r"] = r, ["g"] = g, ["b"] = b},
-	["anyUnit"] = anyUnit, ["onlyShowMissing"] = onlyShowMissing, ["style"] = style or "coloredIcon", ["displayText"] = displayText or false, ["decimalThreshold"] = decimalThreshold or 5,
-	["textColor"] = {["r"] = r2, ["g"] = g2, ["b"] = b2}, ["textThreshold"] = textThreshold or -1, ["xOffset"] = xOffset or 0, ["yOffset"] = yOffset or 0, ["sizeOverride"] = sizeOverride or 0}
+	return {
+		["enabled"] = true,
+		["id"] = id,
+		["point"] = point,
+		["color"] = {
+			["r"] = r,
+			["g"] = g,
+			["b"] = b
+		},
+		["anyUnit"] = anyUnit,
+		["onlyShowMissing"] = onlyShowMissing,
+		["style"] = style or "coloredIcon",
+		["displayText"] = displayText or false,
+		["decimalThreshold"] = decimalThreshold or 5,
+		["textColor"] = {
+			["r"] = r2,
+			["g"] = g2,
+			["b"] = b2
+		},
+		["textThreshold"] = textThreshold or -1,
+		["xOffset"] = xOffset or 0,
+		["yOffset"] = yOffset or 0,
+		["sizeOverride"] = sizeOverride or 0
+	}
 end
 
 G.unitframe.buffwatch = {

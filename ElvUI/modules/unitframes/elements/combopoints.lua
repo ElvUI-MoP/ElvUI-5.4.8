@@ -14,8 +14,8 @@ function UF:Construct_Combobar(frame)
 
 	for i = 1, MAX_COMBO_POINTS do
 		ComboPoints[i] = CreateFrame("StatusBar", frame:GetName().."ComboBarButton"..i, ComboPoints)
-		UF["statusbars"][ComboPoints[i]] = true
-		ComboPoints[i]:SetStatusBarTexture(E["media"].blankTex)
+		UF.statusbars[ComboPoints[i]] = true
+		ComboPoints[i]:SetStatusBarTexture(E.media.blankTex)
 		ComboPoints[i]:GetStatusBarTexture():SetHorizTile(false)
 		ComboPoints[i]:SetAlpha(0.15)
 		ComboPoints[i]:CreateBackdrop("Default", nil, nil, UF.thinBorders, true)
@@ -99,7 +99,7 @@ function UF:Configure_ComboPoints(frame)
 			ComboPoints:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
 			ComboPoints:ClearAllPoints()
 			ComboPoints:Point("BOTTOMLEFT", ComboPoints.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
-			E:CreateMover(ComboPoints.Holder, "ComboBarMover", L["Combobar"], nil, nil, nil, "ALL,SOLO")
+			E:CreateMover(ComboPoints.Holder, "ComboBarMover", L["Combobar"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,target,combobar")
 		else
 			ComboPoints:ClearAllPoints()
 			ComboPoints:Point("BOTTOMLEFT", ComboPoints.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)

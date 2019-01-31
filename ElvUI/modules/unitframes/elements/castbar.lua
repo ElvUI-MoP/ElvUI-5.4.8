@@ -25,14 +25,14 @@ local INVERT_ANCHORPOINT = {
 	CENTER = "CENTER",
 	TOP = "BOTTOM",
 	BOTTOM = "TOP"
-};
+}
 
-local ticks = {};
+local ticks = {}
 
 function UF:Construct_Castbar(frame, moverName)
 	local castbar = CreateFrame("StatusBar", nil, frame)
 	castbar:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 30) --Make it appear above everything else
-	self["statusbars"][castbar] = true
+	self.statusbars[castbar] = true
 
 	castbar.CustomDelayText = self.CustomCastDelayText
 	castbar.CustomTimeText = self.CustomTimeText
@@ -66,7 +66,7 @@ function UF:Construct_Castbar(frame, moverName)
 
 	--Set to castbar.SafeZone
 	castbar.LatencyTexture = castbar:CreateTexture(nil, "OVERLAY")
-	castbar.LatencyTexture:SetTexture(E["media"].blankTex)
+	castbar.LatencyTexture:SetTexture(E.media.blankTex)
 	castbar.LatencyTexture:SetVertexColor(0.69, 0.31, 0.31, 0.75)
 
 	castbar.bg = castbar:CreateTexture(nil, "BORDER")
@@ -83,7 +83,9 @@ function UF:Construct_Castbar(frame, moverName)
 	button:Point("RIGHT", castbar, "LEFT", -E.Spacing*3, 0)
 
 	if moverName then
-		E:CreateMover(castbar.Holder, frame:GetName().."CastbarMover", moverName, nil, -6, nil, "ALL,SOLO")
+		local name = frame:GetName()
+		local configName = name:gsub("^ElvUF_", ""):lower()
+		E:CreateMover(castbar.Holder, frame:GetName().."CastbarMover", moverName, nil, -6, nil, "ALL,SOLO", nil, "unitframe,"..configName..",castbar")
 	end
 
 	local icon = button:CreateTexture(nil, "ARTWORK")
@@ -103,17 +105,28 @@ function UF:Configure_Castbar(frame)
 
 	local castbar = frame.Castbar
 	local db = frame.db
-	castbar:Width(db.castbar.width - ((frame.BORDER+frame.SPACING)*2));
-	castbar:Height(db.castbar.height - ((frame.BORDER+frame.SPACING)*2));
-	castbar.Holder:Width(db.castbar.width);
-	castbar.Holder:Height(db.castbar.height);
+
+	castbar:Width(db.castbar.width - ((frame.BORDER+frame.SPACING)*2))
+	castbar:Height(db.castbar.height - ((frame.BORDER+frame.SPACING)*2))
+	castbar.Holder:Width(db.castbar.width)
+	castbar.Holder:Height(db.castbar.height)
 
 	local color = E.db.unitframe.colors.borderColor
 	castbar.ButtonIcon.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 
-	if(castbar.Holder:GetScript("OnSizeChanged")) then
-		castbar.Holder:GetScript("OnSizeChanged")(castbar.Holder);
+	if castbar.Holder:GetScript("OnSizeChanged") then
+		castbar.Holder:GetScript("OnSizeChanged")(castbar.Holder)
 	end
+
+	if db.castbar.strataAndLevel and db.castbar.strataAndLevel.useCustomStrata then
+		castbar:SetFrameStrata(db.castbar.strataAndLevel.frameStrata)
+	end
+
+	if db.castbar.strataAndLevel and db.castbar.strataAndLevel.useCustomLevel then
+		castbar:SetFrameLevel(db.castbar.strataAndLevel.frameLevel)
+	end
+
+	castbar.timeToHold = db.castbar.holdTime
 
 	--Latency
 	if db.castbar.latency then
@@ -127,10 +140,10 @@ function UF:Configure_Castbar(frame)
 	--Icon
 	if db.castbar.icon then
 		castbar.Icon = castbar.ButtonIcon
-		if (not db.castbar.iconAttached) then
+		if not db.castbar.iconAttached then
 			castbar.Icon.bg:Size(db.castbar.iconSize)
 		else
-			if (db.castbar.insideInfoPanel and frame.USE_INFO_PANEL) then
+			if db.castbar.insideInfoPanel and frame.USE_INFO_PANEL then
 				castbar.Icon.bg:Size(db.infoPanel.height - frame.SPACING*2)
 			else
 				castbar.Icon.bg:Size(db.castbar.height-frame.SPACING*2)
@@ -152,12 +165,12 @@ function UF:Configure_Castbar(frame)
 	end
 
 	castbar:ClearAllPoints()
-	if (db.castbar.insideInfoPanel and frame.USE_INFO_PANEL) then
-		if (not db.castbar.iconAttached) then
+	if db.castbar.insideInfoPanel and frame.USE_INFO_PANEL then
+		if not db.castbar.iconAttached then
 			castbar:SetInside(frame.InfoPanel, 0, 0)
 		else
 			local iconWidth = db.castbar.icon and (castbar.Icon.bg:GetWidth() - frame.BORDER) or 0
-			if(frame.ORIENTATION == "RIGHT") then
+			if frame.ORIENTATION == "RIGHT" then
 				castbar:SetPoint("TOPLEFT", frame.InfoPanel, "TOPLEFT")
 				castbar:SetPoint("BOTTOMRIGHT", frame.InfoPanel, "BOTTOMRIGHT", -iconWidth - frame.SPACING*3, 0)
 			else
@@ -166,29 +179,29 @@ function UF:Configure_Castbar(frame)
 			end
 		end
 
-		if(castbar.Holder.mover) then
+		if castbar.Holder.mover then
 			E:DisableMover(castbar.Holder.mover:GetName())
 		end
 	else
-		local isMoved = E:HasMoverBeenMoved(frame:GetName()..'CastbarMover') or not castbar.Holder.mover
+		local isMoved = E:HasMoverBeenMoved(frame:GetName().."CastbarMover") or not castbar.Holder.mover
 		if not isMoved then
 			castbar.Holder.mover:ClearAllPoints()
 		end
 
 		castbar:ClearAllPoints()
 		if frame.ORIENTATION ~= "RIGHT"  then
-			castbar:Point('BOTTOMRIGHT', castbar.Holder, 'BOTTOMRIGHT', -(frame.BORDER+frame.SPACING), frame.BORDER+frame.SPACING)
+			castbar:Point("BOTTOMRIGHT", castbar.Holder, "BOTTOMRIGHT", -(frame.BORDER+frame.SPACING), frame.BORDER+frame.SPACING)
 			if not isMoved then
 				castbar.Holder.mover:Point("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -(frame.BORDER - frame.SPACING))
 			end
 		else
-			castbar:Point('BOTTOMLEFT', castbar.Holder, 'BOTTOMLEFT', frame.BORDER+frame.SPACING, frame.BORDER+frame.SPACING)
+			castbar:Point("BOTTOMLEFT", castbar.Holder, "BOTTOMLEFT", frame.BORDER+frame.SPACING, frame.BORDER+frame.SPACING)
 			if not isMoved then
 				castbar.Holder.mover:Point("TOPLEFT", frame, "BOTTOMLEFT", 0, -(frame.BORDER - frame.SPACING))
 			end
 		end
 
-		if(castbar.Holder.mover) then
+		if castbar.Holder.mover then
 			E:EnableMover(castbar.Holder.mover:GetName())
 		end
 	end
@@ -198,7 +211,7 @@ function UF:Configure_Castbar(frame)
 		local anchorPoint = db.castbar.iconPosition
 		castbar.Icon.bg:ClearAllPoints()
 		castbar.Icon.bg:Point(INVERT_ANCHORPOINT[anchorPoint], attachPoint, anchorPoint, db.castbar.iconXOffset, db.castbar.iconYOffset)
-	elseif(db.castbar.icon) then
+	elseif db.castbar.icon then
 		castbar.Icon.bg:ClearAllPoints()
 		if frame.ORIENTATION == "RIGHT" then
 			castbar.Icon.bg:Point("LEFT", castbar, "RIGHT", frame.SPACING*3, 0)
@@ -225,12 +238,12 @@ function UF:Configure_Castbar(frame)
 		end
 	end
 
-	if db.castbar.enable and not frame:IsElementEnabled('Castbar') then
-		frame:EnableElement('Castbar')
-	elseif not db.castbar.enable and frame:IsElementEnabled('Castbar') then
-		frame:DisableElement('Castbar')
+	if db.castbar.enable and not frame:IsElementEnabled("Castbar") then
+		frame:EnableElement("Castbar")
+	elseif not db.castbar.enable and frame:IsElementEnabled("Castbar") then
+		frame:DisableElement("Castbar")
 
-		if(castbar.Holder.mover) then
+		if castbar.Holder.mover then
 			E:DisableMover(castbar.Holder.mover:GetName())
 		end
 	end
@@ -241,20 +254,24 @@ function UF:CustomCastDelayText(duration)
 	if not db then return end
 
 	if self.channeling then
-		if db.castbar.format == 'CURRENT' then
+		if db.castbar.format == "CURRENT" then
 			self.Time:SetText(("%.1f |cffaf5050%.1f|r"):format(abs(duration - self.max), self.delay))
-		elseif db.castbar.format == 'CURRENTMAX' then
+		elseif db.castbar.format == "CURRENTMAX" then
 			self.Time:SetText(("%.1f / %.1f |cffaf5050%.1f|r"):format(duration, self.max, self.delay))
-		elseif db.castbar.format == 'REMAINING' then
+		elseif db.castbar.format == "REMAINING" then
 			self.Time:SetText(("%.1f |cffaf5050%.1f|r"):format(duration, self.delay))
+		elseif db.castbar.format == 'REMAININGMAX' then
+			self.Time:SetText(("%.1f / %.1f |cffaf5050%.1f|r"):format(abs(duration - self.max), self.max, self.delay))
 		end
 	else
-		if db.castbar.format == 'CURRENT' then
+		if db.castbar.format == "CURRENT" then
 			self.Time:SetText(("%.1f |cffaf5050%s %.1f|r"):format(duration, "+", self.delay))
-		elseif db.castbar.format == 'CURRENTMAX' then
+		elseif db.castbar.format == "CURRENTMAX" then
 			self.Time:SetText(("%.1f / %.1f |cffaf5050%s %.1f|r"):format(duration, self.max, "+", self.delay))
-		elseif db.castbar.format == 'REMAINING' then
+		elseif db.castbar.format == "REMAINING" then
 			self.Time:SetText(("%.1f |cffaf5050%s %.1f|r"):format(abs(duration - self.max), "+", self.delay))
+		elseif db.castbar.format == "REMAININGMAX" then
+			self.Time:SetText(("%.1f / %.1f |cffaf5050%s %.1f|r"):format(abs(duration - self.max), self.max, "+", self.delay))
 		end
 	end
 end
@@ -264,21 +281,24 @@ function UF:CustomTimeText(duration)
 	if not db then return end
 
 	if self.channeling then
-		if db.castbar.format == 'CURRENT' then
+		if db.castbar.format == "CURRENT" then
 			self.Time:SetText(("%.1f"):format(abs(duration - self.max)))
-		elseif db.castbar.format == 'CURRENTMAX' then
-			self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
+		elseif db.castbar.format == "CURRENTMAX" then
 			self.Time:SetText(("%.1f / %.1f"):format(abs(duration - self.max), self.max))
-		elseif db.castbar.format == 'REMAINING' then
+		elseif db.castbar.format == "REMAINING" then
 			self.Time:SetText(("%.1f"):format(duration))
+		elseif db.castbar.format == "REMAININGMAX" then
+			self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
 		end
 	else
-		if db.castbar.format == 'CURRENT' then
+		if db.castbar.format == "CURRENT" then
 			self.Time:SetText(("%.1f"):format(duration))
-		elseif db.castbar.format == 'CURRENTMAX' then
+		elseif db.castbar.format == "CURRENTMAX" then
 			self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
-		elseif db.castbar.format == 'REMAINING' then
+		elseif db.castbar.format == "REMAINING" then
 			self.Time:SetText(("%.1f"):format(abs(duration - self.max)))
+		elseif db.castbar.format == "REMAININGMAX" then
+			self.Time:SetText(("%.1f / %.1f"):format(abs(duration - self.max), self.max))
 		end
 	end
 end
@@ -300,8 +320,8 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 
 	for i = 1, numTicks do
 		if not ticks[i] then
-			ticks[i] = frame:CreateTexture(nil, "OVERLAY");
-			ticks[i]:SetTexture(E["media"].normTex)
+			ticks[i] = frame:CreateTexture(nil, "OVERLAY")
+			ticks[i]:SetTexture(E.media.normTex)
 			E:RegisterStatusBar(ticks[i])
 			ticks[i]:SetVertexColor(frame.tickColor.r, frame.tickColor.g, frame.tickColor.b, frame.tickColor.a)
 			ticks[i]:Width(frame.tickWidth)
@@ -315,8 +335,8 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 end
 
 function UF:PostCastStart(unit, name)
-	local db = self:GetParent().db;
-	if not db or not db.castbar then return; end
+	local db = self:GetParent().db
+	if not db or not db.castbar then return end
 
 	if unit == "vehicle" then unit = "player" end
 
@@ -343,7 +363,7 @@ function UF:PostCastStart(unit, name)
 
 	self.Spark:Height(self:GetHeight() * 2)
 
-	self.unit = unit;
+	self.unit = unit
 
 	if db.castbar.ticks and unit == "player" then
 		local unitframe = E.global.unitframe
@@ -393,7 +413,7 @@ function UF:PostCastStart(unit, name)
 		else
 			UF:HideTicks()
 		end
-	elseif unit == 'player' then
+	elseif unit == "player" then
 		UF:HideTicks()
 	end
 
@@ -404,11 +424,11 @@ function UF:PostCastStart(unit, name)
 	if UF.db.colors.castClassColor and UnitIsPlayer(unit) then
 		local _, class = UnitClass(unit)
 		t = ElvUF.colors.class[class]
-	elseif UF.db.colors.castReactionColor and UnitReaction(unit, 'player') then
+	elseif UF.db.colors.castReactionColor and UnitReaction(unit, "player") then
 		t = ElvUF.colors.reaction[UnitReaction(unit, "player")]
 	end
 
-	if(t) then
+	if t then
 		r, g, b = t[1], t[2], t[3]
 	end
 
@@ -433,7 +453,7 @@ end
 
 function UF:PostChannelUpdate(unit, name)
 	local db = self:GetParent().db
-	if not db then return; end
+	if not db then return end
 	if not (unit == "player" or unit == "vehicle") then return end
 
 	if db.castbar.ticks then
@@ -500,11 +520,11 @@ function UF:PostCastInterruptible(unit)
 	if UF.db.colors.castClassColor and UnitIsPlayer(unit) then
 		local _, class = UnitClass(unit)
 		t = ElvUF.colors.class[class]
-	elseif UF.db.colors.castReactionColor and UnitReaction(unit, 'player') then
+	elseif UF.db.colors.castReactionColor and UnitReaction(unit, "player") then
 		t = ElvUF.colors.reaction[UnitReaction(unit, "player")]
 	end
 
-	if(t) then
+	if t then
 		r, g, b = t[1], t[2], t[3]
 	end
 
@@ -524,6 +544,6 @@ function UF:PostCastInterruptible(unit)
 end
 
 function UF:PostCastNotInterruptible()
-	local colors = ElvUF.colors;
-	self:SetStatusBarColor(colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]);
+	local colors = ElvUF.colors
+	self:SetStatusBarColor(colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3])
 end

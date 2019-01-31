@@ -1,59 +1,59 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local S = E:NewModule("Skins", "AceHook-3.0", "AceEvent-3.0");
+local E, L, V, P, G = unpack(select(2, ...))
+local S = E:NewModule("Skins", "AceHook-3.0", "AceEvent-3.0")
 
-local _G = _G;
-local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs, ipairs, select, type, pcall;
-local find = string.find;
-local tinsert, wipe = table.insert, table.wipe;
+local _G = _G
+local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs, ipairs, select, type, pcall
+local find = string.find
+local tinsert, wipe = table.insert, table.wipe
 
-local CreateFrame = CreateFrame;
-local SetDesaturation = SetDesaturation;
-local hooksecurefunc = hooksecurefunc;
-local IsAddOnLoaded = IsAddOnLoaded;
-local GetCVarBool = GetCVarBool;
+local CreateFrame = CreateFrame
+local SetDesaturation = SetDesaturation
+local hooksecurefunc = hooksecurefunc
+local IsAddOnLoaded = IsAddOnLoaded
+local GetCVarBool = GetCVarBool
 
-E.Skins = S;
-S.addonsToLoad = {};
-S.nonAddonsToLoad = {};
-S.allowBypass = {};
-S.addonCallbacks = {};
-S.nonAddonCallbacks = {["CallPriority"] = {}};
+E.Skins = S
+S.addonsToLoad = {}
+S.nonAddonsToLoad = {}
+S.allowBypass = {}
+S.addonCallbacks = {}
+S.nonAddonCallbacks = {["CallPriority"] = {}}
 
 function S:SetModifiedBackdrop()
-	if(self.backdrop) then self = self.backdrop; end
-	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor));
+	if self.backdrop then self = self.backdrop end
+	self:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 end
 
 function S:SetOriginalBackdrop()
-	if(self.backdrop) then self = self.backdrop; end
-	self:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+	if self.backdrop then self = self.backdrop end
+	self:SetBackdropBorderColor(unpack(E.media.bordercolor))
 end
 
 function S:HandleButton(f, strip, isDeclineButton)
-	local name = f:GetName();
-	if(name) then
-		local left = _G[name .. "Left"];
-		local middle = _G[name .. "Middle"];
-		local right = _G[name .. "Right"];
+	local name = f:GetName()
+	if name then
+		local left = _G[name.."Left"]
+		local middle = _G[name.."Middle"]
+		local right = _G[name.."Right"]
 
-		if(left) then left:Kill(); end
-		if(middle) then middle:Kill(); end
-		if(right) then right:Kill(); end
+		if left then left:Kill() end
+		if middle then middle:Kill() end
+		if right then right:Kill() end
 	end
 
-	if(f.Left) then f.Left:Kill(); end
-	if(f.Middle) then f.Middle:Kill(); end
-	if(f.Right) then f.Right:Kill(); end
+	if f.Left then f.Left:Kill() end
+	if f.Middle then f.Middle:Kill() end
+	if f.Right then f.Right:Kill() end
 
-	if(f.LeftSeparator) then f.LeftSeparator:SetAlpha(0) end
-	if(f.RightSeparator) then f.RightSeparator:SetAlpha(0) end
+	if f.LeftSeparator then f.LeftSeparator:SetAlpha(0) end
+	if f.RightSeparator then f.RightSeparator:SetAlpha(0) end
 
-	if(f.SetNormalTexture) then f:SetNormalTexture(""); end
-	if(f.SetHighlightTexture) then f:SetHighlightTexture(""); end
-	if(f.SetPushedTexture) then f:SetPushedTexture(""); end
-	if(f.SetDisabledTexture) then f:SetDisabledTexture(""); end
+	if f.SetNormalTexture then f:SetNormalTexture("") end
+	if f.SetHighlightTexture then f:SetHighlightTexture("") end
+	if f.SetPushedTexture then f:SetPushedTexture("") end
+	if f.SetDisabledTexture then f:SetDisabledTexture("") end
 
-	if(strip) then f:StripTextures(); end
+	if strip then f:StripTextures() end
 
 	-- used for a white X on decline buttons (more clear)
 	if isDeclineButton then
@@ -67,9 +67,10 @@ function S:HandleButton(f, strip, isDeclineButton)
 		end
 	end
 
-	f:SetTemplate("Default", true);
-	f:HookScript("OnEnter", S.SetModifiedBackdrop);
-	f:HookScript("OnLeave", S.SetOriginalBackdrop);
+	f:SetTemplate("Default", true)
+
+	f:HookScript("OnEnter", S.SetModifiedBackdrop)
+	f:HookScript("OnLeave", S.SetOriginalBackdrop)
 end
 
 function S:HandleButtonHighlight(frame)
@@ -91,46 +92,46 @@ function S:HandleButtonHighlight(frame)
 end
 
 function S:HandleScrollBar(frame, thumbTrim)
-	local name = frame:GetName();
-	if(_G[name .. "BG"]) then _G[name .. "BG"]:SetTexture(nil); end
-	if(_G[name .. "Track"]) then _G[name .. "Track"]:SetTexture(nil); end
-	if(_G[name .. "Top"]) then _G[name .. "Top"]:SetTexture(nil); end
-	if(_G[name .. "Bottom"]) then _G[name .. "Bottom"]:SetTexture(nil); end
-	if(_G[name .. "Middle"]) then _G[name .. "Middle"]:SetTexture(nil); end
+	local name = frame:GetName()
+	if _G[name.."BG"] then _G[name.."BG"]:SetTexture(nil) end
+	if _G[name.."Track"] then _G[name.."Track"]:SetTexture(nil) end
+	if _G[name.."Top"] then _G[name.."Top"]:SetTexture(nil) end
+	if _G[name.."Bottom"] then _G[name.."Bottom"]:SetTexture(nil) end
+	if _G[name.."Middle"] then _G[name.."Middle"]:SetTexture(nil) end
 
-	if(_G[name .. "ScrollUpButton"] and _G[name .. "ScrollDownButton"]) then
-		_G[name .. "ScrollUpButton"]:StripTextures();
-		if(not _G[name .. "ScrollUpButton"].icon) then
-			S:HandleNextPrevButton(_G[name .. "ScrollUpButton"]);
-			SquareButton_SetIcon(_G[name .. "ScrollUpButton"], "UP");
-			_G[name .. "ScrollUpButton"]:Size(_G[name .. "ScrollUpButton"]:GetWidth() + 7, _G[name .. "ScrollUpButton"]:GetHeight() + 7);
+	if _G[name.."ScrollUpButton"] and _G[name.."ScrollDownButton"] then
+		_G[name.."ScrollUpButton"]:StripTextures()
+		if not _G[name.."ScrollUpButton"].icon then
+			S:HandleNextPrevButton(_G[name.."ScrollUpButton"])
+			SquareButton_SetIcon(_G[name.."ScrollUpButton"], "UP")
+			_G[name.."ScrollUpButton"]:Size(_G[name.."ScrollUpButton"]:GetWidth() + 7, _G[name.."ScrollUpButton"]:GetHeight() + 7)
 		end
 
-		_G[name .. "ScrollDownButton"]:StripTextures();
-		if(not _G[name .. "ScrollDownButton"].icon) then
-			S:HandleNextPrevButton(_G[name .. "ScrollDownButton"]);
-			SquareButton_SetIcon(_G[name .. "ScrollDownButton"], "DOWN");
-			_G[name .. "ScrollDownButton"]:Size(_G[name .. "ScrollDownButton"]:GetWidth() + 7, _G[name .. "ScrollDownButton"]:GetHeight() + 7);
+		_G[name.."ScrollDownButton"]:StripTextures()
+		if not _G[name.."ScrollDownButton"].icon then
+			S:HandleNextPrevButton(_G[name.."ScrollDownButton"])
+			SquareButton_SetIcon(_G[name.."ScrollDownButton"], "DOWN")
+			_G[name.."ScrollDownButton"]:Size(_G[name.."ScrollDownButton"]:GetWidth() + 7, _G[name.."ScrollDownButton"]:GetHeight() + 7)
 		end
 
-		if(not frame.trackbg) then
-			frame.trackbg = CreateFrame("Frame", nil, frame);
-			frame.trackbg:Point("TOPLEFT", _G[name .. "ScrollUpButton"], "BOTTOMLEFT", 0, -1);
-			frame.trackbg:Point("BOTTOMRIGHT", _G[name .. "ScrollDownButton"], "TOPRIGHT", 0, 1);
-			frame.trackbg:SetTemplate("Transparent");
+		if not frame.trackbg then
+			frame.trackbg = CreateFrame("Frame", nil, frame)
+			frame.trackbg:Point("TOPLEFT", _G[name.."ScrollUpButton"], "BOTTOMLEFT", 0, -1)
+			frame.trackbg:Point("BOTTOMRIGHT", _G[name.."ScrollDownButton"], "TOPRIGHT", 0, 1)
+			frame.trackbg:SetTemplate("Transparent")
 		end
 
-		if(frame:GetThumbTexture()) then
-			if(not thumbTrim) then thumbTrim = 3; end
-			frame:GetThumbTexture():SetTexture(nil);
-			if(not frame.thumbbg) then
-				frame.thumbbg = CreateFrame("Frame", nil, frame);
-				frame.thumbbg:Point("TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 2, -thumbTrim);
-				frame.thumbbg:Point("BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -2, thumbTrim);
-				frame.thumbbg:SetTemplate("Default", true, true);
+		if frame:GetThumbTexture() then
+			if not thumbTrim then thumbTrim = 3 end
+			frame:GetThumbTexture():SetTexture(nil)
+			if not frame.thumbbg then
+				frame.thumbbg = CreateFrame("Frame", nil, frame)
+				frame.thumbbg:Point("TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 2, -thumbTrim)
+				frame.thumbbg:Point("BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -2, thumbTrim)
+				frame.thumbbg:SetTemplate("Default", true, true)
 				frame.thumbbg.backdropTexture:SetVertexColor(0.6, 0.6, 0.6)
-				if(frame.trackbg) then
-					frame.thumbbg:SetFrameLevel(frame.trackbg:GetFrameLevel()+1);
+				if frame.trackbg then
+					frame.thumbbg:SetFrameLevel(frame.trackbg:GetFrameLevel()+1)
 				end
 			end
 		end
@@ -144,28 +145,28 @@ local tabs = {
 	"Left",
 	"Middle",
 	"Right"
-};
+}
 
 function S:HandleTab(tab)
-	local name = tab:GetName();
+	local name = tab:GetName()
 	for _, object in pairs(tabs) do
-		local tex = _G[name .. object];
-		if(tex) then
-			tex:SetTexture(nil);
+		local tex = _G[name..object]
+		if tex then
+			tex:SetTexture(nil)
 		end
 	end
 
-	if(tab.GetHighlightTexture and tab:GetHighlightTexture()) then
-		tab:GetHighlightTexture():SetTexture(nil);
+	if tab.GetHighlightTexture and tab:GetHighlightTexture() then
+		tab:GetHighlightTexture():SetTexture(nil)
 	else
-		tab:StripTextures();
+		tab:StripTextures()
 	end
 
-	tab.backdrop = CreateFrame("Frame", nil, tab);
-	tab.backdrop:SetTemplate("Default");
-	tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1);
-	tab.backdrop:Point("TOPLEFT", 10, E.PixelMode and -1 or -3);
-	tab.backdrop:Point("BOTTOMRIGHT", -10, 3);
+	tab.backdrop = CreateFrame("Frame", nil, tab)
+	tab.backdrop:SetTemplate("Default")
+	tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
+	tab.backdrop:Point("TOPLEFT", 10, E.PixelMode and -1 or -3)
+	tab.backdrop:Point("BOTTOMRIGHT", -10, 3)
 end
 
 function S:HandleNextPrevButton(btn, useVertical, inverseDirection)
@@ -186,22 +187,22 @@ function S:HandleNextPrevButton(btn, useVertical, inverseDirection)
 
 		btn:HookScript("OnMouseDown", function(self)
 			if self:IsEnabled() then
-				self.icon:Point("CENTER", -1, -1);
+				self.icon:Point("CENTER", -1, -1)
 			end
 		end)
 
 		btn:HookScript("OnMouseUp", function(self)
-			self.icon:Point("CENTER", 0, 0);
+			self.icon:Point("CENTER", 0, 0)
 		end)
 
 		btn:HookScript("OnDisable", function(self)
-			SetDesaturation(self.icon, true);
-			self.icon:SetAlpha(0.5);
+			SetDesaturation(self.icon, true)
+			self.icon:SetAlpha(0.5)
 		end)
 
 		btn:HookScript("OnEnable", function(self)
-			SetDesaturation(self.icon, false);
-			self.icon:SetAlpha(1.0);
+			SetDesaturation(self.icon, false)
+			self.icon:SetAlpha(1.0)
 		end)
 
 		if not btn:IsEnabled() then
@@ -228,219 +229,235 @@ function S:HandleNextPrevButton(btn, useVertical, inverseDirection)
 end
 
 function S:HandleRotateButton(btn)
-	btn:SetTemplate("Default");
-	btn:Size(btn:GetWidth() - 14, btn:GetHeight() - 14);
+	btn:SetTemplate("Default")
+	btn:Size(btn:GetWidth() - 14, btn:GetHeight() - 14)
 
 	btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
 	btn:GetPushedTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
 
-	btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3);
+	btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 
-	btn:GetNormalTexture():SetInside();
-	btn:GetPushedTexture():SetAllPoints(btn:GetNormalTexture());
-	btn:GetHighlightTexture():SetAllPoints(btn:GetNormalTexture());
+	btn:GetNormalTexture():SetInside()
+	btn:GetPushedTexture():SetAllPoints(btn:GetNormalTexture())
+	btn:GetHighlightTexture():SetAllPoints(btn:GetNormalTexture())
 end
 
 function S:HandleEditBox(frame)
-	frame:CreateBackdrop("Default");
-	frame.backdrop:SetFrameLevel(frame:GetFrameLevel());
+	frame:CreateBackdrop("Default")
+	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
 
-	if(frame:GetName()) then
-		if(_G[frame:GetName() .. "Left"]) then _G[frame:GetName() .. "Left"]:Kill(); end
-		if(_G[frame:GetName() .. "Middle"]) then _G[frame:GetName() .. "Middle"]:Kill(); end
-		if(_G[frame:GetName() .. "Right"]) then _G[frame:GetName() .. "Right"]:Kill(); end
-		if(_G[frame:GetName() .. "Mid"]) then _G[frame:GetName() .. "Mid"]:Kill(); end
+	if frame:GetName() then
+		if _G[frame:GetName().."Left"] then _G[frame:GetName().."Left"]:Kill() end
+		if _G[frame:GetName().."Middle"] then _G[frame:GetName().."Middle"]:Kill() end
+		if _G[frame:GetName().."Right"] then _G[frame:GetName().."Right"]:Kill() end
+		if _G[frame:GetName().."Mid"] then _G[frame:GetName().."Mid"]:Kill() end
 
-		if(frame:GetName():find("Silver") or frame:GetName():find("Copper")) then
-			frame.backdrop:Point("BOTTOMRIGHT", -12, -2);
+		if frame:GetName():find("Silver") or frame:GetName():find("Copper") then
+			frame.backdrop:Point("BOTTOMRIGHT", -12, -2)
 		end
 	end
 end
 
 function S:HandleDropDownBox(frame, width)
-	local button = _G[frame:GetName() .. "Button"];
-	if(not button) then return; end
+	local button = _G[frame:GetName().."Button"]
+	if not button then return end
 
-	if(not width) then width = 155; end
+	if not width then width = 155 end
 
-	frame:StripTextures();
-	frame:Width(width);
+	frame:StripTextures()
+	frame:Width(width)
 
-	if(_G[frame:GetName() .. "Text"]) then
-		_G[frame:GetName() .. "Text"]:ClearAllPoints();
-		_G[frame:GetName() .. "Text"]:Point("RIGHT", button, "LEFT", -2, 0);
+	if _G[frame:GetName().."Text"] then
+		_G[frame:GetName().."Text"]:ClearAllPoints()
+		_G[frame:GetName().."Text"]:Point("RIGHT", button, "LEFT", -2, 0)
 	end
 
-	if(button) then
-		button:ClearAllPoints();
-		button:Point("RIGHT", frame, "RIGHT", -10, 3);
+	if button then
+		button:ClearAllPoints()
+		button:Point("RIGHT", frame, "RIGHT", -10, 3)
 		hooksecurefunc(button, "SetPoint", function(self, _, _, _, _, _, noReset)
-			if(not noReset) then
-				self:ClearAllPoints();
-				self:SetPoint("RIGHT", frame, "RIGHT", E:Scale(-10), E:Scale(3), true);
+			if not noReset then
+				self:ClearAllPoints()
+				self:SetPoint("RIGHT", frame, "RIGHT", E:Scale(-10), E:Scale(3), true)
 			end
-		end);
+		end)
 
-		self:HandleNextPrevButton(button, true);
+		self:HandleNextPrevButton(button, true)
 	end
-	frame:CreateBackdrop("Default");
-	frame.backdrop:Point("TOPLEFT", 20, -2);
-	frame.backdrop:Point("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2);
-	frame.backdrop:SetFrameLevel(frame:GetFrameLevel());
+	frame:CreateBackdrop("Default")
+	frame.backdrop:Point("TOPLEFT", 20, -2)
+	frame.backdrop:Point("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
+	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
 end
 
 function S:HandleCheckBox(frame, noBackdrop)
-	assert(frame, "does not exist.");
-	frame:StripTextures();
-	if(noBackdrop) then
-		frame:SetTemplate("Default");
-		frame:Size(16);
+	assert(frame, "does not exist.")
+	frame:StripTextures()
+	if noBackdrop then
+		frame:SetTemplate("Default")
+		frame:Size(16)
 	else
-		frame:CreateBackdrop("Default");
-		frame.backdrop:SetInside(nil, 4, 4);
+		frame:CreateBackdrop("Default")
+		frame.backdrop:SetInside(nil, 4, 4)
 	end
 
-	if(frame.SetCheckedTexture) then
-		frame:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
-		if(noBackdrop) then
-			frame:GetCheckedTexture():SetInside(nil, -4, -4);
+	if frame.SetCheckedTexture then
+		frame:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
+		if noBackdrop then
+			frame:GetCheckedTexture():SetInside(nil, -4, -4)
 		end
 	end
 
-	if(frame.SetDisabledTexture) then
-		frame:SetDisabledTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled");
-		if(noBackdrop) then
-			frame:GetDisabledTexture():SetInside(nil, -4, -4);
+	if frame.SetDisabledTexture then
+		frame:SetDisabledTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
+		if noBackdrop then
+			frame:GetDisabledTexture():SetInside(nil, -4, -4)
 		end
 	end
 
 	frame:HookScript("OnDisable", function(self)
-		if(not self.SetDisabledTexture) then return; end
-		if(self:GetChecked()) then
-			self:SetDisabledTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled");
+		if not self.SetDisabledTexture then return end
+
+		if self:GetChecked() then
+			self:SetDisabledTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 		else
-			self:SetDisabledTexture("");
+			self:SetDisabledTexture("")
 		end
-	end);
+	end)
 
 	hooksecurefunc(frame, "SetNormalTexture", function(self, texPath)
-		if(texPath ~= "") then
-			self:SetNormalTexture("");
+		if texPath ~= "" then
+			self:SetNormalTexture("")
 		end
-	end);
+	end)
 
 	hooksecurefunc(frame, "SetPushedTexture", function(self, texPath)
-		if(texPath ~= "") then
-			self:SetPushedTexture("");
+		if texPath ~= "" then
+			self:SetPushedTexture("")
 		end
-	end);
+	end)
 
 	hooksecurefunc(frame, "SetHighlightTexture", function(self, texPath)
-		if(texPath ~= "") then
-			self:SetHighlightTexture("");
+		if texPath ~= "" then
+			self:SetHighlightTexture("")
 		end
-	end);
+	end)
+end
+
+function S:HandleColorSwatch(frame, size)
+	frame:StripTextures()
+	frame:CreateBackdrop("Default")
+	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
+
+	if size then
+		frame:Size(size)
+	end
+
+	frame:GetNormalTexture():SetTexture(E.media.blankTex)
+	frame:GetNormalTexture():ClearAllPoints()
+	frame:GetNormalTexture():SetInside(frame.backdrop)
 end
 
 function S:HandleIcon(icon, parent)
-	parent = parent or icon:GetParent();
+	parent = parent or icon:GetParent()
 
-	icon:SetTexCoord(unpack(E.TexCoords));
-	parent:CreateBackdrop("Default");
-	icon:SetParent(parent.backdrop);
-	parent.backdrop:SetOutside(icon);
+	icon:SetTexCoord(unpack(E.TexCoords))
+	parent:CreateBackdrop("Default")
+	icon:SetParent(parent.backdrop)
+	parent.backdrop:SetOutside(icon)
 end
 
 function S:HandleItemButton(b, shrinkIcon)
-	if(b.isSkinned) then return; end
+	if b.isSkinned then return end
 
-	local icon = b.icon or b.IconTexture or b.iconTexture;
-	local texture;
-	if(b:GetName() and _G[b:GetName() .. "IconTexture"]) then
-		icon = _G[b:GetName() .. "IconTexture"];
-	elseif(b:GetName() and _G[b:GetName() .. "Icon"]) then
-		icon = _G[b:GetName() .. "Icon"];
+	local icon = b.icon or b.IconTexture or b.iconTexture
+	local texture
+	if b:GetName() and _G[b:GetName().."IconTexture"] then
+		icon = _G[b:GetName().."IconTexture"]
+	elseif b:GetName() and _G[b:GetName().."Icon"] then
+		icon = _G[b:GetName().."Icon"]
 	end
 
-	if(icon and icon:GetTexture()) then
-		texture = icon:GetTexture();
+	if icon and icon:GetTexture() then
+		texture = icon:GetTexture()
 	end
 
-	b:StripTextures();
-	b:CreateBackdrop("Default", true);
-	b:StyleButton();
+	b:StripTextures()
+	b:CreateBackdrop("Default", true)
+	b:StyleButton()
 
-	if(icon) then
-		icon:SetTexCoord(unpack(E.TexCoords));
+	if icon then
+		icon:SetTexCoord(unpack(E.TexCoords))
 
-		if(shrinkIcon) then
-			b.backdrop:SetAllPoints();
-			icon:SetInside(b);
+		if shrinkIcon then
+			b.backdrop:SetAllPoints()
+			icon:SetInside(b)
 		else
-			b.backdrop:SetOutside(icon);
+			b.backdrop:SetOutside(icon)
 		end
-		icon:SetParent(b.backdrop);
+		icon:SetParent(b.backdrop)
 
-		if(texture) then
-			icon:SetTexture(texture);
+		if texture then
+			icon:SetTexture(texture)
 		end
 	end
-	b.isSkinned = true;
+
+	b.isSkinned = true
 end
 
 function S:HandleCloseButton(f, point, text)
-	f:StripTextures();
+	f:StripTextures()
 
-	if(f:GetNormalTexture()) then f:SetNormalTexture(""); f.SetNormalTexture = E.noop; end
-	if(f:GetPushedTexture()) then f:SetPushedTexture(""); f.SetPushedTexture = E.noop; end
+	if f:GetNormalTexture() then f:SetNormalTexture("") f.SetNormalTexture = E.noop end
+	if f:GetPushedTexture() then f:SetPushedTexture("") f.SetPushedTexture = E.noop end
 
-	if(not f.backdrop) then
-		f:CreateBackdrop("Default", true);
-		f.backdrop:Point("TOPLEFT", 7, -8);
-		f.backdrop:Point("BOTTOMRIGHT", -8, 8);
-		f:HookScript("OnEnter", S.SetModifiedBackdrop);
-		f:HookScript("OnLeave", S.SetOriginalBackdrop);
+	if not f.backdrop then
+		f:CreateBackdrop("Default", true)
+		f.backdrop:Point("TOPLEFT", 7, -8)
+		f.backdrop:Point("BOTTOMRIGHT", -8, 8)
+		f:HookScript("OnEnter", S.SetModifiedBackdrop)
+		f:HookScript("OnLeave", S.SetOriginalBackdrop)
 		f:SetHitRectInsets(6, 6, 7, 7)
 	end
-	if(not text) then text = "x"; end
-	if(not f.text) then
-		f.text = f:CreateFontString(nil, "OVERLAY");
-		f.text:SetFont([[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], 16, "OUTLINE");
-		f.text:SetText(text);
-		f.text:SetJustifyH("CENTER");
-		f.text:SetPoint("CENTER", f, "CENTER", 0, 1);
+	if not text then text = "x" end
+	if not f.text then
+		f.text = f:CreateFontString(nil, "OVERLAY")
+		f.text:SetFont([[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], 16, "OUTLINE")
+		f.text:SetText(text)
+		f.text:SetJustifyH("CENTER")
+		f.text:SetPoint("CENTER", f, "CENTER", 0, 1)
 	end
 
-	if(point) then
-		f:Point("TOPRIGHT", point, "TOPRIGHT", 2, 2);
+	if point then
+		f:Point("TOPRIGHT", point, "TOPRIGHT", 2, 2)
 	end
 end
 
 function S:HandleSliderFrame(frame)
-	local orientation = frame:GetOrientation();
-	local SIZE = 12;
-	frame:StripTextures();
-	frame:CreateBackdrop("Default");
-	frame.backdrop:SetAllPoints();
+	local orientation = frame:GetOrientation()
+	local SIZE = 12
+	frame:StripTextures()
+	frame:CreateBackdrop("Default")
+	frame.backdrop:SetAllPoints()
 	hooksecurefunc(frame, "SetBackdrop", function(_, backdrop)
-		if(backdrop ~= nil) then
-			frame:SetBackdrop(nil);
+		if backdrop ~= nil then
+			frame:SetBackdrop(nil)
 		end
-	end);
-	frame:SetThumbTexture(E["media"].blankTex);
-	frame:GetThumbTexture():SetVertexColor(0.3, 0.3, 0.3);
-	frame:GetThumbTexture():Size(SIZE-2,SIZE-2);
-	if(orientation == "VERTICAL") then
-		frame:Width(SIZE);
+	end)
+	frame:SetThumbTexture(E.media.blankTex)
+	frame:GetThumbTexture():SetVertexColor(0.3, 0.3, 0.3)
+	frame:GetThumbTexture():Size(SIZE - 2, SIZE - 2)
+	if orientation == "VERTICAL" then
+		frame:Width(SIZE)
 	else
-		frame:Height(SIZE);
+		frame:Height(SIZE)
 
 		for i = 1, frame:GetNumRegions() do
-			local region = select(i, frame:GetRegions());
-			if(region and region:GetObjectType() == "FontString") then
-				local point, anchor, anchorPoint, x, y = region:GetPoint();
-				if(anchorPoint:find("BOTTOM")) then
-					region:Point(point, anchor, anchorPoint, x, y - 4);
+			local region = select(i, frame:GetRegions())
+			if region and region:GetObjectType() == "FontString" then
+				local point, anchor, anchorPoint, x, y = region:GetPoint()
+				if anchorPoint:find("BOTTOM") then
+					region:Point(point, anchor, anchorPoint, x, y - 4)
 				end
 			end
 		end
@@ -484,145 +501,145 @@ function S:HandleIconSelectionFrame(frame, numIcons, buttonNameTemplate, frameNa
 end
 
 function S:ADDON_LOADED(_, addon)
-	if(self.allowBypass[addon]) then
-		if(self.addonsToLoad[addon]) then
+	if self.allowBypass[addon] then
+		if self.addonsToLoad[addon] then
 			--Load addons using the old deprecated register method
-			self.addonsToLoad[addon]();
-			self.addonsToLoad[addon] = nil;
-		elseif(self.addonCallbacks[addon]) then
+			self.addonsToLoad[addon]()
+			self.addonsToLoad[addon] = nil
+		elseif self.addonCallbacks[addon] then
 			--Fire events to the skins that rely on this addon
-			for index, event in ipairs(self.addonCallbacks[addon]["CallPriority"]) do
-				self.addonCallbacks[addon][event] = nil;
-				self.addonCallbacks[addon]["CallPriority"][index] = nil;
-				E.callbacks:Fire(event);
+			for index, event in ipairs(self.addonCallbacks[addon].CallPriority) do
+				self.addonCallbacks[addon][event] = nil
+				self.addonCallbacks[addon].CallPriority[index] = nil
+				E.callbacks:Fire(event)
 			end
 		end
-		return;
+		return
 	end
 
-	if(not E.initialized) then return; end
+	if not E.initialized then return end
 
-	if(self.addonsToLoad[addon]) then
-		self.addonsToLoad[addon]();
-		self.addonsToLoad[addon] = nil;
+	if self.addonsToLoad[addon] then
+		self.addonsToLoad[addon]()
+		self.addonsToLoad[addon] = nil
 	elseif self.addonCallbacks[addon] then
-		for index, event in ipairs(self.addonCallbacks[addon]["CallPriority"]) do
-			self.addonCallbacks[addon][event] = nil;
-			self.addonCallbacks[addon]["CallPriority"][index] = nil;
-			E.callbacks:Fire(event);
+		for index, event in ipairs(self.addonCallbacks[addon].CallPriority) do
+			self.addonCallbacks[addon][event] = nil
+			self.addonCallbacks[addon].CallPriority[index] = nil
+			E.callbacks:Fire(event)
 		end
 	end
 end
 
 --Old deprecated register function. Keep it for the time being for any plugins that may need it.
 function S:RegisterSkin(name, loadFunc, forceLoad, bypass)
-	if(bypass) then
-		self.allowBypass[name] = true;
+	if bypass then
+		self.allowBypass[name] = true
 	end
 
-	if(forceLoad) then
-		loadFunc();
-		self.addonsToLoad[name] = nil;
-	elseif(name == "ElvUI") then
-		tinsert(self.nonAddonsToLoad, loadFunc);
+	if forceLoad then
+		loadFunc()
+		self.addonsToLoad[name] = nil
+	elseif name == "ElvUI" then
+		tinsert(self.nonAddonsToLoad, loadFunc)
 	else
-		self.addonsToLoad[name] = loadFunc;
+		self.addonsToLoad[name] = loadFunc
 	end
 end
 
 --Add callback for skin that relies on another addon.
 --These events will be fired when the addon is loaded.
 function S:AddCallbackForAddon(addonName, eventName, loadFunc, forceLoad, bypass)
-	if(not addonName or type(addonName) ~= "string") then
-		E:Print("Invalid argument #1 to S:AddCallbackForAddon (string expected)");
+	if not addonName or type(addonName) ~= "string" then
+		E:Print("Invalid argument #1 to S:AddCallbackForAddon (string expected)")
 		return
-	elseif(not eventName or type(eventName) ~= "string") then
-		E:Print("Invalid argument #2 to S:AddCallbackForAddon (string expected)");
+	elseif not eventName or type(eventName) ~= "string" then
+		E:Print("Invalid argument #2 to S:AddCallbackForAddon (string expected)")
 		return
-	elseif(not loadFunc or type(loadFunc) ~= "function") then
-		E:Print("Invalid argument #3 to S:AddCallbackForAddon (function expected)");
-		return;
+	elseif not loadFunc or type(loadFunc) ~= "function" then
+		E:Print("Invalid argument #3 to S:AddCallbackForAddon (function expected)")
+		return
 	end
 
-	if(bypass) then
-		self.allowBypass[addonName] = true;
+	if bypass then
+		self.allowBypass[addonName] = true
 	end
 
 	--Create an event registry for this addon, so that we can fire multiple events when this addon is loaded
-	if(not self.addonCallbacks[addonName]) then
-		self.addonCallbacks[addonName] = {["CallPriority"] = {}};
+	if not self.addonCallbacks[addonName] then
+		self.addonCallbacks[addonName] = {["CallPriority"] = {}}
 	end
 
 	if self.addonCallbacks[addonName][eventName] or E.ModuleCallbacks[eventName] or E.InitialModuleCallbacks[eventName] then
 		--Don't allow a registered callback to be overwritten
 		E:Print("Invalid argument #2 to S:AddCallbackForAddon (event name:", eventName, "is already registered, please use a unique event name)")
-		return;
+		return
 	end
 
 	--Register loadFunc to be called when event is fired
-	E.RegisterCallback(E, eventName, loadFunc);
+	E.RegisterCallback(E, eventName, loadFunc)
 
-	if(forceLoad) then
-		E.callbacks:Fire(eventName);
+	if forceLoad then
+		E.callbacks:Fire(eventName)
 	else
 		--Insert eventName in this addons' registry
-		self.addonCallbacks[addonName][eventName] = true;
-		self.addonCallbacks[addonName]["CallPriority"][#self.addonCallbacks[addonName]["CallPriority"] + 1] = eventName;
+		self.addonCallbacks[addonName][eventName] = true
+		self.addonCallbacks[addonName].CallPriority[#self.addonCallbacks[addonName].CallPriority + 1] = eventName
 	end
 end
 
 --Add callback for skin that does not rely on a another addon.
 --These events will be fired when the Skins module is initialized.
 function S:AddCallback(eventName, loadFunc)
-	if(not eventName or type(eventName) ~= "string") then
-		E:Print("Invalid argument #1 to S:AddCallback (string expected)");
+	if not eventName or type(eventName) ~= "string" then
+		E:Print("Invalid argument #1 to S:AddCallback (string expected)")
 		return
-	elseif(not loadFunc or type(loadFunc) ~= "function") then
-		E:Print("Invalid argument #2 to S:AddCallback (function expected)");
-		return;
+	elseif not loadFunc or type(loadFunc) ~= "function" then
+		E:Print("Invalid argument #2 to S:AddCallback (function expected)")
+		return
 	end
 
 	if self.nonAddonCallbacks[eventName] or E.ModuleCallbacks[eventName] or E.InitialModuleCallbacks[eventName] then
 		--Don't allow a registered callback to be overwritten
 		E:Print("Invalid argument #1 to S:AddCallback (event name:", eventName, "is already registered, please use a unique event name)")
-		return;
+		return
 	end
 
 	--Add event name to registry
-	self.nonAddonCallbacks[eventName] = true;
-	self.nonAddonCallbacks["CallPriority"][#self.nonAddonCallbacks["CallPriority"] + 1] = eventName;
+	self.nonAddonCallbacks[eventName] = true
+	self.nonAddonCallbacks.CallPriority[#self.nonAddonCallbacks.CallPriority + 1] = eventName
 
 	--Register loadFunc to be called when event is fired
-	E.RegisterCallback(E, eventName, loadFunc);
+	E.RegisterCallback(E, eventName, loadFunc)
 end
 
 function S:Initialize()
-	self.db = E.private.skins;
+	self.db = E.private.skins
 
 	--Fire events for Blizzard addons that are already loaded
 	for addon in pairs(self.addonCallbacks) do
-		if(IsAddOnLoaded(addon)) then
-			for index, event in ipairs(self.addonCallbacks[addon]["CallPriority"]) do
-				self.addonCallbacks[addon][event] = nil;
-				self.addonCallbacks[addon]["CallPriority"][index] = nil;
-				E.callbacks:Fire(event);
+		if IsAddOnLoaded(addon) then
+			for index, event in ipairs(self.addonCallbacks[addon].CallPriority) do
+				self.addonCallbacks[addon][event] = nil
+				self.addonCallbacks[addon].CallPriority[index] = nil
+				E.callbacks:Fire(event)
 			end
 		end
 	end
 	--Fire event for all skins that doesn't rely on a Blizzard addon
-	for index, event in ipairs(self.nonAddonCallbacks["CallPriority"]) do
-		self.nonAddonCallbacks[event] = nil;
-		self.nonAddonCallbacks["CallPriority"][index] = nil;
-		E.callbacks:Fire(event);
+	for index, event in ipairs(self.nonAddonCallbacks.CallPriority) do
+		self.nonAddonCallbacks[event] = nil
+		self.nonAddonCallbacks.CallPriority[index] = nil
+		E.callbacks:Fire(event)
 	end
 
 	--Old deprecated load functions. We keep this for the time being in case plugins make use of it.
 	for addon, loadFunc in pairs(self.addonsToLoad) do
-		if(IsAddOnLoaded(addon)) then
-			self.addonsToLoad[addon] = nil;
-			local _, catch = pcall(loadFunc);
-			if(catch and GetCVarBool("scriptErrors") == true) then
-				ScriptErrorsFrame_OnError(catch, false);
+		if IsAddOnLoaded(addon) then
+			self.addonsToLoad[addon] = nil
+			local _, catch = pcall(loadFunc)
+			if catch and GetCVarBool("scriptErrors") == true then
+				ScriptErrorsFrame_OnError(catch, false)
 			end
 		end
 	end
@@ -630,13 +647,13 @@ function S:Initialize()
 	for _, loadFunc in pairs(self.nonAddonsToLoad) do
 		local _, catch = pcall(loadFunc)
 		if(catch and GetCVarBool("scriptErrors") == true) then
-			ScriptErrorsFrame_OnError(catch, false);
+			ScriptErrorsFrame_OnError(catch, false)
 		end
 	end
-	wipe(self.nonAddonsToLoad);
+	wipe(self.nonAddonsToLoad)
 end
 
-S:RegisterEvent("ADDON_LOADED");
+S:RegisterEvent("ADDON_LOADED")
 
 local function InitializeCallback()
 	S:Initialize()

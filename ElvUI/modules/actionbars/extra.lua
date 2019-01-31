@@ -28,8 +28,8 @@ end
 
 function AB:Extra_SetScale()
 	if not E.private.actionbar.enable then return end
-
 	local scale = E.db.actionbar.extraActionButton.scale
+
 	if ExtraActionBarFrame then
 		ExtraActionBarFrame:SetScale(scale)
 		ExtraActionBarHolder:Size(ExtraActionBarFrame:GetWidth() * scale)
@@ -61,7 +61,8 @@ function AB:SetupExtraButton()
 			tex:SetInside()
 			button:SetCheckedTexture(tex)
 
-			if(button.cooldown and E.private.cooldown.enable) then
+			if button.cooldown then
+				button.cooldown.CooldownOverride = "actionbar"
 				E:RegisterCooldown(button.cooldown)
 				button.cooldown:HookScript("OnShow", FixExtraActionCD)
 			end
@@ -72,7 +73,7 @@ function AB:SetupExtraButton()
 		ExtraActionBarFrame:Show()
 	end
 
-	E:CreateMover(ExtraActionBarHolder, "BossButton", L["Boss Button"], nil, nil, nil, "ALL, ACTIONBARS")
+	E:CreateMover(ExtraActionBarHolder, "BossButton", L["Boss Button"], nil, nil, nil, "ALL,ACTIONBARS", nil, "actionbar,extraActionButton")
 
 	AB:Extra_SetAlpha()
 	AB:Extra_SetScale()

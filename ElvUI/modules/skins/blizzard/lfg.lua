@@ -94,7 +94,7 @@ local function LoadSkin()
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture = LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY")
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
 	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexCoord(unpack(E.TexCoords))
@@ -157,7 +157,7 @@ local function LoadSkin()
 								button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 								name:SetTextColor(GetItemQualityColor(quality))
 							else
-								button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+								button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 								name:SetTextColor(1, 1, 1)
 							end
 						end
@@ -203,7 +203,7 @@ local function LoadSkin()
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture = ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY")
 	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
@@ -256,7 +256,7 @@ local function LoadSkin()
 								button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 								name:SetTextColor(GetItemQualityColor(quality))
 							else
-								button.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+								button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 								name:SetTextColor(1, 1, 1)
 							end
 						end
@@ -702,7 +702,7 @@ local function LoadSkin()
 		if incentiveIndex then
 			roleButton.backdrop:SetBackdropBorderColor(1, 0.80, 0.10)
 		else
-			roleButton.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			roleButton.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 end

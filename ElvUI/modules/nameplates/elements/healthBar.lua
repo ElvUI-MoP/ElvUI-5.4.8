@@ -2,6 +2,8 @@ local E, L, V, P, G = unpack(select(2, ...))
 local mod = E:GetModule("NamePlates")
 local LSM = LibStub("LibSharedMedia-3.0")
 
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+
 function mod:UpdateElement_HealthOnValueChanged()
 	local frame = self:GetParent():GetParent().UnitFrame
 	if not frame.UnitType then return end -- Bugs
@@ -83,6 +85,11 @@ function mod:UpdateElement_HealthColor(frame)
 	if r ~= frame.HealthBar.r or g ~= frame.HealthBar.g or b ~= frame.HealthBar.b then
 		if not frame.HealthColorChanged then
 			frame.HealthBar:SetStatusBarColor(r, g, b)
+			if frame.HealthColorChangeCallbacks then
+				for _, cb in ipairs(frame.HealthColorChangeCallbacks) do
+					cb(self, frame, r, g, b)
+				end
+			end
 		end
 		frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = r, g, b
 	end
@@ -101,6 +108,18 @@ function mod:UpdateElement_Health(frame)
 	local _, maxHealth = frame.oldHealthBar:GetMinMaxValues()
 	frame.HealthBar:SetMinMaxValues(0, maxHealth)
 
+	if frame.MaxHealthChangeCallbacks then
+		for _, cb in ipairs(frame.MaxHealthChangeCallbacks) do
+			cb(self, frame, maxHealth)
+		end
+	end	
+
+	if frame.HealthValueChangeCallbacks then
+		for _, cb in ipairs(frame.HealthValueChangeCallbacks) do
+			cb(self, frame, health)
+		end
+	end
+
 	frame.HealthBar:SetValue(health)
 	frame:GetParent().UnitFrame.FlashTexture:Point("TOPRIGHT", frame.HealthBar:GetStatusBarTexture(), "TOPRIGHT") --idk why this fixes this
 
@@ -108,6 +127,23 @@ function mod:UpdateElement_Health(frame)
 		frame.HealthBar.text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].healthbar.text.format, health, maxHealth))
 	else
 		frame.HealthBar.text:SetText("")
+	end
+end
+
+function mod:RegisterHealthBarCallbacks(frame, valueChangeCB, colorChangeCB, maxHealthChangeCB)
+	if valueChangeCB then
+		frame.HealthValueChangeCallbacks = frame.HealthValueChangeCallbacks or {}
+		tinsert(frame.HealthValueChangeCallbacks, valueChangeCB)
+	end
+
+	if colorChangeCB then
+		frame.HealthColorChangeCallbacks = frame.HealthColorChangeCallbacks or {}
+		tinsert(frame.HealthColorChangeCallbacks, colorChangeCB)
+	end
+
+	if maxHealthChangeCB then
+		frame.MaxHealthChangeCallbacks = frame.MaxHealthChangeCallbacks or {}
+		tinsert(frame.MaxHealthChangeCallbacks, maxHealthChangeCB)
 	end
 end
 
@@ -120,7 +156,8 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 	healthBar:SetHeight(self.db.units[frame.UnitType].healthbar.height * (frame.ThreatScale or 1) * (frame.isTarget and self.db.useTargetScale and self.db.targetScale or 1))
 
 	healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar), "BORDER")
-	if(not configuring) and (self.db.units[frame.UnitType].healthbar.enable or frame.isTarget) then
+
+	if (not configuring) and (self.db.units[frame.UnitType].healthbar.enable or frame.isTarget) then
 		healthBar:Show()
 	end
 
@@ -148,12 +185,14 @@ function mod:ConstructElement_HealthBar(parent)
 	frame.text = frame:CreateFontString(nil, "OVERLAY")
 	frame.text:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 	frame.text:SetWordWrap(false)
-	frame.scale = CreateAnimationGroup(frame)
 
+	frame.scale = CreateAnimationGroup(frame)
 	frame.scale.width = frame.scale:CreateAnimation("Width")
 	frame.scale.width:SetDuration(0.2)
 	frame.scale.height = frame.scale:CreateAnimation("Height")
 	frame.scale.height:SetDuration(0.2)
+
 	frame:Hide()
+
 	return frame
 end

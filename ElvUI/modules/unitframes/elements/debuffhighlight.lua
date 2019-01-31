@@ -1,49 +1,50 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local UF = E:GetModule("UnitFrames");
+local E, L, V, P, G = unpack(select(2, ...))
+local UF = E:GetModule("UnitFrames")
 
 function UF:Construct_DebuffHighlight(frame)
-	local dbh = frame:CreateTexture(nil, "OVERLAY");
-	dbh:SetInside(frame.Health.backdrop);
-	dbh:SetTexture(E["media"].blankTex);
-	dbh:SetVertexColor(0, 0, 0, 0);
-	dbh:SetBlendMode("ADD");
-	frame.DebuffHighlightFilter = true;
-	frame.DebuffHighlightAlpha = 0.45;
-	frame.DebuffHighlightFilterTable = E.global.unitframe.DebuffHighlightColors;
+	local dbh = frame:CreateTexture(nil, "OVERLAY")
+	dbh:SetInside(frame.Health.backdrop)
+	dbh:SetTexture(E.media.blankTex)
+	dbh:SetVertexColor(0, 0, 0, 0)
+	dbh:SetBlendMode("ADD")
 
-	frame:CreateShadow("Default");
-	local x = frame.shadow;
-	frame.shadow = nil;
-	x:Hide();
+	frame.DebuffHighlightFilter = true
+	frame.DebuffHighlightAlpha = 0.45
+	frame.DebuffHighlightFilterTable = E.global.unitframe.DebuffHighlightColors
 
-	frame.DBHGlow = x;
+	frame:CreateShadow("Default")
+	local x = frame.shadow
+	frame.shadow = nil
+	x:Hide()
 
-	if(frame.Health) then
-		dbh:SetParent(frame.Health);
-		frame.DBHGlow:SetParent(frame.Health);
+	frame.DBHGlow = x
+
+	if frame.Health then
+		dbh:SetParent(frame.Health)
+		frame.DBHGlow:SetParent(frame.Health)
 	end
 
 	dbh.PostUpdate = UF.PostUpdate_DebuffHighlight
 
-	return dbh;
+	return dbh
 end
 
 function UF:Configure_DebuffHighlight(frame)
-	if(E.db.unitframe.debuffHighlighting ~= "NONE") then
-		frame:EnableElement("DebuffHighlight");
-		frame.DebuffHighlightFilterTable = E.global.unitframe.DebuffHighlightColors;
-		if(E.db.unitframe.debuffHighlighting == "GLOW") then
-			frame.DebuffHighlightBackdrop = true;
-			if(frame.ThreatIndicator) then
-				frame.DBHGlow:SetAllPoints(frame.ThreatIndicator.glow);
-			elseif(frame.TargetGlow) then
-				frame.DBHGlow:SetAllPoints(frame.TargetGlow);
+	if E.db.unitframe.debuffHighlighting ~= "NONE" then
+		frame:EnableElement("DebuffHighlight")
+		frame.DebuffHighlightFilterTable = E.global.unitframe.DebuffHighlightColors
+		if E.db.unitframe.debuffHighlighting == "GLOW" then
+			frame.DebuffHighlightBackdrop = true
+			if frame.ThreatIndicator then
+				frame.DBHGlow:SetAllPoints(frame.ThreatIndicator.glow)
+			elseif frame.TargetGlow then
+				frame.DBHGlow:SetAllPoints(frame.TargetGlow)
 			end
 		else
-			frame.DebuffHighlightBackdrop = false;
+			frame.DebuffHighlightBackdrop = false
 		end
 	else
-		frame:DisableElement("DebuffHighlight");
+		frame:DisableElement("DebuffHighlight")
 	end
 end
 

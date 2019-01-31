@@ -1,27 +1,27 @@
-local E, L, V, P, G = unpack(select(2, ...));
-local B = E:NewModule('Blizzard', 'AceEvent-3.0', 'AceHook-3.0');
-
-E.Blizzard = B;
+local E, L, V, P, G = unpack(select(2, ...))
+local B = E:NewModule("Blizzard", "AceEvent-3.0", "AceHook-3.0")
+E.Blizzard = B
 
 function B:Initialize()
-	self:AlertMovers();
-	self:EnhanceColorPicker();
-	self:KillBlizzard();
-	self:PositionCaptureBar();
-	self:PositionDurabilityFrame();
-	self:PositionGMFrames();
-	self:PositionVehicleFrame();
-	self:MoveWatchFrame();
-	self:SkinBlizzTimers();
+	self:EnhanceColorPicker()
+	self:KillBlizzard()
+	self:AlertMovers()
+	self:PositionCaptureBar()
+	self:PositionDurabilityFrame()
+	self:PositionGMFrames()
+	self:SkinBlizzTimers()
+	self:PositionVehicleFrame()
+	self:MoveWatchFrame()
 	self:ErrorFrameSize()
 	self:Handle_LevelUpDisplay()
 
- 	if(not IsAddOnLoaded("SimplePowerBar")) then
- 		self:PositionAltPowerBar();
+ 	if not IsAddOnLoaded("SimplePowerBar") then
+ 		self:PositionAltPowerBar()
+		self:SkinAltPowerBar()
 	end
 
-	if(GetLocale() == "deDE") then
-		DAY_ONELETTER_ABBR = "%d d";
+	if GetLocale() == "deDE" then
+		DAY_ONELETTER_ABBR = "%d d"
 	end
 
 	E:CreateMover(LossOfControlFrame, "LossControlMover", L["Loss Control Icon"])

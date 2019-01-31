@@ -30,7 +30,7 @@ local missChance, level
 local lastPanel
 
 local function OnEvent(self)
-	if E.Role == "Caster" then
+	if E.role == "Caster" then
 		hitRatingBonus = GetCombatRatingBonus(CR_HIT_SPELL)
 	else
 		if E.myclass == "HUNTER" then
@@ -54,7 +54,7 @@ local function OnEnter(self)
 		DT.tooltip:AddDoubleLine(STAT_TARGET_LEVEL, MISS_CHANCE, 1, 1, 1, 1, 1, 1)
 
 		for i = 0, 3 do
-			missChance = format("%.2f%%", GetSpellMissChance(i));
+			missChance = format("%.2f%%", GetSpellMissChance(i))
 			level = playerLevel + i
 			if i == 3 then
 				level = level.." / "..skullTexture
@@ -69,7 +69,7 @@ local function OnEnter(self)
 			DT.tooltip:AddDoubleLine(STAT_TARGET_LEVEL, MISS_CHANCE, 1, 1, 1, 1, 1, 1)
 
 			for i = 0, 3 do
-				missChance = format("%.2f%%", GetRangedMissChance(i));
+				missChance = format("%.2f%%", GetRangedMissChance(i))
 				level = playerLevel + i
 				if i == 3 then
 					level = level.." / "..skullTexture
@@ -88,7 +88,7 @@ local function OnEnter(self)
 			end
 
 			for i = 0, 3 do
-				missChance = format("%.2f%%", GetMeleeMissChance(i, false));
+				missChance = format("%.2f%%", GetMeleeMissChance(i, false))
 				level = playerLevel + i
 				if i == 3 then
 					level = level.." / "..skullTexture
@@ -124,6 +124,6 @@ local function ValueColorUpdate(hex)
 		OnEvent(lastPanel)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("Hit Rating", {"UNIT_STATS", "UNIT_AURA", "FORGE_MASTER_ITEM_CHANGED", "ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_TALENT_UPDATE"}, OnEvent, nil, nil, OnEnter, nil, STAT_HIT_CHANCE)

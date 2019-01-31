@@ -2,13 +2,14 @@ local E, L, V, P, G = unpack(ElvUI)
 local UF = E:GetModule("UnitFrames")
 
 local type, pairs, tonumber, tostring = type, pairs, tonumber, tostring
-local gsub, match, format = string.gsub, string.match, string.format
+local gsub, match, format, lower = string.gsub, string.match, string.format, string.lower
 
 local GetSpellInfo = GetSpellInfo
 local NONE, COLOR, FILTERS = NONE, COLOR, FILTERS
 
 local selectedSpell
 local selectedFilter
+local quickSearchText = ""
 
 local function filterValue(value)
 	return gsub(value,"([%(%)%.%%%+%-%*%?%[%^%$])","%%%1")
@@ -71,6 +72,10 @@ local function UpdateFilterGroup()
 					desc = L["Add a spell to the filter. Use spell ID if you don't want to match all auras which share the same name."],
 					get = function(info) return "" end,
 					set = function(info, value)
+						if not GetSpellInfo(value) then
+							E:Print("Error in filter", selectedFilter, ": Submitted value '", value, "' is not a proper spell")
+							return
+						end
 						if tonumber(value) then value = tonumber(value) end
 						E.global.unitframe.DebuffHighlightColors[value] = {enable = true, style = "GLOW", color = {r = 0.8, g = 0, b = 0, a = 0.85}}
 						UpdateFilterGroup()
@@ -93,6 +98,14 @@ local function UpdateFilterGroup()
 					end,
 					disabled = function() return not (selectedSpell and selectedSpell ~= "") end
 				},
+				quickSearch = {
+					order = 3,
+					type = "input",
+					name = L["Filter Search"],
+					desc = L["Search for a spell name inside of a filter."],
+					get = function() return quickSearchText end,
+					set = function(info,value) quickSearchText = value end
+				},
 				selectSpell = {
 					order = 10,
 					type = "select",
@@ -105,6 +118,7 @@ local function UpdateFilterGroup()
 						local filters = {}
 						local list = E.global.unitframe.DebuffHighlightColors
 						if not list then return end
+						local searchText = quickSearchText:lower()
 						for filter in pairs(list) do
 							if tonumber(filter) then
 								local spellName = GetSpellInfo(filter)
@@ -114,7 +128,7 @@ local function UpdateFilterGroup()
 									filter = tostring(filter)
 								end
 							end
-							filters[filter] = filter
+							if filter:lower():find(searchText) then filters[filter] = filter end
 						end
 						if not next(filters) then filters[""] = NONE end
 						return filters
@@ -229,6 +243,10 @@ local function UpdateFilterGroup()
 					desc = L["Add a spell to the filter. Use spell ID if you don't want to match all auras which share the same name."],
 					get = function(info) return "" end,
 					set = function(info, value)
+						if not GetSpellInfo(value) then
+							E:Print("Error in filter", selectedFilter, ": Submitted value '", value, "' is not a proper spell")
+							return
+						end
 						if tonumber(value) then value = tonumber(value) end
 						if not E.global.unitframe.AuraBarColors[value] then
 							E.global.unitframe.AuraBarColors[value] = false
@@ -262,6 +280,14 @@ local function UpdateFilterGroup()
 					end,
 					disabled = function() return not (selectedSpell and selectedSpell ~= "") end
 				},
+				quickSearch = {
+					order = 3,
+					type = "input",
+					name = L["Filter Search"],
+					desc = L["Search for a spell name inside of a filter."],
+					get = function() return quickSearchText end,
+					set = function(info,value) quickSearchText = value end
+				},
 				selectSpell = {
 					order = 10,
 					type = "select",
@@ -277,6 +303,7 @@ local function UpdateFilterGroup()
 						local filters = {}
 						local list = E.global.unitframe.AuraBarColors
 						if not list then return end
+						local searchText = quickSearchText:lower()
 						for filter in pairs(list) do
 							if tonumber(filter) then
 								local spellName = GetSpellInfo(filter)
@@ -286,7 +313,7 @@ local function UpdateFilterGroup()
 									filter = tostring(filter)
 								end
 							end
-							filters[filter] = filter
+							if filter:lower():find(searchText) then filters[filter] = filter end
 						end
 						if not next(filters) then filters[""] = NONE end
 						return filters
@@ -430,6 +457,14 @@ local function UpdateFilterGroup()
 					end,
 					disabled = function() return not selectedSpell end
 				},
+				quickSearch = {
+					order = 3,
+					type = "input",
+					name = L["Filter Search"],
+					desc = L["Search for a spell name inside of a filter."],
+					get = function() return quickSearchText end,
+					set = function(info,value) quickSearchText = value end
+				},
 				selectSpell = {
 					order = 10,
 					type = "select",
@@ -439,10 +474,11 @@ local function UpdateFilterGroup()
 						local values = {}
 						local list = E.global.unitframe.buffwatch.PET
 						if not list then return end
+						local searchText = quickSearchText:lower()
 						for _, spell in pairs(list) do
 							if spell.id then
 								local name = GetSpellInfo(spell.id)
-								values[spell.id] = name
+								if name:lower():find(searchText) then values[spell.id] = name end
 							end
 						end
 						return values
@@ -668,6 +704,14 @@ local function UpdateFilterGroup()
 					end,
 					disabled = function() return not selectedSpell end
 				},
+				quickSearch = {
+					order = 3,
+					type = "input",
+					name = L["Filter Search"],
+					desc = L["Search for a spell name inside of a filter."],
+					get = function() return quickSearchText end,
+					set = function(info,value) quickSearchText = value end
+				},
 				selectSpell = {
 					order = 10,
 					type = "select",
@@ -677,10 +721,11 @@ local function UpdateFilterGroup()
 						local values = {}
 						local list = E.global.unitframe.buffwatch[E.myclass]
 						if not list then return end
+						local searchText = quickSearchText:lower()
 						for _, spell in pairs(list) do
 							if spell.id then
 								local name = GetSpellInfo(spell.id)
-								values[spell.id] = name
+								if name:lower():find(searchText) then values[spell.id] = name end
 							end
 						end
 						return values
@@ -914,6 +959,14 @@ local function UpdateFilterGroup()
 					end,
 					disabled = function() return not selectedSpell end
 				},
+				quickSearch = {
+					order = 3,
+					type = "input",
+					name = L["Filter Search"],
+					desc = L["Search for a spell name inside of a filter."],
+					get = function() return quickSearchText end,
+					set = function(info,value) quickSearchText = value end
+				},
 				selectSpell = {
 					order = 10,
 					type = "select",
@@ -923,10 +976,11 @@ local function UpdateFilterGroup()
 						local values = {}
 						local list = E.db.unitframe.filters.buffwatch
 						if not list then return end
+						local searchText = quickSearchText:lower()
 						for _, spell in pairs(list) do
 							if spell.id then
 								local name = GetSpellInfo(spell.id)
-								values[spell.id] = name
+								if name:lower():find(searchText) then values[spell.id] = name end
 							end
 						end
 						return values
@@ -1134,6 +1188,10 @@ local function UpdateFilterGroup()
 					desc = L["Add a spell to the filter. Use spell ID if you don't want to match all auras which share the same name."],
 					get = function(info) return "" end,
 					set = function(info, value)
+						if not GetSpellInfo(value) then
+							E:Print("Error in filter", selectedFilter, ": Submitted value '", value, "' is not a proper spell")
+							return
+						end
 						if tonumber(value) then	value = tonumber(value) end
 						if not E.global.unitframe["aurafilters"][selectedFilter]["spells"][value] then
 							E.global.unitframe["aurafilters"][selectedFilter]["spells"][value] = {
@@ -1183,6 +1241,14 @@ local function UpdateFilterGroup()
 					get = function() return E.global.unitframe["aurafilters"][selectedFilter].type end,
 					set = function(info, value) E.global.unitframe["aurafilters"][selectedFilter].type = value UF:Update_AllFrames() end
 				},
+				quickSearch = {
+					order = 4,
+					type = "input",
+					name = L["Filter Search"],
+					desc = L["Search for a spell name inside of a filter."],
+					get = function() return quickSearchText end,
+					set = function(info,value) quickSearchText = value end
+				},
 				selectSpell = {
 					order = 10,
 					type = "select",
@@ -1198,6 +1264,7 @@ local function UpdateFilterGroup()
 						local filters = {}
 						local list = E.global.unitframe["aurafilters"][selectedFilter]["spells"]
 						if not list then return end
+						local searchText = quickSearchText:lower()
 						for filter in pairs(list) do
 							if tonumber(filter) then
 								local spellName = GetSpellInfo(filter)
@@ -1207,7 +1274,7 @@ local function UpdateFilterGroup()
 									filter = tostring(filter)
 								end
 							end
-							filters[filter] = filter
+							if filter:lower():find(searchText) then filters[filter] = filter end
 						end
 						if not next(filters) then filters[""] = NONE end
 						return filters
@@ -1216,7 +1283,7 @@ local function UpdateFilterGroup()
 			}
 		}
 
-		if (E.DEFAULT_FILTER[selectedFilter]) then
+		if E.DEFAULT_FILTER[selectedFilter] then
 			--Disable and hide filter type option for default filters
 			E.Options.args.filters.args.filterGroup.args.filterType.disabled = true
 			E.Options.args.filters.args.filterGroup.args.filterType.hidden = true
@@ -1374,6 +1441,7 @@ E.Options.args.filters = {
 					end
 					selectedFilter = value
 				end
+				quickSearchText = ""
 				UpdateFilterGroup()
 			end,
 			values = function()
@@ -1404,6 +1472,7 @@ E.Options.args.filters = {
 				removePriority(selectedFilter) --This will wipe a filter from the new aura system profile settings.
 				selectedFilter = nil
 				selectedSpell = nil
+				quickSearchText = ""
 				E.Options.args.filters.args.filterGroup = nil
 			end,
 			disabled = function() return G.unitframe.aurafilters[selectedFilter] end,

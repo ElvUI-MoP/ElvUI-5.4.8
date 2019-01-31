@@ -7,11 +7,11 @@ G["nameplates"]["filters"] = {
 			["curlevel"] = -1,
 			["nameplateType"] = {
 				["enable"] = true,
-				["enemyNPC"] = true,
+				["enemyNPC"] = true
 			}
 		},
 		["actions"] = {
-			["scale"] = 1.15,
+			["scale"] = 1.15
 		}
 	}
 }
@@ -29,7 +29,7 @@ E["StyleFilterDefaults"] = {
 		["role"] = {
 			["tank"] = false,
 			["healer"] = false,
-			["damager"] = false,
+			["damager"] = false
 		},
 		["curlevel"] = 0,
 		["maxlevel"] = 0,
@@ -65,30 +65,30 @@ E["StyleFilterDefaults"] = {
 		["instanceDifficulty"] = {
 			["dungeon"] = {
 				["normal"] = false,
-				["heroic"] = false,
+				["heroic"] = false
 			},
 			["raid"] = {
 				["normal"] = false,
-				["heroic"] = false,
+				["heroic"] = false
 			}
 		},
 		["cooldowns"] = {
 			["names"] = {},
-			["mustHaveAll"] = false,
+			["mustHaveAll"] = false
 		},
 		["buffs"] = {
 			["mustHaveAll"] = false,
 			["missing"] = false,
 			["names"] = {},
 			["minTimeLeft"] = 0,
-			["maxTimeLeft"] = 0,
+			["maxTimeLeft"] = 0
 		},
 		["debuffs"] = {
 			["mustHaveAll"] = false,
 			["missing"] = false,
 			["names"] = {},
 			["minTimeLeft"] = 0,
-			["maxTimeLeft"] = 0,
+			["maxTimeLeft"] = 0
 		},
 		["inCombat"] = false,
 		["outOfCombat"] = false
@@ -104,23 +104,23 @@ E["StyleFilterDefaults"] = {
 		},
 		["texture"] = {
 			["enable"] = false,
-			["texture"] = "ElvUI Norm",
+			["texture"] = "ElvUI Norm"
 		},
 		["flash"] = {
 			["enable"] = false,
 			["color"] = {r = 1, g = 1, b = 1, a = 1},
-			["speed"] = 4,
+			["speed"] = 4
 		},
 		["hide"] = false,
 		["nameOnly"] = false,
 		["scale"] = 1.0,
-		["alpha"] = -1,
-	},
+		["alpha"] = -1
+	}
 }
 
 G.nameplates.specialFilters = {
 	["Personal"] = true,
 	["nonPersonal"] = true,
 	["blockNonPersonal"] = true,
-	["blockNoDuration"] = true,
+	["blockNoDuration"] = true
 }

@@ -12,24 +12,32 @@ E.Options.args.skins = {
 		},
 		blizzardEnable = {
 			order = 2,
-			type = 'toggle',
-			name = 'Blizzard',
+			type = "toggle",
+			name = "Blizzard",
 			get = function(info) return E.private.skins.blizzard.enable end,
-			set = function(info, value) E.private.skins.blizzard.enable = value; E:StaticPopup_Show("PRIVATE_RL") end
+			set = function(info, value) E.private.skins.blizzard.enable = value E:StaticPopup_Show("PRIVATE_RL") end
 		},
 		ace3 = {
 			order = 3,
-			type = 'toggle',
-			name = 'Ace3',
+			type = "toggle",
+			name = "Ace3",
 			get = function(info) return E.private.skins.ace3.enable end,
-			set = function(info, value) E.private.skins.ace3.enable = value; E:StaticPopup_Show("PRIVATE_RL") end
+			set = function(info, value) E.private.skins.ace3.enable = value E:StaticPopup_Show("PRIVATE_RL") end
+		},
+		checkBoxSkin = {
+			order = 4,
+			type = "toggle",
+			name = L["CheckBox Skin"],
+			get = function(info) return E.private.skins.checkBoxSkin end,
+			set = function(info, value) E.private.skins.checkBoxSkin = value E:StaticPopup_Show("PRIVATE_RL") end,
+			disabled = function() return not E.private.skins.ace3.enable end
 		},
 		blizzard = {
 			order = 100,
-			type = 'group',
-			name = 'Blizzard',
+			type = "group",
+			name = "Blizzard",
 			get = function(info) return E.private.skins.blizzard[ info[#info] ] end,
-			set = function(info, value) E.private.skins.blizzard[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL") end,
+			set = function(info, value) E.private.skins.blizzard[ info[#info] ] = value E:StaticPopup_Show("CONFIG_RL") end,
 			disabled = function() return not E.private.skins.blizzard.enable end,
 			guiInline = true,
 			args = {
@@ -40,7 +48,7 @@ E.Options.args.skins = {
 				},
 				alertframes = {
 					type = "toggle",
-					name = L['Alert Frames'],
+					name = L["Alert Frames"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				archaeology = {
@@ -312,7 +320,7 @@ E.Options.args.skins = {
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				transmogrify = {
-					type = 'toggle',
+					type = "toggle",
 					name = TRANSMOGRIFY,
 					desc = L["TOGGLESKIN_DESC"]
 				},

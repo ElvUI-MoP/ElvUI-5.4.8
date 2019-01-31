@@ -94,6 +94,7 @@ local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, Upda
 local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, UpdateOverlayGlow
 local UpdateFlyout, ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
 local ShowOverlayGlow, HideOverlayGlow, GetOverlayGlow, OverlayGlowAnimOutFinished
+local UpdateRange -- Sezz: new method
 
 local InitializeEventHandler, OnEvent, ForAllButtons, OnUpdate
 
@@ -622,19 +623,10 @@ function Generic:UpdateConfig(config)
 	if config and type(config) ~= "table" then
 		error("LibActionButton-1.0: UpdateConfig requires a valid configuration!", 2)
 	end
-	local oldconfig = self.config
+
 	self.config = {}
 	-- merge the two configs
 	merge(self.config, config, DefaultConfig)
-
-	if self.config.outOfRangeColoring == "button" or (oldconfig and oldconfig.outOfRangeColoring == "button") then
-		UpdateUsable(self)
-	end
-	if self.config.outOfRangeColoring == "hotkey" then
-		self.outOfRange = nil
-	elseif oldconfig and oldconfig.outOfRangeColoring == "hotkey" then
-		self.hotkey:SetVertexColor(0.75, 0.75, 0.75)
-	end
 
 	if self.config.hideElements.macro then
 		self.actionName:Hide()
@@ -646,7 +638,8 @@ function Generic:UpdateConfig(config)
 
 	UpdateHotkeys(self)
 	UpdateGrid(self)
-	Update(self)
+	Update(self, true)
+
 	self:RegisterForClicks(self.config.clickOnDown and "AnyDown" or "AnyUp")
 end
 
@@ -838,28 +831,7 @@ function OnUpdate(_, elapsed)
 
 			-- Range
 			if rangeTimer <= 0 then
-				local inRange = button:IsInRange()
-				local oldRange = button.outOfRange
-				button.outOfRange = (inRange == false)
-				if oldRange ~= button.outOfRange then
-					if button.config.outOfRangeColoring == "button" then
-						UpdateUsable(button)
-					elseif button.config.outOfRangeColoring == "hotkey" then
-						local hotkey = button.hotkey
-						if hotkey:GetText() == RANGE_INDICATOR then
-							if inRange == false then
-								hotkey:Show()
-							else
-								hotkey:Hide()
-							end
-						end
-						if inRange == false then
-							hotkey:SetVertexColor(unpack(button.config.colors.range))
-						else
-							hotkey:SetVertexColor(0.75, 0.75, 0.75)
-						end
-					end
-				end
+				UpdateRange(button) -- Sezz
 			end
 		end
 
@@ -903,6 +875,32 @@ function UpdateGrid(self)
 		self:SetAlpha(1.0)
 	elseif gridCounter == 0 and self:IsShown() and not self:HasAction() then
 		self:SetAlpha(0.0)
+	end
+end
+
+function UpdateRange(self, force) -- Sezz: moved from OnUpdate
+	local inRange = self:IsInRange()
+	local oldRange = self.outOfRange
+	self.outOfRange = (inRange == false)
+	if force or (oldRange ~= self.outOfRange) then
+		if self.config.outOfRangeColoring == "button" then
+			UpdateUsable(self)
+		elseif self.config.outOfRangeColoring == "hotkey" then
+			local hotkey = self.hotkey
+			if hotkey:GetText() == RANGE_INDICATOR then
+				if inRange == false then
+					hotkey:Show()
+				else
+					hotkey:Hide()
+				end
+			end
+
+			if inRange == false then
+				hotkey:SetVertexColor(unpack(self.config.colors.range))
+			else
+				hotkey:SetVertexColor(unpack(self.config.colors.usable))
+			end
+		end
 	end
 end
 
@@ -976,9 +974,9 @@ end
 
 function Generic:UpdateAction(force)
 	local type, action = self:GetAction()
-	if force or type ~= self._state_type or action ~= self._state_action then
+	if force or (type ~= self._state_type) or (action ~= self._state_action) then
 		-- type changed, update the metatable
-		if force or self._state_type ~= type then
+		if force or (self._state_type ~= type) then
 			local meta = type_meta_map[type] or type_meta_map.empty
 			setmetatable(self, meta)
 			self._state_type = type
@@ -988,7 +986,7 @@ function Generic:UpdateAction(force)
 	end
 end
 
-function Update(self)
+function Update(self, fromUpdateConfig)
 	if self:HasAction() then
 		ActiveButtons[self] = true
 		if self._state_type == "action" then
@@ -999,7 +997,6 @@ function Update(self)
 			NonActionButtons[self] = true
 		end
 		self:SetAlpha(1.0)
-		UpdateButtonState(self)
 		UpdateUsable(self)
 		UpdateCooldown(self)
 		UpdateFlash(self)
@@ -1037,6 +1034,7 @@ function Update(self)
 		self.icon:Show()
 		self.rangeTimer = - 1
 		self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
+
 		if not self.LBFSkinned and not self.MasqueSkinned then
 			self.normalTexture:SetTexCoord(0, 0, 0, 0)
 		end
@@ -1045,11 +1043,7 @@ function Update(self)
 		self.cooldown:Hide()
 		self.rangeTimer = nil
 		self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot")
-		if self.hotkey:GetText() == RANGE_INDICATOR then
-			self.hotkey:Hide()
-		else
-			self.hotkey:SetVertexColor(0.75, 0.75, 0.75)
-		end
+
 		if not self.LBFSkinned and not self.MasqueSkinned then
 			self.normalTexture:SetTexCoord(-0.15, 1.15, -0.15, 1.17)
 		end
@@ -1057,11 +1051,15 @@ function Update(self)
 
 	self:UpdateLocal()
 
+	UpdateRange(self, fromUpdateConfig) -- Sezz: update range check on state change
+
 	UpdateCount(self)
 
 	UpdateFlyout(self)
 
 	UpdateOverlayGlow(self)
+
+	UpdateButtonState(self)
 
 	if GameTooltip:GetOwner() == self then
 		UpdateTooltip(self)

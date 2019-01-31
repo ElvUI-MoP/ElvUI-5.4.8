@@ -31,10 +31,37 @@ end
 local function OnEnter(self)
 	DT:SetupTooltip(self)
 
+	local r, g, b
+	local free, total, used
+
+	for i = 0, NUM_BAG_SLOTS do
+		if i ~= 0 then
+			local link = GetInventoryItemLink("player", ContainerIDToInventoryID(i))
+			if link then
+				local name, _, quality = GetItemInfo(link)
+				r, g, b = GetItemQualityColor(quality)
+			end
+		end
+
+		free, total, used = 0, 0, 0
+		free, total = GetContainerNumFreeSlots(i), GetContainerNumSlots(i)
+		used = total - free
+
+		if i == 0 then
+			DT.tooltip:AddLine(L["Bags"]..":")
+			DT.tooltip:AddDoubleLine(join("", BACKPACK_TOOLTIP), format("%d / %d", used, total), 1, 1, 1)
+		else
+			if link then
+				DT.tooltip:AddDoubleLine(join("", name), format("%d / %d", used, total), r, g, b)
+			end
+		end
+	end
+
 	for i = 1, MAX_WATCHED_TOKENS do
 		local name, count, icon = GetBackpackCurrencyInfo(i)
 		if name and i == 1 then
-			DT.tooltip:AddLine(CURRENCY .. ":")
+			DT.tooltip:AddLine(" ")
+			DT.tooltip:AddLine(CURRENCY..":")
 		end
 
 		if name and count then
@@ -52,6 +79,6 @@ local function ValueColorUpdate(hex)
 		OnEvent(lastPanel)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true;
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("Bags", {"PLAYER_ENTERING_WORLD", "BAG_UPDATE"}, OnEvent, nil, OnClick, OnEnter, nil, L["Bags"])

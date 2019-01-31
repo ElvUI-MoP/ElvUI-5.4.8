@@ -47,7 +47,7 @@ local function LoadSkin()
 	TradeSkillRankFrame:Size(447, 17)
 	TradeSkillRankFrame:ClearAllPoints()
 	TradeSkillRankFrame:Point("TOP", 0, -25)
-	TradeSkillRankFrame:SetStatusBarTexture(E["media"].normTex)
+	TradeSkillRankFrame:SetStatusBarTexture(E.media.normTex)
 	TradeSkillRankFrame:SetStatusBarColor(0.22, 0.39, 0.84)
 	TradeSkillRankFrame.SetStatusBarColor = E.noop
 	E:RegisterStatusBar(TradeSkillRankFrame)
@@ -175,6 +175,23 @@ local function LoadSkin()
 	TradeSkillReagent7:Point("TOPLEFT", TradeSkillReagent5, "BOTTOMLEFT", 0, -3)
 	TradeSkillReagent8:Point("LEFT", TradeSkillReagent7, "RIGHT", 3, 0)
 
+	TradeSkillHighlight:StripTextures()
+
+	TradeSkillHighlightFrame.Left = TradeSkillHighlightFrame:CreateTexture(nil, "ARTWORK")
+	TradeSkillHighlightFrame.Left:Size(152, 15)
+	TradeSkillHighlightFrame.Left:SetPoint("LEFT", TradeSkillHighlightFrame, "CENTER")
+	TradeSkillHighlightFrame.Left:SetTexture(E.media.blankTex)
+
+	TradeSkillHighlightFrame.Right = TradeSkillHighlightFrame:CreateTexture(nil, "ARTWORK")
+	TradeSkillHighlightFrame.Right:Size(152, 15)
+	TradeSkillHighlightFrame.Right:SetPoint("RIGHT", TradeSkillHighlightFrame, "CENTER")
+	TradeSkillHighlightFrame.Right:SetTexture(E.media.blankTex)
+
+	hooksecurefunc(TradeSkillHighlight, "SetVertexColor", function(_, r, g, b)
+		TradeSkillHighlightFrame.Left:SetGradientAlpha("Horizontal", r, g, b, 0.35, r, g, b, 0)
+		TradeSkillHighlightFrame.Right:SetGradientAlpha("Horizontal", r, g, b, 0, r, g, b, 0.35)
+	end)
+
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
 		if TradeSkillSkillIcon:GetNormalTexture() then
 			TradeSkillSkillIcon:SetAlpha(1)
@@ -191,7 +208,7 @@ local function LoadSkin()
 				TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
 				TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
 			else
-				TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				TradeSkillSkillName:SetTextColor(1, 1, 1)
 			end
 		end
@@ -215,8 +232,8 @@ local function LoadSkin()
 						name:SetTextColor(GetItemQualityColor(quality))
 					end
 				else
-					reagent:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-					icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					reagent:SetBackdropBorderColor(unpack(E.media.bordercolor))
+					icon.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
  				end
 			end
 		end
@@ -263,7 +280,7 @@ local function LoadSkin()
 		button.SubSkillRankBar:CreateBackdrop("Default")
 		button.SubSkillRankBar.backdrop:SetOutside()
 		button.SubSkillRankBar:Height(12)
-		button.SubSkillRankBar:SetStatusBarTexture(E["media"].normTex)
+		button.SubSkillRankBar:SetStatusBarTexture(E.media.normTex)
 		button.SubSkillRankBar:SetStatusBarColor(0.22, 0.39, 0.84)
 		E:RegisterStatusBar(button.SubSkillRankBar)
 

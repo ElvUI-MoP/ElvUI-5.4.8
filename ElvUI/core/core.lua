@@ -1,36 +1,45 @@
-﻿local E, L, V, P, G = unpack(select(2, ...));
-local LSM = LibStub("LibSharedMedia-3.0");
+﻿local E, L, V, P, G = unpack(select(2, ...))
+local LSM = LibStub("LibSharedMedia-3.0")
 local Masque = LibStub("Masque", true)
 
-local _G = _G;
-local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring;
-local assert, print, type, collectgarbage, pcall, date = assert, print, type, collectgarbage, pcall, date;
+local _G = _G
+local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring
+local assert, print, type, collectgarbage, pcall, date = assert, print, type, collectgarbage, pcall, date
 local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
-local floor = floor;
-local format, find, match, strrep, len, sub, gsub = string.format, string.find, string.match, strrep, string.len, string.sub, string.gsub;
+local floor = floor
+local format, find, match, strrep, len, sub, gsub, strjoin = string.format, string.find, string.match, strrep, string.len, string.sub, string.gsub, strjoin
 
 local UnitGUID = UnitGUID
-local CreateFrame = CreateFrame;
+local CreateFrame = CreateFrame
 local C_PetBattles_IsInBattle = C_PetBattles.IsInBattle
+local GetCombatRatingBonus = GetCombatRatingBonus
 local GetCVar, GetCVarBool = GetCVar, GetCVarBool
-local IsAddOnLoaded = IsAddOnLoaded;
-local GetSpellInfo = GetSpellInfo;
-local IsInInstance, IsInGroup, IsInRaid = IsInInstance, IsInGroup, IsInRaid
-local RequestBattlefieldScoreData = RequestBattlefieldScoreData;
-local GetSpecialization, GetActiveSpecGroup = GetSpecialization, GetActiveSpecGroup
-local GetCombatRatingBonus = GetCombatRatingBonus;
 local GetDodgeChance, GetParryChance = GetDodgeChance, GetParryChance
+local GetFunctionCPUUsage = GetFunctionCPUUsage
+local GetSpecialization, GetActiveSpecGroup = GetSpecialization, GetActiveSpecGroup
+local GetSpecializationRole = GetSpecializationRole
+local GetSpellInfo = GetSpellInfo
+local InCombatLockdown = InCombatLockdown
+local IsAddOnLoaded = IsAddOnLoaded
+local IsInInstance, IsInGuild = IsInInstance, IsInGuild
+local RequestBattlefieldScoreData = RequestBattlefieldScoreData
+local UnitGroupRolesAssigned = UnitGroupRolesAssigned
+local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitLevel, UnitStat, UnitAttackPower = UnitLevel, UnitStat, UnitAttackPower
-local SendAddonMessage = SendAddonMessage;
-local InCombatLockdown = InCombatLockdown;
-local GetFunctionCPUUsage = GetFunctionCPUUsage;
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
-local COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN
+local UnitFactionGroup = UnitFactionGroup
+local IsInRaid, IsInGroup = IsInRaid, IsInGroup
+local GetNumGroupMembers = GetNumGroupMembers
+local SendAddonMessage = SendAddonMessage
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
+local COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 -- Constants
+E.LSM = LSM
+E.noop = function() end
+E.title = format("|cff00dd91E|r|cffe5e3e3lvUI|r")
 E.myfaction, E.myLocalizedFaction = UnitFactionGroup("player")
 E.myLocalizedClass, E.myclass, E.myClassID = UnitClass("player")
 E.myLocalizedRace, E.myrace = UnitRace("player")
@@ -43,25 +52,25 @@ E.resolution = GetCVar("gxResolution")
 E.screenheight = tonumber(match(E.resolution, "%d+x(%d+)"))
 E.screenwidth = tonumber(match(E.resolution, "(%d+)x+%d"))
 E.isMacClient = IsMacClient()
-E.LSM = LSM;
+E.NewSign = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:14:14|t" -- not used by ElvUI yet, but plugins like BenikUI and MerathilisUI use it.
+E.PixelMode = false
 
--- Tables
-E["media"] = {};
-E["frames"] = {};
-E["unitFrameElements"] = {};
-E["statusBars"] = {};
-E["texts"] = {};
-E["snapBars"] = {};
-E["RegisteredModules"] = {};
-E['RegisteredInitialModules'] = {};
-E["ModuleCallbacks"] = {["CallPriority"] = {}}
-E["InitialModuleCallbacks"] = {["CallPriority"] = {}}
-E['valueColorUpdateFuncs'] = {};
-E.TexCoords = {.08, .92, .08, .92};
-E.FrameLocks = {};
-E.VehicleLocks = {};
-E.CreditsList = {};
-E.PixelMode = false;
+--Tables
+E.media = {}
+E.frames = {}
+E.unitFrameElements = {}
+E.statusBars = {}
+E.texts = {}
+E.snapBars = {}
+E.RegisteredModules = {}
+E.RegisteredInitialModules = {}
+E.ModuleCallbacks = {["CallPriority"] = {}}
+E.InitialModuleCallbacks = {["CallPriority"] = {}}
+E.valueColorUpdateFuncs = {}
+E.TexCoords = {0.08, 0.92, 0.08, 0.92}
+E.FrameLocks = {}
+E.VehicleLocks = {}
+E.CreditsList = {}
 
 E.InversePoints = {
 	TOP = "BOTTOM",
@@ -73,7 +82,7 @@ E.InversePoints = {
 	BOTTOMLEFT = "TOPLEFT",
 	BOTTOMRIGHT = "TOPRIGHT",
 	CENTER = "CENTER"
-};
+}
 
 E.DispelClasses = {
 	["PRIEST"] = {
@@ -157,19 +166,34 @@ for filter, tbl in pairs(G.unitframe.aurafilters) do
 	E.DEFAULT_FILTER[filter] = tbl.type
 end
 
-E.noop = function() end;
-
-local hexvaluecolor
-function E:Print(...)
-	hexvaluecolor = self["media"].hexvaluecolor or "|cff00b3ff"
-	print(hexvaluecolor..'ElvUI:|r', ...)
+local colorizedName
+function E:ColorizedName(name, arg2)
+	local length = len(name)
+	for i = 1, length do
+		local letter = sub(name, i, i)
+		if i == 1 then
+			colorizedName = format("|cff00dd91%s", letter)
+		elseif i == 2 then
+			colorizedName = format("%s|r|cffe5e3e3%s", colorizedName, letter)
+		elseif i == length and arg2 then
+			colorizedName = format("%s%s|r|cff00dd91:|r", colorizedName, letter)
+		else
+			colorizedName = colorizedName..letter
+		end
+	end
+	return colorizedName
 end
 
+function E:Print(...)
+	(_G[self.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", self:ColorizedName("ElvUI", true), ...)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
+end
+
+--Workaround for people wanting to use white and it reverting to their class color.
 E.PriestColors = {
 	r = 0.99,
 	g = 0.99,
 	b = 0.99
-};
+}
 
 function E:GetPlayerRole()
 	local assignedRole = UnitGroupRolesAssigned("player")
@@ -183,89 +207,104 @@ function E:GetPlayerRole()
 	return assignedRole
 end
 
+--Basically check if another class border is being used on a class that doesn't match. And then return true if a match is found.
 function E:CheckClassColor(r, g, b)
-	r, g, b = floor(r*100+.5)/100, floor(g*100+.5)/100, floor(b*100+.5)/100
-	local matchFound = false;
-	for class, _ in pairs(RAID_CLASS_COLORS) do
-		if(class ~= E.myclass) then
-			local colorTable = class == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]);
-			if(colorTable.r == r and colorTable.g == g and colorTable.b == b) then
-				matchFound = true;
+	r, g, b = floor(r*100 + .5) / 100, floor(g*100 + .5) / 100, floor(b*100 + .5) / 100
+	local matchFound = false
+	for class in pairs(RAID_CLASS_COLORS) do
+		if class ~= E.myclass then
+			local colorTable = class == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class])
+			if colorTable.r == r and colorTable.g == g and colorTable.b == b then
+				matchFound = true
 			end
 		end
 	end
 
-	return matchFound;
+	return matchFound
 end
 
 function E:GetColorTable(data)
-	if(not data.r or not data.g or not data.b) then
-		error("Could not unpack color values.");
+	if not data.r or not data.g or not data.b then
+		error("Could not unpack color values.")
 	end
 
-	if(data.a) then
-		return {data.r, data.g, data.b, data.a};
+	if data.a then
+		return {data.r, data.g, data.b, data.a}
 	else
-		return {data.r, data.g, data.b};
+		return {data.r, data.g, data.b}
 	end
 end
 
 function E:UpdateMedia()
-	if(not self.db["general"] or not self.private["general"]) then return; end
+	if not self.db.general or not self.private.general then return end --Prevent rare nil value errors
 
-	self["media"].normFont = LSM:Fetch("font", self.db["general"].font);
-	self["media"].combatFont = LSM:Fetch("font", self.db["general"].dmgfont);
-	self["media"].blankTex = LSM:Fetch("background", "ElvUI Blank");
-	self["media"].normTex = LSM:Fetch("statusbar", self.private["general"].normTex);
-	self["media"].glossTex = LSM:Fetch("statusbar", self.private["general"].glossTex);
+	-- Fonts
+	self.media.normFont = LSM:Fetch("font", self.db.general.font)
+	self.media.combatFont = LSM:Fetch("font", self.private.general.dmgfont)
 
-	local border = E.db["general"].bordercolor;
-	if(self:CheckClassColor(border.r, border.g, border.b)) then
-		local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass]);
-		E.db["general"].bordercolor.r = classColor.r;
-		E.db["general"].bordercolor.g = classColor.g;
-		E.db["general"].bordercolor.b = classColor.b;
-	end
+	-- Textures
+	self.media.blankTex = LSM:Fetch("background", "ElvUI Blank")
+	self.media.normTex = LSM:Fetch("statusbar", self.private.general.normTex)
+	self.media.glossTex = LSM:Fetch("statusbar", self.private.general.glossTex)
 
-	self["media"].bordercolor = {border.r, border.g, border.b};
-
-	border = E.db["unitframe"].colors.borderColor
+	-- Border Color
+	local border = E.db.general.bordercolor
 	if self:CheckClassColor(border.r, border.g, border.b) then
 		local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
-		E.db["unitframe"].colors.borderColor.r = classColor.r
-		E.db["unitframe"].colors.borderColor.g = classColor.g
-		E.db["unitframe"].colors.borderColor.b = classColor.b
-	end
-	self["media"].unitframeBorderColor = {border.r, border.g, border.b}
-	self["media"].backdropcolor = E:GetColorTable(self.db["general"].backdropcolor);
-	self["media"].backdropfadecolor = E:GetColorTable(self.db["general"].backdropfadecolor);
-
-	local value = self.db["general"].valuecolor;
-	if(self:CheckClassColor(value.r, value.g, value.b)) then
-		value = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass]);
-		self.db["general"].valuecolor.r = value.r;
-		self.db["general"].valuecolor.g = value.g;
-		self.db["general"].valuecolor.b = value.b;
+		E.db.general.bordercolor.r = classColor.r
+		E.db.general.bordercolor.g = classColor.g
+		E.db.general.bordercolor.b = classColor.b
 	end
 
-	self["media"].hexvaluecolor = self:RGBToHex(value.r, value.g, value.b);
-	self["media"].rgbvaluecolor = {value.r, value.g, value.b};
+	self.media.bordercolor = {border.r, border.g, border.b}
 
-	if(LeftChatPanel and LeftChatPanel.tex and RightChatPanel and RightChatPanel.tex) then
-		LeftChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameLeft);
-		local a = E.db.general.backdropfadecolor.a or 0.5;
-		LeftChatPanel.tex:SetAlpha(a);
+	-- UnitFrame Border Color
+	border = E.db.unitframe.colors.borderColor
+	if self:CheckClassColor(border.r, border.g, border.b) then
+		local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
+		E.db.unitframe.colors.borderColor.r = classColor.r
+		E.db.unitframe.colors.borderColor.g = classColor.g
+		E.db.unitframe.colors.borderColor.b = classColor.b
+	end
+	self.media.unitframeBorderColor = {border.r, border.g, border.b}
 
-		RightChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameRight);
-		RightChatPanel.tex:SetAlpha(a);
+	-- Backdrop Color
+	self.media.backdropcolor = E:GetColorTable(self.db.general.backdropcolor)
+
+	-- Backdrop Fade Color
+	self.media.backdropfadecolor = E:GetColorTable(self.db.general.backdropfadecolor)
+
+	-- Value Color
+	local value = self.db.general.valuecolor
+
+	if self:CheckClassColor(value.r, value.g, value.b) then
+		value = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
+		self.db.general.valuecolor.r = value.r
+		self.db.general.valuecolor.g = value.g
+		self.db.general.valuecolor.b = value.b
 	end
 
-	self:ValueFuncCall();
-	self:UpdateBlizzardFonts();
+	self.media.hexvaluecolor = self:RGBToHex(value.r, value.g, value.b)
+	self.media.rgbvaluecolor = {value.r, value.g, value.b}
+
+	if LeftChatPanel and LeftChatPanel.tex and RightChatPanel and RightChatPanel.tex then
+		LeftChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameLeft)
+		local a = E.db.general.backdropfadecolor.a or 0.5
+		LeftChatPanel.tex:SetAlpha(a)
+
+		RightChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameRight)
+		RightChatPanel.tex:SetAlpha(a)
+	end
+
+	self:ValueFuncCall()
+	self:UpdateBlizzardFonts()
 end
 
+--Update font/texture paths when they are registered by the addon providing them
+--This helps fix most of the issues with fonts or textures reverting to default because the addon providing them is loading after ElvUI.
+--We use a wrapper to avoid errors in :UpdateMedia because "self" is passed to the function with a value other than ElvUI.
 local function LSMCallback()
-	E:UpdateMedia();
+	E:UpdateMedia()
 end
 LSM.RegisterCallback(E, "LibSharedMedia_Registered", LSMCallback)
 
@@ -280,7 +319,7 @@ local MasqueGroupToTableElement = {
 }
 
 local function MasqueCallback(_, Group, _, _, _, _, Disabled)
-	if not E.private then return; end
+	if not E.private then return end
 
 	local element = MasqueGroupToTableElement[Group]
 
@@ -302,7 +341,7 @@ if Masque then
 end
 
 function E:RequestBGInfo()
-	RequestBattlefieldScoreData();
+	RequestBattlefieldScoreData()
 end
 
 function E:NEUTRAL_FACTION_SELECT_RESULT()
@@ -314,154 +353,155 @@ end
 
 function E:PLAYER_ENTERING_WORLD()
 	self:CheckRole()
-	if(not self.MediaUpdated) then
-		self:UpdateMedia();
-		self.MediaUpdated = true;
+
+	if not self.MediaUpdated then
+		self:UpdateMedia()
+		self.MediaUpdated = true
 	end
 
-	local _, instanceType = IsInInstance();
-	if(instanceType == "pvp") then
-		self.BGTimer = self:ScheduleRepeatingTimer("RequestBGInfo", 5);
-		self:RequestBGInfo();
-	elseif(self.BGTimer) then
-		self:CancelTimer(self.BGTimer);
-		self.BGTimer = nil;
+	local _, instanceType = IsInInstance()
+	if instanceType == "pvp" then
+		self.BGTimer = self:ScheduleRepeatingTimer("RequestBGInfo", 5)
+		self:RequestBGInfo()
+	elseif self.BGTimer then
+		self:CancelTimer(self.BGTimer)
+		self.BGTimer = nil
 	end
 end
 
 function E:ValueFuncCall()
-	for func, _ in pairs(self["valueColorUpdateFuncs"]) do
-		func(self["media"].hexvaluecolor, unpack(self["media"].rgbvaluecolor));
+	for func in pairs(self.valueColorUpdateFuncs) do
+		func(self.media.hexvaluecolor, unpack(self.media.rgbvaluecolor))
 	end
 end
 
 function E:UpdateFrameTemplates()
-	for frame in pairs(self["frames"]) do
+	for frame in pairs(self.frames) do
 		if frame and frame.template and not frame.ignoreUpdates then
 			if not frame.ignoreFrameTemplates then
 				frame:SetTemplate(frame.template, frame.glossTex)
 			end
 		else
-			self["frames"][frame] = nil
+			self.frames[frame] = nil
 		end
 	end
 
-	for frame in pairs(self["unitFrameElements"]) do
+	for frame in pairs(self.unitFrameElements) do
 		if frame and frame.template and not frame.ignoreUpdates then
 			if not frame.ignoreFrameTemplates then
 				frame:SetTemplate(frame.template, frame.glossTex)
 			end
 		else
-			self["unitFrameElements"][frame] = nil
+			self.unitFrameElements[frame] = nil
 		end
 	end
 end
 
 function E:UpdateBorderColors()
-	for frame, _ in pairs(self["frames"]) do
+	for frame in pairs(self.frames) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBorderColors then
 				if frame.template == "Default" or frame.template == "Transparent" or frame.template == nil then
-					frame:SetBackdropBorderColor(unpack(self["media"].bordercolor))
+					frame:SetBackdropBorderColor(unpack(self.media.bordercolor))
 				end
 			end
 		else
-			self["frames"][frame] = nil
+			self.frames[frame] = nil
 		end
 	end
 
-	for frame, _ in pairs(self["unitFrameElements"]) do
+	for frame in pairs(self.unitFrameElements) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBorderColors then
 				if frame.template == "Default" or frame.template == "Transparent" or frame.template == nil then
-					frame:SetBackdropBorderColor(unpack(self["media"].unitframeBorderColor))
+					frame:SetBackdropBorderColor(unpack(self.media.unitframeBorderColor))
 				end
 			end
 		else
-			self["unitFrameElements"][frame] = nil
+			self.unitFrameElements[frame] = nil
 		end
 	end
 end
 
 function E:UpdateBackdropColors()
-	for frame, _ in pairs(self["frames"]) do
+	for frame in pairs(self["frames"]) do
 		if frame then
 			if not frame.ignoreBackdropColors then
 				if frame.template == "Default" or frame.template == nil then
 					if frame.backdropTexture then
-						frame.backdropTexture:SetVertexColor(unpack(self["media"].backdropcolor))
+						frame.backdropTexture:SetVertexColor(unpack(self.media.backdropcolor))
 					else
-						frame:SetBackdropColor(unpack(self["media"].backdropcolor))
+						frame:SetBackdropColor(unpack(self.media.backdropcolor))
 					end
 				elseif frame.template == "Transparent" then
-					frame:SetBackdropColor(unpack(self["media"].backdropfadecolor))
+					frame:SetBackdropColor(unpack(self.media.backdropfadecolor))
 				end
 			end
 		else
-			self["frames"][frame] = nil
+			self.frames[frame] = nil
 		end
 	end
 
-	for frame, _ in pairs(self["unitFrameElements"]) do
+	for frame in pairs(self["unitFrameElements"]) do
 		if frame then
 			if not frame.ignoreBackdropColors then
 				if frame.template == "Default" or frame.template == nil then
 					if frame.backdropTexture then
-						frame.backdropTexture:SetVertexColor(unpack(self["media"].backdropcolor))
+						frame.backdropTexture:SetVertexColor(unpack(self.media.backdropcolor))
 					else
-						frame:SetBackdropColor(unpack(self["media"].backdropcolor))
+						frame:SetBackdropColor(unpack(self.media.backdropcolor))
 					end
 				elseif frame.template == "Transparent" then
-					frame:SetBackdropColor(unpack(self["media"].backdropfadecolor))
+					frame:SetBackdropColor(unpack(self.media.backdropfadecolor))
 				end
 			end
 		else
-			self["unitFrameElements"][frame] = nil
+			self.unitFrameElements[frame] = nil
 		end
 	end
 end
 
 function E:UpdateFontTemplates()
-	for text, _ in pairs(self["texts"]) do
-		if(text) then
-			text:FontTemplate(text.font, text.fontSize, text.fontStyle);
+	for text in pairs(self.texts) do
+		if text then
+			text:FontTemplate(text.font, text.fontSize, text.fontStyle)
 		else
-			self["texts"][text] = nil;
+			self.texts[text] = nil
 		end
 	end
 end
 
 function E:RegisterStatusBar(statusBar)
-	tinsert(self.statusBars, statusBar);
+	tinsert(self.statusBars, statusBar)
 end
 
 function E:UpdateStatusBars()
 	for _, statusBar in pairs(self.statusBars) do
-		if(statusBar and statusBar:GetObjectType() == "StatusBar") then
-			statusBar:SetStatusBarTexture(self.media.normTex);
-		elseif(statusBar and statusBar:GetObjectType() == "Texture") then
-			statusBar:SetTexture(self.media.normTex);
+		if statusBar and statusBar:IsObjectType("StatusBar") then
+			statusBar:SetStatusBarTexture(self.media.normTex)
+		elseif statusBar and statusBar:IsObjectType("Texture") then
+			statusBar:SetTexture(self.media.normTex)
 		end
 	end
 end
 
 --This frame everything in ElvUI should be anchored to for Eyefinity support.
-E.UIParent = CreateFrame("Frame", "ElvUIParent", UIParent);
-E.UIParent:SetFrameLevel(UIParent:GetFrameLevel());
-E.UIParent:SetPoint("CENTER", UIParent, "CENTER");
-E.UIParent:SetSize(UIParent:GetSize());
-E["snapBars"][#E["snapBars"] + 1] = E.UIParent;
+E.UIParent = CreateFrame("Frame", "ElvUIParent", UIParent)
+E.UIParent:SetFrameLevel(UIParent:GetFrameLevel())
+E.UIParent:SetPoint("CENTER", UIParent, "CENTER")
+E.UIParent:SetSize(UIParent:GetSize())
+E.snapBars[#E.snapBars + 1] = E.UIParent
 
-E.HiddenFrame = CreateFrame("Frame");
-E.HiddenFrame:Hide();
+E.HiddenFrame = CreateFrame("Frame")
+E.HiddenFrame:Hide()
 
 function E:CheckTalentTree(tree)
 	local activeGroup = GetActiveSpecGroup()
-	if type(tree) == 'number' then
+	if type(tree) == "number" then
 		if activeGroup and GetSpecialization(false, false, activeGroup) then
 			return tree == GetSpecialization(false, false, activeGroup)
 		end
-	elseif type(tree) == 'table' then
+	elseif type(tree) == "table" then
 		local activeGroup = GetActiveSpecGroup()
 		for _, index in pairs(tree) do
 			if activeGroup and GetSpecialization(false, false, activeGroup) then
@@ -472,10 +512,10 @@ function E:CheckTalentTree(tree)
 end
 
 function E:IsDispellableByMe(debuffType)
-	if not self.DispelClasses[self.myclass] then return; end
+	if not self.DispelClasses[self.myclass] then return end
 
 	if self.DispelClasses[self.myclass][debuffType] then
-		return true;
+		return true
 	end
 end
 
@@ -491,11 +531,11 @@ end
 
 function E:CheckRole()
 	local talentTree = GetSpecialization()
-	local IsInPvPGear = false;
+	local IsInPvPGear = false
 	local role
 	local resilperc = GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
-	if resilperc > GetDodgeChance() and resilperc > GetParryChance() and UnitLevel('player') == MAX_PLAYER_LEVEL then
-		IsInPvPGear = true;
+	if resilperc > GetDodgeChance() and resilperc > GetParryChance() and UnitLevel("player") == MAX_PLAYER_LEVEL then
+		IsInPvPGear = true
 	end
 
 	self.myspec = talentTree
@@ -511,440 +551,505 @@ function E:CheckRole()
 	end
 
 	if not role then
-		local playerint = select(2, UnitStat("player", 4));
-		local playeragi	= select(2, UnitStat("player", 2));
-		local base, posBuff, negBuff = UnitAttackPower("player");
-		local playerap = base + posBuff + negBuff;
+		local playerint = select(2, UnitStat("player", 4))
+		local playeragi	= select(2, UnitStat("player", 2))
+		local base, posBuff, negBuff = UnitAttackPower("player")
+		local playerap = base + posBuff + negBuff
 
 		if (playerap > playerint) or (playeragi > playerint) then
-			role = "Melee";
+			role = "Melee"
 		else
-			role = "Caster";
+			role = "Caster"
 		end
 	end
 
-	if(self.role ~= role) then
+	if self.role ~= role then
 		self.role = role
 		self.callbacks:Fire("RoleChanged")
 	end
 
-	if self.HealingClasses[self.myclass] ~= nil and self.myclass ~= 'PRIEST' then
+	if self.HealingClasses[self.myclass] ~= nil and self.myclass ~= "PRIEST" then
 		if self:CheckTalentTree(self.HealingClasses[self.myclass]) then
-			self.DispelClasses[self.myclass].Magic = true;
+			self.DispelClasses[self.myclass].Magic = true
 		else
-			self.DispelClasses[self.myclass].Magic = false;
+			self.DispelClasses[self.myclass].Magic = false
 		end
 	end
 end
 
 function E:IncompatibleAddOn(addon, module)
-	E.PopupDialogs["INCOMPATIBLE_ADDON"].button1 = addon;
-	E.PopupDialogs["INCOMPATIBLE_ADDON"].button2 = "ElvUI "..module;
-	E.PopupDialogs["INCOMPATIBLE_ADDON"].addon = addon;
-	E.PopupDialogs["INCOMPATIBLE_ADDON"].module = module;
-	E:StaticPopup_Show("INCOMPATIBLE_ADDON", addon, module);
+	E.PopupDialogs["INCOMPATIBLE_ADDON"].button1 = addon
+	E.PopupDialogs["INCOMPATIBLE_ADDON"].button2 = "ElvUI "..module
+	E.PopupDialogs["INCOMPATIBLE_ADDON"].addon = addon
+	E.PopupDialogs["INCOMPATIBLE_ADDON"].module = module
+	E:StaticPopup_Show("INCOMPATIBLE_ADDON", addon, module)
 end
 
 function E:CheckIncompatible()
-	if(E.global.ignoreIncompatible) then return; end
+	if E.global.ignoreIncompatible then return end
 
-	if(IsAddOnLoaded("Prat-3.0") and E.private.chat.enable) then
-		E:IncompatibleAddOn("Prat-3.0", "Chat");
+	if IsAddOnLoaded("Prat-3.0") and E.private.chat.enable then
+		E:IncompatibleAddOn("Prat-3.0", "Chat")
 	end
 
-	if(IsAddOnLoaded("Chatter") and E.private.chat.enable) then
-		E:IncompatibleAddOn("Chatter", "Chat");
+	if IsAddOnLoaded("Chatter") and E.private.chat.enable then
+		E:IncompatibleAddOn("Chatter", "Chat")
 	end
 
-	if(IsAddOnLoaded("SnowfallKeyPress") and E.private.actionbar.enable) then
+	if IsAddOnLoaded("SnowfallKeyPress") and E.private.actionbar.enable then
 		E.private.actionbar.keyDown = true
-		E:IncompatibleAddOn("SnowfallKeyPress", "ActionBar");
+		E:IncompatibleAddOn("SnowfallKeyPress", "ActionBar")
 	end
 
-	if(IsAddOnLoaded("TidyPlates") and E.private.nameplates.enable) then
-		E:IncompatibleAddOn("TidyPlates", "NamePlates");
+	if IsAddOnLoaded("TidyPlates") and E.private.nameplates.enable then
+		E:IncompatibleAddOn("TidyPlates", "NamePlates")
 	end
 end
 
 function E:IsFoolsDay()
-	if(find(date(), "04/01/") and not E.global.aprilFools) then
-		return true;
+	if find(date(), "04/01/") and not E.global.aprilFools then
+		return true
 	else
-		return false;
+		return false
 	end
 end
 
 function E:CopyTable(currentTable, defaultTable)
-	if(type(currentTable) ~= "table") then currentTable = {}; end
+	if type(currentTable) ~= "table" then currentTable = {} end
 
 	if type(defaultTable) == "table" then
 		for option, value in pairs(defaultTable) do
-			if(type(value) == "table") then
-				value = self:CopyTable(currentTable[option], value);
+			if type(value) == "table" then
+				value = self:CopyTable(currentTable[option], value)
 			end
 
-			currentTable[option] = value;
+			currentTable[option] = value
 		end
 	end
-	
-	return currentTable;
+
+	return currentTable
 end
 
 function E:RemoveEmptySubTables(tbl)
-	if(type(tbl) ~= "table") then
-		E:Print("Bad argument #1 to 'RemoveEmptySubTables' (table expected)");
-		return;
+	if type(tbl) ~= "table" then
+		E:Print("Bad argument #1 to 'RemoveEmptySubTables' (table expected)")
+		return
 	end
 
 	for k, v in pairs(tbl) do
-		if(type(v) == "table") then
+		if type(v) == "table" then
 			if next(v) == nil then
-				tbl[k] = nil;
+				tbl[k] = nil
 			else
-				self:RemoveEmptySubTables(v);
+				self:RemoveEmptySubTables(v)
 			end
 		end
 	end
 end
 
+--Compare 2 tables and remove duplicate key/value pairs
+--param cleanTable : table you want cleaned
+--param checkTable : table you want to check against.
+--return : a copy of cleanTable with duplicate key/value pairs removed
 function E:RemoveTableDuplicates(cleanTable, checkTable)
-	if(type(cleanTable) ~= "table") then
-		E:Print("Bad argument #1 to 'RemoveTableDuplicates' (table expected)");
-		return;
+	if type(cleanTable) ~= "table" then
+		E:Print("Bad argument #1 to 'RemoveTableDuplicates' (table expected)")
+		return
 	end
-	if(type(checkTable) ~= "table") then
-		E:Print("Bad argument #2 to 'RemoveTableDuplicates' (table expected)");
-		return;
+	if type(checkTable) ~= "table" then
+		E:Print("Bad argument #2 to 'RemoveTableDuplicates' (table expected)")
+		return
 	end
 
-	local cleaned = {};
+	local cleaned = {}
 	for option, value in pairs(cleanTable) do
-		if(type(value) == "table" and checkTable[option] and type(checkTable[option]) == "table") then
-			cleaned[option] = self:RemoveTableDuplicates(value, checkTable[option]);
+		if type(value) == "table" and checkTable[option] and type(checkTable[option]) == "table" then
+			cleaned[option] = self:RemoveTableDuplicates(value, checkTable[option])
 		else
-			if(cleanTable[option] ~= checkTable[option]) then
-				cleaned[option] = value;
+			-- Add unique data to our clean table
+			if cleanTable[option] ~= checkTable[option] then
+				cleaned[option] = value
 			end
 		end
 	end
 
-	self:RemoveEmptySubTables(cleaned);
+	--Clean out empty sub-tables
+	self:RemoveEmptySubTables(cleaned)
 
-	return cleaned;
+	return cleaned
+end
+
+--Compare 2 tables and remove blacklisted key/value pairs
+--param cleanTable : table you want cleaned
+--param blacklistTable : table you want to check against.
+--return : a copy of cleanTable with blacklisted key/value pairs removed
+function E:FilterTableFromBlacklist(cleanTable, blacklistTable)
+	if type(cleanTable) ~= "table" then
+		E:Print("Bad argument #1 to 'FilterTableFromBlacklist' (table expected)")
+		return
+	end
+	if type(blacklistTable) ~=  "table" then
+		E:Print("Bad argument #2 to 'FilterTableFromBlacklist' (table expected)")
+		return
+	end
+
+	local cleaned = {}
+	for option, value in pairs(cleanTable) do
+		if type(value) == "table" and blacklistTable[option] and type(blacklistTable[option]) == "table" then
+			cleaned[option] = self:FilterTableFromBlacklist(value, blacklistTable[option])
+		else
+			-- Filter out blacklisted keys
+			if blacklistTable[option] ~= true then
+				cleaned[option] = value
+			end
+		end
+	end
+
+	--Clean out empty sub-tables
+	self:RemoveEmptySubTables(cleaned)
+
+	return cleaned
 end
 
 function E:TableToLuaString(inTable)
-	if(type(inTable) ~= "table") then
-		E:Print("Invalid argument #1 to E:TableToLuaString (table expected)");
-		return;
+	if type(inTable) ~= "table" then
+		E:Print("Invalid argument #1 to E:TableToLuaString (table expected)")
+		return
 	end
 
-	local ret = "{\n";
+	local ret = "{\n"
 	local function recurse(table, level)
 		for i, v in pairs(table) do
-			ret = ret .. strrep("    ", level).."[";
-			if(type(i) == "string") then
-				ret = ret .. "\"" .. i .. "\"";
+			ret = ret..strrep("    ", level).."["
+			if type(i) == "string" then
+				ret = ret.."\""..i.."\""
 			else
-				ret = ret .. i;
+				ret = ret..i
 			end
-			ret = ret .. "] = ";
+			ret = ret.."] = "
 
-			if(type(v) == "number") then
-				ret = ret .. v .. ",\n"
-			elseif(type(v) == "string") then
-				ret = ret .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124") .. "\",\n"
-			elseif(type(v) == "boolean") then
-				if(v) then
-					ret = ret .. "true,\n";
+			if type(v) == "number" then
+				ret = ret..v..",\n"
+			elseif type(v) == "string" then
+				ret = ret.."\""..v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124").."\",\n"
+			elseif type(v) == "boolean" then
+				if v then
+					ret = ret.."true,\n"
 				else
-					ret = ret .. "false,\n";
+					ret = ret.."false,\n"
 				end
-			elseif(type(v) == "table") then
-				ret = ret .. "{\n";
-				recurse(v, level + 1);
-				ret = ret .. strrep("    ", level) .. "},\n";
+			elseif type(v) == "table" then
+				ret = ret.."{\n"
+				recurse(v, level + 1)
+				ret = ret..strrep("    ", level).."},\n"
 			else
-				ret = ret .. "\""..tostring(v) .. "\",\n";
+				ret = ret.."\""..tostring(v).."\",\n"
 			end
 		end
 	end
 
-	if(inTable) then
-		recurse(inTable, 1);
+	if inTable then
+		recurse(inTable, 1)
 	end
-	ret = ret.."}";
+	ret = ret.."}"
 
-	return ret;
+	return ret
 end
 
 local profileFormat = {
 	["profile"] = "E.db",
 	["private"] = "E.private",
 	["global"] = "E.global",
-	["filtersNP"] = "E.global",
-	["filtersUF"] = "E.global",
-	["filtersAll"] = "E.global"
-};
+	["filters"] = "E.global",
+	["styleFilters"] = "E.global"
+}
 
-local lineStructureTable = {};
+local lineStructureTable = {}
 
 function E:ProfileTableToPluginFormat(inTable, profileType)
-	local profileText = profileFormat[profileType];
-	if(not profileText) then
-		return;
-	end
+	local profileText = profileFormat[profileType]
+	if not profileText then return end
 
-	twipe(lineStructureTable);
-	local returnString = "";
-	local lineStructure = "";
-	local sameLine = false;
+	twipe(lineStructureTable)
+	local returnString = ""
+	local lineStructure = ""
+	local sameLine = false
 
 	local function buildLineStructure()
-		local str = profileText;
+		local str = profileText
 		for _, v in ipairs(lineStructureTable) do
-			if(type(v) == "string") then
-				str = str .. "[\"" .. v .. "\"]";
+			if type(v) == "string" then
+				str = str.."[\""..v.."\"]"
 			else
-				str = str .. "[" .. v .. "]";
+				str = str.."["..v.."]"
 			end
 		end
 
-		return str;
+		return str
 	end
 
 	local function recurse(tbl)
-		lineStructure = buildLineStructure();
+		lineStructure = buildLineStructure()
 		for k, v in pairs(tbl) do
-			if(not sameLine) then
-				returnString = returnString .. lineStructure;
+			if not sameLine then
+				returnString = returnString..lineStructure
 			end
 
-			returnString = returnString .. "[";
+			returnString = returnString.."["
 
-			if(type(k) == "string") then
-				returnString = returnString.."\"" .. k .. "\"";
+			if type(k) == "string" then
+				returnString = returnString.."\""..k.."\""
 			else
-				returnString = returnString .. k;
+				returnString = returnString..k
 			end
 
-			if(type(v) == "table") then
-				tinsert(lineStructureTable, k);
-				sameLine = true;
-				returnString = returnString .. "]";
-				recurse(v);
+			if type(v) == "table" then
+				tinsert(lineStructureTable, k)
+				sameLine = true
+				returnString = returnString.."]"
+				recurse(v)
 			else
-				sameLine = false;
-				returnString = returnString .. "] = ";
+				sameLine = false
+				returnString = returnString.."] = "
 
-				if(type(v) == "number") then
-					returnString = returnString .. v .. ";\n";
-				elseif(type(v) == "string") then
-					returnString = returnString .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124") .. "\"\n"
-				elseif(type(v) == "boolean") then
-					if(v) then
-						returnString = returnString .. "true;\n";
+				if type(v) == "number" then
+					returnString = returnString..v.."\n"
+				elseif type(v) == "string" then
+					returnString = returnString.."\""..v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124").."\"\n"
+				elseif type(v) == "boolean" then
+					if v then
+						returnString = returnString.."true\n"
 					else
-						returnString = returnString .. "false;\n";
+						returnString = returnString.."false\n"
 					end
 				else
-					returnString = returnString .. "\"" .. tostring(v) .. "\"\n";
+					returnString = returnString.."\""..tostring(v).."\"\n"
 				end
 			end
 		end
 
-		tremove(lineStructureTable);
-		lineStructure = buildLineStructure();
+		tremove(lineStructureTable)
+		lineStructure = buildLineStructure()
 	end
 
-	if(inTable and profileType) then
-		recurse(inTable);
+	if inTable and profileType then
+		recurse(inTable)
 	end
 
-	return returnString;
+	return returnString
 end
 
 function E:StringSplitMultiDelim(s, delim)
-	assert(type (delim) == "string" and len(delim) > 0, "bad delimiter");
+	assert(type (delim) == "string" and len(delim) > 0, "bad delimiter")
 
-	local start = 1;
-	local t = {};
+	local start = 1
+	local t = {}  -- results table
 
+	-- find each instance of a string followed by the delimiter
 	while(true) do
-		local pos = find(s, delim, start, true);
-		if(not pos) then
-			break;
-		end
+		local pos = find(s, delim, start, true) -- plain find
+		if not pos then break end
 
-		tinsert(t, sub(s, start, pos - 1));
-		start = pos + len(delim);
-	end
+		tinsert(t, sub(s, start, pos - 1))
+		start = pos + len(delim)
+	end -- while
 
-	tinsert(t, sub(s, start));
+	-- insert final one (after last delimiter)
+	tinsert(t, sub(s, start))
 
-	return unpack(t);
+	return unpack(t)
 end
 
+local SendMessageTimer -- prevent setting multiple timers at once
 function E:SendMessage()
 	if IsInRaid() then
 		SendAddonMessage("ELVUI_VERSIONCHK", E.version, (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID")
 	elseif IsInGroup() then
 		SendAddonMessage("ELVUI_VERSIONCHK", E.version, (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY")
+	elseif IsInGuild() then
+		SendAddonMessage("ELVUI_VERSIONCHK", E.version, "GUILD")
 	end
 
-	if E.SendMSGTimer then
-		self:CancelTimer(E.SendMSGTimer)
-		E.SendMSGTimer = nil
-	end
+	SendMessageWaiting = nil
 end
 
-local SendRecieveGroupSize = -1 --this is negative one so that the first check will send (if group size is greater than one; specifically for /reload)
-local myRealm = gsub(E.myrealm,"[%s%-]","")
+local SendRecieveGroupSize = 0
+local myRealm = gsub(E.myrealm, "[%s%-]", "")
 local myName = E.myname.."-"..myRealm
 local function SendRecieve(_, event, prefix, message, _, sender)
-	if not E.global.general.versionCheck then return end
-
 	if event == "CHAT_MSG_ADDON" then
 		if sender == myName then return end
 
-		if prefix == "ELVUI_VERSIONCHK" and not E.recievedOutOfDateMessage then
-			if(tonumber(message) ~= nil and tonumber(message) > tonumber(E.version)) then
-				E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"]);
+		if prefix == "ELVUI_VERSIONCHK" then
+			local msg, ver = tonumber(message), tonumber(E.version)
+			if msg and (msg > ver) then -- you're outdated D:
+				if not E.recievedOutOfDateMessage then
+					E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"])
 
-				if((tonumber(message) - tonumber(E.version)) >= 0.05) then
-					E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
+					if msg and ((msg - ver) >= 0.01) then
+						E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
+					end
+
+					E.recievedOutOfDateMessage = true
 				end
-
-				E.recievedOutOfDateMessage = true
+			elseif msg and (msg < ver) then -- Send Message Back if you intercept and are higher revision
+				if not SendMessageTimer then
+					SendMessageTimer = E:Delay(10, E.SendMessage)
+				end
 			end
 		end
-	else
+	elseif event == "GROUP_ROSTER_UPDATE" then
 		local num = GetNumGroupMembers()
 		if num ~= SendRecieveGroupSize then
 			if num > 1 and num > SendRecieveGroupSize then
-				E.SendMSGTimer = E:ScheduleTimer('SendMessage', 12)
+				if not SendMessageTimer then
+					SendMessageTimer = E:Delay(10, E.SendMessage)
+				end
 			end
 			SendRecieveGroupSize = num
 		end
+	elseif not SendMessageTimer then
+		SendMessageTimer = E:Delay(10, E.SendMessage)
 	end
 end
 
 RegisterAddonMessagePrefix("ELVUI_VERSIONCHK")
 
-local f = CreateFrame("Frame");
+local f = CreateFrame("Frame")
 f:RegisterEvent("GROUP_ROSTER_UPDATE")
-f:RegisterEvent("CHAT_MSG_ADDON");
-f:SetScript("OnEvent", SendRecieve);
+f:RegisterEvent("CHAT_MSG_ADDON")
+f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:SetScript("OnEvent", SendRecieve)
 
 function E:UpdateAll(ignoreInstall)
-	self.private = self.charSettings.profile;
-	self.db = self.data.profile;
-	self.global = self.data.global;
-	self.db.theme = nil;
-	self.db.install_complete = nil;
-	--LibStub('LibDualSpec-1.0'):EnhanceDatabase(self.data, "ElvUI");
+	E.private = E.charSettings.profile
+	E.db = E.data.profile
+	E.global = E.data.global
+	E.db.theme = nil
+	E.db.install_complete = nil
 
-	self:SetMoversClampedToScreen(false)
+	E:DBConversions()
 
-	self:SetMoversPositions();
-	self:UpdateMedia();
-	self:UpdateCooldownSettings("all")
+	local ActionBars = E:GetModule("ActionBars")
+	local AFK = E:GetModule("AFK")
+	local Auras = E:GetModule("Auras")
+	local Bags = E:GetModule("Bags")
+	local Blizzard = E:GetModule("Blizzard")
+	local Chat = E:GetModule("Chat")
+	local DataBars = E:GetModule("DataBars")
+	local DataTexts = E:GetModule("DataTexts")
+	local Layout = E:GetModule("Layout")
+	local Minimap = E:GetModule("Minimap")
+	local NamePlates = E:GetModule("NamePlates")
+	local Threat = E:GetModule("Threat")
+	local Tooltip = E:GetModule("Tooltip")
+	local Totems = E:GetModule("Totems")
+	local UnitFrames = E:GetModule("UnitFrames")
 
-	local UF = self:GetModule("UnitFrames")
-	UF.db = self.db.unitframe;
-	UF:Update_AllFrames();
+	ActionBars.db = E.db.actionbar
+	Auras.db = E.db.auras
+	Bags.db = E.db.bags
+	Chat.db = E.db.chat
+	DataBars.db = E.db.databars
+	DataTexts.db = E.db.datatexts
+	NamePlates.db = E.db.nameplates
+	Threat.db = E.db.general.threat
+	Tooltip.db = E.db.tooltip
+	Totems.db = E.db.general.totems
+	UnitFrames.db = E.db.unitframe
 
-	local CH = self:GetModule("Chat");
-	CH.db = self.db.chat;
-	CH:PositionChat(true);
-	CH:SetupChat();
-	CH:UpdateAnchors();
+	--The mover is positioned before it is resized, which causes issues for unitframes
+	--Allow movers to be "pushed" outside the screen, when they are resized they should be back in the screen area.
+	--We set movers to be clamped again at the bottom of this function.
+	E:SetMoversClampedToScreen(false)
+	E:SetMoversPositions()
 
-	local AB = self:GetModule("ActionBars");
-	AB.db = self.db.actionbar;
-	AB:UpdateButtonSettings();
-	AB:UpdateMicroPositionDimensions();
-	AB:Extra_SetAlpha();
-	AB:Extra_SetScale();
-	AB:ToggleDesaturation()
+	E:UpdateMedia()
+	E:UpdateBorderColors()
+	E:UpdateBackdropColors()
+	E:UpdateFrameTemplates()
+	E:UpdateStatusBars()
+	E:UpdateCooldownSettings("all")
 
-	local bags = E:GetModule("Bags"); 
-	bags.db = self.db.bags;
-	bags:Layout();
-	bags:Layout(true);
-	bags:SizeAndPositionBagBar();
-	bags:UpdateItemLevelDisplay();
-	bags:UpdateCountDisplay();
+	Layout:ToggleChatPanels()
+	Layout:BottomPanelVisibility()
+	Layout:TopPanelVisibility()
+	Layout:SetDataPanelStyle()
 
-	local totems = E:GetModule("Totems"); 
-	totems.db = self.db.general.totems;
-	totems:PositionAndSize();
-	totems:ToggleEnable();
-
-	self:GetModule("Layout"):ToggleChatPanels();
-
-	local DT = self:GetModule("DataTexts");
-	DT.db = self.db.datatexts;
-	DT:LoadDataTexts();
-
-	local NP = self:GetModule("NamePlates");
-	NP.db = self.db.nameplates;
-	NP:StyleFilterInitializeAllFilters()
-	NP:ConfigureAll();
-
-	local DataBars = self:GetModule("DataBars");
-	DataBars.db = E.db.databars;
-	DataBars:UpdateDataBarDimensions();
-	DataBars:EnableDisable_ExperienceBar();
-	DataBars:EnableDisable_ReputationBar();
-
-	local T = self:GetModule("Threat");
-	T.db = self.db.general.threat;
-	T:UpdatePosition();
-	T:ToggleEnable();
-
-	self:GetModule("Auras").db = self.db.auras
-	self:GetModule("Tooltip").db = self.db.tooltip
-
-	if(ElvUIPlayerBuffs) then
-		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerBuffs);
+	if E.private.actionbar.enable then
+		ActionBars:Extra_SetAlpha()
+		ActionBars:Extra_SetScale()
+		ActionBars:ToggleDesaturation()
+		ActionBars:UpdateButtonSettings()
+		ActionBars:UpdateMicroPositionDimensions()
 	end
 
-	if(ElvUIPlayerDebuffs) then
-		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerDebuffs);
+	AFK:Toggle()
+
+	if E.private.bags.enable then
+		Bags:Layout()
+		Bags:Layout(true)
+		Bags:SizeAndPositionBagBar()
+		Bags:UpdateCountDisplay()
+		Bags:UpdateItemLevelDisplay()
 	end
 
-	if(self.private.install_complete == nil or (self.private.install_complete and type(self.private.install_complete) == 'boolean') or (self.private.install_complete and type(tonumber(self.private.install_complete)) == 'number' and tonumber(self.private.install_complete) <= 3.83)) then
-		if(not ignoreInstall) then
-			self:Install();
-		end
+	if E.private.chat.enable then
+		Chat:PositionChat(true)
+		Chat:SetupChat()
+		Chat:UpdateAnchors()
 	end
 
-	self:GetModule("Minimap"):UpdateSettings();
-	self:GetModule("AFK"):Toggle();
+	DataBars:EnableDisable_ExperienceBar()
+	DataBars:EnableDisable_ReputationBar()
+	DataBars:UpdateDataBarDimensions()
 
-	self:UpdateBorderColors();
-	self:UpdateBackdropColors();
+	DataTexts:LoadDataTexts()
 
-	self:UpdateFrameTemplates();
-	self:UpdateStatusBars();
+	if E.private.general.minimap.enable then
+		Minimap:UpdateSettings()
+	end
 
-	local LO = E:GetModule("Layout");
-	LO:ToggleChatPanels();
-	LO:BottomPanelVisibility();
-	LO:TopPanelVisibility();
-	LO:SetDataPanelStyle();
+	if E.private.nameplates.enable then
+		NamePlates:ConfigureAll()
+		NamePlates:StyleFilterInitializeAllFilters()
+	end
 
-	self:GetModule("Blizzard"):SetWatchFrameHeight();
+	Threat:ToggleEnable()
+	Threat:UpdatePosition()
 
-	self:SetMoversClampedToScreen(true)
+	Totems:PositionAndSize()
+	Totems:ToggleEnable()
 
-	collectgarbage("collect");
+	if E.private.unitframe.enable then
+		UnitFrames:Update_AllFrames()
+	end
+
+	if ElvUIPlayerBuffs then
+		Auras:UpdateHeader(ElvUIPlayerBuffs)
+	end
+
+	if ElvUIPlayerDebuffs then
+		Auras:UpdateHeader(ElvUIPlayerDebuffs)
+	end
+
+	if E.RefreshGUI then
+		E:RefreshGUI()
+	end
+
+	if (ignoreInstall ~= true) and (E.private.install_complete == nil or (E.private.install_complete and type(E.private.install_complete) == "boolean") or (E.private.install_complete and type(tonumber(E.private.install_complete)) == "number" and tonumber(E.private.install_complete) <= 3.83)) then
+		E:Install()
+	end
+
+	Blizzard:SetWatchFrameHeight()
+	E:SetMoversClampedToScreen(true) -- Go back to using clamp after resizing has taken place.
+
+	collectgarbage("collect")
 end
 
 function E:RemoveNonPetBattleFrames()
 	if InCombatLockdown() then return end
-	for object, _ in pairs(E.FrameLocks) do
+	for object in pairs(E.FrameLocks) do
 		local obj = _G[object] or object
 		obj:SetParent(E.HiddenFrame)
 	end
@@ -978,8 +1083,8 @@ function E:RegisterPetBattleHideFrames(object, originalParent, originalStrata)
 		return
 	end
 
-	local object = _G[object] or object
-
+	object = _G[object] or object
+	--If already doing pokemon
 	if C_PetBattles_IsInBattle() then
 		object:SetParent(E.HiddenFrame)
 	end
@@ -995,191 +1100,225 @@ function E:UnregisterPetBattleHideFrames(object)
 		return
 	end
 
-	local object = _G[object] or object
+	object = _G[object] or object
+	--Check if object was registered to begin with
+	if not E.FrameLocks[object] then return end
 
-	if not E.FrameLocks[object] then
-		return
-	end
-
+	--Change parent of object back to original parent
 	local originalParent = E.FrameLocks[object].parent
 	if originalParent then
 		object:SetParent(originalParent)
 	end
 
+	--Change strata of object back to original
 	local originalStrata = E.FrameLocks[object].strata
 	if originalStrata then
 		object:SetFrameStrata(originalStrata)
 	end
 
+	--Remove object from table
 	E.FrameLocks[object] = nil
 end
 
 function E:EnterVehicleHideFrames(_, unit)
-	if(unit ~= "player") then return; end
+	if unit ~= "player" then return end
 
 	for object in pairs(E.VehicleLocks) do
-		object:SetParent(E.HiddenFrame);
+		object:SetParent(E.HiddenFrame)
 	end
 end
 
 function E:ExitVehicleShowFrames(_, unit)
-	if(unit ~= "player") then return; end
+	if unit ~= "player" then return end
 
 	for object, originalParent in pairs(E.VehicleLocks) do
-		object:SetParent(originalParent);
+		object:SetParent(originalParent)
 	end
 end
 
 function E:RegisterObjectForVehicleLock(object, originalParent)
-	if(not object or not originalParent) then
-		E:Print("Error. Usage: RegisterObjectForVehicleLock(object, originalParent)");
-		return;
+	if not object or not originalParent then
+		E:Print("Error. Usage: RegisterObjectForVehicleLock(object, originalParent)")
+		return
 	end
 
 	object = _G[object] or object
-	if(object.IsProtected and object:IsProtected()) then
-		E:Print("Error. Object is protected and cannot be changed in combat.");
-		return;
+	--Entering/Exiting vehicles will often happen in combat.
+	--For this reason we cannot allow protected objects.
+	if object.IsProtected and object:IsProtected() then
+		E:Print("Error. Object is protected and cannot be changed in combat.")
+		return
 	end
 
-	if(UnitHasVehicleUI("player")) then
-		object:SetParent(E.HiddenFrame);
+	--Check if we are already in a vehicles
+	if UnitHasVehicleUI("player") then
+		object:SetParent(E.HiddenFrame)
 	end
 
-	E.VehicleLocks[object] = originalParent;
+	--Add object to table
+	E.VehicleLocks[object] = originalParent
 end
 
 function E:UnregisterObjectForVehicleLock(object)
-	if(not object) then
-		E:Print("Error. Usage: UnregisterObjectForVehicleLock(object)");
-		return;
+	if not object then
+		E:Print("Error. Usage: UnregisterObjectForVehicleLock(object)")
+		return
 	end
 
 	object = _G[object] or object
-	if(not E.VehicleLocks[object]) then
-		return;
+	--Check if object was registered to begin with
+	if not E.VehicleLocks[object] then return end
+
+	--Change parent of object back to original parent
+	local originalParent = E.VehicleLocks[object]
+	if originalParent then
+		object:SetParent(originalParent)
 	end
 
-	local originalParent = E.VehicleLocks[object];
-	if(originalParent) then
-		object:SetParent(originalParent);
-	end
-
-	E.VehicleLocks[object] = nil;
+	--Remove object from table
+	E.VehicleLocks[object] = nil
 end
 
 function E:ResetAllUI()
-	self:ResetMovers();
+	self:ResetMovers()
 
-	if(E.db.lowresolutionset) then
+	if E.db.lowresolutionset then
 		E:SetupResolution(true)
 	end
 
-	if(E.db.layoutSet) then
-		E:SetupLayout(E.db.layoutSet, true);
+	if E.db.layoutSet then
+		E:SetupLayout(E.db.layoutSet, true)
 	end
 end
 
 function E:ResetUI(...)
-	if(InCombatLockdown()) then E:Print(ERR_NOT_IN_COMBAT) return; end
+	if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
 
-	if(... == "" or ... == " " or ... == nil) then
-		E:StaticPopup_Show("RESETUI_CHECK");
-		return;
+	if ... == "" or ... == " " or ... == nil then
+		E:StaticPopup_Show("RESETUI_CHECK")
+		return
 	end
 
-	self:ResetMovers(...);
+	self:ResetMovers(...)
 end
 
 function E:RegisterModule(name, loadFunc)
-	if (loadFunc and type(loadFunc) == "function") then
+	--New method using callbacks
+	if loadFunc and type(loadFunc) == "function" then
 		if self.initialized then
 			loadFunc()
 		else
 			if self.ModuleCallbacks[name] then
+				--Don't allow a registered module name to be overwritten
 				E:Print("Invalid argument #1 to E:RegisterModule (module name:", name, "is already registered, please use a unique name)")
 				return
 			end
 
+			--Add module name to registry
 			self.ModuleCallbacks[name] = true
-			self.ModuleCallbacks["CallPriority"][#self.ModuleCallbacks["CallPriority"] + 1] = name
+			self.ModuleCallbacks.CallPriority[#self.ModuleCallbacks.CallPriority + 1] = name
 
+			--Register loadFunc to be called when event is fired
 			E:RegisterCallback(name, loadFunc, E:GetModule(name))
 		end
 	else
 		if self.initialized then
 			self:GetModule(name):Initialize()
 		else
-			self['RegisteredModules'][#self['RegisteredModules'] + 1] = name
+			self.RegisteredModules[#self.RegisteredModules + 1] = name
 		end
 	end
 end
 
 function E:RegisterInitialModule(name, loadFunc)
-	if (loadFunc and type(loadFunc) == "function") then
+	--New method using callbacks
+	if loadFunc and type(loadFunc) == "function" then
 		if self.InitialModuleCallbacks[name] then
-
+			--Don't allow a registered module name to be overwritten
 			E:Print("Invalid argument #1 to E:RegisterInitialModule (module name:", name, "is already registered, please use a unique name)")
 			return
 		end
 
+		--Add module name to registry
 		self.InitialModuleCallbacks[name] = true
-		self.InitialModuleCallbacks["CallPriority"][#self.InitialModuleCallbacks["CallPriority"] + 1] = name
+		self.InitialModuleCallbacks.CallPriority[#self.InitialModuleCallbacks.CallPriority + 1] = name
 
+		--Register loadFunc to be called when event is fired
 		E:RegisterCallback(name, loadFunc, E:GetModule(name))
 	else
-		self['RegisteredInitialModules'][#self['RegisteredInitialModules'] + 1] = name
+		self.RegisteredInitialModules[#self.RegisteredInitialModules + 1] = name
 	end
 end
 
 function E:InitializeInitialModules()
 	--Fire callbacks for any module using the new system
-	for index, moduleName in ipairs(self.InitialModuleCallbacks["CallPriority"]) do
-		self.InitialModuleCallbacks[moduleName] = nil;
-		self.InitialModuleCallbacks["CallPriority"][index] = nil
+	for index, moduleName in ipairs(self.InitialModuleCallbacks.CallPriority) do
+		self.InitialModuleCallbacks[moduleName] = nil
+		self.InitialModuleCallbacks.CallPriority[index] = nil
 		E.callbacks:Fire(moduleName)
 	end
 
 	--Old deprecated initialize method, we keep it for any plugins that may need it
-	for _, module in pairs(E["RegisteredInitialModules"]) do
+	for _, module in pairs(E.RegisteredInitialModules) do
 		module = self:GetModule(module, true)
-		if(module and module.Initialize) then
-			local _, catch = pcall(module.Initialize, module);
-			if(catch and GetCVarBool("scriptErrors") == 1) then
-				ScriptErrorsFrame_OnError(catch, false);
+		if module and module.Initialize then
+			local _, catch = pcall(module.Initialize, module)
+
+			if catch and GetCVarBool("scriptErrors") == 1 then
+				ScriptErrorsFrame_OnError(catch, false)
 			end
 		end
 	end
 end
 
 function E:RefreshModulesDB()
-	local UF = self:GetModule("UnitFrames");
-	twipe(UF.db);
-	UF.db = self.db.unitframe;
+	local UF = self:GetModule("UnitFrames")
+	twipe(UF.db)
+	UF.db = self.db.unitframe
 end
 
 function E:InitializeModules()
 	--Fire callbacks for any module using the new system
-	for index, moduleName in ipairs(self.ModuleCallbacks["CallPriority"]) do
-		self.ModuleCallbacks[moduleName] = nil;
-		self.ModuleCallbacks["CallPriority"][index] = nil
+	for index, moduleName in ipairs(self.ModuleCallbacks.CallPriority) do
+		self.ModuleCallbacks[moduleName] = nil
+		self.ModuleCallbacks.CallPriority[index] = nil
 		E.callbacks:Fire(moduleName)
 	end
 
 	--Old deprecated initialize method, we keep it for any plugins that may need it
-	for _, module in pairs(E["RegisteredModules"]) do
+	for _, module in pairs(E.RegisteredModules) do
 		module = self:GetModule(module)
-		if(module.Initialize) then
-			local _, catch = pcall(module.Initialize, module);
-			if(catch and GetCVarBool("scriptErrors") == 1) then
-				ScriptErrorsFrame_OnError(catch, false);
+		if module.Initialize then
+			local _, catch = pcall(module.Initialize, module)
+
+			if catch and GetCVarBool("scriptErrors") == 1 then
+				ScriptErrorsFrame_OnError(catch, false)
 			end
 		end
 	end
 end
 
 --DATABASE CONVERSIONS
+local function auraFilterStrip(name, content, value)
+	if match(name, value) then
+		E.global.unitframe.aurafilters[gsub(name, value, "")] = E:CopyTable({}, content)
+		E.global.unitframe.aurafilters[name] = nil
+	end
+end
+
 function E:DBConversions()
+	--Make sure default filters use the correct filter type
+	for filter, filterType in pairs(E.DEFAULT_FILTER) do
+		E.global.unitframe.aurafilters[filter].type = filterType
+	end
+
+	--Add missing nameplates table to Minimalistic profile
+	if ElvDB.profiles["Minimalistic"] and not ElvDB.profiles["Minimalistic"].nameplates then
+		ElvDB.profiles["Minimalistic"].nameplates = {
+			["filters"] = {},
+		}
+	end
+
 	--Combat & Resting Icon options update
 	if E.db.unitframe.units.player.combatIcon ~= nil then
 		E.db.unitframe.units.player.CombatIcon.enable = E.db.unitframe.units.player.combatIcon
@@ -1189,9 +1328,12 @@ function E:DBConversions()
 		E.db.unitframe.units.player.RestIcon.enable = E.db.unitframe.units.player.restIcon
 		E.db.unitframe.units.player.restIcon = nil
 	end
-	--Make sure default filters use the correct filter type
-	for filter, filterType in pairs(E.DEFAULT_FILTER) do
-		E.global.unitframe.aurafilters[filter].type = filterType
+
+	--Remove commas from aura filters
+	for name, content in pairs(E.global.unitframe.aurafilters) do
+		auraFilterStrip(name, content, ",")
+		auraFilterStrip(name, content, "^Friendly:")
+		auraFilterStrip(name, content, "^Enemy:")
 	end
 
 	--Convert old "Buffs and Debuffs" font size option to individual options
@@ -1203,37 +1345,67 @@ function E:DBConversions()
 		E.db.auras.debuffs.durationFontSize = fontSize
 		E.db.auras.fontSize = nil
 	end
+
+	--Convert old private cooldown setting to profile setting
+	if E.private.cooldown and (E.private.cooldown.enable ~= nil) then
+		E.db.cooldown.enable = E.private.cooldown.enable
+		E.private.cooldown.enable = nil
+		E.private.cooldown = nil
+	end
+
+	if not E.db.chat.panelColorConverted then
+		local color = E.db.general.backdropfadecolor
+		E.db.chat.panelColor = {r = color.r, g = color.g, b = color.b, a = color.a}
+		E.db.chat.panelColorConverted = true
+	end
+
+	--Vendor Greys option is now in bags table
+	if E.db.general.vendorGrays then
+		E.db.bags.vendorGrays.enable = E.db.general.vendorGrays
+		E.db.general.vendorGrays = nil
+		E.db.general.vendorGraysDetails = nil
+	end
+
+	--Heal Prediction is now a table instead of a bool
+	local healPredictionUnits = {"player", "target", "focus", "pet", "arena", "party", "raid", "raid40", "raidpet"}
+	for _, unit in pairs(healPredictionUnits) do
+		if type(E.db.unitframe.units[unit].healPrediction) ~= "table" then
+			local enabled = E.db.unitframe.units[unit].healPrediction
+			E.db.unitframe.units[unit].healPrediction = {}
+			E.db.unitframe.units[unit].healPrediction.enable = enabled
+		end
+	end
 end
 
-local CPU_USAGE = {};
+local CPU_USAGE = {}
 local function CompareCPUDiff(showall, module, minCalls)
-	local greatestUsage, greatestCalls, greatestName, newName, newFunc;
-	local greatestDiff, lastModule, mod, newUsage, calls, differance = 0;
+	local greatestUsage, greatestCalls, greatestName, newName, newFunc
+	local greatestDiff, lastModule, mod, newUsage, calls, differance = 0
 
 	for name, oldUsage in pairs(CPU_USAGE) do
-		newName, newFunc = name:match("^([^:]+):(.+)$");
-		if(not newFunc) then
-			E:Print("CPU_USAGE:", name, newFunc);
+		newName, newFunc = name:match("^([^:]+):(.+)$")
+		if not newFunc then
+			E:Print("CPU_USAGE:", name, newFunc)
 		else
-			if(newName ~= lastModule) then
-				mod = E:GetModule(newName, true) or E;
-				lastModule = newName;
+			if newName ~= lastModule then
+				mod = E:GetModule(newName, true) or E
+				lastModule = newName
 			end
-			newUsage, calls = GetFunctionCPUUsage(mod[newFunc], true);
-			differance = newUsage - oldUsage;
+			newUsage, calls = GetFunctionCPUUsage(mod[newFunc], true)
+			differance = newUsage - oldUsage
 			if showall and (calls > minCalls) then
 				E:Print('Name('..name..')  Calls('..calls..') Diff('..(differance > 0 and format("%.3f", differance) or 0)..')')
 			end
-			if((differance > greatestDiff) and calls > minCalls) then
-				greatestName, greatestUsage, greatestCalls, greatestDiff = name, newUsage, calls, differance;
+			if (differance > greatestDiff) and calls > minCalls then
+				greatestName, greatestUsage, greatestCalls, greatestDiff = name, newUsage, calls, differance
 			end
 		end
 	end
 
-	if(greatestName) then
-		E:Print(greatestName.. " had the CPU usage difference of: "..(greatestUsage > 0 and format("%.3f", greatestUsage) or 0).."ms. And has been called ".. greatestCalls.." times.")
+	if greatestName then
+		E:Print(greatestName.." had the CPU usage difference of: "..(greatestUsage > 0 and format("%.3f", greatestUsage) or 0).."ms. And has been called "..greatestCalls.." times.")
 	else
-		E:Print("CPU Usage: No CPU Usage differences found.");
+		E:Print("CPU Usage: No CPU Usage differences found.")
 	end
 
 	twipe(CPU_USAGE)
@@ -1245,7 +1417,7 @@ function E:GetTopCPUFunc(msg)
 		return
 	end
 
-	local module, showall, delay, minCalls = msg:match("^([^%s]+)%s*([^%s]*)%s*([^%s]*)%s*(.*)$")
+	local module, showall, delay, minCalls = msg:match("^(%S+)%s*(%S*)%s*(%S*)%s*(.*)$")
 	local checkCore, mod = (not module or module == "") and "E"
 
 	showall = (showall == "true" and true) or false
@@ -1283,79 +1455,79 @@ function E:GetTopCPUFunc(msg)
 	self:Print("Calculating CPU Usage differences (module: "..(checkCore or module)..", showall: "..tostring(showall)..", minCalls: "..tostring(minCalls)..", delay: "..tostring(delay)..")")
 end
 
-function E:Initialize()
-	twipe(self.db);
-	twipe(self.global);
+function E:Initialize(loginFrame)
+	twipe(self.db)
+	twipe(self.global)
 	twipe(self.private)
 
 	self.myguid = UnitGUID("player")
-	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF);
-	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll");
-	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll");
-	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset");
-	LibStub("LibDualSpec-1.0"):EnhanceDatabase(self.data, "ElvUI");
-	self.charSettings = LibStub("AceDB-3.0"):New("ElvPrivateDB", self.privateVars);
-	self.private = self.charSettings.profile;
-	self.db = self.data.profile;
-	self.global = self.data.global;
-	self:CheckIncompatible();
-	self:DBConversions();
+	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF)
+	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
+	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
+	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
+	self.charSettings = LibStub("AceDB-3.0"):New("ElvPrivateDB", self.privateVars)
+	LibStub("LibDualSpec-1.0"):EnhanceDatabase(self.data, "ElvUI")
+	self.private = self.charSettings.profile
+	self.db = self.data.profile
+	self.global = self.data.global
+	self:CheckIncompatible()
+	self:DBConversions()
 
-	self:CheckRole();
-	self:UIScale("PLAYER_LOGIN");
+	self:CheckRole()
 
-	self:LoadCommands();
-	self:InitializeModules();
-	self:LoadMovers();
+	self:UIScale("PLAYER_LOGIN", loginFrame)
+
+	if not E.db.general.cropIcon then
+		E.TexCoords = {0, 1, 0, 1}
+	end
+
+	self:LoadCommands() --Load Commands
+	self:InitializeModules() --Load Modules
+	self:LoadMovers() --Load Movers
 	self:UpdateCooldownSettings("all")
-	self.initialized = true;
+	self.initialized = true
 
-	if(self.private.install_complete == nil) then
-		self:Install();
+	if self.private.install_complete == nil then
+		self:Install()
 	end
 
-	if(not find(date(), "04/01/")) then
-		E.global.aprilFools = nil;
+	if not find(date(), "04/01/") then
+		E.global.aprilFools = nil
 	end
 
-	if(self:HelloKittyFixCheck()) then
-		self:HelloKittyFix();
+	if self:HelloKittyFixCheck() then
+		self:HelloKittyFix()
 	end
 
-	self:UpdateMedia();
-	self:UpdateFrameTemplates();
+	self:UpdateMedia()
+	self:UpdateFrameTemplates()
 	self:UpdateBorderColors()
 	self:UpdateBackdropColors()
 	self:UpdateStatusBars()
-	self:RegisterEvent("UNIT_AURA", "CheckRole");
-	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole");
-	self:RegisterEvent("PLAYER_TALENT_UPDATE", "CheckRole");
-	self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole");
-	self:RegisterEvent("UNIT_INVENTORY_CHANGED", "CheckRole");
-	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR", "CheckRole");
-	self:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", "UIScale");
-	self:RegisterEvent("PLAYER_ENTERING_WORLD");
+	self:RegisterEvent("UI_SCALE_CHANGED", "UIScale")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("NEUTRAL_FACTION_SELECT_RESULT")
-	self:RegisterEvent("PET_BATTLE_CLOSE", 'AddNonPetBattleFrames');
-	self:RegisterEvent('PET_BATTLE_OPENING_START', "RemoveNonPetBattleFrames");
+	self:RegisterEvent("PET_BATTLE_CLOSE", "AddNonPetBattleFrames")
+	self:RegisterEvent("PET_BATTLE_OPENING_START", "RemoveNonPetBattleFrames")
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "EnterVehicleHideFrames")
 	self:RegisterEvent("UNIT_EXITED_VEHICLE", "ExitVehicleShowFrames")
+	self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "CheckRole")
 
-	if(self.myclass == "DRUID") then
-		self:RegisterEvent("SPELLS_CHANGED");
+	if self.myclass == "DRUID" then
+		self:RegisterEvent("SPELLS_CHANGED")
 	end
 
-	if(self.db.general.kittys) then
-		self:CreateKittys();
-		self:Delay(5, self.Print, self, L["Type /hellokitty to revert to old settings."]);
+	if self.db.general.kittys then
+		self:CreateKittys()
+		self:Delay(5, self.Print, self, L["Type /hellokitty to revert to old settings."])
 	end
 
-	self:Tutorials();
-	self:GetModule("Minimap"):UpdateSettings();
+	self:Tutorials()
+	self:GetModule("Minimap"):UpdateSettings()
 	self:RefreshModulesDB()
-	collectgarbage("collect");
+	collectgarbage("collect")
 
-	if(self.db.general.loginmessage) then
-		print(select(2, E:GetModule("Chat"):FindURL("CHAT_MSG_DUMMY", format(L["LOGIN_MSG"], self["media"].hexvaluecolor, self["media"].hexvaluecolor, self.version)))..".");
+	if self.db.general.loginmessage then
+		E:Print(select(2, E:GetModule("Chat"):FindURL("CHAT_MSG_DUMMY", format(L["LOGIN_MSG"], self.media.hexvaluecolor, self.media.hexvaluecolor, self.version)))..".")
 	end
 end

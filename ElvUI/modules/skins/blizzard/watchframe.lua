@@ -190,10 +190,10 @@ local function LoadSkin()
 				poiButton.bg:SetFrameLevel(poiButton.bg:GetFrameLevel() - 1)
 
 				poiButton:HookScript("OnEnter", function(self)
-					self.bg:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
+					self.bg:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 				end)
 				poiButton:HookScript("OnLeave", function(self)
-					self.bg:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					self.bg:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end)
 
 				poiButton.isSkinned = true
@@ -203,13 +203,13 @@ local function LoadSkin()
 
 	hooksecurefunc("QuestPOI_SelectButton", function(poiButton)
 		if poiButton and poiButton.bg then
-			poiButton.bg.backdropTexture:SetVertexColor(unpack(E["media"].rgbvaluecolor))
+			poiButton.bg.backdropTexture:SetVertexColor(unpack(E.media.rgbvaluecolor))
 		end
 	end)
 
 	hooksecurefunc("QuestPOI_DeselectButton", function(poiButton)
 		if poiButton and poiButton.bg then
-			poiButton.bg.backdropTexture:SetVertexColor(unpack(E["media"].backdropcolor))
+			poiButton.bg.backdropTexture:SetVertexColor(unpack(E.media.backdropcolor))
 		end
 	end)
 end

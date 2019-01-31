@@ -5,7 +5,6 @@ local GetNetStats = GetNetStats
 local GetTime = GetTime
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
-local UnitIsUnit = UnitIsUnit
 
 local tradeskillCastTime, tradeskillCastDuration, tradeskillCurrent, tradeskillTotal, mergeTradeskill = 0, 0, 0, 0, false
 
@@ -53,7 +52,7 @@ local function UNIT_SPELLCAST_START(self, event, unit)
 	element.holdTime = 0
 	element.isTradeSkill = isTradeSkill
 
-	if(mergeTradeskill and isTradeSkill and UnitIsUnit(unit, "player")) then
+	if(mergeTradeskill and isTradeSkill and self.unit == 'player') then
 		element.duration = element.duration + (element.max * tradeskillCurrent)
 		element.max = max * tradeskillTotal
 
@@ -104,7 +103,7 @@ local function UNIT_SPELLCAST_FAILED(self, event, unit, spellname, _, castid)
 		return
 	end
 
-	if(mergeTradeskill and UnitIsUnit(unit, "player")) then
+	if(mergeTradeskill and self.unit == 'player') then
 		mergeTradeskill = false
 		element.tradeSkillCastId = nil
 	end
@@ -131,7 +130,7 @@ local function UNIT_SPELLCAST_FAILED_QUIET(self, event, unit, _, _, castid)
 		return
 	end
 
-	if(mergeTradeskill and UnitIsUnit(unit, "player")) then
+	if(mergeTradeskill and self.unit == 'player') then
 		mergeTradeskill = false
 		element.tradeSkillCastId = nil
 	end
@@ -224,7 +223,7 @@ local function UNIT_SPELLCAST_STOP(self, event, unit, spellname, _, castid)
 		return
 	end
 
-	if(mergeTradeskill and UnitIsUnit(unit, "player")) then
+	if(mergeTradeskill and self.unit == 'player') then
 		if(tradeskillCurrent == tradeskillTotal) then
 			mergeTradeskill = false
 		end
@@ -343,7 +342,9 @@ local function onUpdate(self, elapsed)
 		if(duration >= self.max or (tradeskillTotal > 1 and duration >= (tradeskillCastDuration + tradeskillCastTime * 1.25))) then
 			self.casting = nil
 			self:Hide()
-			tradeskillTotal = 0
+			if self.unit == "player" then
+				tradeskillTotal = 0
+			end
 
 			if(self.PostCastStop) then self:PostCastStop(self.__owner.unit) end
 			return
@@ -426,7 +427,9 @@ local function onUpdate(self, elapsed)
 		self.casting = nil
 		self.castid = nil
 		self.channeling = nil
-		tradeskillTotal = 0
+		if self.unit == "player" then
+			tradeskillTotal = 0
+		end
 
 		self:Hide()
 	end

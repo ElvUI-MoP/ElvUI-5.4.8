@@ -27,7 +27,7 @@ local function LoadSkin()
 
 	S:HandleCloseButton(ItemSocketingFrameCloseButton)
 
-	S:HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2);
+	S:HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2)
 
 	for i = 1, MAX_NUM_SOCKETS do
 		local button = _G[("ItemSocketingSocket%d"):format(i)]

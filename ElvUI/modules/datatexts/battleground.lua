@@ -10,7 +10,6 @@ local GetNumBattlefieldScores = GetNumBattlefieldScores
 local GetBattlefieldStatInfo = GetBattlefieldStatInfo
 local GetBattlefieldStatData = GetBattlefieldStatData
 
-local name
 local displayString = ""
 local lastPanel
 
@@ -40,7 +39,7 @@ function DT:UPDATE_BATTLEFIELD_SCORE()
 	lastPanel = self
 	local pointIndex = dataLayout[self:GetParent():GetName()][self.pointIndex]
 	for i = 1, GetNumBattlefieldScores() do
-		name = GetBattlefieldScore(i)
+		local name = GetBattlefieldScore(i)
 		if name == E.myname then
 			self.text:SetFormattedText(displayString, dataStrings[pointIndex], E:ShortValue(select(pointIndex, GetBattlefieldScore(i))))
 			break
@@ -50,13 +49,12 @@ end
 
 function DT:BattlegroundStats()
 	DT:SetupTooltip(self)
-	local CurrentMapID = GetCurrentMapAreaID()
 
-	local classColor = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[E.myclass]
+	local classColor = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass]) or RAID_CLASS_COLORS[E.myclass]
 	local numStatInfo = GetNumBattlefieldStats()
 	if numStatInfo then
 		for index = 1, GetNumBattlefieldScores() do
-			name = GetBattlefieldScore(index)
+			local name = GetBattlefieldScore(index)
 			if name and name == E.myname then
 				DT.tooltip:AddDoubleLine(L["Stats For:"], name, 1, 1, 1, classColor.r, classColor.g, classColor.b)
 				DT.tooltip:AddLine(" ")
@@ -65,12 +63,13 @@ function DT:BattlegroundStats()
 				for x = 1, numStatInfo do
 					DT.tooltip:AddDoubleLine(GetBattlefieldStatInfo(x), GetBattlefieldStatData(index, x), 1, 1, 1)
 				end
+
 				break
 			end
 		end
 	end
 
-	DT.tooltip:Show();
+	DT.tooltip:Show()
 end
 
 function DT:HideBattlegroundTexts()
@@ -86,4 +85,4 @@ local function ValueColorUpdate(hex)
 		DT.UPDATE_BATTLEFIELD_SCORE(lastPanel)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true

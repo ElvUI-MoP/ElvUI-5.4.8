@@ -47,7 +47,7 @@ function AB:UpdatePet(event, unit)
 		button.isToken = isToken;
 		button.tooltipSubtext = subtext;
 
-		if isActive and name ~= "PET_ACTION_FOLLOW" then
+		if isActive --[[and name ~= "PET_ACTION_FOLLOW"]] then
 			button:SetChecked(true)
 
 			if IsPetAttackAction(i) then
@@ -86,7 +86,7 @@ function AB:UpdatePet(event, unit)
 			icon:Hide()
 		end
 
-		if not PetHasActionBar() and texture and name ~= "PET_ACTION_FOLLOW" then
+		if not PetHasActionBar() and texture --[[and name ~= "PET_ACTION_FOLLOW"]] then
 			PetActionButton_StopFlash(button)
 			SetDesaturation(icon, 1)
 			button:SetChecked(0)
@@ -95,19 +95,19 @@ function AB:UpdatePet(event, unit)
 end
 
 function AB:PositionAndSizeBarPet()
-	local buttonSpacing = E:Scale(self.db["barPet"].buttonspacing)
-	local backdropSpacing = E:Scale((self.db["barPet"].backdropSpacing or self.db["barPet"].buttonspacing))
-	local buttonsPerRow = self.db["barPet"].buttonsPerRow
-	local numButtons = self.db["barPet"].buttons
-	local size = E:Scale(self.db["barPet"].buttonsize)
+	local buttonSpacing = E:Scale(self.db.barPet.buttonspacing)
+	local backdropSpacing = E:Scale((self.db.barPet.backdropSpacing or self.db.barPet.buttonspacing))
+	local buttonsPerRow = self.db.barPet.buttonsPerRow
+	local numButtons = self.db.barPet.buttons
+	local size = E:Scale(self.db.barPet.buttonsize)
 	local autoCastSize = (size / 2) - (size / 7.5)
-	local point = self.db["barPet"].point
+	local point = self.db.barPet.point
 	local numColumns = ceil(numButtons / buttonsPerRow)
-	local widthMult = self.db["barPet"].widthMult
-	local heightMult = self.db["barPet"].heightMult
-	local visibility = self.db["barPet"].visibility
+	local widthMult = self.db.barPet.widthMult
+	local heightMult = self.db.barPet.heightMult
+	local visibility = self.db.barPet.visibility
 
-	bar.db = self.db["barPet"]
+	bar.db = self.db.barPet
 	bar.db.position = nil --Depreciated
 
 	if visibility and visibility:match("[\n\r]") then
@@ -122,7 +122,7 @@ function AB:PositionAndSizeBarPet()
 		numColumns = 1
 	end
 
- 	if self.db["barPet"].backdrop == true then
+ 	if self.db.barPet.backdrop == true then
  		bar.backdrop:Show()
  	else
  		bar.backdrop:Hide()
@@ -131,12 +131,12 @@ function AB:PositionAndSizeBarPet()
  		heightMult = 1
 	end
 
- 	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult-1)) + ((self.db["barPet"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
- 	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult-1)) + ((self.db["barPet"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
+ 	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult-1)) + ((self.db.barPet.backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
+ 	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult-1)) + ((self.db.barPet.backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
  	bar:Width(barWidth)
 	bar:Height(barHeight)
 
-	if self.db["barPet"].enabled then
+	if self.db.barPet.enabled then
 		bar:SetScale(1)
 		bar:SetAlpha(bar.db.alpha)
 		E:EnableMover(bar.mover:GetName())
@@ -159,21 +159,21 @@ function AB:PositionAndSizeBarPet()
 		horizontalGrowth = "LEFT"
 	end
 
-	bar.mouseover = self.db["barPet"].mouseover
+	bar.mouseover = self.db.barPet.mouseover
 	if bar.mouseover then
 		bar:SetAlpha(0)
 	else
 		bar:SetAlpha(bar.db.alpha)
 	end
 
-	if self.db["barPet"].inheritGlobalFade then
+	if self.db.barPet.inheritGlobalFade then
 		bar:SetParent(self.fadeParent)
 	else
 		bar:SetParent(E.UIParent)
 	end
 
 	local button, lastButton, lastColumnButton, autoCast;
-	local firstButtonSpacing = (self.db["barPet"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)
+	local firstButtonSpacing = (self.db.barPet.backdrop == true and (E.Border + backdropSpacing) or E.Spacing)
 	for i = 1, NUM_PET_ACTION_SLOTS do
 		button = _G["PetActionButton"..i]
 		lastButton = _G["PetActionButton"..i - 1]
@@ -242,11 +242,14 @@ function AB:PositionAndSizeBarPet()
 end
 
 function AB:UpdatePetBindings()
+	local color = self.db.fontColor
+
 	for i = 1, NUM_PET_ACTION_SLOTS do
 		if self.db.hotkeytext then
 			local key = GetBindingKey("BONUSACTIONBUTTON"..i)
 			_G["PetActionButton"..i.."HotKey"]:Show()
 			_G["PetActionButton"..i.."HotKey"]:SetText(key)
+			_G["PetActionButton"..i.."HotKey"]:SetTextColor(color.r, color.g, color.b)
 			self:FixKeybindText(_G["PetActionButton"..i])
 		else
 			_G["PetActionButton"..i.."HotKey"]:Hide()
@@ -257,7 +260,7 @@ end
 function AB:CreateBarPet()
 	bar:CreateBackdrop("Default")
 	bar.backdrop:SetAllPoints()
-	if self.db["bar4"].enabled then
+	if self.db.bar4.enabled then
 		bar:Point("RIGHT", ElvUI_Bar4, "LEFT", -4, 0)
 	else
 		bar:Point("RIGHT", E.UIParent, "RIGHT", -4, 0)
@@ -291,7 +294,7 @@ function AB:CreateBarPet()
 	self:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED", "UpdatePet")
 	self:RegisterEvent("PET_BAR_UPDATE_COOLDOWN", PetActionBar_UpdateCooldowns)
 
-	E:CreateMover(bar, "ElvBar_Pet", L["Pet Bar"], nil, nil, nil,"ALL, ACTIONBARS")
+	E:CreateMover(bar, "ElvBar_Pet", L["Pet Bar"], nil, nil, nil,"ALL, ACTIONBARS", nil, "actionbar,barPet")
 	self:PositionAndSizeBarPet()
 	self:UpdatePetBindings()
 
