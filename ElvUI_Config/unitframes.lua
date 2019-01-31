@@ -312,6 +312,7 @@ local function GetOptionsTable_AuraBars(updateFunc, groupName)
 	config.args.filters.args.specialPriority = {
 		order = 19,
 		type = "select",
+		sortByValue = true,
 		name = L["Add Special Filter"],
 		desc = L["These filters don't use a list of spells like the regular filters. Instead they use the WoW API and some code logic to determine if an aura should be allowed or blocked."],
 		values = function()
@@ -319,7 +320,7 @@ local function GetOptionsTable_AuraBars(updateFunc, groupName)
 			local list = E.global.unitframe.specialFilters
 			if not list then return end
 			for filter in pairs(list) do
-				filters[filter] = filter
+				filters[filter] = L[filter]
 			end
 			return filters
 		end,
@@ -524,7 +525,11 @@ local function GetOptionsTable_Auras(auraType, isGroupFrame, updateFunc, groupNa
 				["DEBUFFS"] = L["Debuffs"],
 				["HEALTH"] = HEALTH,
 				["POWER"] = L["Power"]
-			}
+			},
+			disabled = function()
+				local smartAuraPosition = E.db.unitframe.units[groupName].smartAuraPosition
+				return (smartAuraPosition and (smartAuraPosition == "BUFFS_ON_DEBUFFS" or smartAuraPosition == "FLUID_BUFFS_ON_DEBUFFS"))
+			end
 		}
 	else
 		config.args.attachTo = {
@@ -537,7 +542,11 @@ local function GetOptionsTable_Auras(auraType, isGroupFrame, updateFunc, groupNa
 				["BUFFS"] = L["Buffs"],
 				["HEALTH"] = HEALTH,
 				["POWER"] = L["Power"]
-			}
+			},
+			disabled = function()
+				local smartAuraPosition = E.db.unitframe.units[groupName].smartAuraPosition
+				return (smartAuraPosition and (smartAuraPosition == "DEBUFFS_ON_BUFFS" or smartAuraPosition == "FLUID_DEBUFFS_ON_BUFFS"))
+			end
 		}
 	end
 
@@ -574,14 +583,15 @@ local function GetOptionsTable_Auras(auraType, isGroupFrame, updateFunc, groupNa
 	config.args.filters.args.specialPriority = {
 		order = 19,
 		type = "select",
+		sortByValue = true,
 		name = L["Add Special Filter"],
 		desc = L["These filters don't use a list of spells like the regular filters. Instead they use the WoW API and some code logic to determine if an aura should be allowed or blocked."],
 		values = function()
 			local filters = {}
-			local list = E.global.unitframe["specialFilters"]
+			local list = E.global.unitframe.specialFilters
 			if not list then return end
 			for filter in pairs(list) do
-				filters[filter] = filter
+				filters[filter] = L[filter]
 			end
 			return filters
 		end,

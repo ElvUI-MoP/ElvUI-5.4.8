@@ -14,16 +14,16 @@ local CURRENCY = CURRENCY
 
 local Currencies = {
 	-- MoP
-	["ELDER_CHARM_OF_GOOD_FORTUNE"] = {ID = 697, NAME = GetCurrencyInfo(697), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(697)), 16, 16)},
-	["LESSER_CHARM_OF_GOOD_FORTUNE"] = {ID = 738, NAME = GetCurrencyInfo(738), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(738)), 16, 16)},
-	["MOGU_RUNE_OF_FATE"] = {ID = 752, NAME = GetCurrencyInfo(752), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(752)), 16, 16)},
-	["TIMELESS_COIN"] = {ID = 776, NAME = GetCurrencyInfo(776), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(776)), 16, 16)},
-	["WARFORGED_SEAL"] = {ID = 777, NAME = GetCurrencyInfo(777), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(777)), 16, 16)},
-	["BLOODY_COIN"] = {ID = 789, NAME = GetCurrencyInfo(789), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(789)), 16, 16)},
+	["ELDER_CHARM_OF_GOOD_FORTUNE"]		= {ID = 697, NAME = GetCurrencyInfo(697), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(697)), 16, 16)},
+	["LESSER_CHARM_OF_GOOD_FORTUNE"]	= {ID = 738, NAME = GetCurrencyInfo(738), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(738)), 16, 16)},
+	["MOGU_RUNE_OF_FATE"]				= {ID = 752, NAME = GetCurrencyInfo(752), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(752)), 16, 16)},
+	["TIMELESS_COIN"]					= {ID = 776, NAME = GetCurrencyInfo(776), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(776)), 16, 16)},
+	["WARFORGED_SEAL"]					= {ID = 777, NAME = GetCurrencyInfo(777), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(777)), 16, 16)},
+	["BLOODY_COIN"]						= {ID = 789, NAME = GetCurrencyInfo(789), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(789)), 16, 16)},
 	-- Other
-	["DARKMOON_PRIZE_TICKET"] = {ID = 515, NAME = GetCurrencyInfo(515), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(515)), 16, 16)},
-	["IRONPAW_TOKEN"] = {ID = 402, NAME = GetCurrencyInfo(402), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(402)), 16, 16)},
-	["ZEN_JEWELCRAFTERS_TOKEN"] = {ID = 698, NAME = GetCurrencyInfo(698), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(698)), 16, 16)},
+	["DARKMOON_PRIZE_TICKET"]			= {ID = 515, NAME = GetCurrencyInfo(515), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(515)), 16, 16)},
+	["IRONPAW_TOKEN"]					= {ID = 402, NAME = GetCurrencyInfo(402), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(402)), 16, 16)},
+	["ZEN_JEWELCRAFTERS_TOKEN"]			= {ID = 698, NAME = GetCurrencyInfo(698), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(698)), 16, 16)},
 }
 
 local currencyList
@@ -42,6 +42,7 @@ local chosenCurrency, currencyAmount
 
 local function OnEvent(self)
 	gold = GetMoney()
+
 	if E.db.datatexts.currencies.displayedCurrency == "GOLD" then
 		self.text:SetText(E:FormatMoney(gold, E.db.datatexts.goldFormat or "BLIZZARD", not E.db.datatexts.goldCoins))
 	else

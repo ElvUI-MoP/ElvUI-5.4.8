@@ -1808,14 +1808,15 @@ local function GetUnitSettings(unit, name)
 							specialFilters = {
 								order = 5,
 								type = "select",
+								sortByValue = true,
 								name = L["Add Special Filter"],
 								desc = L["These filters don't use a list of spells like the regular filters. Instead they use the WoW API and some code logic to determine if an aura should be allowed or blocked."],
 								values = function()
 									local filters = {}
-									local list = E.global.nameplates["specialFilters"]
+									local list = E.global.nameplates.specialFilters
 									if not list then return end
 									for filter in pairs(list) do
-										filters[filter] = filter
+										filters[filter] = L[filter]
 									end
 									return filters
 								end,
@@ -1831,7 +1832,7 @@ local function GetUnitSettings(unit, name)
 								desc = L["These filters use a list of spells to determine if an aura should be allowed or blocked. The content of these filters can be modified in the 'Filters' section of the config."],
 								values = function()
 									local filters = {}
-									local list = E.global.unitframe["aurafilters"]
+									local list = E.global.unitframe.aurafilters
 									if not list then return end
 									for filter in pairs(list) do
 										filters[filter] = filter
@@ -1976,14 +1977,15 @@ local function GetUnitSettings(unit, name)
 							specialFilters = {
 								order = 5,
 								type = "select",
+								sortByValue = true,
 								name = L["Add Special Filter"],
 								desc = L["These filters don't use a list of spells like the regular filters. Instead they use the WoW API and some code logic to determine if an aura should be allowed or blocked."],
 								values = function()
 									local filters = {}
-									local list = E.global.nameplates["specialFilters"]
+									local list = E.global.nameplates.specialFilters
 									if not list then return end
 									for filter in pairs(list) do
-										filters[filter] = filter
+										filters[filter] = L[filter]
 									end
 									return filters
 								end,
@@ -1999,7 +2001,7 @@ local function GetUnitSettings(unit, name)
 								desc = L["These filters use a list of spells to determine if an aura should be allowed or blocked. The content of these filters can be modified in the 'Filters' section of the config."],
 								values = function()
 									local filters = {}
-									local list = E.global.unitframe["aurafilters"]
+									local list = E.global.unitframe.aurafilters
 									if not list then return end
 									for filter in pairs(list) do
 										filters[filter] = filter

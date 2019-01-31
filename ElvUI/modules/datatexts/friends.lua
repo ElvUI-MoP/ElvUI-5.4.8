@@ -9,26 +9,16 @@ local IsChatAFK = IsChatAFK
 local IsChatDND = IsChatDND
 local SendChatMessage = SendChatMessage
 local InviteUnit = InviteUnit
-local BNInviteFriend = BNInviteFriend
-local ChatFrame_SendSmartTell = ChatFrame_SendSmartTell
 local SetItemRef = SetItemRef
 local GetFriendInfo = GetFriendInfo
-local BNGetFriendInfo = BNGetFriendInfo
-local BNGetGameAccountInfo = BNGetGameAccountInfo
-local BNet_GetValidatedCharacterName = BNet_GetValidatedCharacterName
 local GetNumFriends = GetNumFriends
-local BNGetNumFriends = BNGetNumFriends
 local GetQuestDifficultyColor = GetQuestDifficultyColor
-local UnitFactionGroup = UnitFactionGroup
+local GetRealZoneText = GetRealZoneText
 local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
 local ToggleFriendsFrame = ToggleFriendsFrame
 local EasyMenu = EasyMenu
-local IsShiftKeyDown = IsShiftKeyDown
-local GetRealmName = GetRealmName
-local GetCurrentMapAreaID = GetCurrentMapAreaID
-local AFK = AFK
-local DND = DND
+local AFK, DND = AFK, DND
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
@@ -63,7 +53,6 @@ end
 
 local levelNameString = "|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r"
 local levelNameClassString = "|cff%02x%02x%02x%d|r %s%s%s"
-local worldOfWarcraftString = WORLD_OF_WARCRAFT
 local totalOnlineString = join("", FRIENDS_LIST_ONLINE, ": %s/%s")
 local tthead = {r = 0.4, g = 0.78, b = 1}
 local activezone, inactivezone = {r = 0.3, g = 1.0, b = 0.3}, {r = 0.65, g = 0.65, b = 0.65}
@@ -141,13 +130,13 @@ local function OnClick(_, btn)
 				info = friendTable[i]
 				if info[5] then
 					shouldSkip = false
-					if (info[6] == statusTable[1]) and E.db.datatexts.friends["hideAFK"] then
+					if (info[6] == statusTable[1]) and E.db.datatexts.friends.hideAFK then
 						shouldSkip = true
-					elseif (info[6] == statusTable[2]) and E.db.datatexts.friends["hideDND"] then
+					elseif (info[6] == statusTable[2]) and E.db.datatexts.friends.hideDND then
 						shouldSkip = true
 					end
 					if not shouldSkip then
-						classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
+						classc, levelc = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[info[3]]) or RAID_CLASS_COLORS[info[3]], GetQuestDifficultyColor(info[2])
 						classc = classc or GetQuestDifficultyColor(info[2])
 
 						menuCountWhispers = menuCountWhispers + 1
@@ -167,20 +156,8 @@ local function OnClick(_, btn)
 	end
 end
 
-local lastTooltipXLineHeader
-local function TooltipAddXLine(X, header, ...)
-	X = (X == true and "AddDoubleLine") or "AddLine"
-	if lastTooltipXLineHeader ~= header then
-		DT.tooltip[X](DT.tooltip, " ")
-		DT.tooltip[X](DT.tooltip, header)
-		lastTooltipXLineHeader = header
-	end
-	DT.tooltip[X](DT.tooltip, ...)
-end
-
 local function OnEnter(self)
 	DT:SetupTooltip(self)
-	lastTooltipXLineHeader = nil
 
 	local numberOfFriends, onlineFriends = GetNumFriends()
 
@@ -200,19 +177,19 @@ local function OnEnter(self)
 			info = friendTable[i]
 			if info[5] then
 				shouldSkip = false
-				if (info[6] == statusTable[1]) and E.db.datatexts.friends["hideAFK"] then
+				if (info[6] == statusTable[1]) and E.db.datatexts.friends.hideAFK then
 					shouldSkip = true
-				elseif (info[6] == statusTable[2]) and E.db.datatexts.friends["hideDND"] then
+				elseif (info[6] == statusTable[2]) and E.db.datatexts.friends.hideDND then
 					shouldSkip = true
 				end
 				if not shouldSkip then
 					if GetRealZoneText() == info[4] then zonec = activezone else zonec = inactivezone end
-					classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
+					classc, levelc = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[info[3]]) or RAID_CLASS_COLORS[info[3]], GetQuestDifficultyColor(info[2])
 
 					classc = classc or GetQuestDifficultyColor(info[2])
 
 					if UnitInParty(info[1]) or UnitInRaid(info[1]) then grouped = 1 else grouped = 2 end
-					TooltipAddXLine(true, worldOfWarcraftString, format(levelNameClassString, levelc.r*255, levelc.g*255, levelc.b*255, info[2], info[1], groupedTable[grouped], info[6]), info[4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
+					DT.tooltip:AddDoubleLine(format(levelNameClassString, levelc.r*255, levelc.g*255, levelc.b*255, info[2], info[1], groupedTable[grouped], " "..info[6]), info[4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
 				end
 			end
 		end

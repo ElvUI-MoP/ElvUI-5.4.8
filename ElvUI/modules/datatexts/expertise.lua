@@ -94,7 +94,7 @@ local function OnEnter(self)
 
 		mainhandParry = format("%.2f%%", mainhandParry)
 		offhandParry = format("%.2f%%", offhandParry)
-		
+
 		if i == 3 then
 			level = level.." / "..skullTexture
 		end
