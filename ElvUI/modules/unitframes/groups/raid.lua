@@ -213,7 +213,7 @@ function UF:Update_RaidFrames(frame, db)
 
 	UF:Configure_ReadyCheckIcon(frame)
 
-	UF:Configure_CustomTexts(frame
+	UF:Configure_CustomTexts(frame)
 
 	UF:Configure_PhaseIcon(frame)
 
