@@ -1,5 +1,5 @@
 -- English localization file for enUS and enGB.
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
+local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:NewLocale("ElvUI", "enUS", true, true)
 if not L then return end
 
@@ -8,6 +8,8 @@ L["ACTIONBARS_DESC"] = "Modify the actionbar settings."
 L["AURAS_DESC"] = 'Configure the aura icons that appear near the minimap.'
 L["BAGS_DESC"] = "Adjust bag settings for ElvUI."
 L["CHAT_DESC"] = "Adjust chat settings for ElvUI."
+L["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
+L["DATABAR_DESC"] = "Setup on-screen display of information bars."
 L["DATATEXT_DESC"] = "Setup the on-screen display of info-texts."
 L["ELVUI_DESC"] = "ElvUI is a complete User Interface replacement addon for World of Warcraft."
 L["NAMEPLATE_DESC"] = "Modify the nameplate settings."
@@ -24,6 +26,7 @@ Specific Searching:
     • t:[search], type:[search] or slot:[search]. For instance, t:weapon will find all weapons.
     • n:[name] or name:[name]. For instance, typing n:muffins will find all items with names containing "muffins".
     • s:[set] or set:[set]. For example, s:fire will find all items in equipment sets you have with names that start with fire.
+    • r:[level], reg:[level], rl:[level], regl:[level] or reqlvl:[level]. For example, reqlvl:30 will find all items that require level 30.
     • tt:[search], tip:[search] or tooltip:[search]. For instance, tt:binds will find all items that can be bound to account, on equip, or on pickup.
 
 
@@ -104,6 +107,9 @@ L["Expiring"] = true
 L["Flyout Direction"] = true
 L["Global Fade Transparency"] = true
 L["Height Multiplier"] = true
+L["Hotkey Text Position"] = true
+L["Hotkey Text X-Offset"] = true
+L["Hotkey Text Y-Offset"] = true
 L["Hours"] = true
 L["If you unlock actionbars then trying to move a spell might instantly cast it if you cast spells on key press instead of key release."] = true
 L["Inherit Global Fade"] = true
@@ -111,6 +117,8 @@ L["Inherit the global fade, mousing over, targetting, setting focus, losing heal
 L["Key Down"] = true
 L["Keybind Mode"] = true
 L["Keybind Text"] = true
+L["Color Keybind Text"] = true
+L["Color Keybind Text when Out of Range, instead of the button."] = true
 L["Low Threshold"] = true
 L["Macro Text"] = true
 L["Masque Support"] = true
@@ -125,6 +133,9 @@ L["Restore the actionbars default settings"] = true
 L["RightClick Self-Cast"] = true
 L["Seconds"] = true
 L["Show Empty Buttons"] = true
+L["Stack Text Position"] = true
+L["Stack Text X-Offset"] = true
+L["Stack Text Y-Offset"] = true
 L["The amount of buttons to display per row."] = true
 L["The amount of buttons to display."] = true
 L["The button you must hold down in order to drag an ability to another action button."] = true
@@ -137,15 +148,14 @@ L["Threshold before text turns red and is in decimal form. Set to -1 for it to n
 L["Toggles the display of the actionbars backdrop."] = true
 L["Transparency level when not in combat, no target exists, full health, not casting, and no focus target exists."] = true
 L["Usable"] = true
-L["Use Override"] = true
 L["Use Position Override"] = true
 L["Visibility State"] = true
 L["When enabled it will use the Anchor Point setting to determine growth direction, otherwise it will be determined by where the bar is positioned."] = true
 L["Width Multiplier"] = true
 L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
- Example: [combat] 2;]=] ] = true
+ Example: '[combat] 2;']=] ] = true
 L[ [=[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
- Example: [combat] show;hide]=] ] = true
+ Example: '[combat] show;hide']=] ] = true
 
 --Bags
 L["Add an item or search syntax to the ignored list. Items matching the search syntax will be ignored."] = true
@@ -153,8 +163,21 @@ L["Add Item or Search Syntax"] = true
 L["Adjust the width of the bag frame."] = true
 L["Adjust the width of the bank frame."] = true
 L["Ascending"] = true
+L["Bag"] = true
+L["Bag 1"] = true
+L["Bag 2"] = true
+L["Bag 3"] = true
+L["Bag 4"] = true
 L["Bag Sorting"] = true
+L["Bag Spacing"] = true
 L["Bag-Bar"] = true
+L["Bank 1"] = true
+L["Bank 2"] = true
+L["Bank 3"] = true
+L["Bank 4"] = true
+L["Bank 5"] = true
+L["Bank 6"] = true
+L["Bank 7"] = true
 L["Bar Direction"] = true
 L["Blizzard Style"] = true
 L["Bottom to Top"] = true
@@ -163,12 +186,16 @@ L["Button Size (Bank)"] = true
 L["Clear Search On Close"] = true
 L["Condensed"] = true
 L["Currency Format"] = true
+L["Custom Color"] = true
 L["Descending"] = true
 L["Direction the bag sorting will use to allocate the items."] = true
 L["Disable Bag Sort"] = true
 L["Disable Bank Sort"] = true
 L["Display Item Level"] = true
+L["Display the junk icon on all grey items that can be vendored."] = true
+L["Display the New Item Glow"] = true
 L["Displays item level on equippable items."] = true
+L["Enable Custom Color"] = true
 L["Enable/Disable the all-in-one bag."] = true
 L["Enable/Disable the Bag-Bar."] = true
 L["Full"] = true
@@ -184,13 +211,21 @@ L["Item Level"] = true
 L["Money Format"] = true
 L["Panel Width (Bags)"] = true
 L["Panel Width (Bank)"] = true
+L["Profession Bags"] = true
+L["Progress Bar"] = true
+L["Quest Starter"] = true
+L["Reverse Bag Slots"] = true
 L["Search Syntax"] = true
+L["Sell Interval"] = true
 L["Set the size of your bag buttons."] = true
 L["Short (Whole Numbers)"] = true
 L["Show Coins"] = true
+L["Show Junk Icon"] = true
+L["Show New Item Glow"] = true
 L["Smart"] = true
 L["Sort Direction"] = true --Also used in Buffs and Debuffs
 L["Sort Inverted"] = true
+L["Split"] = true
 L["The direction that the bag frames be (Horizontal or Vertical)."] = true
 L["The direction that the bag frames will grow from the anchor."] = true
 L["The display format of the currency icons that get displayed below the main bag. (You have to be watching a currency for this to display)"] = true
@@ -202,28 +237,31 @@ L["The size of the individual buttons on the bank frame."] = true
 L["The spacing between buttons."] = true
 L["Top to Bottom"] = true
 L["Use coin icons instead of colored text."] = true
+L["Will attempt to sell another item in set interval after previous one was sold."] = true
+
+--Bag Colors
+L["Enchanting"] = true
+L["Engineering"] = true
+L["Gems"] = true
+L["Herbalism"] = true
+L["Leatherworking"] = true
+L["Mining"] = true
 
 --Buffs and Debuffs
 L["Begin a new row or column after this many auras."] = true
-L["Consolidated Buffs"] = true
 L["Count xOffset"] = true
 L["Count yOffset"] = true
 L["Defines how the group is sorted."] = true
 L["Defines the sort order of the selected sort method."] = true
 L["Disabled Blizzard"] = true
 L["Duration Font Size"] = true
-L["Display the consolidated buffs bar."] = true
 L["Fade Threshold"] = true
-L["Filter Consolidated"] = true
 L["Index"] = true
 L["Indicate whether buffs you cast yourself should be separated before or after."] = true
 L["Limit the number of rows or columns."] = true
 L["Max Wraps"] = true
 L["No Sorting"] = true
-L["Only show consolidated icons on the consolidated bar that your class/spec is interested in. This is useful for raid leading."] = true
 L["Other's First"] = true
-L["Remaining Time"] = true
-L["Reverse Style"] = true
 L["Seperate"] = true
 L["Set the size of the individual auras."] = true
 L["Sort Method"] = true
@@ -232,9 +270,28 @@ L["Threshold before the icon will fade out and back in. Set to -1 to disable."] 
 L["Time xOffset"] = true
 L["Time yOffset"] = true
 L["Time"] = true
-L["When enabled active buff icons will light up instead of becoming darker, while inactive buff icons will become darker instead of being lit up."] = true
 L["Wrap After"] = true
 L["Your Auras First"] = true
+
+--Consolidated Buffs
+L["Consolidated Buffs"] = true
+L["Display the consolidated buffs bar."] = true
+L["Filter Consolidated"] = true
+L["Only show consolidated icons on the consolidated bar that your class/spec is interested in. This is useful for raid leading."] = true
+L["Remaining Time"] = true
+L["Reverse Style"] = true
+L["When enabled active buff icons will light up instead of becoming darker, while inactive buff icons will become darker instead of being lit up."] = true
+
+--Cooldown
+L["HH:MM"] = true
+L["HH:MM Threshold"] = true
+L["MM:SS"] = true
+L["MM:SS Threshold"] = true
+L["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."] = true
+L["Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format."] = true
+L["Color Override"] = true
+L["Reverse Toggle"] = true
+L["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = true
 
 --Chat
 L["Above Chat"] = true
@@ -333,7 +390,6 @@ L["Current - Percent (Remaining)"] = true
 L["Current - Remaining"] = true
 L["DataBars"] = true
 L["Hide In Combat"] = true
-L["Setup on-screen display of information bars."] = true
 
 --DataTexts
 L["Add Currency ID"] = true
@@ -389,15 +445,16 @@ L["This feature will allow you to transfer settings to other characters."] = tru
 L["You must be targeting a player."] = true
 
 --Filters
+L["Filter Search"] = true
 L["Reset Aura Filters"] = true --Used in Nameplates/UnitFrames general options
 L["Reset Filter"] = true
+L["Search for a spell name inside of a filter."] = true
 L["Used as RaidDebuff Indicator"] = true
 
 --General
 L["Accept Invites"] = true
 L["Adjust the position of the threat bar to either the left or right datatext panels."] = true
 L["AFK Mode"] = true
-L["Animate Config"] = true
 L["Announce Interrupts"] = true
 L["Announce when you interrupt a spell to the specified chat channel."] = true
 L["Attempt to support eyefinity/nvidia surround."] = true
@@ -411,9 +468,12 @@ L["Automatically select greed or disenchant (when available) on green quality it
 L["Automatically vendor gray items when visiting a vendor."] = true
 L["Bottom Panel"] = true
 L["Chat Bubbles Style"] = true
-L["Chat Bubble Names"] = true
 L["Chat Bubbles"] = true
+L["Chat Bubble Names"] = true
+L["Chat Output"] = true
+L["Color Gradient"] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = true
+L["Crop Icons"] = true
 L["Decimal Length"] = true
 L["Direction the bar moves on gains/losses"] = true
 L["Displays a detailed report of every item sold when enabled."] = true
@@ -443,11 +503,15 @@ L["Lowest Allowed UI Scale"] = true
 L["Missing Talent Alert"] = true
 L["Multi-Monitor Support"] = true
 L["Name Font"] = true
+L["Name: Current / Max"] = true
+L["Name: Current / Max - Percent"] = true
+L["Name: Percent"] = true
 L["Objective Frame Height"] = true
 L["Party / Raid"] = true
 L["Party Only"] = true
 L["Raid Only"] = true
 L["Remove Backdrop"] = true
+L["Replace Blizzard's Alternative Power Bar"] = true
 L["Reset all frames to their original positions."] = true
 L["Reset Anchors"] = true
 L["Reverse Fill Direction"] = true
@@ -462,13 +526,29 @@ L["The font that appears on the text above players heads. |cffFF0000WARNING: Thi
 L["The Thin Border Theme option will change the overall apperance of your UI. Using Thin Border Theme is a slight performance increase over the traditional layout."] = true
 L["The unit prefixes you want to use when values are shortened in ElvUI. This is mostly used on UnitFrames."] = true
 L["Thin Border Theme"] = true
+L["This is for Customized Icons in your Interface/Icons folder."] = true
+L["This selects the Chat Frame to use as the output of ElvUI messages."] = true
 L["Toggle Tutorials"] = true
 L["Top Panel"] = true
 L["Unit Prefix Style"] = true
+L["Vehicle Seat Indicator Size"] = true
 L["Vendor Grays"] = true
 L["Vendor Gray Detailed Report"] = true
-L["Version Check"] = true
 L["When you go AFK display the AFK screen."] = true
+
+--Aura Filter
+---Whitelists
+L["Personal"] = true
+L["nonPersonal"] = "Non Personal"
+L["notCastByUnit"] = "Not Cast By Unit"
+L["Dispellable"] = true
+L["notDispellable"] = "Not Dispellable"
+L["CastByUnit"] = "Cast By Unit"
+---Blacklists
+L["blockNonPersonal"] = "[Block] Non Personal"
+L["blockNoDuration"] = "[Block] No Duration"
+L["blockDispellable"] = "[Block] Dispellable"
+L["blockNotDispellable"] = "[Block] Not Dispellable"
 
 --Media
 L["Applies the font and font size settings throughout the entire user interface. Note: Some font size settings will be skipped due to them having a smaller font size by default."] = true
@@ -537,6 +617,29 @@ L["Toggle Anchors"] = true
 L["Unlock various elements of the UI to be repositioned."] = true
 L["Version"] = true
 
+--Module Control
+L["Are you sure you want to reset ActionBars settings?"] = true
+L["Are you sure you want to reset Auras settings?"] = true
+L["Are you sure you want to reset Bags settings?"] = true
+L["Are you sure you want to reset Chat settings?"] = true
+L["Are you sure you want to reset Cooldown settings?"] = true
+L["Are you sure you want to reset DataBars settings?"] = true
+L["Are you sure you want to reset DataTexts settings?"] = true
+L["Are you sure you want to reset General settings?"] = true
+L["Are you sure you want to reset NamePlates settings?"] = true
+L["Are you sure you want to reset Tooltip settings?"] = true
+L["Are you sure you want to reset UnitFrames settings?"] = true
+L["Core |cff00dd91E|r|cffe5e3e3lvUI|r options."] = true
+L["If you have any plugins supporting this feature installed you can find them in the selection dropdown to the right."] = true
+L["Module Control"] = true
+L["Module Copy"] = true
+L["Module Reset"] = true
+L["Movers"] = true
+L["On screen positions for different elements."] = true
+L["Select a profile to copy from/to."] = true
+L["This section will allow you to copy settings to a select module from or to a different profile."] = true
+L["This section will help reset specfic settings back to default."] = true
+
 --NamePlates
 L["# Displayed Auras"] = true
 L["Actions"] = true
@@ -571,9 +674,9 @@ L["Cooldowns"] = true
 L["Copy settings from another unit."] = true
 L["Copy Settings From"] = true
 L["Current Level"] = true
+L["Cutaway Health"] = true
 L["Default Settings"] = true
 L["Display a healer icon over known healers inside battlegrounds or arenas."] = true
-L["Display combo points on nameplates."] = true
 L["Elite Icon"] = true
 L["Enable/Disable the scaling of targetted nameplates."] = true
 L["Enabling this will check your health amount."] = true
@@ -584,6 +687,7 @@ L["Enemy Player Frames"] = true
 L["Enemy"] = true --Also used in UnitFrames
 L["ENEMY_NPC"] = "Enemy NPC"
 L["ENEMY_PLAYER"] = "Enemy Player"
+L["Fade Out"] = true
 L["Filter already exists!"] = true
 L["Filter Priority"] = true
 L["Filters Page"] = true
@@ -599,13 +703,17 @@ L["Good Scale"] = true
 L["Good Transition Color"] = true
 L["Healer Icon"] = true
 L["Health Color"] = true
+L["Health Length"] = true
 L["Health Threshold"] = true
 L["Hide Frame"] = true
 L["Hide Spell Name"] = true
 L["Hide Time"] = true
+L["How long the CutawayHealth will take to fade out."] = true
 L["How many seconds the castbar should stay visible after the cast failed or was interrupted."] = true
+L["How much time before the CutawayHealth starts to fade."] = true
 L["Icon Base Height"] = true
 L["Icon Position"] = true
+L["Icon Width Override"] = true
 L["If enabled then it checks if auras are missing instead of being present on the unit."] = true
 L["If enabled then it will require all auras to activate the filter. Otherwise it will only require any one of the auras to activate it."] = true
 L["If enabled then it will require all cooldowns to activate the filter. Otherwise it will only require any one of the cooldowns to activate it."] = true
@@ -619,6 +727,7 @@ L["If enabled then the filter will only activate when you are in combat."] = tru
 L["If enabled then the filter will only activate when you are out of combat."] = true
 L["If enabled then the filter will only activate when you are targeting the unit."] = true
 L["If enabled then the filter will only activate when you are not targeting the unit."] = true
+L["If not set to 0 then set the width of the Aura Icon to this"] = true
 L["If the aura is listed with a number then you need to use that to remove it from the list."] = true
 L["If this list is empty, and if 'Interruptible' is checked, then the filter will activate on any type of cast that can be interrupted."] = true
 L["If this threshold is used then the health of the unit needs to be higher than this value in order for the filter to activate. Set to 0 to disable."] = true
@@ -651,6 +760,7 @@ L["Over Power Threshold"] = true
 L["Player Health"] = true
 L["Player in Combat"] = true
 L["Player Out of Combat"] = true
+L["Power Threshold"] = true
 L["Raid Difficulty"] = true
 L["Reaction Colors"] = true
 L["Reaction Type"] = true
@@ -672,7 +782,7 @@ L["Style Filter"] = true
 L["Tagged NPC"] = true
 L["Tanked Color"] = true
 L["Target Indicator Color"] = true
-L["Target Indicator"] = true
+L["Target/Low Health Indicator"] = true
 L["Target Scale"] = true
 L["Targeted Nameplate"] = true
 L["Texture"] = true
@@ -698,6 +808,7 @@ L["Use the Name Color of the unit for the Name Glow."] = true
 L["Use Threat Color"] = true
 
 --Profiles Export/Import
+L["Aura Filters"] = true
 L["Choose Export Format"] = true
 L["Choose What To Export"] = true
 L["Decode Text"] = true
@@ -706,13 +817,11 @@ L["Error exporting profile!"] = true
 L["Export Now"] = true
 L["Export Profile"] = true
 L["Exported"] = true
-L["Filters (All)"] = true
-L["Filters (NamePlates)"] = true
-L["Filters (UnitFrames)"] = true
 L["Global (Account Settings)"] = true
 L["Import Now"] = true
 L["Import Profile"] = true
 L["Importing"] = true
+L["NamePlate Style Filters"] = true
 L["Plugin"] = true
 L["Private (Character Settings)"] = true
 L["Profile imported successfully!"] = true
@@ -751,6 +860,9 @@ L["Tutorial Frame"] = true
 
 --Tooltip
 L["Always Hide"] = true
+L["ANCHOR_CURSOR"] = true
+L["ANCHOR_CURSOR_LEFT"] = true
+L["ANCHOR_CURSOR_RIGHT"] = true
 L["Bags Only"] = true
 L["Bags/Bank"] = true
 L["Bank Only"] = true
@@ -758,12 +870,16 @@ L["Both"] = true
 L["Choose when you want the tooltip to show. If a modifer is chosen, then you need to hold that down to show the tooltip."] = true
 L["Comparison Font Size"] = true
 L["Cursor Anchor"] = true
+L["Cursor Anchor Offset X"] = true
+L["Cursor Anchor Offset Y"] = true
+L["Cursor Anchor Type"] = true
 L["Custom Faction Colors"] = true
 L["Display guild ranks if a unit is guilded."] = true
 L["Display how many of a certain item you have in your possession."] = true
 L["Display player titles."] = true
 L["Display the players talent spec and item level in the tooltip, this may not immediately update when mousing over a unit."] = true
 L["Display the spell or item ID when mousing over a spell or item tooltip."] = true
+L["Display the unit role in the tooltip."] = true
 L["Guild Ranks"] = true
 L["Header Font Size"] = true
 L["Health Bar"] = true
@@ -811,6 +927,8 @@ L["Bars will transition smoothly."] = true
 L["Below"] = true
 L["Blacklist Modifier"] = true
 L["Blacklist"] = true
+L["Block Mouseover Glow"] = true
+L["Block Target Glow"] = true
 L["Borders"] = true
 L["Buff Indicator"] = true
 L["Buffs"] = true
@@ -906,7 +1024,9 @@ L["Force On"] = true
 L["Force Reaction Color"] = true
 L["Force the frames to show, they will act as if they are the player frame."] = true
 L["Forces Debuff Highlight to be disabled for these frames"] = true
+L["Forces Mouseover Glow to be disabled for these frames"] = true
 L["Forces reaction color instead of class color on units controlled by players."] = true
+L["Forces Target Glow to be disabled for these frames"] = true
 L["Format"] = true
 L["Frame Glow"] = true
 L["Frame Level"] = true
@@ -974,7 +1094,6 @@ L["Model Rotation"] = true
 L["Mouseover Glow"] = true
 L["Mouseover Highlight"] = true
 L["Mouseover"] = true
-L["Name"] = true --Also used in Buffs and Debuffs
 L["Neutral"] = true
 L["Non-Interruptable"] = true
 L["Not valid spell id"] = true
@@ -989,7 +1108,6 @@ L["Only Match SpellID"] = true
 L["OOR Alpha"] = true
 L["Other Filter"] = true
 L["Others"] = true
-L["Overlay the healthbar"] = true
 L["Overlay"] = true
 L["Override any custom visibility setting in certain situations, EX: Only show groups 1 and 2 inside a 10 man instance."] = true
 L["Override the default class color setting."] = true
@@ -1013,6 +1131,7 @@ L["Power"] = true
 L["Powers"] = true
 L["Priority"] = true
 L["Profile Specific"] = true
+L["Phase Indicator"] = true
 L["PvP Icon"] = true
 L["PvP Text"] = true
 L["PVP Trinket"] = true
@@ -1033,6 +1152,7 @@ L["Remove SpellID"] = true
 L["Rest Icon"] = true
 L["Restore Defaults"] = true --Also used in Media and ActionBars sections
 L["Resurrect Icon"] = true
+L["Reverse Fill"] = true
 L["Right to Left"] = true
 L["RL / ML Icons"] = true
 L["Role Icon"] = true
@@ -1069,7 +1189,6 @@ L["Soul Shards"] = true
 L["Spaced"] = true
 L["Spacing"] = true
 L["Spark"] = true
-L["Speed in seconds"] = true
 L["Stack Counter"] = true
 L["Stack Threshold"] = true
 L["Start Near Center"] = true
@@ -1100,6 +1219,7 @@ L["The font that the unitframes will use."] = true
 L["The initial group will start near the center and grow out."] = true
 L["The name you have selected is already in use by another element."] = true
 L["The object you want to attach to."] = true
+L["The Portrait will overlay the Healthbar. This will be automatically happen if the Frame Orientation is set to Middle."] = true
 L["Thin Borders"] = true
 L["This dictates the size of the icon when it is not attached to the castbar."] = true
 L["This opens the UnitFrames Color settings. These settings affect all unitframes."] = true

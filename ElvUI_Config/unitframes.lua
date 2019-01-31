@@ -1003,14 +1003,14 @@ local function GetOptionsTable_Name(updateFunc, groupName, numUnits)
 	local config = {
 		order = 300,
 		type = "group",
-		name = L["Name"],
+		name = NAME,
 		get = function(info) return E.db.unitframe.units[groupName].name[ info[#info] ] end,
 		set = function(info, value) E.db.unitframe.units[groupName].name[ info[#info] ] = value updateFunc(UF, groupName, numUnits) end,
 		args = {
 			header = {
 				order = 1,
 				type = "header",
-				name = L["Name"]
+				name = NAME
 			},
 			position = {
 				order = 2,
@@ -1081,7 +1081,7 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				order = 4,
 				type = "toggle",
 				name = L["Overlay"],
-				desc = L["Overlay the healthbar"],
+				desc = L["The Portrait will overlay the Healthbar. This will be automatically happen if the Frame Orientation is set to Middle."],
 				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable end
 			},
 			rotation = {
@@ -2431,7 +2431,6 @@ E.Options.args.unitframe = {
 									order = 2,
 									type = "range",
 									name = L["Animation Speed"],
-									desc = L["Speed in seconds"],
 									min = 0.1, max = 3, step = 0.01,
 									disabled = function() return not E.db.unitframe.smoothbars end,
 									set = function(info, value) E.db.unitframe[ info[#info] ] = value UF:Update_AllFrames() end
@@ -5949,7 +5948,7 @@ E.Options.args.unitframe.args.party = {
 				name = {
 					order = 8,
 					type = "group",
-					name = L["Name"],
+					name = NAME,
 					guiInline = true,
 					get = function(info) return E.db.unitframe.units.party.petsGroup.name[ info[#info] ] end,
 					set = function(info, value) E.db.unitframe.units.party.petsGroup.name[ info[#info] ] = value UF:CreateAndUpdateHeaderGroup("party") end,
@@ -6041,7 +6040,7 @@ E.Options.args.unitframe.args.party = {
 					guiInline = true,
 					get = function(info) return E.db.unitframe.units.party.targetsGroup.name[ info[#info] ] end,
 					set = function(info, value) E.db.unitframe.units.party.targetsGroup.name[ info[#info] ] = value UF:CreateAndUpdateHeaderGroup("party") end,
-					name = L["Name"],
+					name = NAME,
 					args = {
 						position = {
 							order = 1,

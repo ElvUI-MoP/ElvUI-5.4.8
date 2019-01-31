@@ -38,7 +38,9 @@ L["Reset Position"] = true
 L["Sort Bags"] = true
 L["Temporary Move"] = true
 L["Toggle Bags"] = true
+L["Vendor Grays"] = true
 L["Vendor / Delete Grays"] = true
+L["Vendoring Grays"] = true
 
 --Chat
 L["AFK"] = true --Also used in datatexts
@@ -62,7 +64,6 @@ L["(Hold Shift) Memory Usage"] = true
 L["Avoidance Breakdown"] = true
 L["Bandwidth"] = true
 L["Character: "] = true
-L["Combat"] = true
 L["Combat/Arena Time"] = true
 L["Coords"] = true
 L["copperabbrev"] = "|cffeda55fc|r" --Also used in Bags
@@ -85,7 +86,6 @@ L["Mov. Speed:"] = true
 L["No Guild"] = true
 L["Profit:"] = true
 L["Reset Counters: Hold Control + Right Click"] = true
-L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = true
 L["Saved Dungeon(s)"] = true
 L["Saved Raid(s)"] = true
@@ -271,6 +271,7 @@ L["Vehicle Seat Frame"] = true
 L["DESC_MOVERCONFIG"] = [=[Movers unlocked. Move them now and click Lock when you are done.
 
 Options:
+  RightClick - Open Config Section.
   Shift + RightClick - Hides mover temporarily.
   Ctrl + RightClick - Resets mover position to default.
 ]=]
@@ -324,6 +325,7 @@ L["ElvUI needs to perform database optimizations please be patient."] = true
 L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = true
 L["I Swear"] = true
+L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = true
 L["No, Revert Changes!"] = true
 L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."] = true
 L["One or more of the changes you have made require a ReloadUI."] = true

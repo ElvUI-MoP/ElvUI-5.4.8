@@ -309,7 +309,7 @@ E.Options.args.bags = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["Colors"]
+					name = COLORS
 				},
 				bags = {
 					order = 2,
@@ -387,7 +387,7 @@ E.Options.args.bags = {
 				items = {
 					order = 3,
 					type = "group",
-					name = L["Items"],
+					name = ITEMS,
 					guiInline = true,
 					get = function(info)
 						local t = E.db.bags.colors.items[ info[#info] ]
@@ -410,7 +410,7 @@ E.Options.args.bags = {
 						questItem = {
 							order = 2,
 							type = "color",
-							name = L["Quest Item"]
+							name = ITEM_BIND_QUEST
 						}
 					}
 				}
