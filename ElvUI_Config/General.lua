@@ -199,8 +199,17 @@ E.Options.args.general = {
 					get = function(info) return E.db.general.vehicleSeatIndicatorSize end,
 					set = function(info, value) E.db.general.vehicleSeatIndicatorSize = value; B:UpdateVehicleFrame() end,
 				},
-				decimalLength = {
+				watchFrameHeight = {
 					order = 22,
+					type = "range",
+					name = L["Objective Frame Height"],
+					desc = L["Height of the objective tracker. Increase size to be able to see more objectives."],
+					min = 400, max = E.screenheight, step = 1,
+					get = function(info) return E.db.general[ info[#info] ] end,
+					set = function(info, value) E.db.general[ info[#info] ] = value E:GetModule("Blizzard"):SetWatchFrameHeight() end
+				},
+				decimalLength = {
+					order = 23,
 					type = "range",
 					name = L["Decimal Length"],
 					desc = L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."],
@@ -209,7 +218,7 @@ E.Options.args.general = {
 					set = function(info, value) E.db.general.decimalLength = value E:StaticPopup_Show("GLOBAL_RL") end
 				},
 				numberPrefixStyle = {
-					order = 23,
+					order = 24,
 					type = "select",
 					name = L["Unit Prefix Style"],
 					desc = L["The unit prefixes you want to use when values are shortened in ElvUI. This is mostly used on UnitFrames."],
@@ -572,29 +581,8 @@ E.Options.args.general = {
 				}
 			}
 		},
-		watchFrame = {
-			order = 6,
-			type = "group",
-			name = L["Objective Frame"],
-			args = {
-				watchFrameHeader = {
-					order = 1,
-					type = "header",
-					name = L["Objective Frame"]
-				},
-				watchFrameHeight = {
-					order = 2,
-					type = "range",
-					name = L["Objective Frame Height"],
-					desc = L["Height of the objective tracker. Increase size to be able to see more objectives."],
-					min = 400, max = E.screenheight, step = 1,
-					get = function(info) return E.db.general[ info[#info] ] end,
-					set = function(info, value) E.db.general[ info[#info] ] = value E:GetModule("Blizzard"):SetWatchFrameHeight() end
-				}
-			}
-		},
 		threatGroup = {
-			order = 7,
+			order = 6,
 			type = "group",
 			name = L["Threat"],
 			args = {
@@ -664,7 +652,7 @@ E.Options.args.general = {
 			}
 		},
 		errorFrame = {
-			order = 8,
+			order = 7,
 			type = "group",
 			name = L["Error Frame"],
 			args = {
@@ -702,7 +690,7 @@ E.Options.args.general = {
 			}
 		},
 		alternativePowerGroup = {
-			order = 9,
+			order = 8,
 			type = "group",
 			name = L["Alternative Power"],
 			get = function(info) return E.db.general.altPowerBar[ info[#info] ] end,

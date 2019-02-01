@@ -273,7 +273,7 @@ function CH:StyleChat(frame)
 	editbox.characterCount:Point("TOPRIGHT", editbox, "TOPRIGHT", -5, 0)
 	editbox.characterCount:Point("BOTTOMRIGHT", editbox, "BOTTOMRIGHT", -5, 0)
 	editbox.characterCount:SetJustifyH("CENTER")
-	editbox.characterCount:Width(30)
+	editbox.characterCount:Width(40)
 
 	for _, texName in pairs(tabTexs) do
 		_G[tab:GetName()..texName.."Left"]:SetTexture(nil)
@@ -348,10 +348,8 @@ function CH:StyleChat(frame)
 	end
 
 	--Work around broken SetAltArrowKeyMode API. Code from Prat
-	local function OnArrowPressed(editBox, key)
-		if #editBox.historyLines == 0 then
-			return
-		end
+	local function OnKeyDown(editBox, key)
+		if (not editBox.historyLines) or #editBox.historyLines == 0 then return end
 
 		if key == "DOWN" then
 			editBox.historyIndex = editBox.historyIndex - 1
@@ -370,7 +368,8 @@ function CH:StyleChat(frame)
 		else
 			return
 		end
-		editBox:SetText(editBox.historyLines[#editBox.historyLines - (editBox.historyIndex - 1)])
+
+		editBox:SetText(strtrim(editBox.historyLines[#editBox.historyLines - (editBox.historyIndex - 1)]))
 	end
 
 	local a, b, c = select(6, editbox:GetRegions()) a:Kill() b:Kill() c:Kill()
@@ -386,7 +385,7 @@ function CH:StyleChat(frame)
 	--Work around broken SetAltArrowKeyMode API
 	editbox.historyLines = ElvCharacterDB.ChatEditHistory
 	editbox.historyIndex = 0
-	editbox:HookScript("OnArrowPressed", OnArrowPressed)
+	editbox:HookScript("OnKeyDown", OnKeyDown)
 	editbox:Hide()
 
 	editbox:HookScript("OnEditFocusGained", function(editBox)
@@ -1594,10 +1593,10 @@ function CH:AddLines(lines, ...)
 end
 
 function CH:ChatEdit_OnEnterPressed(editBox)
-	local chatType = editBox:GetAttribute("chatType")
-	if not chatType then return end
+	editBox:ClearHistory() -- we will use our own editbox history so keeping them populated on blizzards end is pointless
 
-	local chatFrame = editBox:GetParent()
+	local chatType = editBox:GetAttribute("chatType")
+	local chatFrame = chatType and editBox:GetParent()
 	if chatFrame and (not chatFrame.isTemporary) and (ChatTypeInfo[chatType].sticky == 1) then
 		if not self.db.sticky then chatType = "SAY" end
 		editBox:SetAttribute("chatType", chatType)
@@ -1621,16 +1620,17 @@ function CH:SetChatFont(dropDown, chatFrame, fontSize)
 end
 
 function CH:ChatEdit_AddHistory(_, line) -- editBox, line
-	if strfind(line, "/rl") then return end
+	line = line and strtrim(line)
 
-	if strlen(line) > 0 then
+	if line and strlen(line) > 0 then
+		if strfind(line, "/rl") then return end
+
 		for _, text in pairs(ElvCharacterDB.ChatEditHistory) do
-			if text == line then
-				return
-			end
+			if text == line then return end
 		end
 
 		tinsert(ElvCharacterDB.ChatEditHistory, #ElvCharacterDB.ChatEditHistory + 1, line)
+
 		if #ElvCharacterDB.ChatEditHistory > 20 then
 			tremove(ElvCharacterDB.ChatEditHistory, 1)
 		end

@@ -362,6 +362,7 @@ function B:UpdateSlot(bagID, slotID)
 	slot.questIcon:Hide()
 	slot.JunkIcon:Hide()
 	slot.itemLevel:SetText("")
+	slot.bindType:SetText("")
 
 	if B.ProfessionColors[bagType] then
 		local r, g, b = unpack(B.ProfessionColors[bagType])
@@ -377,6 +378,31 @@ function B:UpdateSlot(bagID, slotID)
 
 		if slot.rarity then
 			r, g, b = GetItemQualityColor(slot.rarity)
+		end
+
+		if B.db.showBindType and slot.rarity and slot.rarity > 1 then
+			E.ScanTooltip:SetOwner(self, "ANCHOR_NONE")
+			E.ScanTooltip:SetBagItem(bagID, slotID)
+			E.ScanTooltip:Show()
+
+			for i = 2, 6 do -- trying line 2 to 6 for the bind texts, don't think they are further down
+				local line = _G[E.ScanTooltip:GetName().."TextLeft"..i]:GetText()
+				if (not line) or (line == ITEM_SOULBOUND or line == ITEM_ACCOUNTBOUND or line == ITEM_BNETACCOUNTBOUND) then
+					break
+				end
+				if line == ITEM_BIND_ON_EQUIP then
+					slot.bindType:SetText(L["BoE"])
+					slot.bindType:SetVertexColor(GetItemQualityColor(slot.rarity))
+					break
+				end
+				if line == ITEM_BIND_ON_USE then
+					slot.bindType:SetText(L["BoU"])
+					slot.bindType:SetVertexColor(GetItemQualityColor(slot.rarity))
+					break
+				end
+			end
+
+			E.ScanTooltip:Hide()
 		end
 
 		-- Item Level
@@ -412,7 +438,7 @@ function B:UpdateSlot(bagID, slotID)
 			slot.newItemGlow:SetVertexColor(unpack(B.QuestColors.questItem))
 			slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
 			slot.ignoreBorderColors = true
-		elseif slot.rarity and slot.rarity > 1 then
+		elseif B.db.qualityColors and slot.rarity and slot.rarity > 1 then
 			slot.newItemGlow:SetVertexColor(r, g, b)
 			slot:SetBackdropBorderColor(r, g, b)
 			slot.ignoreBorderColors = true
@@ -693,6 +719,10 @@ function B:Layout(isBank)
 					f.Bags[bagID][slotID].itemLevel = f.Bags[bagID][slotID]:CreateFontString(nil, "OVERLAY")
 					f.Bags[bagID][slotID].itemLevel:Point("BOTTOMRIGHT", 0, 2)
 					f.Bags[bagID][slotID].itemLevel:FontTemplate(E.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
+
+					f.Bags[bagID][slotID].bindType = f.Bags[bagID][slotID]:CreateFontString(nil, "OVERLAY")
+					f.Bags[bagID][slotID].bindType:Point("TOP", 0, -2)
+					f.Bags[bagID][slotID].bindType:FontTemplate(E.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
 
 					if not f.Bags[bagID][slotID].newItemGlow then
 						local newItemGlow = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")

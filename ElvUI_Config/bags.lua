@@ -37,8 +37,22 @@ E.Options.args.bags = {
 					type = "header",
 					name = L["General"],
 				},
-				currencyFormat = {
+				strata = {
 					order = 2,
+					type = "select",
+					name = L["Frame Strata"],
+					set = function(info, value) E.db.bags[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
+					values = {
+						["BACKGROUND"] = "BACKGROUND",
+						["LOW"] = "LOW",
+						["MEDIUM"] = "MEDIUM",
+						["HIGH"] = "HIGH",
+						["DIALOG"] = "DIALOG",
+						["TOOLTIP"] = "TOOLTIP"
+					}
+				},
+				currencyFormat = {
+					order = 3,
 					type = "select",
 					name = L["Currency Format"],
 					desc = L["The display format of the currency icons that get displayed below the main bag. (You have to be watching a currency for this to display)"],
@@ -50,7 +64,7 @@ E.Options.args.bags = {
 					set = function(info, value) E.db.bags[ info[#info] ] = value B:UpdateTokens() end
 				},
 				moneyFormat = {
-					order = 3,
+					order = 4,
 					type = "select",
 					name = L["Money Format"],
 					desc = L["The display format of the money text that is shown at the top of the main bag."],
@@ -65,66 +79,65 @@ E.Options.args.bags = {
 					set = function(info, value) E.db.bags[ info[#info] ] = value B:UpdateGoldText() end
 				},
 				moneyCoins = {
-					order = 4,
+					order = 5,
 					type = "toggle",
 					name = L["Show Coins"],
 					desc = L["Use coin icons instead of colored text."],
 					set = function(info, value) E.db.bags[ info[#info] ] = value B:UpdateGoldText() end
 				},
 				junkIcon = {
-					order = 5,
+					order = 6,
 					type = "toggle",
 					name = L["Show Junk Icon"],
 					desc = L["Display the junk icon on all grey items that can be vendored."],
 					set = function(info, value) E.db.bags[ info[#info] ] = value B:UpdateAllBagSlots() end,
 				},
 				newItemGlow = {
-					order = 6,
+					order = 7,
 					type = "toggle",
 					name = L["Show New Item Glow"],
 					desc = L["Display the New Item Glow"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end,
 				},
+				qualityColors = {
+					order = 8,
+					type = "toggle",
+					name = L["Show Quality Color"],
+					desc = L["Colors the border according to the Quality of the Item."],
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
+				},
+				showBindType = {
+					order = 9,
+					type = "toggle",
+					name = L["Show Bind on Equip/Use Text"],
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
+				},
 				clearSearchOnClose = {
- 					order = 5,
+ 					order = 10,
 					type = "toggle",
 					name = L["Clear Search On Close"],
 					set = function(info, value) E.db.bags[info[#info]] = value end
 				},
 				reverseSlots = {
-					order = 6,
+					order = 11,
 					type = "toggle",
 					name = L["Reverse Bag Slots"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAll() B:UpdateTokens() end,
 				},
 				disableBagSort = {
- 					order = 7,
+ 					order = 12,
 					type = "toggle",
 					name = L["Disable Bag Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(false) end
 				},
 				disableBankSort = {
-					order = 8,
+					order = 13,
 					type = "toggle",
 					name = L["Disable Bank Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(true) end
 				},
-				strata = {
-					order = 9,
-					type = "select",
-					name = L["Frame Strata"],
-					set = function(info, value) E.db.bags[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
-					values = {
-						["BACKGROUND"] = "BACKGROUND",
-						["LOW"] = "LOW",
-						["MEDIUM"] = "MEDIUM",
-						["HIGH"] = "HIGH",
-						["DIALOG"] = "DIALOG",
-						["TOOLTIP"] = "TOOLTIP"
-					}
-				},
 				countGroup = {
-					order = 10,
+					order = 14,
 					type = "group",
 					name = L["Item Count Font"],
 					guiInline = true,
@@ -170,11 +183,11 @@ E.Options.args.bags = {
 								t.r, t.g, t.b = r, g, b
 								B:UpdateCountDisplay()
 							end
-						},
+						}
 					}
 				},
 				itemLevelGroup = {
-					order = 11,
+					order = 15,
 					type = "group",
 					name = L["Item Level"],
 					guiInline = true,
@@ -246,7 +259,7 @@ E.Options.args.bags = {
 							min = 1, max = 1000, step = 1,
 							disabled = function() return not E.db.bags.itemLevel end,
 							set = function(info, value) E.db.bags.itemLevelThreshold = value B:UpdateItemLevelDisplay() end
-						},
+						}
 					}
 				}
 			}

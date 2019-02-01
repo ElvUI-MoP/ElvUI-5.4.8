@@ -106,7 +106,7 @@ local EnglishSpecName = {
 }
 
 local function GetSpecName()
-	return EnglishSpecName[GetSpecializationInfo(GetSpecialization())]
+	return GetSpecialization() and EnglishSpecName[GetSpecializationInfo(GetSpecialization())] or "None"
 end
 
 local function GetResolution()

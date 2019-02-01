@@ -202,6 +202,8 @@ P["bags"] = {
 	["disableBagSort"] = false,
 	["disableBankSort"] = false,
 	["strata"] = "DIALOG",
+	["qualityColors"] = true,
+	["showBindType"] = false,
 	["colors"] = {
 		["profession"] = {
 			["leatherworking"] = {r = 0.88, g = 0.73, b = 0.29},
