@@ -98,7 +98,7 @@ colors.power[13] = colors.power.SHADOW_ORBS
 colors.power[14] = colors.power.BURNING_EMBERS
 colors.power[15] = colors.power.DEMONIC_FURY
 
-local function colorsAndPercent(a, b, ...)
+local function colorsAndPercent(_, a, b, ...)
 	if(a <= 0 or b == 0) then
 		return nil, ...
 	elseif a >= b then
