@@ -6,7 +6,7 @@ local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert, tremove, twipe, tmaxn = table.insert, table.remove, table.wipe, table.maxn
 local floor, ceil, abs = math.floor, math.ceil, math.abs
-local format, sub, gsub = string.format, string.sub, string.gsub
+local format, sub, gsub, match = string.format, string.sub, string.gsub, string.match
 
 local BankFrameItemButton_Update = BankFrameItemButton_Update
 local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
@@ -380,24 +380,23 @@ function B:UpdateSlot(bagID, slotID)
 			r, g, b = GetItemQualityColor(slot.rarity)
 		end
 
-		if B.db.showBindType and slot.rarity and slot.rarity > 1 then
+		if B.db.showBindType and (slot.rarity and slot.rarity > 1) then
 			E.ScanTooltip:SetOwner(self, "ANCHOR_NONE")
 			E.ScanTooltip:SetBagItem(bagID, slotID)
 			E.ScanTooltip:Show()
 
 			for i = 2, 6 do -- trying line 2 to 6 for the bind texts, don't think they are further down
 				local line = _G[E.ScanTooltip:GetName().."TextLeft"..i]:GetText()
-				if (not line) or (line == ITEM_SOULBOUND or line == ITEM_ACCOUNTBOUND or line == ITEM_BNETACCOUNTBOUND) then
-					break
-				end
+				if (not line) or (line == ITEM_SOULBOUND or line == ITEM_ACCOUNTBOUND or line == ITEM_BNETACCOUNTBOUND) then break end
+
 				if line == ITEM_BIND_ON_EQUIP then
 					slot.bindType:SetText(L["BoE"])
-					slot.bindType:SetVertexColor(GetItemQualityColor(slot.rarity))
+					slot.bindType:SetVertexColor(r, g, b)
 					break
 				end
 				if line == ITEM_BIND_ON_USE then
 					slot.bindType:SetText(L["BoU"])
-					slot.bindType:SetVertexColor(GetItemQualityColor(slot.rarity))
+					slot.bindType:SetVertexColor(r, g, b)
 					break
 				end
 			end
@@ -407,7 +406,8 @@ function B:UpdateSlot(bagID, slotID)
 
 		-- Item Level
 		if iLvl and B.db.itemLevel and (itemEquipLoc ~= nil and itemEquipLoc ~= "" and itemEquipLoc ~= "INVTYPE_BAG" and itemEquipLoc ~= "INVTYPE_QUIVER" and itemEquipLoc ~= "INVTYPE_TABARD") and (slot.rarity and slot.rarity > 1) then
-			local upgradeBonus = tonumber(clink:match(":(%d+)\124h%["))
+			local upgradeBonus = tonumber(match(clink, ":(%d+)\124h%["))
+
 			local iLvlBonus = UpgradeTable[upgradeBonus] and UpgradeTable[upgradeBonus].ilevel or 0
 			iLvl = iLvl + iLvlBonus
 
@@ -423,7 +423,7 @@ function B:UpdateSlot(bagID, slotID)
 
 		-- Junk Icon
 		if slot.JunkIcon then
-			if (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest") and E.db.bags.junkIcon then
+			if E.db.bags.junkIcon and (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest") then
 				slot.JunkIcon:Show()
 			end
 		end
@@ -483,7 +483,7 @@ end
 function B:UpdateBagSlots(bagID)
 	for slotID = 1, GetContainerNumSlots(bagID) do
 		if self.UpdateSlot then
-			self:UpdateSlot(bagID, slotID)	
+			self:UpdateSlot(bagID, slotID)
 		else
 			self:GetParent():GetParent():UpdateSlot(bagID, slotID)
 		end
@@ -915,7 +915,7 @@ function B:Token_OnClick()
 end
 
 function B:UpdateGoldText()
-	self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), E.db["bags"].moneyFormat, not E.db["bags"].moneyCoins))
+	self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), E.db.bags.moneyFormat, not E.db.bags.moneyCoins))
 end
 
 function B:FormatMoney(amount)
@@ -1033,7 +1033,7 @@ function B:ContructContainerFrame(name, isBank)
 		f:RegisterEvent(event)
 	end
 
-	f:SetScript("OnEvent", B.OnEvent)	
+	f:SetScript("OnEvent", B.OnEvent)
 	f:Hide()
 
 	f.isBank = isBank
@@ -1685,11 +1685,11 @@ B.QuestKeys = {
 }
 
 function B:UpdateBagColors(table, indice, r, g, b)
-	self[table][B.BagIndice[indice]] = { r, g, b }
+	self[table][B.BagIndice[indice]] = {r, g, b}
 end
 
 function B:UpdateQuestColors(table, indice, r, g, b)
-	self[table][B.QuestKeys[indice]] = { r, g, b }
+	self[table][B.QuestKeys[indice]] = {r, g, b}
 end
 
 function B:Initialize()

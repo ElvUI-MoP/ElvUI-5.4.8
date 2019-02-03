@@ -49,11 +49,13 @@ local function LoadSkin()
 		"QuestInfoTalentFrame"
 	}
 
-	for i = 1, #questIcons do
-		local item = _G[questIcons[i]]
-		local icon = _G[questIcons[i].."IconTexture"]
-		local count = _G[questIcons[i].."Count"]
-		local points = _G[questIcons[i].."Points"]
+	for _, frame in pairs(questIcons) do
+		local item = _G[frame]
+		local icon = _G[frame.."IconTexture"]
+		local name = _G[frame.."Name"]
+		local nameFrame = _G[frame.."NameFrame"]
+		local count = _G[frame.."Count"]
+		local points = _G[frame.."Points"]
 
 		item:StripTextures()
 		item:SetTemplate("Default")
@@ -66,13 +68,18 @@ local function LoadSkin()
 		icon:SetDrawLayer("OVERLAY")
 		S:HandleIcon(icon)
 
+		name:Point("LEFT", nameFrame, "LEFT", 15, 0) 
+
 		if count then
 			count:SetParent(item.backdrop)
 			count:SetDrawLayer("OVERLAY")
 		end
 
 		if points then
-			points:Point("LEFT", 42, -1)
+			points:SetParent(item.backdrop)
+			points:Point("BOTTOMRIGHT", icon)
+			points:FontTemplate(nil, 12, "OUTLINE")
+			points:SetTextColor(1, 1, 1)
 		end
 	end
 

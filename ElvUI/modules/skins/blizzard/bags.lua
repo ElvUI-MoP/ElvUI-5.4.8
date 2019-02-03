@@ -76,6 +76,7 @@ local function LoadSkin()
 			item.newItemGlow:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\bagNewItemGlow.tga")
 			item.newItemGlow:Hide()
 
+			cooldown.CooldownOverride = "bags"
 			E:RegisterCooldown(cooldown)
 		end
 	end
@@ -170,6 +171,7 @@ local function LoadSkin()
 		local button = _G["BankFrameItem"..i]
 		local buttonIcon = _G["BankFrameItem"..i.."IconTexture"]
 		local questTexture = _G["BankFrameItem"..i.."IconQuestTexture"]
+		local cooldown = _G["BankFrameItem"..i.."Cooldown"]
 
 		button:SetNormalTexture(nil)
 		button:SetTemplate("Default", true)
@@ -183,7 +185,8 @@ local function LoadSkin()
 		questTexture:SetTexCoord(0, 1, 0, 1)
 		questTexture:SetInside()
 
-		E:RegisterCooldown(_G["BankFrameItem"..i.."Cooldown"])
+		cooldown.CooldownOverride = "bags"
+		E:RegisterCooldown(cooldown)
 	end
 
 	BankFrame.itemBackdrop = CreateFrame("Frame", "BankFrameItemBackdrop", BankFrame)

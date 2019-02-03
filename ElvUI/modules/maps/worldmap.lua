@@ -22,7 +22,7 @@ local INVERTED_POINTS = {
 	["BOTTOMRIGHT"] = "TOPRIGHT",
 	["TOP"] = "BOTTOM",
 	["BOTTOM"] = "TOP"
-};
+}
 
 local tooltips = {
 	WorldMapTooltip,
