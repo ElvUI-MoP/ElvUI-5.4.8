@@ -2,6 +2,9 @@ local E, L, V, P, G = unpack(ElvUI)
 
 local pairs = pairs
 
+local BUFFOPTIONS_LABEL = BUFFOPTIONS_LABEL
+local COLORS, FONT_SIZE, NONE = COLORS, FONT_SIZE, NONE
+
 local function profile(db)
 	return (db == "global" and E.db.cooldown) or E.db[db].cooldown
 end
@@ -178,7 +181,7 @@ local function group(order, db, label)
 					fontSize = {
 						order = 3,
 						type = "range",
-						name = L["Font Size"],
+						name = FONT_SIZE,
 						min = 10, max = 32, step = 1
 					},
 					font = {
@@ -193,7 +196,7 @@ local function group(order, db, label)
 						type = "select",
 						name = L["Font Outline"],
 						values = {
-							["NONE"] = L["None"],
+							["NONE"] = NONE,
 							["OUTLINE"] = "OUTLINE",
 							["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 							["THICKOUTLINE"] = "THICKOUTLINE"
@@ -215,7 +218,7 @@ local function group(order, db, label)
 		end
 
 		-- rename the tab
-		E.Options.args.cooldown.args[db].args.colorGroup.name = L["Colors"]
+		E.Options.args.cooldown.args[db].args.colorGroup.name = COLORS
 	else
 		E.Options.args.cooldown.args[db].args.colorGroup.args.spacer2 = nil
 	end
@@ -255,6 +258,6 @@ E.Options.args.cooldown = {
 group(5,  "global",     L["Global"])
 group(6,  "actionbar",  L["ActionBars"])
 group(7,  "bags",       L["Bags"])
-group(8,  "auras",      L["Auras"])
+group(8,  "auras",      BUFFOPTIONS_LABEL)
 group(9,  "nameplates", L["NamePlates"])
 group(10, "unitframe",  L["UnitFrames"])

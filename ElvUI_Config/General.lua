@@ -3,6 +3,9 @@
 local _G = _G
 
 local FCF_GetNumActiveChatFrames = FCF_GetNumActiveChatFrames
+local RAID_CONTROL, LOOT = RAID_CONTROL, LOOT
+local CHAT_MSG_EMOTE, GUILD, PLAYER, SAY = CHAT_MSG_EMOTE, GUILD, PLAYER, SAY
+local COLORS, COLOR, DISABLE, FONT_SIZE, NAME, NONE = COLORS, COLOR, DISABLE, FONT_SIZE, NAME, NONE
 
 local function GetChatWindowInfo()
 	local ChatTabInfo = {}
@@ -94,7 +97,7 @@ E.Options.args.general = {
 				loot = {
 					order = 8,
 					type = "toggle",
-					name = L["Loot"],
+					name = LOOT,
 					desc = L["Enable/Disable the loot frame."],
 					get = function(info) return E.private.general.loot end,
 					set = function(info, value) E.private.general.loot = value E:StaticPopup_Show("PRIVATE_RL") end
@@ -267,7 +270,7 @@ E.Options.args.general = {
 					type = "select",
 					name = L["Font Outline"],
 					values = {
-						["NONE"] = L["None"],
+						["NONE"] = NONE,
 						["OUTLINE"] = "OUTLINE",
 						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 						["THICKOUTLINE"] = "THICKOUTLINE"
@@ -640,7 +643,7 @@ E.Options.args.general = {
 					name = L["Font Outline"],
 					desc = L["Set the font outline."],
 					values = {
-						["NONE"] = L["None"],
+						["NONE"] = NONE,
 						["OUTLINE"] = "OUTLINE",
 						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 						["THICKOUTLINE"] = "THICKOUTLINE",

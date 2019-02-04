@@ -122,7 +122,8 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 			if tbl[i] == value then sv = i elseif tbl[i] == movehere then sm = i end
 			if sv and sm then break end
 		end
-		tremove(tbl, sm);tinsert(tbl, sv, movehere);
+		tremove(tbl, sm)
+		tinsert(tbl, sv, movehere)
 		E.db.unitframe.units[groupName][auraType].priority = tconcat(tbl,",")
 	elseif found and friendState then
 		local realValue = match(value, "^Friendly:([^,]*)") or match(value, "^Enemy:([^,]*)") or value
@@ -144,7 +145,8 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 				for i in ipairs(tbl) do
 					if tbl[i] == value then sv = i;break end
 				end
-				tinsert(tbl, sv, state);tremove(tbl, sv+1)
+				tinsert(tbl, sv, state)
+				tremove(tbl, sv + 1)
 				E.db.unitframe.units[groupName][auraType].priority = tconcat(tbl,",")
 			end
 		end
@@ -1244,8 +1246,8 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 			timeToHold = {
 				order = 8,
 				type = "range",
-				name = L["Failed / Interrupted Hold Time"],
-				desc = L["How many seconds the castbar should be visible."],
+				name = L["Time To Hold"],
+				desc = L["How many seconds the castbar should stay visible after the cast failed or was interrupted."],
 				min = 0, max = 10, step = .1
 			},
 			latency = {
@@ -3325,7 +3327,7 @@ E.Options.args.unitframe.args.player = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1,
+					min = 50, max = 1000, step = 1,
 					set = function(info, value)
 						if E.db.unitframe.units.player.castbar.width == E.db.unitframe.units.player[ info[#info] ] then
 							E.db.unitframe.units.player.castbar.width = value
@@ -3339,7 +3341,7 @@ E.Options.args.unitframe.args.player = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				combatfade = {
 					order = 8,
@@ -3969,7 +3971,7 @@ E.Options.args.unitframe.args.target = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1,
+					min = 50, max = 1000, step = 1,
 					set = function(info, value)
 						if E.db.unitframe.units.target.castbar.width == E.db.unitframe.units.target[ info[#info] ] then
 							E.db.unitframe.units.target.castbar.width = value
@@ -3983,7 +3985,7 @@ E.Options.args.unitframe.args.target = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1,
+					min = 10, max = 500, step = 1,
 				},
 				rangeCheck = {
 					order = 8,
@@ -4392,13 +4394,13 @@ E.Options.args.unitframe.args.targettarget = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -4530,13 +4532,13 @@ E.Options.args.unitframe.args.targettargettarget = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -4668,13 +4670,13 @@ E.Options.args.unitframe.args.focus = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -4804,13 +4806,13 @@ E.Options.args.unitframe.args.focustarget = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -4942,13 +4944,13 @@ E.Options.args.unitframe.args.pet = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -5108,13 +5110,13 @@ E.Options.args.unitframe.args.pettarget = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -5240,7 +5242,7 @@ E.Options.args.unitframe.args.boss = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1,
+					min = 50, max = 1000, step = 1,
 					set = function(info, value)
 						if E.db.unitframe.units.boss.castbar.width == E.db.unitframe.units.boss[ info[#info] ] then
 							E.db.unitframe.unitsboss.castbar.width = value
@@ -5254,7 +5256,7 @@ E.Options.args.unitframe.args.boss = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -5394,7 +5396,7 @@ E.Options.args.unitframe.args.arena = {
 					order = 6,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1,
+					min = 50, max = 1000, step = 1,
 					set = function(info, value) 
 						if E.db.unitframe.units.arena.castbar.width == E.db.unitframe.units.arena[ info[#info] ] then
 							E.db.unitframe.units.arena.castbar.width = value
@@ -5408,7 +5410,7 @@ E.Options.args.unitframe.args.arena = {
 					order = 7,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				rangeCheck = {
 					order = 8,
@@ -5981,7 +5983,7 @@ E.Options.args.unitframe.args.party = {
 					order = 4,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				anchorPoint = {
 					order = 5,
@@ -6070,7 +6072,7 @@ E.Options.args.unitframe.args.party = {
 					order = 4,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				anchorPoint = {
 					order = 5,
@@ -7460,13 +7462,13 @@ E.Options.args.unitframe.args.tank = {
 					order = 3,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 4,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				verticalSpacing = {
 					order = 5,
@@ -7536,7 +7538,7 @@ E.Options.args.unitframe.args.tank = {
 					order = 4,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				anchorPoint = {
 					order = 5,
@@ -7626,8 +7628,8 @@ E.Options.args.unitframe.args.tank = {
 		}
 	}
 }
-E.Options.args.unitframe.args.tank.args.name.args.attachTextTo.values = {["Health"] = L["Health"], ["Frame"] = L["Frame"]}
-E.Options.args.unitframe.args.tank.args.targetsGroup.args.name.args.attachTextTo.values = {["Health"] = L["Health"], ["Frame"] = L["Frame"]}
+E.Options.args.unitframe.args.tank.args.name.args.attachTextTo.values = {["Health"] = HEALTH, ["Frame"] = L["Frame"]}
+E.Options.args.unitframe.args.tank.args.targetsGroup.args.name.args.attachTextTo.values = {["Health"] = HEALTH, ["Frame"] = L["Frame"]}
 E.Options.args.unitframe.args.tank.args.targetsGroup.args.name.get = function(info) return E.db.unitframe.units.tank.targetsGroup.name[ info[#info] ] end
 E.Options.args.unitframe.args.tank.args.targetsGroup.args.name.set = function(info, value) E.db.unitframe.units.tank.targetsGroup.name[ info[#info] ] = value UF.CreateAndUpdateHeaderGroup(UF, "tank") end
 
@@ -7665,13 +7667,13 @@ E.Options.args.unitframe.args.assist = {
 					order = 3,
 					type = "range",
 					name = L["Width"],
-					min = 50, max = 500, step = 1
+					min = 50, max = 1000, step = 1
 				},
 				height = {
 					order = 4,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				verticalSpacing = {
 					order = 5,
@@ -7741,7 +7743,7 @@ E.Options.args.unitframe.args.assist = {
 					order = 4,
 					type = "range",
 					name = L["Height"],
-					min = 10, max = 250, step = 1
+					min = 10, max = 500, step = 1
 				},
 				anchorPoint = {
 					order = 5,
@@ -7831,8 +7833,8 @@ E.Options.args.unitframe.args.assist = {
 		}
 	}
 }
-E.Options.args.unitframe.args.assist.args.name.args.attachTextTo.values = {["Health"] = L["Health"], ["Frame"] = L["Frame"]}
-E.Options.args.unitframe.args.assist.args.targetsGroup.args.name.args.attachTextTo.values = {["Health"] = L["Health"], ["Frame"] = L["Frame"]}
+E.Options.args.unitframe.args.assist.args.name.args.attachTextTo.values = {["Health"] = HEALTH, ["Frame"] = L["Frame"]}
+E.Options.args.unitframe.args.assist.args.targetsGroup.args.name.args.attachTextTo.values = {["Health"] = HEALTH, ["Frame"] = L["Frame"]}
 E.Options.args.unitframe.args.assist.args.targetsGroup.args.name.get = function(info) return E.db.unitframe.units.assist.targetsGroup.name[ info[#info] ] end
 E.Options.args.unitframe.args.assist.args.targetsGroup.args.name.set = function(info, value) E.db.unitframe.units.assist.targetsGroup.name[ info[#info] ] = value UF.CreateAndUpdateHeaderGroup(UF, "assist") end
 

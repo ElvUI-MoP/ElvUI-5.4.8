@@ -7,7 +7,7 @@ if not L then return end
 L["INCOMPATIBLE_ADDON"] = "The addon %s is not compatible with ElvUI's %s module. Please select either the addon or the ElvUI module to disable."
 
 --*_MSG locales
-L["LOGIN_MSG"] = "Bienvenido a %sElvUI|r versión %s%s|r. Si necesitas ayuda o soporte técnico puedes visitarnos en https://github.com/ElvUI-MoP"
+L["LOGIN_MSG"] = "Welcome to %sElvUI|r version %s%s|r, type /ec to access the in-game configuration menu. If you are in need of technical support you can visit us at https://github.com/ElvUI-MoP or join our Discord: https://discord.gg/Uatdmm7"
 
 --ActionBars
 L["Binding"] = "Controles"
@@ -31,6 +31,8 @@ L["Trigger"] = "Disparador"
 
 --Bags
 L["Bank"] = "Banco"
+L["BoE"] = true
+L["BoU"] = true
 L["Hold Control + Right Click:"] = "Mantén Control y Haz Clic Derecho:"
 L["Hold Shift + Drag:"] = "Mantén Shift y Arrastra:"
 L["Purchase Bags"] = "Comprar Bolsas"
@@ -39,6 +41,7 @@ L["Sort Bags"] = "Ordenar Bolsas"
 L["Temporary Move"] = "Movimiento Temporal"
 L["Toggle Bags"] = "Mostrar/Ocultar Bolsas"
 L["Vendor / Delete Grays"] = true
+L["Vendoring Grays"] = true
 
 --Chat
 L["AFK"] = "Ausente"
@@ -70,6 +73,7 @@ L["Deficit:"] = "Déficit:"
 L["Download"] = "Descarga"
 L["DPS"] = "DPS"
 L["Earned:"] = "Ganada:"
+L["ElvUI Config"] = true
 L["Friends List"] = "Lista de Amigos"
 L["Gold"] = "Oro"
 L["goldabbrev"] = "|cffffd700g|r"
@@ -85,7 +89,6 @@ L["Mov. Speed:"] = STAT_MOVEMENT_SPEED
 L["No Guild"] = "Sin Hermandad"
 L["Profit:"] = "Ganancia:"
 L["Reset Counters: Hold Control + Right Click"] = true
-L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "Restablecer Datos: Mantén Shift + Clic Derecho"
 L["Saved Dungeon(s)"] = true
 L["Saved Raid(s)"] = "Banda(s) Guardada(s)"
@@ -139,7 +142,6 @@ L["Config Mode:"] = "Modo de Configuración"
 L["CVars Set"] = "CVars Configuradas"
 L["CVars"] = "CVars"
 L["Dark"] = "Oscuro"
-L["Disable"] = "Desactivar"
 L["ElvUI Installation"] = "Instalación de ElvUI"
 L["Finished"] = "Terminado"
 L["Grid Size:"] = "Tamaño de la Rejilla:"
@@ -311,9 +313,9 @@ L["Are you sure you want to apply this font to all ElvUI elements?"] = true
 L["Are you sure you want to disband the group?"] = "¿Estás seguro que quieres deshacer el grupo?"
 L["Are you sure you want to reset all the settings on this profile?"] = "¿Estás seguro que deseas restablecer todos los ajustes de este perfil?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "¿Estás seguro que quieres resetear cada fijador a su posición por defecto?"
-L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "Debido a la gran confusión causada por el nuevo sistema de auras he implementado un nuevo paso en el proceso de instalación, esto es opcional. Si quieres conservar la configuración actual de tus auras ve al último paso de la instalación y haz clic en terminar para que este mensaje no vuelva a ser mostrado. Si por alguna razón se vuelve a mostrar por favor reinicia el juego."
 L["Can't buy anymore slots!"] = "¡No puedes comprar más huecos!"
 L["Delete gray items?"] = true
+L["Detected that your ElvUI Config addon is out of date. Not having your ElvUI Config addon up to date will result in missing options."] = true
 L["Disable Warning"] = "Deshabilitar Advertencia"
 L["Discard"] = "Descartar"
 L["Do you enjoy the new ElvUI?"] = "¿Disfrutas del nuevo ElvUI?"
@@ -324,6 +326,7 @@ L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI n
 L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "Pasa tu ratón por encima de un botón de acción o de un botón del libro de hechizos para ligarlo. Pulsa escape o botón derecho para limpiar la asignación actual del botón de acción."
 L["I Swear"] = "Lo Juro"
+L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = true
 L["No, Revert Changes!"] = "¡No, Revierte los Cambios!"
 L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."] = "Oh cielos, tienes ElvUI y Tukui habilitados al mismo tiempo. Elige un addon a deshabilitar"
 L["One or more of the changes you have made require a ReloadUI."] = "Uno o más de los cambios que has hecho requieren una recarga de la interfaz."
@@ -333,7 +336,6 @@ L["The profile you tried to import already exists. Choose a new name or accept t
 L["Type /hellokitty to revert to old settings."] = "Escribe /hellokitty para revertir a las opciones antiguas."
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = "Utilizando el diseño de sanador es altamente recomendado bajar el addon Clique si deseas tener la función de hacer clic para curar."
 L["Yes, Keep Changes!"] = "¡Sí, Mantén los cambios!"
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = "Has cambiado la opción de Tema de Border Ligero. Tendrás que completar el proceso de instalación para quitar cualquier bug gráfico."
 L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = "Has cambiado la escala de tu interfaz, sin embargo aún tienes el AutoEscalado activado en ElvUI. Pulsa aceptar si te gustaría desactivar el AutoEscalado."
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = "Has importado opciones que pueden requerir una recarga de la interfaz para tomar efecto. ¿Recargar ahora?"
 L["You must purchase a bank slot first!"] = "¡Debes comprar un hueco del banco primero!"

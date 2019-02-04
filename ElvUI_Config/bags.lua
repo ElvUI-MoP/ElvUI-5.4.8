@@ -6,6 +6,10 @@ local gsub, match = string.gsub, string.match
 
 local GameTooltip = _G["GameTooltip"]
 
+local INSCRIPTION, PROFESSIONS_FISHING, PROFESSIONS_COOKING = INSCRIPTION, PROFESSIONS_FISHING, PROFESSIONS_COOKING
+local ITEMS, ITEM_BIND_QUEST = ITEMS, ITEM_BIND_QUEST
+local COLOR, COLORS, FONT_SIZE, NONE, SHORT = COLOR, COLORS, FONT_SIZE, NONE, SHORT
+
 E.Options.args.bags = {
 	type = "group",
 	name = L["Bags"],
@@ -317,7 +321,7 @@ E.Options.args.bags = {
 		colorGroup = {
 			order = 5,
 			type = "group",
-			name = L["Colors"],
+			name = COLORS,
 			args = {
 				header = {
 					order = 1,

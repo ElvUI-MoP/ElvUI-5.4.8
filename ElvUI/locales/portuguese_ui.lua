@@ -7,7 +7,7 @@ if not L then return end
 L["INCOMPATIBLE_ADDON"] = "The addon %s is not compatible with ElvUI's %s module. Please select either the addon or the ElvUI module to disable."
 
 --*_MSG locales
-L["LOGIN_MSG"] = "Bem vindo à versão %s%s|r da %sElvUI|r. Se precisar de suporte técnico visite-nos no site https://github.com/ElvUI-MoP"
+L["LOGIN_MSG"] = "Welcome to %sElvUI|r version %s%s|r, type /ec to access the in-game configuration menu. If you are in need of technical support you can visit us at https://github.com/ElvUI-MoP or join our Discord: https://discord.gg/Uatdmm7"
 
 --ActionBars
 L["Binding"] = "Ligações"
@@ -31,6 +31,8 @@ L["Trigger"] = "Gatilho"
 
 --Bags
 L["Bank"] = true
+L["BoE"] = true
+L["BoU"] = true
 L["Hold Control + Right Click:"] = "Segurar Control + Clique Direito:"
 L["Hold Shift + Drag:"] = "Segurar Shift + Arrastar:"
 L["Purchase Bags"] = true
@@ -39,6 +41,7 @@ L["Sort Bags"] = "Organizar Bolsas"
 L["Temporary Move"] = "Mover Temporariamente"
 L["Toggle Bags"] = "Mostrar/Ocultar Bolsas"
 L["Vendor / Delete Grays"] = true
+L["Vendoring Grays"] = true
 
 --Chat
 L["AFK"] = "LDT"
@@ -70,6 +73,7 @@ L["Deficit:"] = "Défice:"
 L["Download"] = "Download"
 L["DPS"] = "DPS"
 L["Earned:"] = "Ganho:"
+L["ElvUI Config"] = true
 L["Friends List"] = "Lista de Amigos"
 L["Gold"] = true
 L["goldabbrev"] = "|cffffd700g|r"
@@ -85,7 +89,6 @@ L["Mov. Speed:"] = STAT_MOVEMENT_SPEED
 L["No Guild"] = "Sem Guilda"
 L["Profit:"] = "Lucro:"
 L["Reset Counters: Hold Control + Right Click"] = true
-L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "Redefinir Dados: Segurar Shifr + Clique Direito"
 L["Saved Dungeon(s)"] = true
 L["Saved Raid(s)"] = "Raide(s) Salva(s)"
@@ -139,7 +142,6 @@ L["Config Mode:"] = "Modo de configuração"
 L["CVars Set"] = "CVars configuradas"
 L["CVars"] = "CVars"
 L["Dark"] = "Escuro"
-L["Disable"] = "Desativar"
 L["ElvUI Installation"] = "Instalação do ElvUI"
 L["Finished"] = "Terminado"
 L["Grid Size:"] = "Tamanho da Grade"
@@ -311,9 +313,9 @@ L["Are you sure you want to apply this font to all ElvUI elements?"] = true
 L["Are you sure you want to disband the group?"] = "Tem a certeza de que quer dissolver o grupo?"
 L["Are you sure you want to reset all the settings on this profile?"] = "Tem certeza que quer redefinir todas as configurações desse perfil?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "Tem a certeza de que deseja restaurar todos os movedores de volta para a sua posição padrão?"
-L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "Devido à grande confusão causada pelo novo sistema de auras foi implementado um novo passo no processo de instalação. Este passo é opcional, se você gosta da maneira que as suas auras estão configuradas vá para o último passo e clique em Terminado para não ser solicitado a configurar este passo novamente. Se por algum motivo for repetidamente solicitado a fazê-lo, por favor reinicie o seu jogo."
 L["Can't buy anymore slots!"] = "Não é possível comprar mais espaços!"
 L["Delete gray items?"] = true
+L["Detected that your ElvUI Config addon is out of date. Not having your ElvUI Config addon up to date will result in missing options."] = true
 L["Disable Warning"] = "Desativar Aviso"
 L["Discard"] = "Descartar"
 L["Do you enjoy the new ElvUI?"] = true
@@ -324,6 +326,7 @@ L["ElvUI needs to perform database optimizations please be patient."] = true
 L["Error resetting UnitFrame."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "Paire com o seu rato (mouse) sobre qualquer botão de ação ou botão do grimório para fazer uma Ligação. Pressione a tecla Escape ou clique com o botão direito para limpar o atalho atual."
 L["I Swear"] = "Eu Juro"
+L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = true
 L["No, Revert Changes!"] = true
 L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."] = "Oh senhor, você está com os addons ElvUI e Tuki ativos ao mesmo tempo. Selecione um para desativar."
 L["One or more of the changes you have made require a ReloadUI."] = "Uma ou mais das alterações que fez requerem que recarregue a IU."
@@ -333,7 +336,6 @@ L["The profile you tried to import already exists. Choose a new name or accept t
 L["Type /hellokitty to revert to old settings."] = true
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = "Ao usar o leioute de curandeiro é altamente recomendado que você baixe o addon Clique se quiser ter a função de clicar-para-curar."
 L["Yes, Keep Changes!"] = true
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = true
 L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = "Você mudou a Escala da sua IU, no entanto ainda tem a opção de dimensionamento automático ativa na ElvUI. Pressione Aceitar se gostaria de desativar a opção de dimensionamento automático."
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = true
 L["You must purchase a bank slot first!"] = "Você deve comprar um espaço no banco primeiro!"

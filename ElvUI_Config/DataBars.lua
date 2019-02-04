@@ -1,6 +1,9 @@
 local E, L, V, P, G = unpack(ElvUI)
 local mod = E:GetModule("DataBars")
 
+local XPBAR_LABEL, REPUTATION = XPBAR_LABEL, REPUTATION
+local FONT_SIZE, NONE = FONT_SIZE, NONE
+
 E.Options.args.databars = {
 	type = "group",
 	name = L["DataBars"],

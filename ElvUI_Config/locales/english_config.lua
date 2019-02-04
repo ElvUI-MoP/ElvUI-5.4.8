@@ -51,17 +51,17 @@ Examples:
 [powercolor][power:current]
 
 Health / Power Formats:
-'current' - current amount
-'percent' - percentage amount
-'current-max' - current amount followed by maximum amount, will display only max if current is equal to max
-'current-percent' - current amount followed by percentage amount, will display only max if current is equal to max
-'current-max-percent' - current amount, max amount, followed by percentage amount, will display only max if current is equal to max
-'deficit' - display the deficit value, will display nothing if there is no deficit
+"current" - current amount
+"percent" - percentage amount
+"current-max" - current amount followed by maximum amount, will display only max if current is equal to max
+"current-percent" - current amount followed by percentage amount, will display only max if current is equal to max
+"current-max-percent" - current amount, max amount, followed by percentage amount, will display only max if current is equal to max
+"deficit" - display the deficit value, will display nothing if there is no deficit
 
 Name Formats:
-'name:short' - Name restricted to 10 characters
-'name:medium' - Name restricted to 15 characters
-'name:long' - Name restricted to 20 characters
+"name:short" - Name restricted to 10 characters
+"name:medium" - Name restricted to 15 characters
+"name:long" - Name restricted to 20 characters
 
 To disable leave the field blank, if you need more information visit http://www.tukui.org]=]
 L["NAMEPLATE_FRAMELEVEL_DESC"] = [=[If you set this to 1 then all plates triggered by this style filter will be above any of the non-triggered plates.
@@ -86,6 +86,8 @@ L["Button Spacing"] = true --Also used in Bags
 L["Buttons Per Row"] = true
 L["Buttons"] = true
 L["Change the alpha level of the frame."] = true
+L["Color Keybind Text"] = true
+L["Color Keybind Text when Out of Range, instead of the button."] = true
 L["Color of the actionbutton when not usable."] = true
 L["Color of the actionbutton when out of power (Mana, Rage, Focus, Holy Power)."] = true
 L["Color of the actionbutton when out of range."] = true
@@ -96,7 +98,6 @@ L["Color when the text is in the hours format."] = true
 L["Color when the text is in the minutes format."] = true
 L["Color when the text is in the seconds format."] = true
 L["Cooldown Text"] = true
-L["Cooldown Override"] = true
 L["Darken Inactive"] = true
 L["Days"] = true
 L["Desaturate On Cooldown"] = true
@@ -117,8 +118,6 @@ L["Inherit the global fade, mousing over, targetting, setting focus, losing heal
 L["Key Down"] = true
 L["Keybind Mode"] = true
 L["Keybind Text"] = true
-L["Color Keybind Text"] = true
-L["Color Keybind Text when Out of Range, instead of the button."] = true
 L["Low Threshold"] = true
 L["Macro Text"] = true
 L["Masque Support"] = true
@@ -212,6 +211,7 @@ L["Item Level"] = true
 L["Money Format"] = true
 L["Panel Width (Bags)"] = true
 L["Panel Width (Bank)"] = true
+L["Player"] = true
 L["Profession Bags"] = true
 L["Progress Bar"] = true
 L["Quest Starter"] = true
@@ -240,6 +240,8 @@ L["The size of the individual buttons on the bank frame."] = true
 L["The spacing between buttons."] = true
 L["Top to Bottom"] = true
 L["Use coin icons instead of colored text."] = true
+L["Vendor Grays"] = true
+L["Vendor Gray Detailed Report"] = true
 L["Will attempt to sell another item in set interval after previous one was sold."] = true
 
 --Bag Colors
@@ -403,7 +405,7 @@ L["Blocks all click events while in combat."] = true
 L["Blocks datatext tooltip from showing in combat."] = true
 L["BottomLeftMiniPanel"] = "Minimap BottomLeft (Inside)"
 L["BottomMiniPanel"] = "Minimap Bottom (Inside)"
-L["BottomRightMiniPanel"] = "Minimap BottomRight (Inside)"	
+L["BottomRightMiniPanel"] = "Minimap BottomRight (Inside)"
 L["Custom Currencies"] = true
 L["Custom Currency"] = true
 L["Datatext Panel (Left)"] = true
@@ -477,6 +479,7 @@ L["Chat Output"] = true
 L["Color Gradient"] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = true
 L["Crop Icons"] = true
+L["Current / Max - Percent"] = true
 L["Decimal Length"] = true
 L["Direction the bar moves on gains/losses"] = true
 L["Displays a detailed report of every item sold when enabled."] = true
@@ -501,7 +504,6 @@ L["Hides the red error text at the top of the screen while in combat."] = true
 L["Log Taints"] = true
 L["Login Message"] = true
 L["Loot Roll"] = true
-L["Loot"] = true
 L["Lowest Allowed UI Scale"] = true
 L["Missing Talent Alert"] = true
 L["Multi-Monitor Support"] = true
@@ -535,8 +537,6 @@ L["Toggle Tutorials"] = true
 L["Top Panel"] = true
 L["Unit Prefix Style"] = true
 L["Vehicle Seat Indicator Size"] = true
-L["Vendor Grays"] = true
-L["Vendor Gray Detailed Report"] = true
 L["When you go AFK display the AFK screen."] = true
 
 --Aura Filter
@@ -587,7 +587,6 @@ L["Always Display"] = true
 L["Bottom Left"] = true
 L["Bottom Right"] = true
 L["Bottom"] = true
-L["Calendar"] = true
 L["Change settings for the display of the location text that is on the minimap."] = true
 L["Enable/Disable the minimap. |cffFF0000Warning: This will prevent you from seeing the consolidated buffs bar, and prevent you from seeing the minimap datatexts.|r"] = true
 L["Instance Difficulty"] = true
@@ -687,7 +686,6 @@ L["Enabling this will check your power amount."] = true
 L["Enemy Combat Toggle"] = true
 L["Enemy NPC Frames"] = true
 L["Enemy Player Frames"] = true
-L["Enemy"] = true --Also used in UnitFrames
 L["ENEMY_NPC"] = "Enemy NPC"
 L["ENEMY_PLAYER"] = "Enemy Player"
 L["Fade Out"] = true
@@ -727,9 +725,9 @@ L["If enabled then the filter will only activate if the level of the unit matche
 L["If enabled then the filter will only activate if the unit is casting interruptible spells."] = true
 L["If enabled then the filter will only activate if the unit is casting not interruptible spells."] = true
 L["If enabled then the filter will only activate when you are in combat."] = true
+L["If enabled then the filter will only activate when you are not targeting the unit."] = true
 L["If enabled then the filter will only activate when you are out of combat."] = true
 L["If enabled then the filter will only activate when you are targeting the unit."] = true
-L["If enabled then the filter will only activate when you are not targeting the unit."] = true
 L["If not set to 0 then set the width of the Aura Icon to this"] = true
 L["If the aura is listed with a number then you need to use that to remove it from the list."] = true
 L["If this list is empty, and if 'Interruptible' is checked, then the filter will activate on any type of cast that can be interrupted."] = true
@@ -838,6 +836,7 @@ L["BG Map"] = true
 L["BG Score"] = true
 L["Calendar Frame"] = true
 L["Character Frame"] = true
+L["CheckBox Skin"] = true
 L["Debug Tools"] = true
 L["GM Chat"] = true
 L["Gossip Frame"] = true
@@ -854,6 +853,7 @@ L["Move Pad"] = true
 L["PvP Frames"] = true
 L["Quest Frames"] = true
 L["Raid Frame"] = true
+L["Raid Info"] = true
 L["Skins"] = true
 L["Socket Frame"] = true
 L["Tabard Frame"] = true
@@ -863,6 +863,7 @@ L["Tutorial Frame"] = true
 
 --Tooltip
 L["Always Hide"] = true
+L["Always Show Realm"] = true
 L["ANCHOR_CURSOR"] = true
 L["ANCHOR_CURSOR_LEFT"] = true
 L["ANCHOR_CURSOR_RIGHT"] = true
@@ -1051,6 +1052,7 @@ L["Growth Direction"] = true
 L["Heal Absorbs"] = true
 L["Heal Prediction"] = true
 L["Health Backdrop"] = true
+L["Health Backdrop Multiplier"] = true
 L["Health Border"] = true
 L["Health By Value"] = true
 L["Height"] = true
@@ -1122,7 +1124,6 @@ L["Party Pets"] = true
 L["Party Targets"] = true
 L["Per Row"] = true
 L["Percent"] = true
-L["Personal"] = true
 L["Pet Name"] = true
 L["Player Frame Aura Bars"] = true
 L["Portrait"] = true
@@ -1149,6 +1150,7 @@ L["Rapidly update the health, uses more memory and cpu. Only recommended for hea
 L["Reaction Castbars"] = true
 L["Reactions"] = true
 L["Ready Check Icon"] = true
+L["Remaining / Max"] = true
 L["Remaining"] = true
 L["Remove a spell from the filter. Use the spell ID if you see the ID as part of the spell name in the filter."] = true
 L["Remove a spell from the filter."] = true
@@ -1192,12 +1194,12 @@ L["Smart Aura Position"] = true
 L["Smart Raid Filter"] = true
 L["Smooth Bars"] = true
 L["Sort By"] = true
-L["Soul Shards"] = true
 L["Spaced"] = true
 L["Spacing"] = true
 L["Spark"] = true
 L["Stack Counter"] = true
 L["Stack Threshold"] = true
+L["Stagger Bar"] = true
 L["Start Near Center"] = true
 L["Statusbar Fill Orientation"] = true
 L["StatusBar Texture"] = true
@@ -1244,6 +1246,7 @@ L["Use Custom Level"] = true
 L["Use Custom Strata"] = true
 L["Use Dead Backdrop"] = true
 L["Use Default"] = true
+L["Use Health Texture on Background"] = true
 L["Use the custom health backdrop color instead of a multiple of the main health color."] = true
 L["Use the profile specific filter 'Buff Indicator (Profile)' instead of the global filter 'Buff Indicator'."] = true
 L["Use thin borders on certain unitframe elements."] = true
@@ -1263,5 +1266,6 @@ L["Width"] = true --Also used in NamePlates module
 L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."] = true
 L["xOffset"] = true
 L["yOffset"] = true
+L["You cannot copy settings from the same unit."] = true
 L["You may not remove a spell from a default filter that is not customly added. Setting spell to false instead."] = true
 L["You need to hold this modifier down in order to blacklist an aura by right-clicking the icon. Set to None to disable the blacklist functionality."] = true

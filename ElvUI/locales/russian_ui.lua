@@ -7,7 +7,7 @@ if not L then return end
 L["INCOMPATIBLE_ADDON"] = "Аддон %s не совместим с модулем %s ElvUI. Пожалуйста, выберите отключить ли несовместимый аддон или модуль."
 
 --*_MSG locales
-L["LOGIN_MSG"] = "Добро пожаловать в %sElvUI|r версии %s%s|r. Если Вам нужна техническая поддержка, посетите наш форум на https://github.com/ElvUI-MoP"
+L["LOGIN_MSG"] = "Добро пожаловать в %sElvUI|r версии %s%s|r, наберите /ec для доступа в меню настроек. Если Вам нужна техническая поддержка, посетите наш форум на https://github.com/ElvUI-MoP или присоединяйтесь к серверу Discord: https://discord.gg/Uatdmm7"
 
 --ActionBars
 L["Binding"] = "Назначение"
@@ -31,6 +31,8 @@ L["Trigger"] = "Триггер"
 
 --Bags
 L["Bank"] = "Банк"
+L["BoE"] = true
+L["BoU"] = true
 L["Hold Control + Right Click:"] = "Зажать Control + ПКМ:"
 L["Hold Shift + Drag:"] = "Зажать shift и перетаскивать:"
 L["Purchase Bags"] = "Приобрести слот"
@@ -39,6 +41,7 @@ L["Sort Bags"] = "Сортировать"
 L["Temporary Move"] = "Временное перемещение"
 L["Toggle Bags"] = "Показать сумки"
 L["Vendor / Delete Grays"] = "Продать/удалить серые предметы"
+L["Vendoring Grays"] = "Продаю хлам"
 
 --Chat
 L["AFK"] = "АФК" --Also used in datatexts and tooltip
@@ -70,6 +73,7 @@ L["Deficit:"] = "Убыток:"
 L["Download"] = "Загрузка"
 L["DPS"] = "УВС"
 L["Earned:"] = "Заработано"
+L["ElvUI Config"] = true
 L["Friends List"] = "Список друзей"
 L["Gold"] = "Золото"
 L["goldabbrev"] = "|cffffd700з|r" --Also used in Bags
@@ -85,7 +89,6 @@ L["Mov. Speed:"] = STAT_MOVEMENT_SPEED
 L["No Guild"] = "Нет гильдии"
 L["Profit:"] = "Прибыль:"
 L["Reset Counters: Hold Control + Right Click"] = "Сбросить счётчики: Control + ПКМ"
-L["Reload UI"] = "Перезагрузка"
 L["Reset Data: Hold Shift + Right Click"] = "Сбросить данные: Shift + ПКМ"
 L["Saved Dungeon(s)"] = "Сохраненнные подземелья"
 L["Saved Raid(s)"] = "Сохраненные рейды"
@@ -139,7 +142,6 @@ L["Config Mode:"] = "Режим настройки:"
 L["CVars Set"] = "Настройки сброшены"
 L["CVars"] = "Настройки игры"
 L["Dark"] = "Темная"
-L["Disable"] = "Выключить"
 L["ElvUI Installation"] = "Установка ElvUI"
 L["Finished"] = "Завершить"
 L["Grid Size:"] = "Размер сетки"
@@ -311,9 +313,9 @@ L["Are you sure you want to apply this font to all ElvUI elements?"] = "Вы у�
 L["Are you sure you want to disband the group?"] = "Вы уверены, что хотите распустить группу?"
 L["Are you sure you want to reset all the settings on this profile?"] = "Вы уверены, что хотите сбросить все настройки для этого профиля?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "Вы уверены, что хотите сбросить все фиксаторы на позиции по умолчанию?"
-L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "Из-за массового непонимания новой системы аур, я добавил новый шаг в установку. Он опционален. Если Вам нравится, как сейчас настроены Ваши ауры, перейдите до последнюю страницу установки и нажмите \"Завершить\", чтобы это сообщение больше не появлялось. Если же оно появится снова, пожалуйста, перезапустите игру."
 L["Can't buy anymore slots!"] = "Невозможно приобрести больше слотов!"
 L["Delete gray items?"] = "Удалить серый предметы?"
+L["Detected that your ElvUI Config addon is out of date. Not having your ElvUI Config addon up to date will result in missing options."] = true
 L["Disable Warning"] = "Отключить предупреждение"
 L["Discard"] = "Отменить"
 L["Do you enjoy the new ElvUI?"] = "Вам нравится ElvUI?"
@@ -324,6 +326,7 @@ L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI �
 L["Error resetting UnitFrame."] = "Ошибка сброса рамки юнита."
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "Наведите курсор на любую кнопку на панели или в книге заклинаний, чтобы назначит ей клавишу. Нажмите правую кнопку мыши или 'Escape', чтобы сбросить назначение для этой кнопки."
 L["I Swear"] = "Я клянусь!"
+L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = "Похоже, что один из ваших аддонов отключил Blizzard_CompactRaidFrames. Это может вызвать ошибки и другие проблемы, мы рекомендуем включить. Включить аддоны Blizzard сейчас?"
 L["No, Revert Changes!"] = "Нет, обратить изменения!"
 L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."] = "Японский городовой... у Вас одновременно включены ElvUi и Tukui. Выберите аддон для отключения."
 L["One or more of the changes you have made require a ReloadUI."] = "Одно или несколько изменений требуют перезагрузки интерфейса"
@@ -333,7 +336,6 @@ L["The profile you tried to import already exists. Choose a new name or accept t
 L["Type /hellokitty to revert to old settings."] = "Напишите /hellokitty для возврата к предыдущим настройкам."
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = "Для использования расположения для лекаря крайне рекомендуется установить аддон Clique, если вы хотите иметь возможность лечить по клику мышью."
 L["Yes, Keep Changes!"] = "Да, сохранить изменения!"
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = "Вы переключились в режим тонких границ. Вы должны завершить установку для исправления графических багов."
 L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = "Вы изменили масштаб интерфейса, однако у вас все еще активирована опция автоматического масштабирования в настройках ElvUI. Нажмите 'Принять', если Вы хотите отключить эту опцию."
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = "Вы импортировали настройки, которые могут потребовать перезагрузки для вступления в силу. Перезагрузить?"
 L["You must purchase a bank slot first!"] = "Сперва Вы должны приобрести дополнительный слот в банке!"

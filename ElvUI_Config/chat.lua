@@ -6,6 +6,9 @@ local gsub, strlower = string.gsub, string.lower
 
 local GameTooltip = _G["GameTooltip"]
 
+local TIMESTAMPS_LABEL, OPTION_TOOLTIP_TIMESTAMPS = TIMESTAMPS_LABEL, OPTION_TOOLTIP_TIMESTAMPS
+local NONE = NONE
+
 E.Options.args.chat = {
 	type = "group",
 	name = L["Chat"],

@@ -25,7 +25,7 @@ E.PopupDialogs = {}
 E.StaticPopup_DisplayedFrames = {}
 
 E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
-	text = L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP."],
+	text = L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"],
 	hasEditBox = 1,
 	OnShow = function(self)
 		self.editBox:SetAutoFocus(false)

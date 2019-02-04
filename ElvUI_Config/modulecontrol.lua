@@ -3,6 +3,9 @@ local UF = E:GetModule("UnitFrames")
 local NP = E:GetModule("NamePlates")
 local CP = E:GetModule("CopyProfile")
 
+local MINIMAP_LABEL, XPBAR_LABEL, REPUTATION = MINIMAP_LABEL, XPBAR_LABEL, REPUTATION
+local COLORS = COLORS
+
 --Actionbars
 local function CreateActionbarsConfig()
 	local config = CP:CreateModuleConfigGroup(L["ActionBars"], "actionbar")
@@ -145,14 +148,14 @@ local function CreateDatatbarsConfig()
 	config.args.experience = {
 		order = 2,
 		type = "toggle",
-		name = L["XP Bar"],
+		name = XPBAR_LABEL,
 		get = function(info) return E.global.profileCopy.databars[ info[#info] ] end,
 		set = function(info, value) E.global.profileCopy.databars[ info[#info] ] = value end
 	}
 	config.args.reputation = {
 		order = 3,
 		type = "toggle",
-		name = L["Reputation"],
+		name = REPUTATION,
 		get = function(info) return E.global.profileCopy.databars[ info[#info] ] end,
 		set = function(info, value) E.global.profileCopy.databars[ info[#info] ] = value end
 	}
@@ -187,7 +190,7 @@ local function CreateGeneralConfig()
 	config.args.minimap = {
 		order = 3,
 		type = "toggle",
-		name = L["Minimap"],
+		name = MINIMAP_LABEL,
 		get = function(info) return E.global.profileCopy.general[ info[#info] ] end,
 		set = function(info, value) E.global.profileCopy.general[ info[#info] ] = value end
 	}
@@ -302,7 +305,7 @@ local function CreateUnitframesConfig()
 		order = 3,
 		type = "group",
 		guiInline = true,
-		name = L["Colors"],
+		name = COLORS,
 		get = function(info) return E.global.profileCopy.unitframe[info[#info - 1]][ info[#info] ] end,
 		set = function(info, value) E.global.profileCopy.unitframe[info[#info - 1]][ info[#info] ] = value end,
 		args = {

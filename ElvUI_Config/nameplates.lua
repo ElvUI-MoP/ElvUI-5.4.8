@@ -11,7 +11,7 @@ local DUNGEON_DIFFICULTY, PLAYER_DIFFICULTY1, PLAYER_DIFFICULTY2, PLAYER_DIFFICU
 local FACTION_STANDING_LABEL2, FACTION_STANDING_LABEL4, FACTION_STANDING_LABEL5 = FACTION_STANDING_LABEL2, FACTION_STANDING_LABEL4, FACTION_STANDING_LABEL5
 local SPEED, DISABLE, HEALTH, LEVEL, NONE, COMBAT, FILTERS = SPEED, DISABLE, HEALTH, LEVEL, NONE, COMBAT, FILTERS
 local ARENA, RAID, DUNGEONS, BATTLEFIELDS = ARENA, RAID, DUNGEONS, BATTLEFIELDS
-local ROLE, TANK, HEALER, DAMAGER, COLOR = ROLE, TANK, HEALER, DAMAGER, COLOR
+local ENEMY, NAME, ROLE, TANK, HEALER, DAMAGER, COLOR = ENEMY, NAME, ROLE, TANK, HEALER, DAMAGER, COLOR
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local selectedNameplateFilter
@@ -37,7 +37,8 @@ local function filterPriority(auraType, unit, value, remove, movehere)
 			if tbl[i] == value then sv = i elseif tbl[i] == movehere then sm = i end
 			if sv and sm then break end
 		end
-		tremove(tbl, sm);tinsert(tbl, sv, movehere);
+		tremove(tbl, sm)
+		tinsert(tbl, sv, movehere)
 		E.db.nameplates.units[unit][auraType].filters.priority = tconcat(tbl,",")
 	elseif found and remove then
 		E.db.nameplates.units[unit][auraType].filters.priority = gsub(filter, found, "")
@@ -188,7 +189,7 @@ local function UpdateStyleLists()
 		}
 		if next(E.global.nameplates.filters[selectedNameplateFilter].triggers.cooldowns.names) then
 			local spell, spellName, notDisabled
-			for name, _ in pairs(E.global.nameplates.filters[selectedNameplateFilter].triggers.cooldowns.names) do
+			for name in pairs(E.global.nameplates.filters[selectedNameplateFilter].triggers.cooldowns.names) do
 				spell = name
 				if tonumber(spell) then
 					spellName = GetSpellInfo(spell)
@@ -232,7 +233,7 @@ local function UpdateStyleLists()
 		}
 		if next(E.global.nameplates.filters[selectedNameplateFilter].triggers.buffs.names) then
 			local spell, spellName, notDisabled
-			for name, _ in pairs(E.global.nameplates.filters[selectedNameplateFilter].triggers.buffs.names) do
+			for name in pairs(E.global.nameplates.filters[selectedNameplateFilter].triggers.buffs.names) do
 				spell = name
 				if tonumber(spell) then
 					spellName = GetSpellInfo(spell)
@@ -272,7 +273,7 @@ local function UpdateStyleLists()
 		}
 		if next(E.global.nameplates.filters[selectedNameplateFilter].triggers.debuffs.names) then
 			local spell, spellName, notDisabled
-			for name, _ in pairs(E.global.nameplates.filters[selectedNameplateFilter].triggers.debuffs.names) do
+			for name in pairs(E.global.nameplates.filters[selectedNameplateFilter].triggers.debuffs.names) do
 				spell = name
 				if tonumber(spell) then
 					spellName = GetSpellInfo(spell)
@@ -2095,14 +2096,14 @@ local function GetUnitSettings(unit, name)
 			nameGroup = {
 				order = 6,
 				type = "group",
-				name = L["Name"],
+				name = NAME,
 				get = function(info) return E.db.nameplates.units[unit].name[ info[#info] ] end,
 				set = function(info, value) E.db.nameplates.units[unit].name[ info[#info] ] = value NP:ConfigureAll() end,
 				args = {
 					header = {
 						order = 1,
 						type = "header",
-						name = L["Name"]
+						name = NAME
 					},
 					enable = {
 						order = 2,
@@ -2979,7 +2980,7 @@ E.Options.args.nameplate = {
 						bad = {
 							order = 5,
 							type = "color",
-							name = L["Enemy"],
+							name = ENEMY,
 							hasAlpha = false
 						},
 						tapped = {

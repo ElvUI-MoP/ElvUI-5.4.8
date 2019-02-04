@@ -7,7 +7,7 @@ if not L then return end
 L["INCOMPATIBLE_ADDON"] = "插件 %s 與 ElvUI 的 %s 模組不相容。請停用不相容的插件，或停用相關的模組."
 
 --*_MSG locales
-L["LOGIN_MSG"] = "歡迎使用%sElvUI |r %s%s|r 版. 如需技術支援請至https://github.com/ElvUI-MoP"
+L["LOGIN_MSG"] = "Welcome to %sElvUI|r version %s%s|r, type /ec to access the in-game configuration menu. If you are in need of technical support you can visit us at https://github.com/ElvUI-MoP or join our Discord: https://discord.gg/Uatdmm7"
 
 --ActionBars
 L["Binding"] = "綁定"
@@ -31,6 +31,8 @@ L["Trigger"] = "觸發器"
 
 --Bags
 L["Bank"] = "銀行"
+L["BoE"] = true
+L["BoU"] = true
 L["Hold Control + Right Click:"] = "按住 Ctrl 並按滑鼠右鍵："
 L["Hold Shift + Drag:"] = "按住 Shift 並拖曳："
 L["Purchase Bags"] = "購買背包"
@@ -38,7 +40,8 @@ L["Reset Position"] = "重設位置"
 L["Sort Bags"] = "整理背包"
 L["Temporary Move"] = "移動背包"
 L["Toggle Bags"] = "開啟/關閉背包"
-L["Vendor / Delete Grays"] = true
+L["Vendor / Delete Grays"] = "出售/摧毁灰色物品"
+L["Vendoring Grays"] = true
 
 --Chat
 L["AFK"] = "暫離" --Also used in datatexts and tooltip
@@ -63,20 +66,21 @@ L["Avoidance Breakdown"] = "免傷統計"
 L["Bandwidth"] = "頻寬"
 L["Character: "] = "角色: "
 L["Combat"] = "戰鬥"
-L["Combat/Arena Time"] = true
+L["Combat/Arena Time"] = "戰鬥時間"
 L["Coords"] = "坐標"
 L["copperabbrev"] = "|cffeda55f銅|r" --Also used in Bags
 L["Deficit:"] = "赤字:"
 L["Download"] = "下載"
 L["DPS"] = "傷害輸出"
 L["Earned:"] = "賺取:"
+L["ElvUI Config"] = true
 L["Friends List"] = "好友列表"
 L["Gold"] = "金錢"
 L["goldabbrev"] = "|cffffd700金|r" --Also used in Bags
 L["Hit"] = "命中"
 L["Hold Shift + Right Click:"] = "按住 Shift 並按滑鼠右鍵"
 L["Home Latency:"] = "本機延遲:"
-L["Home Protocol:"] = true
+L["Home Protocol:"] = "本機協議:"
 L["HP"] = "生命值"
 L["HPS"] = "治療輸出"
 L["lvl"] = "等級"
@@ -84,7 +88,6 @@ L["Mitigation By Level: "] = "等級減傷: "
 L["No Guild"] = "沒有公會"
 L["Profit:"] = "利潤: "
 L["Reset Counters: Hold Control + Right Click"] = true
-L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "重置數據: 按住 Shift + 右鍵點擊"
 L["Saved Dungeon(s)"] = "已有進度地城"
 L["Saved Raid(s)"] = "已有進度的副本"
@@ -97,13 +100,13 @@ L["Spec"] = "專精"
 L["Spent:"] = "花費:"
 L["Stats For:"] = "統計:"
 L["System"] = "系統信息"
-L["Talent/Loot Specialization"] = true
+L["Talent/Loot Specialization"] = "天賦/拾取專精"
 L["Total CPU:"] = "CPU佔用"
 L["Total Memory:"] = "總記憶體:"
 L["Total: "] = "合計: "
 L["Unhittable:"] = "未命中:"
 L["Vengeance"] = true
-L["World Protocol:"] = true
+L["World Protocol:"] = "世界協議:"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFF左鍵:|r 變更目前職業專精"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFF右鍵k:|r 變更目前拾取專精"
 L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = "|cffFFFFFFShift + 左鍵:|r 顯示天賦專精介面"
@@ -138,7 +141,6 @@ L["Config Mode:"] = "設定模式:"
 L["CVars Set"] = "參數設定"
 L["CVars"] = "參數"
 L["Dark"] = "黑暗"
-L["Disable"] = "停用"
 L["ElvUI Installation"] = "安裝 ElvUI"
 L["Finished"] = "設定完畢"
 L["Grid Size:"] = "網格尺寸:"
@@ -194,7 +196,7 @@ L["Bars"] = "條" --Also used in UnitFrames
 L["Calendar"] = "日曆"
 L["Can't Roll"] = "無法需求此裝備"
 L["Disband Group"] = "解散隊伍"
-L["Empty Slot"] = true
+L["Empty Slot"] = "空格"
 L["Enable"] = "啟用" --Doesn't fit a section since it's used a lot of places
 L["Experience"] = "經驗/聲望條"
 L["Farm Mode"] = true
@@ -226,7 +228,7 @@ L["Bar "] = "快捷列 " --Also in ActionBars
 L["BNet Frame"] = "戰網提示資訊"
 L["Boss Button"] = "特殊技能鍵"
 L["Boss Frames"] = "首領框架" --Also used in UnitFrames
-L["Class Totems"] = true
+L["Class Totems"] = "職業圖騰"
 L["Classbar"] = "職業特有條"
 L["Error Frame"] = true
 L["Experience Bar"] = "經驗條"
@@ -269,9 +271,10 @@ L["Tooltip"] = "浮動提示"
 L["Vehicle Seat Frame"] = "載具座位框"
 L["DESC_MOVERCONFIG"] = [=[解除框架移動鎖定. 現在可以移動它們, 移好後請點擊「鎖定」.
 
-Options:
-  Shift + RightClick - Hides mover temporarily.
-  Ctrl + RightClick - Resets mover position to default.
+選項:
+  右鍵 - Open Config Section.
+  Shift + 右鍵 - 暫時隱藏定位器.
+  Ctrl + 右鍵 - 重置定位器位置到預設值.
 ]=]
 
 --Plugin Installer
@@ -303,16 +306,16 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "你所做的改動只會影響到使用這個插件的本角色, 你需要重新加載介面才能使改動生效."
-L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = true
-L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
-L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
+L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = "接受將會重置 %s 的單位框架設定. 你確定嗎?"
+L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = "接受將會重置所有姓名板(血條)的過濾器優先度列表. 你確定嗎?"
+L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = "接受將會重置所有單位框架的過濾器優先度列表. 你確定嗎?"
 L["Are you sure you want to apply this font to all ElvUI elements?"] = "你確定要將此字型應用到所有 ElvUI 元素嗎?"
 L["Are you sure you want to disband the group?"] = "確定要解散隊伍?"
 L["Are you sure you want to reset all the settings on this profile?"] = "確定需要重置這個設定檔中的所有設定?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "確定需要重置所有框架至預設位置?"
-L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "因為新的光環系統造成了大量的混亂因此我導入了一個新的步驟到安裝過程中. 這是可選的, 如果你喜歡你現在的設定請跳到最後一個步驟並點擊「完成」將不會再提示. 如果由於某些原因反復提示, 請重新開啟遊戲."
 L["Can't buy anymore slots!"] = "無法再購買更多銀行欄位!"
-L["Delete gray items?"] = true
+L["Delete gray items?"] = "刪除灰色物品?"
+L["Detected that your ElvUI Config addon is out of date. Not having your ElvUI Config addon up to date will result in missing options."] = true
 L["Disable Warning"] = "停用警告"
 L["Discard"] = "取消"
 L["Do you enjoy the new ElvUI?"] = "你享受新版的 ElvUI嗎?"
@@ -320,9 +323,10 @@ L["Do you swear not to post in technical support about something not working wit
 L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI 以過期超過5個版本. 你可以在 https://github.com/ElvUI-MoP 下載到最新的版本."
 L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"] = "ElvUI 以過期. 你可以在 https://github.com/ElvUI-MoP 下載到最新的版本."
 L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI 需要進行資料庫優化, 請稍待."
-L["Error resetting UnitFrame."] = true
+L["Error resetting UnitFrame."] = "重置單位框架錯誤"
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "移動滑鼠到快捷列或技能書按鈕上綁定快捷鍵.按ESC或滑鼠右鍵取消目前快捷鍵."
 L["I Swear"] = "我承諾"
+L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = "看起來你其中的一個插件使得 Blizzard_CompactRaidFrames 停用了. 這會造成錯誤與問題. 插件現在會重新被啟用."
 L["No, Revert Changes!"] = "不, 回復修改!"
 L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."] = "喔 拜託,你不能同時使用 Elvui 和 Tukui， 請選擇一個停用."
 L["One or more of the changes you have made require a ReloadUI."] = "已變更一或多個設定, 需重載介面."
@@ -332,7 +336,6 @@ L["The profile you tried to import already exists. Choose a new name or accept t
 L["Type /hellokitty to revert to old settings."] = "輸入 /hellokitty 來回復舊設定"
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = "使用治療者佈局時建議你下載 Clique 插件, 以擁有點擊血條治療的功能"
 L["Yes, Keep Changes!"] = "是的, 保留變更!"
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = "你選擇了細邊框主題選項. 你必須完成安裝程序來移除任何圖像錯誤"
 L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = "你改變了介面縮放比例, 然而ElvUI的自動縮放選項是開啟的. 點擊接受以關閉ElvUI的自動縮放."
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = "你導入的設定可能需要重新載入UI才能生效. 現在重新載入嗎?"
 L["You must purchase a bank slot first!"] = "你必需先購買一個銀行背包欄位!"

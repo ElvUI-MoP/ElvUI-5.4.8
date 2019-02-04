@@ -2,6 +2,10 @@
 local WM = E:GetModule("WorldMap")
 local MM = E:GetModule("Minimap")
 
+local MINIMAP_LABEL, WORLD_MAP = MINIMAP_LABEL, WORLD_MAP
+local MAIL_LABEL, LEAVE_VEHICLE, ZOOM_IN, ZOOM_OUT = MAIL_LABEL, LEAVE_VEHICLE, ZOOM_IN, ZOOM_OUT
+local FONT_SIZE, HIDE, NONE = FONT_SIZE, HIDE, NONE
+
 E.Options.args.maps = {
 	type = "group",
 	name = L["Maps"],

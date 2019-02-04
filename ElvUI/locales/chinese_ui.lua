@@ -7,7 +7,7 @@ if not L then return end
 L["INCOMPATIBLE_ADDON"] = "插件 %s 不相容于 ElvUI 的 %s 模组, 请停用不相容的插件, 或停用模组."
 
 --*_MSG locales
-L["LOGIN_MSG"] = "欢迎使用 %sElvUI|r %s%s|r 版. 如需技术支持,请至 https://github.com/ElvUI-MoP"
+L["LOGIN_MSG"] = "Welcome to %sElvUI|r version %s%s|r, type /ec to access the in-game configuration menu. If you are in need of technical support you can visit us at https://github.com/ElvUI-MoP or join our Discord: https://discord.gg/Uatdmm7"
 
 --ActionBars
 L["Binding"] = "绑定"
@@ -31,6 +31,8 @@ L["Trigger"] = "触发器"
 
 --Bags
 L["Bank"] = "银行"
+L["BoE"] = true
+L["BoU"] = true
 L["Hold Control + Right Click:"] = '按住 Ctrl 并按鼠标右键:'
 L["Hold Shift + Drag:"] = '按住 Shift 并拖动:'
 L["Purchase Bags"] = "购买背包"
@@ -39,6 +41,7 @@ L["Sort Bags"] = "背包整理"
 L["Temporary Move"] = '移动背包'
 L["Toggle Bags"] = "背包开关"
 L["Vendor / Delete Grays"] = "出售/删除灰色物品"
+L["Vendoring Grays"] = "正在出售灰色物品"
 
 --Chat
 L["AFK"] = "离开" --Also used in datatexts and tooltip
@@ -70,6 +73,7 @@ L["Deficit:"] = "亏损:"
 L["Download"] = "下载"
 L["DPS"] = "伤害输出"
 L["Earned:"] = "赚取:"
+L["ElvUI Config"] = true
 L["Friends List"] = "好友列表"
 L["Gold"] = "金"
 L["goldabbrev"] = "|cffffd700金|r"
@@ -85,7 +89,6 @@ L["Mov. Speed:"] = STAT_MOVEMENT_SPEED
 L["No Guild"] = "没有公会"
 L["Profit:"] = "利润:"
 L["Reset Counters: Hold Control + Right Click"] = "重置计数器: 按住 Ctrl + 右键点击"
-L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "重置数据: 按住 Shift + 右键点击"
 L["Saved Dungeon(s)"] = "已有进度的地下城"
 L["Saved Raid(s)"] = "已有进度的副本"
@@ -139,7 +142,6 @@ L["Config Mode:"] = "设置模式:"
 L["CVars Set"] = "参数设定"
 L["CVars"] = "参数"
 L["Dark"] = "黑暗"
-L["Disable"] = "禁用"
 L["ElvUI Installation"] = "安装 ElvUI"
 L["Finished"] = "完成"
 L["Grid Size:"] = "网格尺寸:"
@@ -229,7 +231,7 @@ L["Boss Button"] = "特殊技能键"
 L["Boss Frames"] = "首领框架"
 L["Class Totems"] = "职业图腾"
 L["Classbar"] = "职业特有条"
-L["Error Frame"] = true;
+L["Error Frame"] = true
 L["Experience Bar"] = "经验条"
 L["Focus Castbar"] = "焦点目标施法条"
 L["Focus Frame"] = "焦点目标框架"
@@ -271,6 +273,7 @@ L["Vehicle Seat Frame"] = "载具座位框"
 L["DESC_MOVERCONFIG"] = [=[解除框架移动锁定. 现在可以移动它们, 移好后请点击「锁定」.
 
 选项：
+  右键 - Open Config Section.
   Shift + 右键 - 暂时隐藏定位开关
   Ctrl + 右键 - 重置定位开关位置
 ]=]
@@ -311,9 +314,9 @@ L["Are you sure you want to apply this font to all ElvUI elements?"] = "确定�
 L["Are you sure you want to disband the group?"] = "确定要解散队伍?"
 L["Are you sure you want to reset all the settings on this profile?"] = "确定需要重置这个配置文件中的所有设置?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "确定需要重置所有框架至默认位置?"
-L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "由于大量的改动导致光环系统需要一个新的安装过程. 这是可选的, 最后一步将设置你的光环样式. 点击「完成」将不再提示. 如果由于某些原因反复提示, 请重新开启游戏."
 L["Can't buy anymore slots!"] = "银行背包栏位已达最大值"
 L["Delete gray items?"] = "删除灰色物品?"
+L["Detected that your ElvUI Config addon is out of date. Not having your ElvUI Config addon up to date will result in missing options."] = true
 L["Disable Warning"] = "禁用警告"
 L["Discard"] = "取消"
 L["Do you enjoy the new ElvUI?"] = "你喜欢新的ElvUI么？"
@@ -324,6 +327,7 @@ L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI�
 L["Error resetting UnitFrame."] = "重置单位框架出现错误."
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "移动鼠标到动作条或技能书按钮上绑定快捷键. 按ESC或鼠标右键取消目前快捷键"
 L["I Swear"] = '我承诺'
+L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = "看起来你使用的一个插件使得Blizzard_CompactRaidFrames停用了。这会产生错误与问题。这个插件现在会被重新启用"
 L["No, Revert Changes!"] = "不，撤销修改！"
 L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."] = "你不能同时使用Elvui和Tukui，请选择一个禁用."
 L["One or more of the changes you have made require a ReloadUI."] = "已变更一或多个设定，需重载界面."
@@ -333,7 +337,6 @@ L["The profile you tried to import already exists. Choose a new name or accept t
 L["Type /hellokitty to revert to old settings."] = "输入/hellokitty以撤销到原来的设定"
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = "使用治疗布局时建议你下载 Clique 插件，从而拥有点击施法功能"
 L["Yes, Keep Changes!"] = "是的，保存修改！"
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = "你选择了细边框主题选项，你必须完成安装程序来移除任何图像错误"
 L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = "你改变了界面缩放比例，然而ElvUI的自动缩放选项是开启的。点击接受以关闭ElvUI的自动缩放。"
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = "你导入的设置可能需要重载界面才能生效。确认重载？"
 L["You must purchase a bank slot first!"] = "你必需购买一个银行背包栏位"

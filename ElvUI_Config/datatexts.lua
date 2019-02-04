@@ -4,13 +4,11 @@ local DT = E:GetModule("DataTexts")
 local _G = _G
 local pairs = pairs
 
-local NONE = NONE
-local FRIENDS = FRIENDS
 local HideLeftChat = HideLeftChat
 local HideRightChat = HideRightChat
-local HIDE = HIDE
-local AFK = AFK
-local DND = DND
+local DELETE, FONT_SIZE, HIDE, NONE, SHORT = DELETE, FONT_SIZE, HIDE, NONE, SHORT
+local FRIENDS, CURRENCY = FRIENDS, CURRENCY
+local AFK, DND = AFK, DND
 
 local datatexts = {}
 
@@ -372,8 +370,8 @@ E.Options.args.datatexts = {
 				},
 				minimapBottomRight = {
 					order = 10,
-					name = L["BottomRightMiniPanel"],
 					type = "toggle",
+					name = L["BottomRightMiniPanel"],
 					set = function(info, value)
 						E.db.datatexts[ info[#info] ] = value
 						E:GetModule("Minimap"):UpdateSettings()

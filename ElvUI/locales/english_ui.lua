@@ -7,7 +7,7 @@ if not L then return end
 L["INCOMPATIBLE_ADDON"] = "The addon %s is not compatible with ElvUI's %s module. Please select either the addon or the ElvUI module to disable."
 
 --*_MSG locales
-L["LOGIN_MSG"] = "Welcome to %sElvUI|r version %s%s|r. If you are in need of technical support you can visit us at https://github.com/ElvUI-MoP"
+L["LOGIN_MSG"] = "Welcome to %sElvUI|r version %s%s|r, type /ec to access the in-game configuration menu. If you are in need of technical support you can visit us at https://github.com/ElvUI-MoP or join our Discord: https://discord.gg/Uatdmm7"
 
 --ActionBars
 L["Binding"] = true
@@ -31,6 +31,8 @@ L["Trigger"] = true
 
 --Bags
 L["Bank"] = true
+L["BoE"] = true
+L["BoU"] = true
 L["Hold Control + Right Click:"] = true
 L["Hold Shift + Drag:"] = true
 L["Purchase Bags"] = true
@@ -38,7 +40,6 @@ L["Reset Position"] = true
 L["Sort Bags"] = true
 L["Temporary Move"] = true
 L["Toggle Bags"] = true
-L["Vendor Grays"] = true
 L["Vendor / Delete Grays"] = true
 L["Vendoring Grays"] = true
 
@@ -71,6 +72,7 @@ L["Deficit:"] = true
 L["Download"] = true
 L["DPS"] = true
 L["Earned:"] = true
+L["ElvUI Config"] = true
 L["Friends List"] = true
 L["Gold"] = true
 L["goldabbrev"] = "|cffffd700g|r" --Also used in Bags
@@ -139,7 +141,6 @@ L["Config Mode:"] = true
 L["CVars Set"] = true
 L["CVars"] = true
 L["Dark"] = true
-L["Disable"] = true
 L["ElvUI Installation"] = true
 L["Finished"] = true
 L["Grid Size:"] = true
@@ -312,9 +313,9 @@ L["Are you sure you want to apply this font to all ElvUI elements?"] = true
 L["Are you sure you want to disband the group?"] = true
 L["Are you sure you want to reset all the settings on this profile?"] = true
 L["Are you sure you want to reset every mover back to it's default position?"] = true
-L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = true
 L["Can't buy anymore slots!"] = true
 L["Delete gray items?"] = true
+L["Detected that your ElvUI Config addon is out of date. Not having your ElvUI Config addon up to date will result in missing options."] = true
 L["Disable Warning"] = true
 L["Discard"] = true
 L["Do you enjoy the new ElvUI?"] = true
@@ -335,8 +336,6 @@ L["The profile you tried to import already exists. Choose a new name or accept t
 L["Type /hellokitty to revert to old settings."] = true
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = true
 L["Yes, Keep Changes!"] = true
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = true
-L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = true
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = true
 L["You must purchase a bank slot first!"] = true
 

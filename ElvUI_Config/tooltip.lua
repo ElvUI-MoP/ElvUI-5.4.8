@@ -5,6 +5,8 @@ local _G = _G
 local tonumber, tostring = tonumber, tostring
 
 local GameTooltipStatusBar = _G["GameTooltipStatusBar"]
+local FONT_SIZE, NONE, OPACITY, ROLE = FONT_SIZE, NONE, OPACITY, ROLE
+local ALT_KEY, CTRL_KEY, SHIFT_KEY = ALT_KEY, CTRL_KEY, SHIFT_KEY
 
 E.Options.args.tooltip = {
 	type = "group",
@@ -254,8 +256,8 @@ E.Options.args.tooltip = {
 				unitFrames = {
 					order = 4,
 					type = "select",
-					name = L["Unitframes"],
-					desc = L["Don't display the tooltip when mousing over a unitframe."],
+					name = L["UnitFrames"],
+					desc = L["Choose when you want the tooltip to show. If a modifer is chosen, then you need to hold that down to show the tooltip."],
 					values = {
 						["ALL"] = L["Always Hide"],
 						["NONE"] = L["Never Hide"],
@@ -267,7 +269,7 @@ E.Options.args.tooltip = {
 				combat = {
 					order = 5,
 					type = "toggle",
-					name = L["Hide in Combat"],
+					name = L["Hide In Combat"],
 					desc = L["Hide tooltip while in combat."]
 				}
 			}
