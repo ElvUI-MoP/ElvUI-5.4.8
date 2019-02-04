@@ -1,7 +1,7 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local D = E:NewModule("Distributor", "AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
-local LibCompress = LibStub:GetLibrary("LibCompress")
-local LibBase64 = LibStub("LibBase64-1.0-ElvUI")
+local LibCompress = E.Libs.Compress
+local LibBase64 = E.Libs.Base64
 
 local tonumber, type, gsub, pcall, loadstring = tonumber, type, gsub, pcall, loadstring
 local len, format, split, find = string.len, string.format, string.split, string.find
@@ -180,7 +180,7 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 						maxLetters = 127,
 						OnAccept = function(self)
 							ElvDB.profiles[self.editBox:GetText()] = data
-							LibStub("AceAddon-3.0"):GetAddon("ElvUI").data:SetProfile(self.editBox:GetText())
+							E.Libs.AceAddon:GetAddon("ElvUI").data:SetProfile(self.editBox:GetText())
 							E:UpdateAll(true)
 							Downloads[sender] = nil
 						end,
@@ -205,7 +205,7 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 						E:CopyTable(ElvDB.global, data)
 						E:UpdateAll(true)
 					else
-						LibStub("AceAddon-3.0"):GetAddon("ElvUI").data:SetProfile(profileKey)
+						E.Libs.AceAddon:GetAddon("ElvUI").data:SetProfile(profileKey)
 					end
 					Downloads[sender] = nil
 				end,

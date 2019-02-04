@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local LSM = LibStub("LibSharedMedia-3.0")
+local LSM = E.Libs.LSM
 
 local SetCVar = SetCVar
 

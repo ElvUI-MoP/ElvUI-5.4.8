@@ -17,7 +17,7 @@ local RegisterStateDriver = RegisterStateDriver
 local GetBindingKey = GetBindingKey
 local NUM_STANCE_SLOTS = NUM_STANCE_SLOTS
 
-local Masque = LibStub("Masque", true)
+local Masque = E.Masque
 local MasqueGroup = Masque and Masque:Group("ElvUI", "Stance Bar")
 
 local bar = CreateFrame("Frame", "ElvUI_StanceBar", E.UIParent, "SecureHandlerStateTemplate")

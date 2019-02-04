@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local THREAT = E:NewModule("Threat", "AceEvent-3.0")
-local LSM = LibStub("LibSharedMedia-3.0")
+local LSM = E.Libs.LSM
 
 local pairs, select = pairs, select
 local twipe = table.wipe

@@ -1,7 +1,7 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
 local CH = E:NewModule("Chat", "AceTimer-3.0", "AceHook-3.0", "AceEvent-3.0")
-local LibBase64 = LibStub("LibBase64-1.0-ElvUI")
-local LSM = LibStub("LibSharedMedia-3.0")
+local LibBase64 = E.Libs.Base64
+local LSM = E.Libs.LSM
 
 local _G = _G
 local time, difftime = time, difftime

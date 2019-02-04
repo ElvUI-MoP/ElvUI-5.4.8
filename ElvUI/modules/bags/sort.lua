@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Bags")
-local Search = LibStub("LibItemSearch-1.2")
+local Search = E.Libs.ItemSearch
 
 local ipairs, pairs, select, unpack, pcall = ipairs, pairs, select, unpack, pcall
 local tinsert, tremove, sort, wipe = table.insert, table.remove, sort, wipe

@@ -1,6 +1,6 @@
 ﻿local E, L, V, P, G = unpack(ElvUI)
 local AB = E:GetModule("ActionBars")
-local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
+local ACD = E.Libs.AceConfigDialog
 local group
 
 local _G = _G

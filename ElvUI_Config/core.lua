@@ -1,6 +1,5 @@
 ﻿local E, L, V, P, G = unpack(ElvUI)
 local D = E:GetModule("Distributor")
-local AceGUI = LibStub("AceGUI-3.0")
 
 local pairs = pairs
 local tsort, tinsert = table.sort, table.insert
@@ -14,17 +13,21 @@ local UnitName = UnitName
 
 local DEFAULT_WIDTH = 890
 local DEFAULT_HEIGHT = 651
-local AC = LibStub("AceConfig-3.0-ElvUI")
-local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
-local ACR = LibStub("AceConfigRegistry-3.0-ElvUI")
 
-AC:RegisterOptionsTable("ElvUI", E.Options)
-ACD:SetDefaultSize("ElvUI", DEFAULT_WIDTH, DEFAULT_HEIGHT)
+local _G = _G
+E.Libs.AceGUI = _G.LibStub('AceGUI-3.0')
+E.Libs.AceConfig = _G.LibStub('AceConfig-3.0-ElvUI')
+E.Libs.AceConfigDialog = _G.LibStub('AceConfigDialog-3.0-ElvUI')
+E.Libs.AceConfigRegistry = _G.LibStub('AceConfigRegistry-3.0-ElvUI')
+E.Libs.AceDBOptions = _G.LibStub('AceDBOptions-3.0')
+
+E.Libs.AceConfig:RegisterOptionsTable("ElvUI", E.Options)
+E.Libs.AceConfigDialog:SetDefaultSize("ElvUI", DEFAULT_WIDTH, DEFAULT_HEIGHT)
 
 --Function we can call on profile change to update GUI
 function E:RefreshGUI()
 	self:RefreshCustomTextsConfigs()
-	ACR:NotifyChange("ElvUI")
+	E.Libs.AceConfigRegistry:NotifyChange("ElvUI")
 end
 
 E.Options.args = {
@@ -208,7 +211,7 @@ local exportTypeListOrder = {
 
 local exportString = ""
 local function ExportImport_Open(mode)
-	local frame = AceGUI:Create("Frame")
+	local frame = E.Libs.AceGUI:Create("Frame")
 	frame:SetTitle("")
 	frame:EnableResize(false)
 	frame:SetWidth(800)
@@ -216,7 +219,7 @@ local function ExportImport_Open(mode)
 	frame.frame:SetFrameStrata("FULLSCREEN_DIALOG")
 	frame:SetLayout("flow")
 
-	local box = AceGUI:Create("MultiLineEditBox")
+	local box = E.Libs.AceGUI:Create("MultiLineEditBox")
 	box:SetNumLines(30)
 	box:DisableButton(true)
 	box:SetWidth(800)
@@ -228,14 +231,14 @@ local function ExportImport_Open(mode)
 	--Remove OnCursorChanged script as it causes weird behaviour with long text
 	box.editBox:SetScript("OnCursorChanged", nil)
 
-	local label1 = AceGUI:Create("Label")
+	local label1 = E.Libs.AceGUI:Create("Label")
 	local font = GameFontHighlightSmall:GetFont()
 	label1:SetFont(font, 14)
 	label1:SetText(" ") --Set temporary text so height is set correctly
 	label1:SetWidth(800)
 	frame:AddChild(label1)
 
-	local label2 = AceGUI:Create("Label")
+	local label2 = E.Libs.AceGUI:Create("Label")
 	label2:SetFont(font, 14)
 	label2:SetText(" \n ")
 	label2:SetWidth(800)
@@ -244,14 +247,14 @@ local function ExportImport_Open(mode)
 	if mode == "export" then
 		frame:SetTitle(L["Export Profile"])
 
-		local profileTypeDropdown = AceGUI:Create("Dropdown")
+		local profileTypeDropdown = E.Libs.AceGUI:Create("Dropdown")
 		profileTypeDropdown:SetMultiselect(false)
 		profileTypeDropdown:SetLabel(L["Choose What To Export"])
 		profileTypeDropdown:SetList(profileTypeItems, profileTypeListOrder)
 		profileTypeDropdown:SetValue("profile") --Default export
 		frame:AddChild(profileTypeDropdown)
 
-		local exportFormatDropdown = AceGUI:Create("Dropdown")
+		local exportFormatDropdown = E.Libs.AceGUI:Create("Dropdown")
 		exportFormatDropdown:SetMultiselect(false)
 		exportFormatDropdown:SetLabel(L["Choose Export Format"])
 		exportFormatDropdown:SetList(exportTypeItems, exportTypeListOrder)
@@ -259,7 +262,7 @@ local function ExportImport_Open(mode)
 		exportFormatDropdown:SetWidth(150)
 		frame:AddChild(exportFormatDropdown)
 
-		local exportButton = AceGUI:Create("Button")
+		local exportButton = E.Libs.AceGUI:Create("Button")
 		exportButton:SetText(L["Export Now"])
 		exportButton:SetAutoWidth(true)
 		local function OnClick(self)
@@ -296,7 +299,7 @@ local function ExportImport_Open(mode)
 		end)
 	elseif mode == "import" then
 		frame:SetTitle(L["Import Profile"])
-		local importButton = AceGUI:Create("Button-ElvUI") --This version changes text color on SetDisabled
+		local importButton = E.Libs.AceGUI:Create("Button-ElvUI") --This version changes text color on SetDisabled
 		importButton:SetDisabled(true)
 		importButton:SetText(L["Import Now"])
 		importButton:SetAutoWidth(true)
@@ -315,7 +318,7 @@ local function ExportImport_Open(mode)
 		end)
 		frame:AddChild(importButton)
 
-		local decodeButton = AceGUI:Create("Button-ElvUI")
+		local decodeButton = E.Libs.AceGUI:Create("Button-ElvUI")
 		decodeButton:SetDisabled(true)
 		decodeButton:SetText(L["Decode Text"])
 		decodeButton:SetAutoWidth(true)
@@ -383,24 +386,24 @@ local function ExportImport_Open(mode)
 
 		exportString = ""
 
-		AceGUI:Release(widget)
-		ACD:Open("ElvUI")
+		E.Libs.AceGUI:Release(widget)
+		E.Libs.AceConfigDialog:Open("ElvUI")
 	end)
 
 	label1:SetText(" ")
 	label2:SetText(" ")
 
-	ACD:Close("ElvUI")
+	E.Libs.AceConfigDialog:Close("ElvUI")
 
 	GameTooltip_Hide()
 end
 
 --Create Profiles Table
-E.Options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(E.data)
-AC:RegisterOptionsTable("ElvProfiles", E.Options.args.profiles)
+E.Options.args.profiles = E.Libs.AceDBOptions:GetOptionsTable(E.data);
+E.Libs.AceConfig:RegisterOptionsTable("ElvProfiles", E.Options.args.profiles)
 E.Options.args.profiles.order = -10
 
-LibStub("LibDualSpec-1.0"):EnhanceOptions(E.Options.args.profiles, E.data)
+E.Libs.DualSpec:EnhanceOptions(E.Options.args.profiles, E.data)
 
 if not E.Options.args.profiles.plugins then
 	E.Options.args.profiles.plugins = {}

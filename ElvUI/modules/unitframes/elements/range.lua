@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
-local SpellRange = LibStub("SpellRange-1.0")
+local SpellRange = E.Libs.SpellRange
 
 local pairs, ipairs = pairs, ipairs
 

@@ -19,7 +19,7 @@ local PetActionBar_ShowGrid = PetActionBar_ShowGrid
 local PetActionBar_UpdateCooldowns = PetActionBar_UpdateCooldowns
 local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
 
-local Masque = LibStub("Masque", true)
+local Masque = E.Masque
 local MasqueGroup = Masque and Masque:Group("ElvUI", "Pet Bar")
 
 local bar = CreateFrame("Frame", "ElvUI_BarPet", E.UIParent, "SecureHandlerStateTemplate")

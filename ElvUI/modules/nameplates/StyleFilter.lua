@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local mod = E:GetModule("NamePlates")
-local LSM = LibStub("LibSharedMedia-3.0")
+local LSM = E.Libs.LSM
 
 local ipairs, next, pairs, rawget, rawset, select, setmetatable, tonumber, type, unpack = ipairs, next, pairs, rawget, rawset, select, setmetatable, tonumber, type, unpack
 local tinsert, tsort, twipe = table.insert, table.sort, table.wipe

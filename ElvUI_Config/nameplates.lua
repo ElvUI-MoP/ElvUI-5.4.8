@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI)
 local NP = E:GetModule("NamePlates")
-local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
+local ACD = E.Libs.AceConfigDialog
 
 local next, ipairs, pairs, type, tonumber = next, ipairs, pairs, type, tonumber
 local tremove, tinsert, tsort, tconcat = tremove, tinsert, table.sort, table.concat

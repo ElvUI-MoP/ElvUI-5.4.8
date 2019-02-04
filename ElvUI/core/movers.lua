@@ -1,5 +1,5 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
-local Sticky = LibStub("LibSimpleSticky-1.0")
+local Sticky = E.Libs.SimpleSticky
 
 local _G = _G
 local type, unpack, pairs, error = type, unpack, pairs, error

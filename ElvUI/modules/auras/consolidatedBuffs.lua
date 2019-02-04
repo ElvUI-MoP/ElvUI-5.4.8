@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local A = E:GetModule("Auras")
-local LSM = LibStub("LibSharedMedia-3.0")
+local LSM = E.Libs.LSM
 
 local _G = _G
 local unpack = unpack
@@ -14,7 +14,7 @@ local GetRaidBuffTrayAuraInfo = GetRaidBuffTrayAuraInfo
 local CooldownFrame_SetTimer = CooldownFrame_SetTimer
 local NUM_LE_RAID_BUFF_TYPES = NUM_LE_RAID_BUFF_TYPES
 
-local Masque = LibStub("Masque", true)
+local Masque = E.Masque
 local MasqueGroup = Masque and Masque:Group("ElvUI", "Consolidated Buffs")
 
 A.DefaultIcons = {

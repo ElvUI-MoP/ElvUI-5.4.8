@@ -182,7 +182,7 @@ function M:Update_ZoneText()
 
 	Minimap.location:SetText(strsub(GetMinimapZoneText(), 1, 46))
 	Minimap.location:SetTextColor(self:GetLocTextColor())
-	Minimap.location:FontTemplate(E.LSM:Fetch("font", E.db.general.minimap.locationFont), E.db.general.minimap.locationFontSize, E.db.general.minimap.locationFontOutline)
+	Minimap.location:FontTemplate(E.Libs.LSM:Fetch("font", E.db.general.minimap.locationFont), E.db.general.minimap.locationFontSize, E.db.general.minimap.locationFontOutline)
 end
 
 function M:PLAYER_REGEN_ENABLED()

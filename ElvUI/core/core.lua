@@ -1,6 +1,11 @@
-﻿local E, L, V, P, G = unpack(select(2, ...))
-local LSM = LibStub("LibSharedMedia-3.0")
-local Masque = LibStub("Masque", true)
+﻿local ElvUI = select(2, ...)
+local E, _, V, P, G = unpack(ElvUI)
+local LSM = E.Libs.LSM
+local Masque = E.Libs.Masque
+
+-- Locale doesn't exist yet, make it exist.
+local L = E.Libs.ACL:GetLocale("ElvUI", false)
+ElvUI[2] = L
 
 local _G = _G
 local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring
@@ -37,7 +42,6 @@ local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 -- Constants
-E.LSM = LSM
 E.noop = function() end
 E.title = format("|cff00dd91E|r|cffe5e3e3lvUI|r")
 E.myfaction, E.myLocalizedFaction = UnitFactionGroup("player")
@@ -1383,7 +1387,7 @@ local function CompareCPUDiff(showall, module, minCalls)
 	local greatestDiff, lastModule, mod, newUsage, calls, differance = 0
 
 	for name, oldUsage in pairs(CPU_USAGE) do
-		newName, newFunc = name:match("^([^:]+):(.+)$")
+		newName, newFunc = strmatch(name, "^([^:]+):(.+)$")
 		if not newFunc then
 			E:Print("CPU_USAGE:", name, newFunc)
 		else
@@ -1417,7 +1421,7 @@ function E:GetTopCPUFunc(msg)
 		return
 	end
 
-	local module, showall, delay, minCalls = msg:match("^(%S+)%s*(%S*)%s*(%S*)%s*(.*)$")
+	local module, showall, delay, minCalls = strmatch(msg, "^(%S+)%s*(%S*)%s*(%S*)%s*(.*)$")
 	local checkCore, mod = (not module or module == "") and "E"
 
 	showall = (showall == "true" and true) or false
@@ -1461,12 +1465,12 @@ function E:Initialize(loginFrame)
 	twipe(self.private)
 
 	self.myguid = UnitGUID("player")
-	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF)
+	self.data = E.Libs.AceDB:New("ElvDB", self.DF)
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
-	self.charSettings = LibStub("AceDB-3.0"):New("ElvPrivateDB", self.privateVars)
-	LibStub("LibDualSpec-1.0"):EnhanceDatabase(self.data, "ElvUI")
+	self.charSettings = E.Libs.AceDB:New("ElvPrivateDB", self.privateVars)
+	E.Libs.DualSpec:EnhanceDatabase(self.data, "ElvUI")
 	self.private = self.charSettings.profile
 	self.db = self.data.profile
 	self.global = self.data.global

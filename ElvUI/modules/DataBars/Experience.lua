@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local mod = E:GetModule("DataBars")
-local LSM = LibStub("LibSharedMedia-3.0")
+local LSM = E.Libs.LSM
 
 local _G = _G
 local format = format

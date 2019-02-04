@@ -18,10 +18,13 @@ local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 
 BINDING_HEADER_ELVUI = GetAddOnMetadata(..., "Title")
 
-local AddOnName, Engine = ...
-local AddOn = LibStub("AceAddon-3.0"):NewAddon(AddOnName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0")
+local AceAddon = _G.LibStub("AceAddon-3.0")
+local CallbackHandler = _G.LibStub("CallbackHandler-1.0")
 
-AddOn.callbacks = AddOn.callbacks or LibStub("CallbackHandler-1.0"):New(AddOn)
+local AddOnName, Engine = ...
+local AddOn = AceAddon:NewAddon(AddOnName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0")
+
+AddOn.callbacks = AddOn.callbacks or CallbackHandler:New(AddOn)
 
 -- Defaults
 AddOn.DF = {}
@@ -36,14 +39,36 @@ AddOn.Options = {
 	args = {}
 }
 
-local Locale = LibStub("AceLocale-3.0"):GetLocale(AddOnName, false)
 Engine[1] = AddOn
-Engine[2] = Locale
+Engine[2] = {}
 Engine[3] = AddOn.privateVars.profile
 Engine[4] = AddOn.DF.profile
 Engine[5] = AddOn.DF.global
 
 _G[AddOnName] = Engine
+
+AddOn.oUF = Engine.oUF
+AddOn.Libs = {
+	AceAddon = AceAddon,
+	
+	AceDB = _G.LibStub("AceDB-3.0"),
+	EP = _G.LibStub("LibElvUIPlugin-1.0"),
+	LSM = _G.LibStub("LibSharedMedia-3.0"),
+	ACL = _G.LibStub("AceLocale-3.0"),
+	LAB = _G.LibStub("LibActionButton-1.0"),
+	LDB = _G.LibStub("LibDataBroker-1.1"),
+	DualSpec = _G.LibStub("LibDualSpec-1.0"),
+	SimpleSticky = _G.LibStub("LibSimpleSticky-1.0"),
+	SpellRange = _G.LibStub("SpellRange-1.0"),
+	ItemSearch = _G.LibStub("LibItemSearch-1.2"),
+	Compress = _G.LibStub("LibCompress"),
+	Base64 = _G.LibStub("LibBase64-1.0-ElvUI"),
+	Masque = _G.LibStub("Masque", true)
+} -- added on ElvUI_Config load: AceGUI, AceConfig, AceConfigDialog, AceConfigRegistry, AceDBOptions
+
+-- backwards compatible for plugins
+AddOn.LSM = AddOn.Libs.LSM 
+AddOn.Masque = AddOn.Libs.Masque
 
 function AddOn:OnInitialize()
 	if not ElvCharacterDB then
@@ -145,9 +170,8 @@ function AddOn:PLAYER_REGEN_DISABLED()
 	local err = false
 
 	if IsAddOnLoaded("ElvUI_Config") then
-		local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
-
-		if ACD.OpenFrames[AddOnName] then
+		local ACD = self.Libs.AceConfigDialog
+		if ACD and ACD.OpenFrames and ACD.OpenFrames[AddOnName] then
 			self:RegisterEvent("PLAYER_REGEN_ENABLED")
 			ACD:Close(AddOnName)
 			err = true
@@ -195,27 +219,32 @@ function AddOn:ToggleConfig(msg)
 	end
 
 	if not IsAddOnLoaded("ElvUI_Config") then
+		local noConfig
 		local _, _, _, _, _, reason = GetAddOnInfo("ElvUI_Config")
 		if reason ~= "MISSING" and reason ~= "DISABLED" then
 			self.GUIFrame = false
 			LoadAddOn("ElvUI_Config")
+
 			--For some reason, GetAddOnInfo reason is "DEMAND_LOADED" even if the addon is disabled.
 			--Workaround: Try to load addon and check if it is loaded right after.
-			if not IsAddOnLoaded("ElvUI_Config") then
-				self:Print("|cffff0000Error -- Addon 'ElvUI_Config' not found or is disabled.|r")
-				return
-			end
-			if GetAddOnMetadata("ElvUI_Config", "Version") ~= "1.01" then
+			if not IsAddOnLoaded("ElvUI_Config") then noConfig = true end
+
+			-- version check elvui config if it's actually enabled
+			if (not noConfig) and GetAddOnMetadata("ElvUI_Config", "Version") ~= "1.01" then
 				self:StaticPopup_Show("CLIENT_UPDATE_REQUEST")
 			end
 		else
+			noConfig = true
+		end
+
+		if noConfig then
 			self:Print("|cffff0000Error -- Addon 'ElvUI_Config' not found or is disabled.|r") 
 			return
 		end
 	end
 
-	local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
-	local ConfigOpen = ACD.OpenFrames[AddOnName]
+	local ACD = self.Libs.AceConfigDialog
+	local ConfigOpen = ACD and ACD.OpenFrames and ACD.OpenFrames[AddOnName]
 
 	local pages, msgStr
 	if msg and msg ~= "" then

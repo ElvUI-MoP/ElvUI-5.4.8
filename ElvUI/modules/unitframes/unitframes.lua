@@ -1,7 +1,7 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:NewModule("UnitFrames", "AceTimer-3.0", "AceEvent-3.0", "AceHook-3.0")
-local LSM = LibStub("LibSharedMedia-3.0")
-UF.LSM = LSM
+local LSM = E.Libs.LSM
+UF.LSM = E.Libs.LSM
 
 local _G = _G
 local select, pairs, type, unpack, assert, tostring = select, pairs, type, unpack, assert, tostring

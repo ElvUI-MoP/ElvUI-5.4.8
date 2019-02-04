@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local A = E:NewModule("Auras", "AceHook-3.0", "AceEvent-3.0")
-local LSM = LibStub("LibSharedMedia-3.0")
+local LSM = E.Libs.LSM
 
 local GetTime = GetTime
 local select, unpack = select, unpack
@@ -17,7 +17,7 @@ local GetItemQualityColor = GetItemQualityColor
 local GetInventoryItemQuality = GetInventoryItemQuality
 local GetInventoryItemTexture = GetInventoryItemTexture
 
-local Masque = LibStub("Masque", true)
+local Masque = E.Masque
 local MasqueGroupBuffs = Masque and Masque:Group("ElvUI", "Buffs")
 local MasqueGroupDebuffs = Masque and Masque:Group("ElvUI", "Debuffs")
 

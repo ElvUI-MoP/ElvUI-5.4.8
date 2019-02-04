@@ -86,7 +86,7 @@ local function SkinDropdownPullout(self)
 end
 
 function S:SkinAce3()
-	local AceGUI = LibStub("AceGUI-3.0", true)
+	local AceGUI = E.Libs.AceGUI
 	if not AceGUI then return end
 	local oldRegisterAsWidget = AceGUI.RegisterAsWidget
 
@@ -422,7 +422,12 @@ function S:SkinAce3()
 end
 
 local function attemptSkin()
-	local AceGUI = LibStub("AceGUI-3.0", true)
+	local AceGUI = E.Libs.AceGUI
+	if not AceGUI then
+		AceGUI = _G.LibStub("AceGUI-3.0", true)
+		E.Libs.AceGUI = AceGUI
+	end
+
 	if AceGUI and (AceGUI.RegisterAsContainer ~= RegisterAsContainer or AceGUI.RegisterAsWidget ~= RegisterAsWidget) then
 		S:SkinAce3()
 	end

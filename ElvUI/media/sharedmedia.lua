@@ -1,6 +1,5 @@
-local LSM = LibStub("LibSharedMedia-3.0")
-
-if LSM == nil then return end
+local E, L, V, P, G = unpack(select(2, ...))
+local LSM = E.Libs.LSM
 
 LSM:Register("statusbar", "ElvUI Gloss", [[Interface\AddOns\ElvUI\media\textures\normTex]])
 LSM:Register("statusbar", "ElvUI Norm", [[Interface\AddOns\ElvUI\media\textures\normTex2]])

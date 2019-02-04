@@ -1,6 +1,6 @@
 -- Spanish localization file for esES and esMX.
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("ElvUI", "esES") or AceLocale:NewLocale("ElvUI", "esMX")
+local E = unpack(select(2, ...))
+local L = E.Libs.ACL:NewLocale("ElvUI", "esES") or E.Libs.ACL:NewLocale("ElvUI", "esMX")
 if not L then return end
 
 --*_ADDON locales

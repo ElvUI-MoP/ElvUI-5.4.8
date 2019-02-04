@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local mod = E:GetModule("NamePlates")
-local LSM = LibStub("LibSharedMedia-3.0")
+local LSM = E.Libs.LSM
 
 function mod:UpdateElement_Name(frame, triggered)
 	if not triggered then
