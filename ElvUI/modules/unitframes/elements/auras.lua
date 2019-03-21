@@ -525,6 +525,7 @@ function UF:AuraFilter(unit, button, name, _, _, _, debuffType, duration, expira
 	button.duration = duration
 	button.expiration = expiration
 	button.name = name
+	button.spellID = spellID
 	button.owner = caster --what uses this?
 	button.spell = name --what uses this? (SortAurasByName?)
 	button.priority = 0
