@@ -348,7 +348,7 @@ function CH:StyleChat(frame)
 	end
 
 	--Work around broken SetAltArrowKeyMode API. Code from Prat
-	local function OnKeyDown(editBox, key)
+	local function OnArrowPressed(editBox, key)
 		if (not editBox.historyLines) or #editBox.historyLines == 0 then return end
 
 		if key == "DOWN" then
@@ -385,7 +385,7 @@ function CH:StyleChat(frame)
 	--Work around broken SetAltArrowKeyMode API
 	editbox.historyLines = ElvCharacterDB.ChatEditHistory
 	editbox.historyIndex = 0
-	editbox:HookScript("OnKeyDown", OnKeyDown)
+	editbox:HookScript("OnArrowPressed", OnArrowPressed)
 	editbox:Hide()
 
 	editbox:HookScript("OnEditFocusGained", function(editBox)
