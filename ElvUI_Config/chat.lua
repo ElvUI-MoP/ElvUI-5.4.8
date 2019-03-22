@@ -136,7 +136,6 @@ E.Options.args.chat = {
 					desc = L["Require holding the Alt key down to move cursor or cycle through messages in the editbox."],
 					set = function(self, value)
 						E.db.chat.useAltKey = value
-						CH:UpdateSettings()
 					end
 				},
 				autoClosePetBattleLog = {
