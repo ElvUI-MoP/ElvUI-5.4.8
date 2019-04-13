@@ -1,4 +1,5 @@
 ﻿local E, L, V, P, G = unpack(ElvUI)
+local B = E:GetModule("Blizzard")
 
 local _G = _G
 
