@@ -348,8 +348,8 @@ function CH:StyleChat(frame)
 	end
 
 	--Work around broken SetAltArrowKeyMode API. Code from Prat
-	local function OnKeyDown(editBox, key)
-		if (not editBox.historyLines) or #editBox.historyLines == 0 then return end
+	local function OnArrowPressed(editBox, key)
+		if (not editBox.historyLines) or #editBox.historyLines == 0 or CH.db.useAltKey then return end
 
 		if key == "DOWN" then
 			editBox.historyIndex = editBox.historyIndex - 1
@@ -377,7 +377,7 @@ function CH:StyleChat(frame)
 	_G[format(editbox:GetName().."FocusMid", id)]:Kill()
 	_G[format(editbox:GetName().."FocusRight", id)]:Kill()
 	editbox:SetTemplate("Default", true)
-	editbox:SetAltArrowKeyMode(CH.db.useAltKey)
+	editbox:SetAltArrowKeyMode(nil)
 	editbox:SetAllPoints(LeftChatDataPanel)
 	self:SecureHook(editbox, "AddHistoryLine", "ChatEdit_AddHistory")
 	editbox:HookScript("OnTextChanged", OnTextChanged)
@@ -385,7 +385,7 @@ function CH:StyleChat(frame)
 	--Work around broken SetAltArrowKeyMode API
 	editbox.historyLines = ElvCharacterDB.ChatEditHistory
 	editbox.historyIndex = 0
-	editbox:HookScript("OnKeyDown", OnKeyDown)
+	editbox:HookScript("OnArrowPressed", OnArrowPressed)
 	editbox:Hide()
 
 	editbox:HookScript("OnEditFocusGained", function(editBox)
@@ -469,15 +469,6 @@ function CH:AddMessage(msg, infoR, infoG, infoB, infoID, accessID, typeID, isHis
 	end
 
 	self.OldAddMessage(self, msg, infoR, infoG, infoB, infoID, accessID, typeID)
-end
-
-function CH:UpdateSettings()
-	for i = 1, CreatedFrames do
-		local chat = _G[format("ChatFrame%d", i)]
-		local name = chat:GetName()
-		local editbox = _G[name.."EditBox"]
-		editbox:SetAltArrowKeyMode(CH.db.useAltKey)
-	end
 end
 
 local removeIconFromLine
