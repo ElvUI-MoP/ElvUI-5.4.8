@@ -13,7 +13,8 @@ G["general"] = {
 		["xOffset"] = 0,
 		["yOffset"] = 0
 	},
-	["showMissingTalentAlert"] = true
+	["showMissingTalentAlert"] = true,
+	["hideObjectivesInCombat"] = true
 }
 
 G["classtimer"] = {}

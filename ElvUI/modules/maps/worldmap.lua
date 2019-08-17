@@ -69,42 +69,46 @@ function M:SetSmallWorldMap()
 end
 
 function M:PLAYER_REGEN_ENABLED()
-	WorldMapFrameSizeDownButton:Enable()
-	WorldMapFrameSizeUpButton:Enable()
-	WorldMapShowDropDownButton:Enable()
-	WorldMapTrackQuest:Enable()
+	if E.global.general.hideObjectivesInCombat then
+		WorldMapFrameSizeDownButton:Enable()
+		WorldMapFrameSizeUpButton:Enable()
+		WorldMapShowDropDownButton:Enable()
+		WorldMapTrackQuest:Enable()
 
-	if WorldMapFrame.questMap then
-		WatchFrame.showObjectives = WatchFrame.oldShowObjectives or true
-		WorldMapBlobFrame.Show = WorldMapBlobFrame:Show()
-		WorldMapPOIFrame.Show = WorldMapPOIFrame:Show()
-		WorldMapBlobFrame:Show()
-		WorldMapPOIFrame:Show()
+		if WorldMapFrame.questMap then
+			WatchFrame.showObjectives = WatchFrame.oldShowObjectives or true
+			WorldMapBlobFrame.Show = WorldMapBlobFrame:Show()
+			WorldMapPOIFrame.Show = WorldMapPOIFrame:Show()
+			WorldMapBlobFrame:Show()
+			WorldMapPOIFrame:Show()
 
-		WatchFrame_Update()
+			WatchFrame_Update()
+		end
 	end
 end
 
 function M:PLAYER_REGEN_DISABLED()
-	WorldMapFrameSizeDownButton:Disable()
-	WorldMapFrameSizeUpButton:Disable()
-	WorldMapShowDropDownButton:Disable()
-	WorldMapTrackQuest:Disable()
+	if E.global.general.hideObjectivesInCombat then
+		WorldMapFrameSizeDownButton:Disable()
+		WorldMapFrameSizeUpButton:Disable()
+		WorldMapShowDropDownButton:Disable()
+		WorldMapTrackQuest:Disable()
 
-	if WorldMapFrame.questMap then
-		if WORLDMAP_SETTINGS.size == WORLDMAP_QUESTLIST_SIZE then
-			WorldMapFrame_SetFullMapView()
+		if WorldMapFrame.questMap then
+			if WORLDMAP_SETTINGS.size == WORLDMAP_QUESTLIST_SIZE then
+				WorldMapFrame_SetFullMapView()
+			end
+
+			WatchFrame.oldShowObjectives = WatchFrame.showObjectives
+			WatchFrame.showObjectives = nil
+			WorldMapBlobFrame:Hide()
+			WorldMapPOIFrame:Hide()
+
+			WorldMapBlobFrame.Show = E.noop
+			WorldMapPOIFrame.Show = E.noop
+
+			WatchFrame_Update()
 		end
-
-		WatchFrame.oldShowObjectives = WatchFrame.showObjectives
-		WatchFrame.showObjectives = nil
-		WorldMapBlobFrame:Hide()
-		WorldMapPOIFrame:Hide()
-
-		WorldMapBlobFrame.Show = E.noop
-		WorldMapPOIFrame.Show = E.noop
-
-		WatchFrame_Update()
 	end
 end
 

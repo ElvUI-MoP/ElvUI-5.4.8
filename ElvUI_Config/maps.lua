@@ -35,8 +35,16 @@ E.Options.args.maps = {
 							get = function(info) return E.global.general.smallerWorldMap end,
 							set = function(info, value) E.global.general.smallerWorldMap = value E:StaticPopup_Show("GLOBAL_RL") end
 						},
-						mapAlphaWhenMoving = {
+						hideObjectivesInCombat = {
 							order = 2,
+							type = "toggle",
+							name = L["Hide objectives in combat"],
+							desc = L["Hide quest objectives from the world map while in combat."],
+							get = function(info) return E.global.general.hideObjectivesInCombat end,
+							set = function(info, value) E.global.general.hideObjectivesInCombat = value E:StaticPopup_Show("GLOBAL_RL") end
+						},
+						mapAlphaWhenMoving = {
+							order = 3,
 							type = "range",
 							name = L["Map Opacity When Moving"],
 							isPercent = true,
