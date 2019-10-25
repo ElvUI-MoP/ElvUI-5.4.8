@@ -32,7 +32,7 @@ local tooltips = {
 }
 
 function M:SetLargeWorldMap()
-	if InCombatLockdown() then return end
+	--if InCombatLockdown() then return end
 
 	WorldMapFrame:SetParent(E.UIParent)
 	WorldMapFrame:EnableKeyboard(false)
@@ -62,7 +62,7 @@ function M:SetLargeWorldMap()
 end
 
 function M:SetSmallWorldMap()
-	if InCombatLockdown() then return end
+	--if InCombatLockdown() then return end
 
 	WorldMapFrameSizeUpButton:Show()
 	WorldMapFrameSizeDownButton:Hide()
