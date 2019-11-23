@@ -886,6 +886,7 @@ local function SendRecieve(_, event, prefix, message, _, sender)
 
 		if prefix == "ELVUI_VERSIONCHK" then
 			local msg, ver = tonumber(message), tonumber(E.version)
+			if msg and (msg > 5) then return end -- ignore retail versions
 			if msg and (msg > ver) then -- you're outdated D:
 				if not E.recievedOutOfDateMessage then
 					E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"])
