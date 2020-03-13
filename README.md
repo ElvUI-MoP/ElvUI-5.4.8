@@ -24,8 +24,6 @@ This UI will arrange your interface to be more flexible and practical.
 <br />
 [ElvUI_EnhancedFriendsList](https://github.com/ElvUI-MoP/ElvUI_EnhancedFriendsList-5.4.8)
 <br />
-[ElvUI_ExtraActionBars](https://github.com/ElvUI-MoP/ElvUI_ExtraActionBars-5.4.8)
-<br />
 [ElvUI_MicrobarEnhancement](https://github.com/ElvUI-MoP/ElvUI_MicrobarEnhancement-5.4.8)
 <br />
 [ElvUI_MinimapButtons](https://github.com/ElvUI-MoP/ElvUI_MinimapButtons-5.4.8)
