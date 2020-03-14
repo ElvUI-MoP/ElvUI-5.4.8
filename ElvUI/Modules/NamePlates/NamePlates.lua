@@ -358,6 +358,7 @@ function NP:OnShow(isConfig, dontHideHighlight)
 	frame.UnitName = gsub(frame.oldName:GetText(), FSPAT, "")
 	frame.UnitReaction = reaction
 	frame.UnitClass = NP:UnitClass(frame, unitType)
+	frame.UnitTrivial = self:GetChildren():GetScale() < 1
 
 	if unit then
 		frame.unit = unit
@@ -463,6 +464,7 @@ function NP:OnHide(isConfig, dontHideHighlight)
 	frame.UnitName = nil
 	frame.UnitClass = nil
 	frame.UnitReaction = nil
+	frame.UnitTrivial = nil
 	frame.TopLevelFrame = nil
 	frame.TopOffset = nil
 	frame.ThreatReaction = nil
@@ -811,6 +813,13 @@ function NP:OnUpdate()
         if frame.UnitReaction ~= NP:GetUnitInfo(frame) then
             NP:UpdateAllFrame(frame, nil, true)
         end
+
+		if NP.db.trivial then
+			local trivial = frame:GetParent():GetChildren():GetScale() < 1
+			if frame.UnitTrivial ~= trivial then
+				frame.UnitTrivial = trivial
+			end
+		end
 
 		local status = NP:UnitDetailedThreatSituation(frame)
 		if frame.ThreatStatus ~= status then

@@ -7,7 +7,7 @@ local GetComboPoints = GetComboPoints
 local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
 function NP:Update_CPoints(frame)
-	if frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "FRIENDLY_NPC" then return end
+	if frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "FRIENDLY_NPC" or (frame.UnitTrivial and NP.db.trivial) then return end
 	if not self.db.units[frame.UnitType].comboPoints.enable then return end
 
 	local numPoints

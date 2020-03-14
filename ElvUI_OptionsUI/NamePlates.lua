@@ -3501,8 +3501,13 @@ E.Options.args.nameplate = {
 							desc = L["Use the Name Color of the unit for the Name Glow."],
 							disabled = function() return not E.db.nameplates.highlight end
 						},
-						targetGroup = {
+						trivial = {
 							order = 11,
+							type = "toggle",
+							name = L["Trivial"]
+						},
+						targetGroup = {
+							order = 12,
 							type = "group",
 							name = L["TARGET"],
 							guiInline = true,

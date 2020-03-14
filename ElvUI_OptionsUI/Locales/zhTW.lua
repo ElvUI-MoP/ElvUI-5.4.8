@@ -1126,6 +1126,7 @@ L["Transparent Backdrops"] = true
 L["Transparent Buttons"] = true
 L["Transparent"] = "透明"
 L["Triggers"] = "觸發器"
+L["Trivial"] = true
 L["Turtle Color"] = "減傷類的顏色"
 L["Tutorials"] = true
 L["Under Health Threshold"] = "低於血量閾值"

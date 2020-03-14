@@ -3,7 +3,7 @@ local NP = E:GetModule("NamePlates")
 local LSM = E.Libs.LSM
 
 function NP:Update_Level(frame)
-	if not self.db.units[frame.UnitType].level.enable then return end
+	if not self.db.units[frame.UnitType].level.enable or (frame.UnitTrivial and NP.db.trivial) then return end
 
 	local levelText, r, g, b = self:UnitLevel(frame)
 	local level = frame.Level

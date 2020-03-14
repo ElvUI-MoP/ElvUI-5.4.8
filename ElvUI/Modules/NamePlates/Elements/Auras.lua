@@ -272,7 +272,7 @@ function NP:Update_Auras(frame)
 	end
 
 	local db = NP.db.units[frame.UnitType].buffs
-	if db.enable then
+	if db.enable and not (frame.UnitTrivial and NP.db.trivial) then
 		local buffs = frame.Buffs
 		buffs.visibleBuffs = NP:Update_AuraIcons(buffs, guid, buffs.filter or "HELPFUL", db.perrow * db.numrows)
 
@@ -284,7 +284,7 @@ function NP:Update_Auras(frame)
 	end
 
 	db = NP.db.units[frame.UnitType].debuffs
-	if db.enable then
+	if db.enable and not (frame.UnitTrivial and NP.db.trivial) then
 		local debuffs = frame.Debuffs
 		debuffs.visibleDebuffs = NP:Update_AuraIcons(debuffs, guid, debuffs.filter or "HARMFUL", db.perrow * db.numrows, true)
 

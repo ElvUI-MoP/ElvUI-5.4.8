@@ -34,9 +34,14 @@ function NP:Update_Name(frame, triggered)
 	if not triggered then
 		name:ClearAllPoints()
 		if self.db.units[frame.UnitType].health.enable or (self.db.alwaysShowTargetHealth and frame.isTarget) then
-			name:SetJustifyH("LEFT")
-			name:SetPoint("BOTTOMLEFT", frame.Health, "TOPLEFT", 0, E.Border*2)
-			name:SetPoint("BOTTOMRIGHT", frame.Level, "BOTTOMLEFT")
+			if frame.UnitTrivial and NP.db.trivial then
+				name:SetJustifyH("CENTER")
+				name:SetPoint("BOTTOM", frame.Health, "TOP", 0, E.Border*2)
+			else
+				name:SetJustifyH("LEFT")
+				name:SetPoint("BOTTOMLEFT", frame.Health, "TOPLEFT", 0, E.Border*2)
+				name:SetPoint("BOTTOMRIGHT", frame.Level, "BOTTOMLEFT")
+			end
 		else
 			name:SetJustifyH("CENTER")
 			name:SetPoint("TOP", frame)

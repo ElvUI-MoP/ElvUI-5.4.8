@@ -293,6 +293,7 @@ P.nameplates = {
 	cutawayHealthLength = 0.3,
 	cutawayHealthFadeOutTime = 0.6,
 	highlight = true,
+	trivial = true,
 	clickThrough = {
 		friendly = false,
 		enemy = false,

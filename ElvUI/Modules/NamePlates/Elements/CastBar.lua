@@ -68,7 +68,7 @@ function NP:Update_CastBarOnShow()
 	local frame = self:GetParent():GetParent().UnitFrame
 	local db = NP.db.units[frame.UnitType]
 
-	if db.castbar.enable and (db.health.enable or (frame.isTarget and NP.db.alwaysShowTargetHealth)) and (frame.NameOnlyChanged == nil and frame.IconOnlyChanged == nil) then
+	if db.castbar.enable and (db.health.enable or (frame.isTarget and NP.db.alwaysShowTargetHealth)) and (frame.NameOnlyChanged == nil and frame.IconOnlyChanged == nil) and not (frame.UnitTrivial and NP.db.trivial) then
 		frame.CastBar:Show()
 	end
 end

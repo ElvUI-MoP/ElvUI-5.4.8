@@ -117,7 +117,7 @@ function NP:Update_Health(frame)
 	frame.Health:SetValue(health)
 	frame.FlashTexture:Point("TOPRIGHT", frame.Health:GetStatusBarTexture(), "TOPRIGHT") --idk why this fixes this
 
-	if self.db.units[frame.UnitType].health.text.enable then
+	if self.db.units[frame.UnitType].health.text.enable and not frame.UnitTrivial then
 		frame.Health.Text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].health.text.format, health, maxHealth))
 	end
 end
@@ -137,6 +137,7 @@ end
 function NP:Update_HealthBar(frame)
 	if self.db.units[frame.UnitType].health.enable or (frame.isTarget and self.db.alwaysShowTargetHealth) then
 		frame.Health:Show()
+		frame.Health.Text:SetShown(self.db.units[frame.UnitType].health.text.enable and not frame.UnitTrivial)
 	else
 		frame.Health:Hide()
 	end
@@ -145,16 +146,20 @@ end
 function NP:Configure_HealthBarScale(frame, scale, noPlayAnimation)
 	local db = NP.db.units[frame.UnitType].health
 
+	local trivial = frame.UnitTrivial and NP.db.trivial
+	local width = trivial and 60 or db.width
+	local height = trivial and 10 or db.height
+
 	if noPlayAnimation then
-		frame.Health:SetWidth(db.width * scale)
-		frame.Health:SetHeight(db.height * scale)
+		frame.Health:SetWidth(width * scale)
+		frame.Health:SetHeight(height * scale)
 	else
 		if frame.Health.scale:IsPlaying() then
 			frame.Health.scale:Stop()
 		end
 
-		frame.Health.scale.width:SetChange(db.width * scale)
-		frame.Health.scale.height:SetChange(db.height * scale)
+		frame.Health.scale.width:SetChange(width * scale)
+		frame.Health.scale.height:SetChange(height * scale)
 		frame.Health.scale:Play()
 	end
 end
@@ -177,7 +182,7 @@ function NP:Configure_Health(frame, configuring)
 			healthBar.Text:ClearAllPoints()
 			healthBar.Text:Point(E.InversePoints[db.text.position], db.text.parent == "Nameplate" and frame or frame[db.text.parent], db.text.position, db.text.xOffset, db.text.yOffset)
 			healthBar.Text:FontTemplate(LSM:Fetch("font", db.text.font), db.text.fontSize, db.text.fontOutline)
-			healthBar.Text:Show()
+			healthBar.Text:SetShown(not frame.UnitTrivial)
 		else
 			healthBar.Text:Hide()
 		end

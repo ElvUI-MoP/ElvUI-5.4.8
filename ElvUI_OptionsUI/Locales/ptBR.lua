@@ -1126,6 +1126,7 @@ L["Transparent Backdrops"] = true
 L["Transparent Buttons"] = true
 L["Transparent"] = "Transparente"
 L["Triggers"] = true
+L["Trivial"] = true
 L["Turtle Color"] = "Cor para Tartaruga"
 L["Tutorials"] = true
 L["Under Health Threshold"] = true
