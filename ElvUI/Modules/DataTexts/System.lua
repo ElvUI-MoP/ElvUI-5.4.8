@@ -61,7 +61,7 @@ local memoryTable = {}
 local cpuTable = {}
 local function RebuildAddonList()
 	local addOnCount = GetNumAddOns()
-	if addOnCount == #memoryTable then return end
+	if (addOnCount == #memoryTable) then return end
 
 	-- Number of loaded addons changed, create new memoryTable for all addons
 	wipe(memoryTable)
@@ -133,8 +133,10 @@ local function OnEnter(self)
 
 	local totalMemory = UpdateMemory()
 	local bandwidth = GetAvailableBandwidth()
+	local _, _, homePing, worldPing = GetNetStats()
 
-	DT.tooltip:AddDoubleLine(L["Home Latency:"], format(homeLatencyString, select(3, GetNetStats())), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
+	DT.tooltip:AddDoubleLine(L["Home Latency:"], format(homeLatencyString, homePing), 0.69, 0.31, 0.31,0.84, 0.75, 0.65)
+	DT.tooltip:AddDoubleLine(L["World Latency:"], format(homeLatencyString, worldPing), 0.69, 0.31, 0.31,0.84, 0.75, 0.65)
 
 	if GetCVarBool("useIPv6") then
 		local ipTypeHome, ipTypeWorld = GetNetIpTypes()

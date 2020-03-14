@@ -40,7 +40,7 @@ function E:DropDown(list, frame, xOffset, yOffset)
 		frame.buttons[i]:Hide()
 	end
 
-	for i = 1, #list do 
+	for i = 1, #list do
 		if not frame.buttons[i] then
 			frame.buttons[i] = CreateFrame("Button", nil, frame)
 
@@ -74,7 +74,7 @@ function E:DropDown(list, frame, xOffset, yOffset)
 	end
 
 	frame:Height((#list * BUTTON_HEIGHT) + PADDING * 2)
-	frame:Width(BUTTON_WIDTH + PADDING * 2)	
+	frame:Width(BUTTON_WIDTH + PADDING * 2)
 
 	local UIScale = UIParent:GetScale()
 	local x, y = GetCursorPosition()

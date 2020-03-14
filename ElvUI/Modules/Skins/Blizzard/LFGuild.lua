@@ -2,10 +2,10 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local pairs, unpack = pairs, unpack, select
+local pairs, unpack = pairs, unpack
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.lfguild ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfguild then return end
 
 	local checkbox = {
 		"LookingForGuildPvPButton",
@@ -21,7 +21,7 @@ local function LoadSkin()
 		S:HandleCheckBox(_G[v])
 	end
 
-	LookingForGuildFrameInset:StripTextures(false)
+	LookingForGuildFrameInset:StripTextures()
 	LookingForGuildFrame:StripTextures()
 	LookingForGuildFrame:SetTemplate("Transparent")
 
@@ -35,8 +35,8 @@ local function LoadSkin()
 
 	S:HandleCloseButton(LookingForGuildFrameCloseButton)
 
+	LookingForGuildCommentInputFrame:StripTextures()
 	LookingForGuildCommentInputFrame:CreateBackdrop("Transparent")
-	LookingForGuildCommentInputFrame:StripTextures(false)
 
 	for i = 1, 5 do
 		local button = _G["LookingForGuildBrowseFrameContainerButton"..i]

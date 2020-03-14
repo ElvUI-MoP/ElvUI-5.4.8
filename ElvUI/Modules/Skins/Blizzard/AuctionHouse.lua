@@ -9,9 +9,8 @@ local CreateFrame = CreateFrame
 local GetAuctionSellItemInfo = GetAuctionSellItemInfo
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.auctionhouse ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.auctionhouse then return end
 
-	local AuctionFrame = _G["AuctionFrame"]
 	AuctionFrame:StripTextures(true)
 	AuctionFrame:SetTemplate("Transparent")
 
@@ -109,27 +108,39 @@ local function LoadSkin()
 		local tab = _G["AuctionFilterButton"..i]
 
 		tab:StripTextures()
-		S:HandleButtonHighlight(tab)
+		tab:SetHighlightTexture(E.Media.Textures.Highlight)
+		tab:GetHighlightTexture():SetInside()
+		tab:GetHighlightTexture():SetAlpha(0.35)
 	end
 
 	S:HandleCloseButton(AuctionFrameCloseButton)
 	AuctionFrameCloseButton:Point("TOPRIGHT", 2, 2)
 
-	AuctionFrameMoneyFrame:Point("BOTTOMRIGHT", AuctionFrame, "BOTTOMLEFT", 181, 11) 
+	AuctionFrameMoneyFrame:Point("BOTTOMRIGHT", AuctionFrame, "BOTTOMLEFT", 181, 11)
 
 	-- Browse Frame
+	BrowseTitle:ClearAllPoints()
+	BrowseTitle:Point("TOP", AuctionFrame, "TOP", 0, -5)
 	BrowseScrollFrame:StripTextures()
 
 	BrowseFilterScrollFrame:StripTextures()
 
 	S:HandleScrollBar(BrowseFilterScrollFrameScrollBar)
+	BrowseFilterScrollFrameScrollBar:ClearAllPoints()
+	BrowseFilterScrollFrameScrollBar:Point("TOPRIGHT", BrowseFilterScrollFrame, "TOPRIGHT", 22, -18)
+	BrowseFilterScrollFrameScrollBar:Point("BOTTOMRIGHT", BrowseFilterScrollFrame, "BOTTOMRIGHT", 0, 17)
 	S:HandleScrollBar(BrowseScrollFrameScrollBar)
+	BrowseScrollFrameScrollBar:ClearAllPoints()
+	BrowseScrollFrameScrollBar:Point("TOPRIGHT", BrowseScrollFrame, "TOPRIGHT", 24, -18)
+	BrowseScrollFrameScrollBar:Point("BOTTOMRIGHT", BrowseScrollFrame, "BOTTOMRIGHT", 0, 18)
 
-	S:HandleNextPrevButton(BrowsePrevPageButton)
+	S:HandleNextPrevButton(BrowsePrevPageButton, nil, nil, true)
 	BrowsePrevPageButton:Point("TOPLEFT", 640, -50)
+	BrowsePrevPageButton:Size(32)
 
-	S:HandleNextPrevButton(BrowseNextPageButton)
+	S:HandleNextPrevButton(BrowseNextPageButton, nil, nil, true)
 	BrowseNextPageButton:Point("TOPRIGHT", 60, -50)
+	BrowseNextPageButton:Size(32)
 
 	BrowseCloseButton:Point("BOTTOMRIGHT", 66, 6)
 	BrowseBuyoutButton:Point("RIGHT", BrowseCloseButton, "LEFT", -4, 0)
@@ -147,6 +158,9 @@ local function LoadSkin()
 	BrowseBidPrice:Point("BOTTOM", 25, 10)
 
 	-- Bid Frame
+	BidTitle:ClearAllPoints()
+	BidTitle:Point("TOP", AuctionFrame, "TOP", 0, -5)
+
 	BidScrollFrame:StripTextures()
 
 	BidCloseButton:Point("BOTTOMRIGHT", 66, 6)
@@ -155,10 +169,21 @@ local function LoadSkin()
 
 	BidBidPrice:Point("BOTTOM", 25, 10)
 
+	S:HandleScrollBar(BidScrollFrameScrollBar)
+	BidScrollFrameScrollBar:ClearAllPoints()
+	BidScrollFrameScrollBar:Point("TOPRIGHT", BidScrollFrame, "TOPRIGHT", 23, -18)
+	BidScrollFrameScrollBar:Point("BOTTOMRIGHT", BidScrollFrame, "BOTTOMRIGHT", 0, 16)
+
 	-- Auctions Frame
+	AuctionsTitle:ClearAllPoints()
+	AuctionsTitle:Point("TOP", AuctionFrame, "TOP", 0, -5)
+
 	AuctionsScrollFrame:StripTextures()
 
 	S:HandleScrollBar(AuctionsScrollFrameScrollBar)
+	AuctionsScrollFrameScrollBar:ClearAllPoints()
+	AuctionsScrollFrameScrollBar:Point("TOPRIGHT", AuctionsScrollFrame, "TOPRIGHT", 23, -20)
+	AuctionsScrollFrameScrollBar:Point("BOTTOMRIGHT", AuctionsScrollFrame, "BOTTOMRIGHT", 0, 18)
 
 	AuctionsCloseButton:Point("BOTTOMRIGHT", 66, 6)
 	AuctionsCancelAuctionButton:Point("RIGHT", AuctionsCloseButton, "LEFT", -4, 0)
@@ -186,7 +211,8 @@ local function LoadSkin()
 		end
 	end)
 
-	S:HandleDropDownBox(BrowseDropDown)
+	S:HandleDropDownBox(BrowseDropDown, 155)
+	BrowseDropDown:Point("TOPLEFT", BrowseLevelText, "BOTTOMRIGHT", -5, 2)
 	S:HandleDropDownBox(PriceDropDown)
 	S:HandleDropDownBox(DurationDropDown)
 
@@ -194,9 +220,10 @@ local function LoadSkin()
 	AuctionProgressFrame:StripTextures()
 	AuctionProgressFrame:SetTemplate("Transparent")
 
-	S:HandleNextPrevButton(AuctionProgressFrameCancelButton)
-	SquareButton_SetIcon(AuctionProgressFrameCancelButton, "DELETE")
+	S:HandleButton(AuctionProgressFrameCancelButton)
 	AuctionProgressFrameCancelButton:SetHitRectInsets(0, 0, 0, 0)
+	AuctionProgressFrameCancelButton:GetNormalTexture():SetTexture(E.Media.Textures.Close)
+	AuctionProgressFrameCancelButton:GetNormalTexture():SetInside()
 	AuctionProgressFrameCancelButton:Size(28)
 	AuctionProgressFrameCancelButton:Point("LEFT", AuctionProgressBar, "RIGHT", 8, 0)
 
@@ -221,10 +248,13 @@ local function LoadSkin()
 			local ItemButton = _G[Frame.."Button"..i.."Item"]
 			local Texture = _G[Frame.."Button"..i.."ItemIconTexture"]
 			local Name = _G[Frame.."Button"..i.."Name"]
+			local Highlight = _G[Frame.."Button"..i.."Highlight"]
 
 			if Button then
 				Button:StripTextures()
-				S:HandleButtonHighlight(Button)
+				Highlight:SetTexture(E.Media.Textures.Highlight)
+				Highlight:SetInside()
+				hooksecurefunc(Name, "SetVertexColor", function(_, r, g, b) Highlight:SetVertexColor(r, g, b, 0.35) end)
 			end
 
 			if ItemButton then

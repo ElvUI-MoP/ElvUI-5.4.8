@@ -5,27 +5,28 @@ local _G = _G
 local unpack, select = unpack, select
 
 local hooksecurefunc = hooksecurefunc
+local TIMEMANAGER_TITLE = TIMEMANAGER_TITLE
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.timemanager ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.timemanager then return end
 
-	local TimeManagerFrame = _G["TimeManagerFrame"]
 	TimeManagerFrame:Size(190, 240)
 	TimeManagerFrame:StripTextures()
 	TimeManagerFrame:SetTemplate("Transparent")
 
 	TimeManagerFrameInset:Kill()
 
-	S:HandleCloseButton(TimeManagerFrameCloseButton)
-
 	E:CreateMover(TimeManagerFrame, "TimeManagerFrameMover", TIMEMANAGER_TITLE)
 	TimeManagerFrame.mover:SetFrameLevel(TimeManagerFrame:GetFrameLevel() + 4)
 
 	select(7, TimeManagerFrame:GetRegions()):Point("TOP", 0, -5)
 
+	S:HandleCloseButton(TimeManagerFrameCloseButton)
+	TimeManagerFrameCloseButton:Point("TOPRIGHT", 4, 5)
+
 	TimeManagerStopwatchFrame:Point("TOPRIGHT", 10, -12)
 
-	TimeManagerStopwatchCheck:SetTemplate("Default")
+	TimeManagerStopwatchCheck:SetTemplate()
 	TimeManagerStopwatchCheck:StyleButton(nil, true)
 
 	TimeManagerStopwatchCheck:GetNormalTexture():SetInside()
@@ -39,30 +40,30 @@ local function LoadSkin()
 
 	S:HandleEditBox(TimeManagerAlarmMessageEditBox)
 
+	S:HandleCheckBox(TimeManagerAlarmEnabledButton)
 	TimeManagerAlarmEnabledButton:Point("LEFT", 16, -45)
-	TimeManagerAlarmEnabledButton:SetNormalTexture(nil)
-	TimeManagerAlarmEnabledButton.SetNormalTexture = E.noop
-	TimeManagerAlarmEnabledButton:SetPushedTexture(nil)
-	TimeManagerAlarmEnabledButton.SetPushedTexture = E.noop
-	S:HandleButton(TimeManagerAlarmEnabledButton)
 
 	TimeManagerMilitaryTimeCheck:Point("TOPLEFT", 155, -190)
 	S:HandleCheckBox(TimeManagerMilitaryTimeCheck)
 	S:HandleCheckBox(TimeManagerLocalTimeCheck)
 
-	StopwatchFrame:CreateBackdrop("Transparent")
-	StopwatchFrame.backdrop:Point("TOPLEFT", 0, -16)
-	StopwatchFrame.backdrop:Point("BOTTOMRIGHT", 0, 2)
-
+	-- StopWatch
 	StopwatchFrame:StripTextures()
+	StopwatchFrame:CreateBackdrop("Transparent")
+	StopwatchFrame.backdrop:Point("TOPLEFT", 3, -15)
+	StopwatchFrame.backdrop:Point("BOTTOMRIGHT", -1, 5)
 
 	StopwatchTabFrame:StripTextures()
+	StopwatchTabFrame:CreateBackdrop("Default", true)
+	StopwatchTabFrame:Point("TOP", 1, 3)
 
 	S:HandleCloseButton(StopwatchCloseButton)
+	StopwatchCloseButton:Size(32)
+	StopwatchCloseButton:Point("TOPRIGHT", StopwatchTabFrame.backdrop, 6, 7)
 
 	StopwatchPlayPauseButton:CreateBackdrop("Default", true)
 	StopwatchPlayPauseButton:Size(12)
-	StopwatchPlayPauseButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\play")
+	StopwatchPlayPauseButton:SetNormalTexture(E.Media.Textures.Play)
 	StopwatchPlayPauseButton:SetHighlightTexture("")
 	StopwatchPlayPauseButton.backdrop:SetOutside(StopwatchPlayPauseButton, 2, 2)
 	StopwatchPlayPauseButton:HookScript("OnEnter", S.SetModifiedBackdrop)
@@ -70,14 +71,14 @@ local function LoadSkin()
 	StopwatchPlayPauseButton:Point("RIGHT", StopwatchResetButton, "LEFT", -4, 0)
 	S:HandleButton(StopwatchResetButton)
 	StopwatchResetButton:Size(16)
-	StopwatchResetButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\reset")
-	StopwatchResetButton:Point("BOTTOMRIGHT", StopwatchFrame, "BOTTOMRIGHT", -4, 6)
+	StopwatchResetButton:SetNormalTexture(E.Media.Textures.Reset)
+	StopwatchResetButton:Point("BOTTOMRIGHT", StopwatchFrame, "BOTTOMRIGHT", -4, 9)
 
 	local function SetPlayTexture()
-		StopwatchPlayPauseButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\play")
+		StopwatchPlayPauseButton:SetNormalTexture(E.Media.Textures.Play)
 	end
 	local function SetPauseTexture()
-		StopwatchPlayPauseButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\pause")
+		StopwatchPlayPauseButton:SetNormalTexture(E.Media.Textures.Pause)
 	end
 	hooksecurefunc("Stopwatch_Play", SetPauseTexture)
 	hooksecurefunc("Stopwatch_Pause", SetPlayTexture)

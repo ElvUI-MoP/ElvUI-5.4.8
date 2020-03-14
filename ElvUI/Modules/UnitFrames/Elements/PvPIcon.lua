@@ -6,7 +6,7 @@ function UF:Construct_PvPIcon(frame)
 	PvPIndicator:SetSize(30, 30)
 	PvPIndicator:SetPoint("CENTER", frame, "CENTER")
 
-	PvPIndicator.Override = UF.UpdateOverride
+	PvPIndicator.Override = UF.PvPIconOverride
 
 	return PvPIndicator
 end
@@ -26,7 +26,7 @@ function UF:Configure_PVPIcon(frame)
 	end
 end
 
-function UF:UpdateOverride(event, unit)
+function UF:PvPIconOverride(event, unit)
 	if not unit or self.unit ~= unit then return end
 
 	local element = self.PvPIndicator
@@ -46,7 +46,7 @@ function UF:UpdateOverride(event, unit)
 	elseif factionGroup and factionGroup ~= "Neutral" and UnitIsPVP(unit) then
 		element:SetTexture("Interface\\PVPFrame\\PVP-Conquest-Misc")
 
-		if factionGroup == "Alliance"  then
+		if factionGroup == "Alliance" then
 			element:SetTexCoord(0.69433594, 0.74804688, 0.60351563, 0.72851563)
 		else
 			element:SetTexCoord(0.63867188, 0.69238281, 0.60351563, 0.73242188)

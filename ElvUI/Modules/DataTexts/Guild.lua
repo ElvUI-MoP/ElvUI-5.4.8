@@ -1,10 +1,10 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
-local select, unpack = select, unpack
+local unpack = unpack
 local sort, wipe = table.sort, wipe
 local ceil = math.ceil
-local format, find, join, split = string.format, string.find, string.join, string.split
+local format, find, join = string.format, string.find, string.join
 
 local Ambiguate = Ambiguate
 local GetNumGuildMembers = GetNumGuildMembers
@@ -25,10 +25,10 @@ local GetGuildInfo = GetGuildInfo
 local ToggleGuildFrame = ToggleGuildFrame
 local GetGuildFactionInfo = GetGuildFactionInfo
 local GetRealZoneText = GetRealZoneText
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local GUILD_MOTD = GUILD_MOTD
+local AFK, DND = AFK, DND
 local COMBAT_FACTION_CHANGE = COMBAT_FACTION_CHANGE
 local GUILD = GUILD
+local GUILD_MOTD = GUILD_MOTD
 
 local tthead, ttsubh, ttoff = {r = 0.4, g = 0.78, b = 1}, {r = 0.75, g = 0.9, b = 1}, {r = 0.3, g = 1, b = 0.3}
 local activezone, inactivezone = {r = 0.3, g = 1.0, b = 0.3}, {r = 0.65, g = 0.65, b = 0.65}
@@ -73,15 +73,14 @@ end
 local onlinestatusstring = "|cffFFFFFF[|r|cffFF0000%s|r|cffFFFFFF]|r"
 local onlinestatus = {
 	[0] = "",
-	[1] = format(onlinestatusstring, L["AFK"]),
-	[2] = format(onlinestatusstring, L["DND"]),
+	[1] = format(onlinestatusstring, AFK),
+	[2] = format(onlinestatusstring, DND),
 }
 
 local function BuildGuildTable()
 	wipe(guildTable)
-	local statusInfo
+	local statusInfo, noRealmName
 	local _, name, rank, rankIndex, level, zone, note, officernote, connected, memberstatus, class
-	local name2
 
 	local totalMembers = GetNumGuildMembers()
 	for i = 1, totalMembers do
@@ -89,10 +88,10 @@ local function BuildGuildTable()
 		if not name then return end
 
 		statusInfo = onlinestatus[memberstatus]
-		name2 = Ambiguate(name, "guild")
+		noRealmName = Ambiguate(name, "guild")
 
 		if connected then
-			guildTable[#guildTable + 1] = {name2, rank, level, zone, note, officernote, connected, statusInfo, class, rankIndex}
+			guildTable[#guildTable + 1] = {noRealmName, rank, level, zone, note, officernote, connected, statusInfo, class, rankIndex}
 		end
 	end
 end
@@ -195,7 +194,7 @@ local function OnClick(_, btn)
 		for i = 1, #guildTable do
 			info = guildTable[i]
 			if info[7] and info[1] ~= E.myname then
-				classc, levelc = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[info[9]]) or RAID_CLASS_COLORS[info[9]], GetQuestDifficultyColor(info[3])
+				classc, levelc = E:ClassColor(info[9]), GetQuestDifficultyColor(info[3])
 				if UnitInParty(info[1]) or UnitInRaid(info[1]) then
 					grouped = "|cffaaaaaa*|r"
 				elseif not info[11] then
@@ -233,9 +232,9 @@ local function OnEnter(self, _, noUpdate)
 		DT.tooltip:AddLine(guildRank, unpack(tthead))
 	end
 
-	if guildMotD ~= "" then 
+	if guildMotD ~= "" then
 		DT.tooltip:AddLine(" ")
-		DT.tooltip:AddLine(format(guildMotDString, GUILD_MOTD, guildMotD), ttsubh.r, ttsubh.g, ttsubh.b, 1) 
+		DT.tooltip:AddLine(format(guildMotDString, GUILD_MOTD, guildMotD), ttsubh.r, ttsubh.g, ttsubh.b, 1)
 	end
 
 	if GetGuildLevel() ~= 25 then
@@ -267,7 +266,7 @@ local function OnEnter(self, _, noUpdate)
 
 		info = guildTable[i]
 		if GetRealZoneText() == info[4] then zonec = activezone else zonec = inactivezone end
-		classc, levelc = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[info[9]]) or RAID_CLASS_COLORS[info[9]], GetQuestDifficultyColor(info[3])
+		classc, levelc = E:ClassColor(info[9]), GetQuestDifficultyColor(info[3])
 
 		if (UnitInParty(info[1]) or UnitInRaid(info[1])) then grouped = 1 else grouped = 2 end
 
@@ -279,7 +278,7 @@ local function OnEnter(self, _, noUpdate)
 			DT.tooltip:AddDoubleLine(format(levelNameStatusString, levelc.r*255, levelc.g*255, levelc.b*255, info[3], info[1], groupedTable[grouped], info[8]), info[4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
 		end
 		shown = shown + 1
-	end	
+	end
 
 	DT.tooltip:Show()
 

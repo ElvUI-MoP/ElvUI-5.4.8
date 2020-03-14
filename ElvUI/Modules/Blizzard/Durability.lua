@@ -1,17 +1,26 @@
-local E, L, DF = unpack(select(2, ...))
+local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Blizzard")
 
-local _G = _G
+local hooksecurefunc = hooksecurefunc
+
+local function SetPosition(frame, _, parent)
+	if parent ~= DurabilityFrameHolder then
+		frame:ClearAllPoints()
+		frame:SetPoint("CENTER", DurabilityFrameHolder, "CENTER")
+	end
+end
 
 function B:PositionDurabilityFrame()
-	DurabilityFrame:SetFrameStrata("HIGH")
+	local Scale = E.db.general.durabilityScale or 1
 
-	local function SetPosition(self, _, parent)
-		if (parent == "MinimapCluster") or (parent == _G["MinimapCluster"]) then
-			self:ClearAllPoints()
-			self:Point("RIGHT", Minimap, "RIGHT")
-			self:SetScale(0.6)
-		end
-	end
+	local DurabilityFrameHolder = CreateFrame("Frame", "DurabilityFrameHolder", E.UIParent)
+	DurabilityFrameHolder:Size(DurabilityFrame:GetSize())
+	DurabilityFrameHolder:SetPoint("TOPRIGHT", E.UIParent, "TOPRIGHT", -135, -300)
+
+	E:CreateMover(DurabilityFrameHolder, "DurabilityFrameMover", L["Durability Frame"], nil, nil, nil, nil, nil, "all,general")
+
+	DurabilityFrame:SetFrameStrata("HIGH")
+	DurabilityFrame:SetScale(Scale)
+
 	hooksecurefunc(DurabilityFrame, "SetPoint", SetPosition)
 end

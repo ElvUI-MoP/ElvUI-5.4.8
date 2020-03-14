@@ -4,7 +4,8 @@ local S = E:GetModule("Skins")
 local _G = _G
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.RaidManager ~= true then return end
+	if E.private.unitframe.disabledBlizzardFrames.raid and E.private.unitframe.disabledBlizzardFrames.party then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.RaidManager then return end
 
 	CompactRaidFrameManager:StripTextures()
 	CompactRaidFrameManager:SetTemplate("Transparent")
@@ -91,15 +92,15 @@ local function LoadSkin()
 	CompactRaidFrameManagerToggleButton.icon = CompactRaidFrameManagerToggleButton:CreateTexture(nil, "ARTWORK")
 	CompactRaidFrameManagerToggleButton.icon:Size(14)
 	CompactRaidFrameManagerToggleButton.icon:Point("CENTER")
-	CompactRaidFrameManagerToggleButton.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
-	SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "RIGHT")
+	CompactRaidFrameManagerToggleButton.icon:SetTexture(E.Media.Textures.ArrowUp)
+	CompactRaidFrameManagerToggleButton.icon:SetRotation(-1.57)
 
 	hooksecurefunc("CompactRaidFrameManager_Expand", function()
-		SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "LEFT")
+		CompactRaidFrameManagerToggleButton.icon:SetRotation(1.57)
 	end)
 
 	hooksecurefunc("CompactRaidFrameManager_Collapse", function()
-		SquareButton_SetIcon(CompactRaidFrameManagerToggleButton, "RIGHT")
+		CompactRaidFrameManagerToggleButton.icon:SetRotation(-1.57)
 	end)
 end
 

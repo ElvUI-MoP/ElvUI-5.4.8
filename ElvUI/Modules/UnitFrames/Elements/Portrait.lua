@@ -21,9 +21,6 @@ function UF:Construct_Portrait(frame, type)
 
 	portrait.PostUpdate = self.PortraitUpdate
 
-	portrait.overlay = CreateFrame("Frame", nil, frame)
-	portrait.overlay:SetFrameLevel(frame.Health:GetFrameLevel() + 5) --Set to "frame.Health:GetFrameLevel()" if you don"t want portrait cut off.
-
 	return portrait
 end
 
@@ -36,7 +33,7 @@ function UF:Configure_Portrait(frame, dontHide)
 		frame.Portrait:ClearAllPoints()
 		frame.Portrait.backdrop:Hide()
 	end
-	frame.Portrait = db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D;
+	frame.Portrait = db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D
 
 	local portrait = frame.Portrait
 	if frame.USE_PORTRAIT then
@@ -44,40 +41,53 @@ function UF:Configure_Portrait(frame, dontHide)
 			frame:EnableElement("Portrait")
 		end
 
-		local color = E.db.unitframe.colors.borderColor
-		portrait.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-
 		portrait:ClearAllPoints()
 		portrait.backdrop:ClearAllPoints()
 
 		if frame.USE_PORTRAIT_OVERLAY then
-			if db.portrait.style == "3D" then
-				portrait:SetFrameLevel(frame.Health:GetFrameLevel())
- 			else
+			if db.portrait.style == "2D" then
 				portrait:SetParent(frame.Health)
+			else
+				portrait:SetFrameLevel(frame.Health:GetFrameLevel() + 1)
 			end
 
-			portrait:SetAllPoints(frame.Health)
-			portrait:SetAlpha(0.35)
+			portrait:SetAlpha(db.portrait.overlayAlpha)
 			if not dontHide then
 				portrait:Show()
 			end
 			portrait.backdrop:Hide()
+
+			portrait:ClearAllPoints()
+			if db.portrait.fullOverlay then
+				portrait:SetAllPoints(frame.Health)
+			else
+				local healthTex = frame.Health:GetStatusBarTexture()
+				if db.health.reverseFill then
+					portrait:Point("TOPLEFT", healthTex, "TOPLEFT")
+					portrait:Point("BOTTOMLEFT", healthTex, "BOTTOMLEFT")
+					portrait:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT")
+				else
+					portrait:Point("TOPLEFT", frame.Health, "TOPLEFT")
+					portrait:Point("BOTTOMRIGHT", healthTex, "BOTTOMRIGHT")
+					portrait:Point("BOTTOMLEFT", healthTex, "BOTTOMLEFT")
+				end
+			end
 		else
+			portrait:ClearAllPoints()
+			portrait:SetAllPoints()
 			portrait:SetAlpha(1)
 			if not dontHide then
 				portrait:Show()
 			end
 			portrait.backdrop:Show()
-			if db.portrait.style == "3D" then
-				portrait:SetFrameLevel(frame.Health:GetFrameLevel() - 4)
- 			else
+			if db.portrait.style == "2D" then
 				portrait:SetParent(frame)
+			else
+				portrait:SetFrameLevel(frame.Health:GetFrameLevel() - 4) --Make sure portrait is behind Health and Power
 			end
 
 			if frame.ORIENTATION == "LEFT" then
 				portrait.backdrop:Point("TOPLEFT", frame, "TOPLEFT", frame.SPACING, frame.USE_MINI_CLASSBAR and -(frame.CLASSBAR_YOFFSET+frame.SPACING) or -frame.SPACING)
-				
 				if frame.USE_MINI_POWERBAR or frame.USE_POWERBAR_OFFSET or not frame.USE_POWERBAR or frame.USE_INSET_POWERBAR or frame.POWERBAR_DETACHED then
 					portrait.backdrop:Point("BOTTOMRIGHT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER - frame.SPACING*3, 0)
 				else
@@ -106,12 +116,12 @@ end
 
 function UF:PortraitUpdate(unit, event, shouldUpdate)
 	local db = self:GetParent().db
-	if not db then return; end
+	if not db then return end
 
-	local portrait = db.portrait;
+	local portrait = db.portrait
 	if portrait.enable and self:GetParent().USE_PORTRAIT_OVERLAY then
-		self:SetAlpha(0)
-		self:SetAlpha(0.35)
+		self:SetAlpha(0) -- there was a reason for this. i dont remember
+		self:SetAlpha(db.portrait.overlayAlpha)
 	else
 		self:SetAlpha(1)
 	end
@@ -121,13 +131,14 @@ function UF:PortraitUpdate(unit, event, shouldUpdate)
 		local camDistanceScale = portrait.camDistanceScale or 1
 		local xOffset, yOffset = (portrait.xOffset or 0), (portrait.yOffset or 0)
 
-		if self:GetFacing() ~= (rotation / 60) then
-			self:SetFacing(rotation / 60)
+		if self:GetFacing() ~= (rotation / 57.29573671972358) then
+			self:SetFacing(rotation / 57.29573671972358) -- because 1 degree is equal 0,0174533 radian. Credit: Hndrxuprt
 		end
 
 		self:SetCamDistanceScale(camDistanceScale)
-		self:SetPosition(0, xOffset, yOffset)
+		self:SetPosition(xOffset, xOffset, yOffset)
 
+		--Refresh model to fix incorrect display issues
 		self:ClearModel()
 		self:SetUnit(unit)
 	end

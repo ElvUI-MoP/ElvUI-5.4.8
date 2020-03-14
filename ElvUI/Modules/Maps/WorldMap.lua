@@ -1,7 +1,8 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local M = E:NewModule("WorldMap", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
-E.WorldMap = M
+local M = E:GetModule("WorldMap")
 
+local _G = _G
+local pairs = pairs
 local find, format = string.find, string.format
 
 local CreateFrame = CreateFrame
@@ -156,6 +157,8 @@ function M:PositionCoords()
 end
 
 function M:Initialize()
+	self.Initialized = true
+
 	if E.global.general.WorldMapCoordinates.enable then
 		local CoordsHolder = CreateFrame("Frame", "CoordsHolder", WorldMapFrame)
 		CoordsHolder:SetFrameLevel(WorldMapDetailFrame:GetFrameLevel() + 1)
@@ -197,6 +200,11 @@ function M:Initialize()
 				DropDownList1:SetScale(UIParent:GetScale())
 			end
 		end)
+
+		self:RawHook("WorldMapQuestPOI_OnLeave", function(self)
+			WorldMapPOIFrame.allowBlobTooltip = true
+			WorldMapTooltip:Hide()
+		end, true)
 	end
 end
 

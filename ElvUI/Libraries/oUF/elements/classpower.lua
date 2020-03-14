@@ -152,6 +152,7 @@ do
 		ClassPowerID = SPELL_POWER_SHADOW_ORBS
 		ClassPowerType = 'SHADOW_ORBS'
 		RequireSpec = SPEC_PRIEST_SHADOW
+		RequireSpell = 95740 -- Shadow Orbs
 	end
 end
 

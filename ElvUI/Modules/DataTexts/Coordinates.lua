@@ -27,7 +27,7 @@ local function OnClick()
 end
 
 local function ValueColorUpdate(hex)
-	displayString = join("", hex, "%.1f|r", " , ", hex, "%.1f|r")
+	displayString = join("", hex, "%.2f|r", " | ", hex, "%.2f|r")
 end
 E.valueColorUpdateFuncs[ValueColorUpdate] = true
 

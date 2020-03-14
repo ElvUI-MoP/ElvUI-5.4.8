@@ -14,11 +14,10 @@ local GetTradeSkillReagentItemLink = GetTradeSkillReagentItemLink
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tradeskill ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.tradeskill then return end
 
 	TRADE_SKILLS_DISPLAYED = 26
 
-	local TradeSkillFrame = _G["TradeSkillFrame"]
 	TradeSkillFrame:StripTextures(true)
 	TradeSkillFrame:SetAttribute("UIPanelLayout-width", E:Scale(720))
 	TradeSkillFrame:SetAttribute("UIPanelLayout-height", E:Scale(508))
@@ -107,27 +106,22 @@ local function LoadSkin()
 	S:HandleButton(TradeSkillCreateAllButton)
 
 	S:HandleNextPrevButton(TradeSkillDecrementButton)
+	TradeSkillDecrementButton:Height(22)
 	S:HandleNextPrevButton(TradeSkillIncrementButton)
+	TradeSkillIncrementButton:Height(22)
 
-	TradeSkillInputBox:Height(16)
 	S:HandleEditBox(TradeSkillInputBox)
+	TradeSkillInputBox:Size(26, 20)
+	TradeSkillInputBox.backdrop:Point("TOPLEFT", -2, 1)
+	TradeSkillInputBox.backdrop:Point("BOTTOMRIGHT", 2, -1)
 
 	S:HandleCloseButton(TradeSkillFrameCloseButton)
 
-	TradeSkillFilterButton:StripTextures(true)
-	TradeSkillFilterButton.backdrop = CreateFrame("Frame", nil, TradeSkillFilterButton)
-	TradeSkillFilterButton.backdrop:SetTemplate("Default", true)
-	TradeSkillFilterButton.backdrop:SetFrameLevel(TradeSkillFilterButton:GetFrameLevel() - 1)
-	TradeSkillFilterButton.backdrop:SetAllPoints()
+	S:HandleButton(TradeSkillFilterButton, true)
 
-	TradeSkillFilterButton:HookScript("OnEnter", S.SetModifiedBackdrop)
-	TradeSkillFilterButton:HookScript("OnLeave", S.SetOriginalBackdrop)
-
-	TradeSkillLinkButton:GetNormalTexture():SetTexCoord(0.25, 0.7, 0.37, 0.75)
-	TradeSkillLinkButton:GetPushedTexture():SetTexCoord(0.25, 0.7, 0.45, 0.8)
-	TradeSkillLinkButton:GetHighlightTexture():Kill()
-	TradeSkillLinkButton:CreateBackdrop("Default")
-	TradeSkillLinkButton:Size(17, 14)
+	S:HandleNextPrevButton(TradeSkillLinkButton, "right")
+	TradeSkillLinkButton:Size(22)
+	TradeSkillLinkButton:Point("LEFT", -3, -3)
 
 	S:HandleEditBox(TradeSkillFrameSearchBox)
 
@@ -166,7 +160,7 @@ local function LoadSkin()
 		nameFrame:Kill()
 	end
 
-	TradeSkillReagent1:Point("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", 1, -3)
+	TradeSkillReagent1:Point("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", 0, -3)
 	TradeSkillReagent2:Point("LEFT", TradeSkillReagent1, "RIGHT", 3, 0)
 	TradeSkillReagent3:Point("TOPLEFT", TradeSkillReagent1, "BOTTOMLEFT", 0, -3)
 	TradeSkillReagent4:Point("LEFT", TradeSkillReagent3, "RIGHT", 3, 0)
@@ -175,22 +169,20 @@ local function LoadSkin()
 	TradeSkillReagent7:Point("TOPLEFT", TradeSkillReagent5, "BOTTOMLEFT", 0, -3)
 	TradeSkillReagent8:Point("LEFT", TradeSkillReagent7, "RIGHT", 3, 0)
 
-	TradeSkillHighlight:StripTextures()
+	TradeSkillFilterBar:StripTextures()
+	TradeSkillFilterBar.texture = TradeSkillFilterBar:CreateTexture(nil, "ARTWORK")
+	TradeSkillFilterBar.texture:SetAllPoints()
+	TradeSkillFilterBar.texture:SetTexture(E.Media.Textures.Highlight)
+	TradeSkillFilterBar.texture:SetVertexColor(1, 1, 1, 0.35)
 
-	TradeSkillHighlightFrame.Left = TradeSkillHighlightFrame:CreateTexture(nil, "ARTWORK")
-	TradeSkillHighlightFrame.Left:Size(152, 15)
-	TradeSkillHighlightFrame.Left:SetPoint("LEFT", TradeSkillHighlightFrame, "CENTER")
-	TradeSkillHighlightFrame.Left:SetTexture(E.media.blankTex)
+	S:HandleCloseButton(TradeSkillFilterBarExitButton)
+	TradeSkillFilterBarExitButton:Size(26)
+	TradeSkillFilterBarExitButton.Texture:SetVertexColor(1, 0, 0)
+	TradeSkillFilterBarExitButton:HookScript("OnEnter", function(btn) btn.Texture:SetVertexColor(1, 1, 1) end)
+	TradeSkillFilterBarExitButton:HookScript("OnLeave", function(btn) btn.Texture:SetVertexColor(1, 0, 0) end)
 
-	TradeSkillHighlightFrame.Right = TradeSkillHighlightFrame:CreateTexture(nil, "ARTWORK")
-	TradeSkillHighlightFrame.Right:Size(152, 15)
-	TradeSkillHighlightFrame.Right:SetPoint("RIGHT", TradeSkillHighlightFrame, "CENTER")
-	TradeSkillHighlightFrame.Right:SetTexture(E.media.blankTex)
-
-	hooksecurefunc(TradeSkillHighlight, "SetVertexColor", function(_, r, g, b)
-		TradeSkillHighlightFrame.Left:SetGradientAlpha("Horizontal", r, g, b, 0.35, r, g, b, 0)
-		TradeSkillHighlightFrame.Right:SetGradientAlpha("Horizontal", r, g, b, 0, r, g, b, 0.35)
-	end)
+	TradeSkillHighlight:SetTexture(E.Media.Textures.Highlight)
+	TradeSkillHighlight:SetAlpha(0.35)
 
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
 		if TradeSkillSkillIcon:GetNormalTexture() then
@@ -205,8 +197,9 @@ local function LoadSkin()
 		if skillLink then
 			local quality = select(3, GetItemInfo(skillLink))
 			if quality then
-				TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
-				TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
+				local r, g, b = GetItemQualityColor(quality)
+				TradeSkillSkillIcon:SetBackdropBorderColor(r, g, b)
+				TradeSkillSkillName:SetTextColor(r, g, b)
 			else
 				TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				TradeSkillSkillName:SetTextColor(1, 1, 1)
@@ -224,43 +217,47 @@ local function LoadSkin()
 			if reagentLink then
 				local quality = select(3, GetItemInfo(reagentLink))
 				if quality then
-					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-					reagent:SetBackdropBorderColor(GetItemQualityColor(quality))
+					local r, g, b = GetItemQualityColor(quality)
+					icon.backdrop:SetBackdropBorderColor(r, g, b)
+					reagent:SetBackdropBorderColor(r, g, b)
 					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)
 					else
-						name:SetTextColor(GetItemQualityColor(quality))
+						name:SetTextColor(r, g, b)
 					end
 				else
 					reagent:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					icon.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
- 				end
+				end
 			end
 		end
 	end)
 
+	-- Expand / Collapse Buttons
 	TradeSkillExpandButtonFrame:StripTextures()
 
-	TradeSkillCollapseAllButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+	TradeSkillCollapseAllButton:SetNormalTexture(E.Media.Textures.Plus)
 	TradeSkillCollapseAllButton.SetNormalTexture = E.noop
 	TradeSkillCollapseAllButton:GetNormalTexture():Point("LEFT", 3, 2)
-	TradeSkillCollapseAllButton:GetNormalTexture():Size(15)
+	TradeSkillCollapseAllButton:GetNormalTexture():Size(16)
+	TradeSkillCollapseAllButton:GetNormalTexture():SetVertexColor(1, 1, 1)
 
 	TradeSkillCollapseAllButton:SetHighlightTexture("")
 	TradeSkillCollapseAllButton.SetHighlightTexture = E.noop
 
-	TradeSkillCollapseAllButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+	TradeSkillCollapseAllButton:SetDisabledTexture(E.Media.Textures.Plus)
 	TradeSkillCollapseAllButton.SetDisabledTexture = E.noop
 	TradeSkillCollapseAllButton:GetDisabledTexture():Point("LEFT", 3, 2)
-	TradeSkillCollapseAllButton:GetDisabledTexture():Size(15)
-	TradeSkillCollapseAllButton:GetDisabledTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
-	TradeSkillCollapseAllButton:GetDisabledTexture():SetDesaturated(true)
+	TradeSkillCollapseAllButton:GetDisabledTexture():Size(16)
+	TradeSkillCollapseAllButton:GetDisabledTexture():SetVertexColor(0.6, 0.6, 0.6)
 
 	hooksecurefunc(TradeSkillCollapseAllButton, "SetNormalTexture", function(self, texture)
+		local normal = self:GetNormalTexture()
+
 		if find(texture, "MinusButton") then
-			self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+			normal:SetTexture(E.Media.Textures.Minus)
 		else
-			self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+			normal:SetTexture(E.Media.Textures.Plus)
 		end
 	end)
 
@@ -268,10 +265,10 @@ local function LoadSkin()
 		local button = _G["TradeSkillSkill"..i]
 		local highlight = _G["TradeSkillSkill"..i.."Highlight"]
 
-		button:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		button:SetNormalTexture(E.Media.Textures.Plus)
 		button.SetNormalTexture = E.noop
 		button:GetNormalTexture():Size(14)
-		button:GetNormalTexture():Point("LEFT", 4, 1)
+		button:GetNormalTexture():Point("LEFT", 2, 2)
 
 		highlight:SetTexture("")
 		highlight.SetTexture = E.noop
@@ -287,13 +284,15 @@ local function LoadSkin()
 		button.SubSkillRankBar.Rank:Point("CENTER", 0, -1)
 
 		hooksecurefunc(button, "SetNormalTexture", function(self, texture)
+			local normal = self:GetNormalTexture()
+
 			if find(texture, "MinusButton") then
-				self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+				normal:SetTexture(E.Media.Textures.Minus)
 			elseif find(texture, "PlusButton") then
-				self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+				normal:SetTexture(E.Media.Textures.Plus)
 			else
-				self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
- 			end
+				normal:SetTexture("")
+			end
 		end)
 	end
 

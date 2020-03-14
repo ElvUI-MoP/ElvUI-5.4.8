@@ -3,119 +3,138 @@ local S = E:GetModule("Skins")
 
 local _G = _G
 local unpack = unpack
+local strfind = strfind
+
+local NUM_GLYPH_SLOTS = NUM_GLYPH_SLOTS
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.talent ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.talent then return end
 
 	GlyphFrame:StripTextures()
 	GlyphFrame:CreateBackdrop("Transparent")
+	GlyphFrame.backdrop:Point("BOTTOMRIGHT", 0, -3)
 
-	GlyphFrameSideInset:StripTextures()
+	GlyphFrame.sideInset:StripTextures()
+
+	GlyphFrame.levelOverlayText1:SetTextColor(1, 1, 1)
+	GlyphFrame.levelOverlayText2:SetTextColor(1, 1, 1)
 
 	GlyphFrame.specIcon:SetTexCoord(unpack(E.TexCoords))
 
-	GlyphFrame:HookScript("OnUpdate", function(self)
-		self.specIcon:SetAlpha(1 - self.glow:GetAlpha())
-	end)
+	S:HandleEditBox(GlyphFrameSearchBox)
+	GlyphFrameSearchBox:Point("TOPLEFT", GlyphFrameSideInset, 5, 54)
 
-	if not GlyphFrame.isSkinned then
-		for i = 1, 6 do
-			local Glyph = _G["GlyphFrameGlyph"..i]
+	S:HandleDropDownBox(GlyphFrameFilterDropDown, 208)
+	GlyphFrameFilterDropDown:Point("TOPLEFT", GlyphFrameSearchBox, "BOTTOMLEFT", -13, -3)
 
-			Glyph:SetTemplate("Default", true)
-			Glyph:SetFrameLevel(Glyph:GetFrameLevel() + 5)
-			Glyph:StyleButton(nil, true)
+	for i = 1, NUM_GLYPH_SLOTS do
+		local frame = _G["GlyphFrameGlyph"..i]
 
-			Glyph.ring:Hide()
-			Glyph.glyph:Hide()
-			Glyph.highlight:SetTexture(nil)
-			Glyph.glyph:Hide()
+		frame:SetTemplate("Default", true)
+		frame:SetFrameLevel(frame:GetFrameLevel() + 5)
+		frame:StyleButton(nil, true)
 
-			Glyph.icon = Glyph:CreateTexture(nil, "OVERLAY")
-			Glyph.icon:SetInside()
-			Glyph.icon:SetTexCoord(unpack(E.TexCoords))
-
-			Glyph:CreateBackdrop()
-			Glyph.backdrop:SetAllPoints()
-			Glyph.backdrop:SetFrameLevel(Glyph:GetFrameLevel() + 1)
-			Glyph.backdrop:SetBackdropColor(0, 0, 0, 0)
-			Glyph.backdrop:SetBackdropBorderColor(1, 0.80, 0.10)
-
-			Glyph.backdrop:SetScript("OnUpdate", function(self)
-				local Alpha = Glyph.highlight:GetAlpha()
-				self:SetAlpha(Alpha)
-
-				if strfind(Glyph.icon:GetTexture(), "Interface\\Spellbook\\UI%-Glyph%-Rune") then
-					if Alpha == 0 then
-						Glyph.icon:SetVertexColor(1, 1, 1)
-						Glyph.icon:SetAlpha(1)
-					else
-						Glyph.icon:SetVertexColor(1, 0.80, 0.10)
-						Glyph.icon:SetAlpha(Alpha)
-					end
-				end
-			end)
-
-			hooksecurefunc(Glyph.highlight, "Show", function()
-				Glyph.backdrop:Show()
-			end)
-
-			Glyph.glyph:Hide()
-			hooksecurefunc(Glyph.glyph, "Show", function(self) self:Hide() end)
-
-			if(i % 2 == 1) then
-				Glyph:Size(Glyph:GetWidth() * .8, Glyph:GetHeight() * .8)
-			end
+		if i == 1 or i == 3 or i == 5 then
+			frame:Size(60)
+		else
+			frame:Size(80)
 		end
 
-		hooksecurefunc("GlyphFrame_Update", function(self)
-			local isActiveTalentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup == GetActiveSpecGroup()
-			for i = 1, NUM_GLYPH_SLOTS do
-				local GlyphSocket = _G["GlyphFrameGlyph"..i]
-				local _, _, _, _, iconFilename = GetGlyphSocketInfo(i, PlayerTalentFrame.talentGroup)
+		frame.highlight:SetTexture(nil)
+		frame.ring:Hide()
+		hooksecurefunc(frame.glyph, "Show", function(self) self:Hide() end)
 
-				if iconFilename then
-					GlyphSocket.icon:SetTexture(iconFilename)
-				else
-					GlyphSocket.icon:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune-"..i)
+		frame.icon = frame:CreateTexture(nil, "OVERLAY")
+		frame.icon:SetInside()
+		frame.icon:SetTexCoord(unpack(E.TexCoords))
+
+		frame.onUpdate = CreateFrame("Frame", nil, frame)
+		frame.onUpdate:SetScript("OnUpdate", function()
+			local alpha = frame.highlight:GetAlpha()
+			local glyphIcon = strfind(frame.icon:GetTexture(), "Interface\\Spellbook\\UI%-Glyph%-Rune")
+
+			if alpha == 0 then
+				frame:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				frame:SetAlpha(1)
+
+				if glyphIcon then
+					frame.icon:SetVertexColor(1, 1, 1, 1)
 				end
-				GlyphFrameGlyph_UpdateSlot(GlyphSocket)
-				SetDesaturation(GlyphSocket.icon, not isActiveTalentGroup)
+			else
+				frame:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+				frame:SetAlpha(alpha)
+
+				if glyphIcon then
+					frame.icon:SetVertexColor(unpack(E.media.rgbvaluecolor))
+					frame.icon:SetAlpha(alpha)
+				end
 			end
-			SetDesaturation(self.specIcon, not isActiveTalentGroup)
-
-			GlyphFrame.levelOverlayText1:SetTextColor(1, 1, 1)
-			GlyphFrame.levelOverlayText2:SetTextColor(1, 1, 1)
 		end)
-
-		GlyphFrame.isSkinned = true
 	end
+
+	hooksecurefunc("GlyphFrame_Update", function(self)
+		local isActiveTalentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup == GetActiveSpecGroup()
+		for i = 1, NUM_GLYPH_SLOTS do
+			local glyph = _G["GlyphFrameGlyph"..i]
+			local _, _, _, _, iconFilename = GetGlyphSocketInfo(i, PlayerTalentFrame.talentGroup)
+
+			if iconFilename then
+				glyph.icon:SetTexture(iconFilename)
+			else
+				glyph.icon:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune-"..i)
+			end
+			GlyphFrameGlyph_UpdateSlot(glyph)
+			SetDesaturation(glyph.icon, not isActiveTalentGroup)
+		end
+		SetDesaturation(self.specIcon, not isActiveTalentGroup)
+	end)
+
+	-- Scroll Frame
+	GlyphFrameScrollFrameScrollChild:StripTextures()
+
+	GlyphFrameScrollFrame:StripTextures()
+	GlyphFrameScrollFrame:CreateBackdrop("Transparent")
+	GlyphFrameScrollFrame.backdrop:Point("TOPLEFT", -1, 1)
+	GlyphFrameScrollFrame.backdrop:Point("BOTTOMRIGHT", -4, -2)
+
+	S:HandleScrollBar(GlyphFrameScrollFrameScrollBar)
+	GlyphFrameScrollFrameScrollBar:ClearAllPoints()
+	GlyphFrameScrollFrameScrollBar:Point("TOPRIGHT", GlyphFrameScrollFrame, 20, -15)
+	GlyphFrameScrollFrameScrollBar:Point("BOTTOMRIGHT", GlyphFrameScrollFrame, 0, 14)
 
 	for i = 1, 2 do
-		_G["GlyphFrameHeader"..i]:StripTextures()
-		_G["GlyphFrameHeader"..i]:StyleButton()
+		local header = _G["GlyphFrameHeader"..i]
+
+		header:StripTextures()
+		header:StyleButton()
 	end
-
-	GlyphFrameClearInfoFrame:CreateBackdrop("Default")
-	GlyphFrameClearInfoFrame:Point("TOPLEFT", GlyphFrame, "BOTTOMLEFT", 25, -8)	
-	GlyphFrameClearInfoFrame:Size(20)
-	GlyphFrameClearInfoFrame:StyleButton()
-	GlyphFrameClearInfoFrame.icon:SetTexCoord(unpack(E.TexCoords))
-	GlyphFrameClearInfoFrame.count:FontTemplate(nil, 12, "OUTLINE")
-	GlyphFrameClearInfoFrame.count:Point("BOTTOMRIGHT", -20, 4)
-
-	S:HandleDropDownBox(GlyphFrameFilterDropDown, 212)
-	S:HandleEditBox(GlyphFrameSearchBox)
-	S:HandleScrollBar(GlyphFrameScrollFrameScrollBar, 5)
 
 	for i = 1, 10 do
 		local button = _G["GlyphFrameScrollFrameButton"..i]
-		local icon = _G["GlyphFrameScrollFrameButton"..i.."Icon"]
 
 		button:StripTextures()
-		S:HandleButton(button)
-		icon:SetTexCoord(unpack(E.TexCoords))
+		button:CreateBackdrop()
+		button.backdrop:SetOutside(button.icon)
+
+		S:HandleButtonHighlight(button)
+		button.handledHighlight:Point("TOPLEFT", 38, 0)
+		button.handledHighlight:Point("BOTTOMRIGHT", -2, 0)
+
+		button.icon:Size(38)
+		button.icon:SetTexCoord(unpack(E.TexCoords))
+		button.icon:SetParent(button.backdrop)
 	end
+
+	-- Clear Info
+	GlyphFrame.clearInfo:CreateBackdrop()
+	GlyphFrame.clearInfo.backdrop:SetAllPoints()
+	GlyphFrame.clearInfo:StyleButton()
+	GlyphFrame.clearInfo:Size(26)
+	GlyphFrame.clearInfo:Point("TOPLEFT", GlyphFrame, "BOTTOMLEFT", -1, -6)
+
+	GlyphFrame.clearInfo.icon:SetTexCoord(unpack(E.TexCoords))
+	GlyphFrame.clearInfo.icon:ClearAllPoints()
+	GlyphFrame.clearInfo.icon:SetInside()
 end
 
 S:AddCallbackForAddon("Blizzard_GlyphUI", "Glyph", LoadSkin)

@@ -2,14 +2,14 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.losscontrol ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.losscontrol then return end
 
 	local IconBackdrop = CreateFrame("Frame", nil, LossOfControlFrame)
 	IconBackdrop:SetTemplate()
 	IconBackdrop:SetOutside(LossOfControlFrame.Icon)
 	IconBackdrop:SetFrameLevel(LossOfControlFrame:GetFrameLevel() - 1)
 
-	LossOfControlFrame.Icon:SetTexCoord(.1, .9, .1, .9)
+	LossOfControlFrame.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	LossOfControlFrame:StripTextures()
 	LossOfControlFrame.AbilityName:ClearAllPoints()
 	LossOfControlFrame:Size(LossOfControlFrame.Icon:GetWidth() + 50)

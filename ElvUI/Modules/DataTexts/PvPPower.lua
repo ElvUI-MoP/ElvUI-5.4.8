@@ -9,9 +9,9 @@ local lastPanel
 local displayString = ""
 
 local function OnEvent(self)
-	lastPanel = self
-
 	self.text:SetFormattedText(displayString, STAT_PVP_POWER, GetCombatRatingBonus(CR_PVP_POWER))
+
+	lastPanel = self
 end
 
 local function OnEnter(self)

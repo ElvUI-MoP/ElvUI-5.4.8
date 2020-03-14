@@ -3,7 +3,7 @@ local UF = E:GetModule("UnitFrames")
 
 local CombatTextures = {
 	["DEFAULT"] = [[Interface\CharacterFrame\UI-StateIcon]],
-	["COMBAT"] = [[Interface\AddOns\ElvUI\media\textures\combat]],
+	["COMBAT"] = E.Media.Textures.Combat,
 	["PLATINUM"] = [[Interface\Challenges\ChallengeMode_Medal_Platinum]],
 	["ATTACK"] = [[Interface\CURSOR\Attack]],
 	["ALERT"] = [[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]],
@@ -13,7 +13,7 @@ local CombatTextures = {
 }
 
 function UF:Construct_CombatIndicator(frame)
- 	return frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
+	return frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
 end
 
 function UF:Configure_CombatIndicator(frame)

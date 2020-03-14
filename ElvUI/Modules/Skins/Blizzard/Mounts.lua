@@ -9,7 +9,7 @@ local C_PetJournal_GetPetInfoByIndex = C_PetJournal.GetPetInfoByIndex
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mounts ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.mounts then return end
 
 	PetJournalParent:StripTextures()
 	PetJournalParent:SetTemplate("Transparent")
@@ -28,9 +28,9 @@ local function LoadSkin()
 	MountJournal.RightInset:StripTextures()
 
 	MountJournal.MountCount:StripTextures()
-	MountJournal.MountCount:SetTemplate("Default")
+	MountJournal.MountCount:SetTemplate("Transparent")
 
-    MountJournal.MountDisplay:CreateBackdrop("Default")
+    MountJournal.MountDisplay:CreateBackdrop()
     MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 2, -40)
     MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 1, 30)
 
@@ -68,22 +68,40 @@ local function LoadSkin()
 	MountJournal.MountDisplay.ModelFrame.RotateRightButton:Kill()
 
 	S:HandleEditBox(MountJournalSearchBox)
+	MountJournalSearchBox:Width(256)
+	MountJournalSearchBox:Point("TOPLEFT", MountJournal.LeftInset, 1, -9)
+
+	MountJournalListScrollFrame:StripTextures()
+	MountJournalListScrollFrame:CreateBackdrop("Transparent")
+	MountJournalListScrollFrame.backdrop:Point("TOPLEFT", -3, 1)
+	MountJournalListScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -2)
 
 	S:HandleScrollBar(MountJournalListScrollFrameScrollBar)
+	MountJournalListScrollFrameScrollBar:ClearAllPoints()
+	MountJournalListScrollFrameScrollBar:Point("TOPRIGHT", MountJournalListScrollFrame, 23, -15)
+	MountJournalListScrollFrameScrollBar:Point("BOTTOMRIGHT", MountJournalListScrollFrame, 0, 14)
 
 	for i = 1, #MountJournal.ListScrollFrame.buttons do
 		local button = _G["MountJournalListScrollFrameButton"..i]
 
 		S:HandleItemButton(button)
+		button.pushed:SetInside(button.backdrop)
+		button.pushed:SetParent(button.backdrop)
 
 		button.icon:Size(40)
 		button.icon:SetTexCoord(unpack(E.TexCoords))
 
-		button.selectedTexture:SetTexture(1, 1, 1, 0.30)
+		S:HandleButtonHighlight(button)
+		button.handledHighlight:SetInside()
+
+		button.selectedTexture:SetTexture(E.Media.Textures.Highlight)
+		button.selectedTexture:SetAlpha(0.35)
 		button.selectedTexture:SetInside()
+		button.selectedTexture:SetTexCoord(0, 1, 0, 1)
 
 		button.stripe = button:CreateTexture(nil, "BACKGROUND")
-		button.stripe:SetTexture(0.9, 0.9, 1, 0.10)
+		button.stripe:SetTexture(E.Media.Textures.Highlight)
+		button.stripe:SetAlpha(0.10)
 		button.stripe:SetInside()
 	end
 
@@ -96,6 +114,7 @@ local function LoadSkin()
 		for i = 1, #buttons do
 			local button = buttons[i]
 			local displayIndex = i + offset
+
 			if displayIndex <= #MountJournal.cachedMounts and showMounts then
 				local index = MountJournal.cachedMounts[displayIndex]
 				local _, _, _, icon = GetCompanionInfo("MOUNT", index)
@@ -108,15 +127,15 @@ local function LoadSkin()
 	end)
 
 	local function ColorSelectedMount()
-		local scrollFrame = MountJournal.ListScrollFrame
-		local offset = HybridScrollFrame_GetOffset(scrollFrame)
+		local offset = HybridScrollFrame_GetOffset(MountJournal.ListScrollFrame)
+
 		for i = 1, #MountJournal.ListScrollFrame.buttons do
 			local button = _G["MountJournalListScrollFrameButton"..i]
 			local name = _G["MountJournalListScrollFrameButton"..i.."Name"]
 
 			if button.selectedTexture:IsShown() then
-				name:SetTextColor(1, 1, 0)
-				button.backdrop:SetBackdropBorderColor(1, 1, 0)
+				name:SetTextColor(unpack(E.media.rgbvaluecolor))
+				button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 			else
 				name:SetTextColor(1, 1, 1)
 				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
@@ -139,30 +158,40 @@ local function LoadSkin()
 	PetJournalFindBattle:StripTextures()
 	PetJournalRightInset:StripTextures()
 	PetJournalLeftInset:StripTextures()
-	PetJournalListScrollFrame:StripTextures()
 	PetJournalFilterButton:StripTextures(true)
 	PetJournalTutorialButton:Kill()
 
 	PetJournal.PetCount:StripTextures()
-	PetJournal.PetCount:SetTemplate("Default")
+	PetJournal.PetCount:SetTemplate("Transparent")
 
 	S:HandleButton(PetJournalSummonButton)
 	S:HandleButton(PetJournalFindBattle)
 
 	S:HandleEditBox(PetJournalSearchBox)
+	PetJournalSearchBox:Width(160)
+	PetJournalSearchBox:Point("TOPLEFT", PetJournalLeftInset, 1, -9)
 
 	S:HandleButton(PetJournalFilterButton)
 	PetJournalFilterButton:ClearAllPoints()
-	PetJournalFilterButton:Point("RIGHT",PetJournalSearchBox, 97, 0)
+	PetJournalFilterButton:Point("RIGHT", PetJournalSearchBox, 97, 0)
 
 	PetJournalFilterButtonText:Point("CENTER")
 
+	PetJournalListScrollFrame:StripTextures()
+	PetJournalListScrollFrame:CreateBackdrop("Transparent")
+	PetJournalListScrollFrame.backdrop:Point("TOPLEFT", -3, 1)
+	PetJournalListScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -2)
+
 	S:HandleScrollBar(PetJournalListScrollFrameScrollBar)
+	PetJournalListScrollFrameScrollBar:ClearAllPoints()
+	PetJournalListScrollFrameScrollBar:Point("TOPRIGHT", PetJournalListScrollFrame, 23, -15)
+	PetJournalListScrollFrameScrollBar:Point("BOTTOMRIGHT", PetJournalListScrollFrame, 0, 14)
 
 	for i = 1, #PetJournal.listScroll.buttons do
 		local button = _G["PetJournalListScrollFrameButton"..i]
 
 		S:HandleItemButton(button)
+		button.pushed:SetInside(button.backdrop)
 
 		button.dragButton.levelBG:SetAlpha(0)
 		button.dragButton.favorite:SetParent(button.backdrop)
@@ -174,8 +203,13 @@ local function LoadSkin()
 		button.icon:Size(40)
 		button.icon:SetTexCoord(unpack(E.TexCoords))
 
-		button.selectedTexture:SetTexture(1, 1, 1, 0.30)
+		S:HandleButtonHighlight(button)
+		button.handledHighlight:SetInside()
+
+		button.selectedTexture:SetTexture(E.Media.Textures.Highlight)
+		button.selectedTexture:SetAlpha(0.35)
 		button.selectedTexture:SetInside()
+		button.selectedTexture:SetTexCoord(0, 1, 0, 1)
 	end
 
 	local function ColorSelectedPet()
@@ -193,14 +227,21 @@ local function LoadSkin()
 			if petID ~= nil then
 				local _, _, _, _, rarity = C_PetJournal_GetPetStats(petID)
 				if rarity then
-					local color = ITEM_QUALITY_COLORS[rarity-1]
+					local color = ITEM_QUALITY_COLORS[rarity - 1]
+
+					button.selectedTexture:SetVertexColor(color.r, color.g, color.b)
+					button.handledHighlight:SetVertexColor(color.r, color.g, color.b)
 					button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 					name:SetTextColor(color.r, color.g, color.b)
 				else
-					button.backdrop:SetBackdropBorderColor(0, 0, 0)
+					button.selectedTexture:SetVertexColor(1, 1, 1)
+					button.handledHighlight:SetVertexColor(1, 1, 1)
+					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					name:SetTextColor(1, 1, 1)
 				end
 			else
+				button.selectedTexture:SetVertexColor(1, 1, 1)
+				button.handledHighlight:SetVertexColor(1, 1, 1)
 				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				name:SetTextColor(0.6, 0.6, 0.6)
 			end
@@ -257,12 +298,12 @@ local function LoadSkin()
 		_G["PetJournalLoadoutPet"..i.."LevelBG"]:Point("BOTTOMRIGHT", loadoutPetIcon, "BOTTOMRIGHT", 4, -4)
 
 		loadoutPetHealth.healthBar:StripTextures()
-		loadoutPetHealth.healthBar:CreateBackdrop("Default")
+		loadoutPetHealth.healthBar:CreateBackdrop()
 		loadoutPetHealth.healthBar:SetStatusBarTexture(E.media.normTex)
 		E:RegisterStatusBar(loadoutPetHealth.healthBar)
 
 		loadoutPetXP:StripTextures()
-		loadoutPetXP:CreateBackdrop("Default")	
+		loadoutPetXP:CreateBackdrop()	
 		loadoutPetXP:SetStatusBarTexture(E.media.normTex)
 		loadoutPetXP:SetFrameLevel(loadoutPetXP:GetFrameLevel() + 2)
 		E:RegisterStatusBar(loadoutPetXP)
@@ -376,7 +417,7 @@ local function LoadSkin()
 		frame:SetFrameLevel(frame:GetFrameLevel() + 2)
 		frame:DisableDrawLayer("BACKGROUND")
 
-		frame:CreateBackdrop("Default")
+		frame:CreateBackdrop()
 		frame.backdrop:SetAllPoints()
 
 		frame:StyleButton(nil, true)
@@ -386,11 +427,11 @@ local function LoadSkin()
 	end
 
 	PetJournalPetCardHealthFrame.healthBar:StripTextures()
-	PetJournalPetCardHealthFrame.healthBar:CreateBackdrop("Default")
+	PetJournalPetCardHealthFrame.healthBar:CreateBackdrop()
 	PetJournalPetCardHealthFrame.healthBar:SetStatusBarTexture(E.media.normTex)
 
 	PetJournalPetCardXPBar:StripTextures()
-	PetJournalPetCardXPBar:CreateBackdrop("Default")
+	PetJournalPetCardXPBar:CreateBackdrop()
 	PetJournalPetCardXPBar:SetStatusBarTexture(E.media.normTex)
 end
 

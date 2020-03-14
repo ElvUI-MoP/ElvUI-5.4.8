@@ -1,76 +1,139 @@
 local _G = _G
-local pairs, unpack = pairs, unpack
-local tcopy, wipe = table.copy, wipe
-local format, strsplit = string.format, string.split
+local gsub, type, tcopy = gsub, type, table.copy
 
 local CreateFrame = CreateFrame
-local GetAddOnInfo = GetAddOnInfo
 local GetAddOnMetadata = GetAddOnMetadata
+local GetLocale = GetLocale
+local GetTime = GetTime
 local HideUIPanel = HideUIPanel
-local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
-local LoadAddOn = LoadAddOn
 local ReloadUI = ReloadUI
-local GameMenuFrame = GameMenuFrame
 local GameMenuButtonLogout = GameMenuButtonLogout
-local GameMenuButtonAddons = GameMenuButtonAddons
-local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
+local GameMenuButtonRatings = GameMenuButtonRatings
+local GameMenuFrame = GameMenuFrame
 
 BINDING_HEADER_ELVUI = GetAddOnMetadata(..., "Title")
 
-local AceAddon = _G.LibStub("AceAddon-3.0")
-local CallbackHandler = _G.LibStub("CallbackHandler-1.0")
+local AceAddon, AceAddonMinor = LibStub("AceAddon-3.0")
+local CallbackHandler = LibStub("CallbackHandler-1.0")
 
 local AddOnName, Engine = ...
-local AddOn = AceAddon:NewAddon(AddOnName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0")
-
-AddOn.callbacks = AddOn.callbacks or CallbackHandler:New(AddOn)
+local E = AceAddon:NewAddon(AddOnName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0")
 
 -- Defaults
-AddOn.DF = {}
-AddOn.DF.profile = {}
-AddOn.DF.global = {}
-AddOn.privateVars = {}
-AddOn.privateVars.profile = {}
+E.DF = {profile = {}, global = {}}
+E.privateVars = {profile = {}}
 
-AddOn.Options = {
+E.Options = {
 	type = "group",
-	name = AddOnName,
-	args = {}
+	args = {},
+	childGroups = "ElvUI_HiddenTree"
 }
 
-Engine[1] = AddOn
+E.callbacks = E.callbacks or CallbackHandler:New(E)
+
+Engine[1] = E
 Engine[2] = {}
-Engine[3] = AddOn.privateVars.profile
-Engine[4] = AddOn.DF.profile
-Engine[5] = AddOn.DF.global
+Engine[3] = E.privateVars.profile
+Engine[4] = E.DF.profile
+Engine[5] = E.DF.global
+_G.ElvUI = Engine
 
-_G[AddOnName] = Engine
+do
+	local locale = GetLocale()
+	local convert = {enGB = "enUS", esES = "esMX", itIT = "enUS"}
+	local gameLocale = convert[locale] or locale or "enUS"
 
-AddOn.oUF = Engine.oUF
-AddOn.Libs = {
-	AceAddon = AceAddon,
-	
-	AceDB = _G.LibStub("AceDB-3.0"),
-	EP = _G.LibStub("LibElvUIPlugin-1.0"),
-	LSM = _G.LibStub("LibSharedMedia-3.0"),
-	ACL = _G.LibStub("AceLocale-3.0"),
-	LAB = _G.LibStub("LibActionButton-1.0"),
-	LDB = _G.LibStub("LibDataBroker-1.1"),
-	DualSpec = _G.LibStub("LibDualSpec-1.0"),
-	SimpleSticky = _G.LibStub("LibSimpleSticky-1.0"),
-	SpellRange = _G.LibStub("SpellRange-1.0"),
-	ItemSearch = _G.LibStub("LibItemSearch-1.2"),
-	Compress = _G.LibStub("LibCompress"),
-	Base64 = _G.LibStub("LibBase64-1.0-ElvUI"),
-	Masque = _G.LibStub("Masque", true)
-} -- added on ElvUI_Config load: AceGUI, AceConfig, AceConfigDialog, AceConfigRegistry, AceDBOptions
+	function E:GetLocale()
+		return gameLocale
+	end
+end
 
--- backwards compatible for plugins
-AddOn.LSM = AddOn.Libs.LSM 
-AddOn.Masque = AddOn.Libs.Masque
+do
+	E.Libs = {}
+	E.LibsMinor = {}
+	function E:AddLib(name, major, minor)
+		if not name then return end
 
-function AddOn:OnInitialize()
+		-- in this case: `major` is the lib table and `minor` is the minor version
+		if type(major) == "table" and type(minor) == "number" then
+			self.Libs[name], self.LibsMinor[name] = major, minor
+		else -- in this case: `major` is the lib name and `minor` is the silent switch
+			self.Libs[name], self.LibsMinor[name] = LibStub(major, minor)
+		end
+	end
+
+	E:AddLib("AceAddon", AceAddon, AceAddonMinor)
+	E:AddLib("AceDB", "AceDB-3.0")
+	E:AddLib("EP", "LibElvUIPlugin-1.0")
+	E:AddLib("LSM", "LibSharedMedia-3.0")
+	E:AddLib("ACL", "AceLocale-3.0-ElvUI")
+	E:AddLib("LAB", "LibActionButton-1.0-ElvUI")
+	E:AddLib("LAI", "LibAuraInfo-1.0-ElvUI", true)
+	E:AddLib("LDB", "LibDataBroker-1.1")
+	E:AddLib("DualSpec", "LibDualSpec-1.0")
+	E:AddLib("SimpleSticky", "LibSimpleSticky-1.0")
+	E:AddLib("SpellRange", "SpellRange-1.0")
+	E:AddLib("ItemSearch", "LibItemSearch-1.2-ElvUI")
+	E:AddLib("Compress", "LibCompress")
+	E:AddLib("Base64", "LibBase64-1.0-ElvUI")
+	E:AddLib("Masque", "Masque", true)
+	E:AddLib("Translit", "LibTranslit-1.0")
+	-- added on ElvUI_OptionsUI load: AceGUI, AceConfig, AceConfigDialog, AceConfigRegistry, AceDBOptions
+
+	-- backwards compatible for plugins
+	E.LSM = E.Libs.LSM
+	E.Masque = E.Libs.Masque
+end
+
+E.oUF = Engine.oUF
+E.ActionBars = E:NewModule("ActionBars", "AceHook-3.0", "AceEvent-3.0")
+E.AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0")
+E.Auras = E:NewModule("Auras", "AceHook-3.0", "AceEvent-3.0")
+E.Bags = E:NewModule("Bags", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
+E.Blizzard = E:NewModule("Blizzard", "AceEvent-3.0", "AceHook-3.0")
+E.Chat = E:NewModule("Chat", "AceTimer-3.0", "AceHook-3.0", "AceEvent-3.0")
+E.DataBars = E:NewModule("DataBars", "AceEvent-3.0")
+E.DataTexts = E:NewModule("DataTexts", "AceTimer-3.0", "AceHook-3.0", "AceEvent-3.0")
+E.DebugTools = E:NewModule("DebugTools", "AceEvent-3.0", "AceHook-3.0")
+E.Distributor = E:NewModule("Distributor", "AceEvent-3.0", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0")
+E.Layout = E:NewModule("Layout", "AceEvent-3.0")
+E.Minimap = E:NewModule("Minimap", "AceEvent-3.0")
+E.Misc = E:NewModule("Misc", "AceEvent-3.0", "AceTimer-3.0")
+E.ModuleCopy = E:NewModule("ModuleCopy", "AceEvent-3.0", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0")
+E.NamePlates = E:NewModule("NamePlates", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
+E.PluginInstaller = E:NewModule("PluginInstaller")
+E.RaidBrowser = E:NewModule("RaidBrowser", "AceEvent-3.0", "AceHook-3.0")
+E.RaidUtility = E:NewModule("RaidUtility", "AceEvent-3.0")
+E.Skins = E:NewModule("Skins", "AceHook-3.0", "AceEvent-3.0")
+E.Threat = E:NewModule("Threat", "AceEvent-3.0")
+E.Tooltip = E:NewModule("Tooltip", "AceHook-3.0", "AceEvent-3.0")
+E.TotemBar = E:NewModule("Totems", "AceEvent-3.0")
+E.UnitFrames = E:NewModule("UnitFrames", "AceTimer-3.0", "AceEvent-3.0", "AceHook-3.0")
+E.WorldMap = E:NewModule("WorldMap", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
+
+do
+	local a1, a2, a3 = "","([%(%)%.%%%+%-%*%?%[%^%$])","%%%1"
+	function E:EscapeString(s) return gsub(s, a2, a3) end
+
+	local a4, a5, a6, a7 = "|c[fF][fF]%x%x%x%x%x%x","|r","|T.-|t","^%s*"
+	function E:StripString(s)
+		return gsub(gsub(gsub(gsub(s, a4, a1), a5, a1), a6, a1), a7, a1)
+	end
+end
+
+do
+	DisableAddOn("ElvUI_VisualAuraTimers")
+	DisableAddOn("ElvUI_ExtraActionBars")
+	DisableAddOn("ElvUI_CastBarOverlay")
+	DisableAddOn("ElvUI_EverySecondCounts")
+	DisableAddOn("ElvUI_AuraBarsMovers")
+	DisableAddOn("ElvUI_CustomTweaks")
+--	DisableAddOn("ElvUI_MinimapButtons")
+--	DisableAddOn("ElvUI_DataTextColors")
+end
+
+function E:OnInitialize()
 	if not ElvCharacterDB then
 		ElvCharacterDB = {}
 	end
@@ -81,6 +144,8 @@ function AddOn:OnInitialize()
 
 	self.db = tcopy(self.DF.profile, true)
 	self.global = tcopy(self.DF.global, true)
+
+	local ElvDB = ElvDB
 	if ElvDB then
 		if ElvDB.global then
 			self:CopyTable(self.global, ElvDB.global)
@@ -97,6 +162,8 @@ function AddOn:OnInitialize()
 	end
 
 	self.private = tcopy(self.privateVars.profile, true)
+
+	local ElvPrivateDB = ElvPrivateDB
 	if ElvPrivateDB then
 		local profileKey
 		if ElvPrivateDB.profileKeys then
@@ -108,17 +175,11 @@ function AddOn:OnInitialize()
 		end
 	end
 
-	if self.private.general.pixelPerfect then
-		self.Border = self.mult
-		self.Spacing = 0
-		self.PixelMode = true
-	end
-
-	self:UIScale()
+	self.twoPixelsPlease = false
+	self.ScanTooltip = CreateFrame("GameTooltip", "ElvUI_ScanTooltip", UIParent, "GameTooltipTemplate")
+	self.PixelMode = self.twoPixelsPlease or self.private.general.pixelPerfect -- keep this over `UIScale`
+	self:UIScale(true)
 	self:UpdateMedia()
-
-	self:RegisterEvent("PLAYER_REGEN_DISABLED")
-	--self:RegisterEvent("PLAYER_LOGIN", "Initialize")
 	self:Contruct_StaticPopups()
 	self:InitializeInitialModules()
 
@@ -126,10 +187,10 @@ function AddOn:OnInitialize()
 		self:StaticPopup_Show("TUKUI_ELVUI_INCOMPATIBLE")
 	end
 
-	local GameMenuButton = CreateFrame("Button", "ElvUI", GameMenuFrame, "GameMenuButtonTemplate")
+	local GameMenuButton = CreateFrame("Button", "GameMenuButtonElvUI", GameMenuFrame, "GameMenuButtonTemplate")
 	GameMenuButton:SetText(self.title)
 	GameMenuButton:SetScript("OnClick", function()
-		AddOn:ToggleConfig()
+		E:ToggleOptionsUI()
 		HideUIPanel(GameMenuFrame)
 	end)
 	GameMenuFrame[AddOnName] = GameMenuButton
@@ -137,14 +198,9 @@ function AddOn:OnInitialize()
 	GameMenuButton:Size(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())
 	GameMenuButton:Point("TOPLEFT", GameMenuButtonAddons, "BOTTOMLEFT", 0, -1)
 	hooksecurefunc("GameMenuFrame_UpdateVisibleButtons", self.PositionGameMenuButton)
-
-	if AddOn.private.skins.blizzard.enable ~= true or AddOn.private.skins.blizzard.misc ~= true then return end
-
-	local S = AddOn:GetModule("Skins")
-	S:HandleButton(GameMenuButton)
 end
 
-function AddOn:PositionGameMenuButton()
+function E:PositionGameMenuButton()
 	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
 	local _, relTo, _, _, offY = GameMenuButtonLogout:GetPoint()
 	if relTo ~= GameMenuFrame[AddOnName] then
@@ -155,45 +211,16 @@ function AddOn:PositionGameMenuButton()
 	end
 end
 
-local loginFrame = CreateFrame("Frame")
-loginFrame:RegisterEvent("PLAYER_LOGIN")
-loginFrame:SetScript("OnEvent", function(self)
-	AddOn:Initialize(self)
+local LoadUI = CreateFrame("Frame")
+LoadUI:RegisterEvent("PLAYER_LOGIN")
+LoadUI:SetScript("OnEvent", function()
+	E:Initialize()
 end)
 
-function AddOn:PLAYER_REGEN_ENABLED()
-	self:ToggleConfig() 
-	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-end
-
-function AddOn:PLAYER_REGEN_DISABLED()
-	local err = false
-
-	if IsAddOnLoaded("ElvUI_Config") then
-		local ACD = self.Libs.AceConfigDialog
-		if ACD and ACD.OpenFrames and ACD.OpenFrames[AddOnName] then
-			self:RegisterEvent("PLAYER_REGEN_ENABLED")
-			ACD:Close(AddOnName)
-			err = true
-		end
-	end
-
-	if self.CreatedMovers then
-		for name in pairs(self.CreatedMovers) do
-			if _G[name] and _G[name]:IsShown() then
-				err = true
-				_G[name]:Hide()
-			end
-		end
-	end
-
-	if err == true then
-		self:Print(ERR_NOT_IN_COMBAT)
-	end
-end
-
-function AddOn:ResetProfile()
+function E:ResetProfile()
 	local profileKey
+
+	local ElvPrivateDB = ElvPrivateDB
 	if ElvPrivateDB.profileKeys then
 		profileKey = ElvPrivateDB.profileKeys[self.myname.." - "..self.myrealm]
 	end
@@ -206,103 +233,6 @@ function AddOn:ResetProfile()
 	ReloadUI()
 end
 
-function AddOn:OnProfileReset()
+function E:OnProfileReset()
 	self:StaticPopup_Show("RESET_PROFILE_PROMPT")
-end
-
-local pageNodes = {}
-function AddOn:ToggleConfig(msg)
-	if InCombatLockdown() then
-		self:Print(ERR_NOT_IN_COMBAT)
-		self:RegisterEvent("PLAYER_REGEN_ENABLED")
-		return
-	end
-
-	if not IsAddOnLoaded("ElvUI_Config") then
-		local noConfig
-		local _, _, _, _, _, reason = GetAddOnInfo("ElvUI_Config")
-		if reason ~= "MISSING" and reason ~= "DISABLED" then
-			self.GUIFrame = false
-			LoadAddOn("ElvUI_Config")
-
-			--For some reason, GetAddOnInfo reason is "DEMAND_LOADED" even if the addon is disabled.
-			--Workaround: Try to load addon and check if it is loaded right after.
-			if not IsAddOnLoaded("ElvUI_Config") then noConfig = true end
-
-			-- version check elvui config if it's actually enabled
-			if (not noConfig) and GetAddOnMetadata("ElvUI_Config", "Version") ~= "1.01" then
-				self:StaticPopup_Show("CLIENT_UPDATE_REQUEST")
-			end
-		else
-			noConfig = true
-		end
-
-		if noConfig then
-			self:Print("|cffff0000Error -- Addon 'ElvUI_Config' not found or is disabled.|r") 
-			return
-		end
-	end
-
-	local ACD = self.Libs.AceConfigDialog
-	local ConfigOpen = ACD and ACD.OpenFrames and ACD.OpenFrames[AddOnName]
-
-	local pages, msgStr
-	if msg and msg ~= "" then
-		pages = {strsplit(",", msg)}
-		msgStr = msg:gsub(",","\001")
-	end
-
-	local mode = "Close"
-	if not ConfigOpen or (pages ~= nil) then
-		if pages ~= nil then
-			local pageCount, index, mainSel = #pages
-			if pageCount > 1 then
-				wipe(pageNodes)
-				index = 0
-
-				local main, mainNode, mainSelStr, sub, subNode, subSel
-				for i = 1, pageCount do
-					if i == 1 then
-						main = pages[i] and ACD.Status and ACD.Status.ElvUI
-						mainSel = main and main.status and main.status.groups and main.status.groups.selected
-						mainSelStr = mainSel and ("^"..mainSel:gsub("([%(%)%.%%%+%-%*%?%[%^%$])","%%%1").."\001")
-						mainNode = main and main.children and main.children[pages[i]]
-						pageNodes[index + 1], pageNodes[index + 2] = main, mainNode
-					else
-						sub = pages[i] and pageNodes[i] and ((i == pageCount and pageNodes[i]) or pageNodes[i].children[pages[i]])
-						subSel = sub and sub.status and sub.status.groups and sub.status.groups.selected
-						subNode = (mainSelStr and msgStr:match(mainSelStr..pages[i]:gsub("([%(%)%.%%%+%-%*%?%[%^%$])","%%%1").."$") and (subSel and subSel == pages[i])) or ((i == pageCount and not subSel) and mainSel and mainSel == msgStr)
-						pageNodes[index + 1], pageNodes[index + 2] = sub, subNode
-					end
-					index = index + 2
-				end
-			else
-				local main = pages[1] and ACD.Status and ACD.Status.ElvUI
-				mainSel = main and main.status and main.status.groups and main.status.groups.selected
-			end
-
-			if ConfigOpen and ((not index and mainSel and mainSel == msg) or (index and pageNodes and pageNodes[index])) then
-				mode = "Close"
-			else
-				mode = "Open"
-			end
-		else
-			mode = "Open"
-		end
-	end
-	ACD[mode](ACD, AddOnName)
-
-	if pages and (mode == "Open") then
-		ACD:SelectGroup(AddOnName, unpack(pages))
-	end
-
-	if mode == "Open" then
-		ElvConfigToggle.text:SetTextColor(unpack(self.media.rgbvaluecolor))
-		PlaySound("igMainMenuOption")
-	else
-		ElvConfigToggle.text:SetTextColor(1, 1, 1)
-		PlaySound("igMainMenuClose")
-	end
-
-	GameTooltip:Hide() --Just in case you're mouseovered something and it closes.
 end

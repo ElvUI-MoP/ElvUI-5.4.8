@@ -8,8 +8,8 @@ local GetSpecialization = GetSpecialization
 local GetSpecializationMasterySpells = GetSpecializationMasterySpells
 local STAT_MASTERY = STAT_MASTERY
 
-local lastPanel
 local displayString = ""
+local lastPanel
 
 local function OnEvent(self)
 	lastPanel = self

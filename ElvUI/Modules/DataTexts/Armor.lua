@@ -27,7 +27,7 @@ local function OnEnter(self)
 	DT.tooltip:AddLine(L["Mitigation By Level: "])
 	DT.tooltip:AddLine(" ")
 
-	local playerLevel = UnitLevel("player") + 3
+	local playerLevel = E.mylevel + 3
 	for i = 1, 4 do
 		local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, playerLevel)
 		DT.tooltip:AddDoubleLine(playerLevel, format(chanceString, armorReduction), 1, 1, 1)
@@ -52,4 +52,4 @@ local function ValueColorUpdate(hex)
 end
 E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
-DT:RegisterDatatext('Armor', {"UNIT_RESISTANCES"}, OnEvent, nil, nil, OnEnter, nil, ARMOR)
+DT:RegisterDatatext("Armor", {"UNIT_RESISTANCES"}, OnEvent, nil, nil, OnEnter, nil, ARMOR)

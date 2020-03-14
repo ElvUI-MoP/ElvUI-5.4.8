@@ -92,12 +92,10 @@ local function Enable(self, unit)
 			if bar[i].bg then
 				bar[i]:SetMinMaxValues(0, 1)
 				bar[i]:SetValue(0)
-				bar[i].bg:SetAlpha(0.2)
-				bar[i].bg:SetAllPoints()
 			end
 		end
 
-		return true;
+		return true
 	end
 end
 

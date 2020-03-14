@@ -4,9 +4,8 @@ local S = E:GetModule("Skins")
 local _G = _G
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.petition ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.petition then return end
 
-	local PetitionFrame = _G["PetitionFrame"]
 	PetitionFrame:StripTextures(true)
 	PetitionFrame:SetTemplate("Transparent")
 

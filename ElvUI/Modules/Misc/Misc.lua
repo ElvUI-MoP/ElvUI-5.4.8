@@ -1,45 +1,48 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local M = E:NewModule("Misc", "AceEvent-3.0", "AceTimer-3.0")
-E.Misc = M
+local M = E:GetModule("Misc")
+local Bags = E:GetModule("Bags")
 
 local format, gsub = string.format, string.gsub
 
-local UnitGUID = UnitGUID
-local UnitInRaid = UnitInRaid
-local IsInGroup, IsInRaid = IsInGroup, IsInRaid
-local IsPartyLFG, IsInInstance = IsPartyLFG, IsInInstance
-local SendChatMessage = SendChatMessage
-local IsShiftKeyDown = IsShiftKeyDown
-local CanMerchantRepair = CanMerchantRepair
-local GetRepairAllCost = GetRepairAllCost
-local GetGuildBankWithdrawMoney = GetGuildBankWithdrawMoney
+local AcceptGroup = AcceptGroup
 local CanGuildBankRepair = CanGuildBankRepair
-local RepairAllItems = RepairAllItems
-local InCombatLockdown = InCombatLockdown
+local CanMerchantRepair = CanMerchantRepair
+local GetCVarBool, SetCVar = GetCVarBool, SetCVar
+local GetFriendInfo = GetFriendInfo
+local GetGuildBankWithdrawMoney = GetGuildBankWithdrawMoney
+local GetGuildRosterInfo = GetGuildRosterInfo
 local GetNumGroupMembers = GetNumGroupMembers
+local GetNumFriends = GetNumFriends
+local GetNumGuildMembers = GetNumGuildMembers
+local GetNumPartyMembers = GetNumPartyMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
-local UninviteUnit = UninviteUnit
-local UnitName = UnitName
-local GetCoinTextureString = GetCoinTextureString
+local GetRepairAllCost = GetRepairAllCost
 local GetUnitSpeed = GetUnitSpeed
+local GuildRoster = GuildRoster
+local InCombatLockdown = InCombatLockdown
+local IsInGuild = IsInGuild
+local IsInGroup, IsInRaid = IsInGroup, IsInRaid
+local IsInInstance = IsInInstance
+local IsPartyLFG = IsPartyLFG
+local IsShiftKeyDown = IsShiftKeyDown
 local LeaveParty = LeaveParty
 local RaidNotice_AddMessage = RaidNotice_AddMessage
-local GetNumFriends = GetNumFriends
 local ShowFriends = ShowFriends
-local IsInGuild = IsInGuild
-local GuildRoster = GuildRoster
-local GetFriendInfo = GetFriendInfo
-local AcceptGroup = AcceptGroup
-local GetNumGuildMembers = GetNumGuildMembers
-local GetGuildRosterInfo = GetGuildRosterInfo
-local BNGetNumFriends = BNGetNumFriends
-local BNGetFriendInfo = BNGetFriendInfo
 local StaticPopup_Hide = StaticPopup_Hide
-local GetCVarBool, SetCVar = GetCVarBool, SetCVar
+local RepairAllItems = RepairAllItems
+local SendChatMessage = SendChatMessage
+local UninviteUnit = UninviteUnit
+local UnitExists = UnitExists
+local UnitInRaid = UnitInRaid
+local UnitGUID = UnitGUID
+local UnitName = UnitName
 local UIErrorsFrame = UIErrorsFrame
+
+local ERR_NOT_ENOUGH_MONEY = ERR_NOT_ENOUGH_MONEY
+local ERR_GUILD_NOT_ENOUGH_MONEY = ERR_GUILD_NOT_ENOUGH_MONEY
 local MAX_PARTY_MEMBERS = MAX_PARTY_MEMBERS
 
-local interruptMsg = INTERRUPTED.." %s's \124cff71d5ff\124Hspell:%d\124h[%s]\124h\124r!"
+local INTERRUPT_MSG = L["Interrupted %s's \124cff71d5ff\124Hspell:%d:0\124h[%s]\124h\124r!"]
 
 function M:ErrorFrameToggle(event)
 	if not E.db.general.hideErrorFrame then return end
@@ -51,28 +54,30 @@ function M:ErrorFrameToggle(event)
 	end
 end
 
-
 function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, _, _, _, _, destName, _, _, _, _, _, spellID, spellName)
-	if E.db.general.interruptAnnounce == "NONE" then return end 
-	if not (event == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet"))) then return end
+	local announce = event == "SPELL_INTERRUPT" and (sourceGUID == E.myguid or sourceGUID == UnitGUID("pet")) and destGUID ~= E.myguid
+	if not announce then return end -- No announce-able interrupt from player or pet, exit.
 
-	if E.db.general.interruptAnnounce == "SAY" then
-		SendChatMessage(format(interruptMsg, destName, spellID, spellName), "SAY")
-	elseif E.db.general.interruptAnnounce == "EMOTE" then
-		SendChatMessage(format(interruptMsg, destName, spellID, spellName), "EMOTE")
+	local channel, msg = E.db.general.interruptAnnounce, format(INTERRUPT_MSG, destName, spellID, spellName)
+	if channel == "NONE" then return end
+
+	if channel == "SAY" then
+		SendChatMessage(msg, "SAY")
+	elseif channel == "EMOTE" then
+		SendChatMessage(msg, "EMOTE")
 	else
 		local inGroup, inRaid, inPartyLFG = IsInGroup(), IsInRaid(), IsPartyLFG()
 		if not inGroup then return end
 
-		if E.db.general.interruptAnnounce == "PARTY" then
+		if channel == "PARTY" then
 			SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "PARTY")
-		elseif E.db.general.interruptAnnounce == "RAID" then
+		elseif channel == "RAID" then
 			if inRaid then
 				SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "RAID")
 			else
 				SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "PARTY")
 			end
-		elseif E.db.general.interruptAnnounce == "RAID_ONLY" then
+		elseif channel == "RAID_ONLY" then
 			if inRaid then
 				SendChatMessage(format(interruptMsg, destName, spellID, spellName), inPartyLFG and "INSTANCE_CHAT" or "RAID")
 			end
@@ -80,33 +85,73 @@ function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, _, _, _, _, d
 	end
 end
 
-function M:MERCHANT_SHOW()
-	if E.db.bags.vendorGrays.enable then
-		E:GetModule("Bags"):VendorGrays(nil, true)
-	end
+do -- Auto Repair Functions
+	local STATUS, TYPE, COST, POSS
+	function M:AttemptAutoRepair(playerOverride)
+		STATUS, TYPE, COST, POSS = "", E.db.general.autoRepair, GetRepairAllCost()
 
-	local autoRepair = E.db.general.autoRepair
-	if IsShiftKeyDown() or autoRepair == "NONE" or not CanMerchantRepair() then return end
-
-	local cost, possible = GetRepairAllCost()
-	local withdrawLimit = GetGuildBankWithdrawMoney()
-	if autoRepair == "GUILD" and (not CanGuildBankRepair() or cost > withdrawLimit) then
-		autoRepair = "PLAYER"
-	end
-
-	if cost > 0 then
-		if possible then
-			RepairAllItems(autoRepair == "GUILD")
-
-			if autoRepair == "GUILD" then
-				E:Print(L["Your items have been repaired using guild bank funds for: "]..GetCoinTextureString(cost, 12))
-			else
-				E:Print(L["Your items have been repaired for: "]..GetCoinTextureString(cost, 12))
+		if POSS and COST > 0 then
+			--This check evaluates to true even if the guild bank has 0 gold, so we add an override
+			if IsInGuild() and TYPE == "GUILD" and (playerOverride or (not CanGuildBankRepair() or COST > GetGuildBankWithdrawMoney())) then
+				TYPE = "PLAYER"
 			end
-		else
-			E:Print(L["You don't have enough money to repair."])
+
+			RepairAllItems(TYPE == "GUILD")
+
+			--Delay this a bit so we have time to catch the outcome of first repair attempt
+			E:Delay(0.5, M.AutoRepairOutput)
 		end
 	end
+
+	function M:AutoRepairOutput()
+		if TYPE == "GUILD" then
+			if STATUS == "GUILD_REPAIR_FAILED" then
+				M:AttemptAutoRepair(true) --Try using player money instead
+			else
+				E:Print(L["Your items have been repaired using guild bank funds for: "]..E:FormatMoney(COST, "SMART", true)) --Amount, style, textOnly
+			end
+		elseif TYPE == "PLAYER" then
+			if STATUS == "PLAYER_REPAIR_FAILED" then
+				E:Print(L["You don't have enough money to repair."])
+			else
+				E:Print(L["Your items have been repaired for: "]..E:FormatMoney(COST, "SMART", true)) --Amount, style, textOnly
+			end
+		end
+	end
+
+	function M:UI_ERROR_MESSAGE(_, messageType)
+		if messageType == ERR_GUILD_NOT_ENOUGH_MONEY then
+			STATUS = "GUILD_REPAIR_FAILED"
+		elseif messageType == ERR_NOT_ENOUGH_MONEY then
+			STATUS = "PLAYER_REPAIR_FAILED"
+		end
+	end
+end
+
+function M:MERCHANT_CLOSED()
+	self:UnregisterEvent("UI_ERROR_MESSAGE")
+	self:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")
+	self:UnregisterEvent("MERCHANT_CLOSED")
+end
+
+function M:MERCHANT_SHOW()
+	if E.db.bags.vendorGrays.enable then E:Delay(0.5, Bags.VendorGrays, Bags) end
+
+	if E.db.general.autoRepair == "NONE" or IsShiftKeyDown() or not CanMerchantRepair() then return end
+
+	--Prepare to catch "not enough money" messages
+	self:RegisterEvent("UI_ERROR_MESSAGE")
+
+	--Use this to unregister events afterwards
+	self:RegisterEvent("MERCHANT_CLOSED")
+
+	M:AttemptAutoRepair()
+end
+
+function M:RESURRECT_REQUEST()
+	if not E.db.general.resurrectSound then return end
+
+	PlaySoundFile(E.Media.Sounds.ThanksForPlaying)
 end
 
 function M:DisbandRaidGroup()
@@ -136,11 +181,17 @@ function M:CheckMovement()
 	if GetUnitSpeed("player") ~= 0 then
 		if WorldMapPositioningGuide:IsMouseOver() then
 			WorldMapFrame:SetAlpha(1)
+			WorldMapBlobFrame:SetFillAlpha(128)
+			WorldMapBlobFrame:SetBorderAlpha(192)
 		else
 			WorldMapFrame:SetAlpha(E.global.general.mapAlphaWhenMoving)
+			WorldMapBlobFrame:SetFillAlpha(128 * E.global.general.mapAlphaWhenMoving)
+			WorldMapBlobFrame:SetBorderAlpha(192 * E.global.general.mapAlphaWhenMoving)
 		end
 	else
 		WorldMapFrame:SetAlpha(1)
+		WorldMapBlobFrame:SetFillAlpha(128)
+		WorldMapBlobFrame:SetBorderAlpha(192)
 	end
 end
 
@@ -158,7 +209,7 @@ function M:PVPMessageEnhancement(_, msg)
 
 	local _, instanceType = IsInInstance()
 	if instanceType == "pvp" or instanceType == "arena" then
-		RaidNotice_AddMessage(RaidBossEmoteFrame, msg, ChatTypeInfo["RAID_BOSS_EMOTE"])
+		RaidNotice_AddMessage(RaidBossEmoteFrame, msg, ChatTypeInfo.RAID_BOSS_EMOTE)
 	end
 end
 
@@ -172,11 +223,12 @@ function M:AutoInvite(event, leaderName)
 		hideStatic = true
 
 		-- Update Guild and Friendlist
-		if GetNumFriends() > 0 then ShowFriends() end
+		local numFriends = GetNumFriends()
+		if numFriends > 0 then ShowFriends() end
 		if IsInGuild() then GuildRoster() end
 		local inGroup = false
 
-		for friendIndex = 1, GetNumFriends() do
+		for friendIndex = 1, numFriends do
 			local friendName = gsub(GetFriendInfo(friendIndex), "-.*", "")
 			if friendName == leaderName then
 				AcceptGroup()
@@ -189,18 +241,6 @@ function M:AutoInvite(event, leaderName)
 			for guildIndex = 1, GetNumGuildMembers(true) do
 				local guildMemberName = gsub(GetGuildRosterInfo(guildIndex), "-.*", "")
 				if guildMemberName == leaderName then
-					AcceptGroup()
-					inGroup = true
-					break
-				end
-			end
-		end
-
-		if not inGroup then
-			for bnIndex = 1, BNGetNumFriends() do
-				local _, _, _, name = BNGetFriendInfo(bnIndex)
-				leaderName = leaderName:match("(.+)%-.+") or leaderName
-				if name == leaderName then
 					AcceptGroup()
 					break
 				end
@@ -218,23 +258,13 @@ function M:ForceCVars()
 	end
 end
 
-function M:PLAYER_ENTERING_WORLD()
-	self:ForceCVars()
-	self:ToggleChatBubbleScript()
-end
-
-function M:Kill()
-
-end
-
 function M:Initialize()
-	M:ScheduleTimer("Kill", 8)
-
 	self:LoadRaidMarker()
 	self:LoadLoot()
 	self:LoadLootRoll()
 	self:LoadChatBubbles()
 	self:RegisterEvent("MERCHANT_SHOW")
+	self:RegisterEvent("RESURRECT_REQUEST")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "ErrorFrameToggle")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "ErrorFrameToggle")
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -244,11 +274,13 @@ function M:Initialize()
 	self:RegisterEvent("PARTY_INVITE_REQUEST", "AutoInvite")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "AutoInvite")
 	self:RegisterEvent("CVAR_UPDATE", "ForceCVars")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ForceCVars")
 
 	if E.global.general.mapAlphaWhenMoving < 1 then
 		self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
 	end
+
+	self.Initialized = true
 end
 
 local function InitializeCallback()

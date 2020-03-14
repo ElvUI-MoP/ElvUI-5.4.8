@@ -5,7 +5,7 @@ local _G = _G
 local select = select
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.guildregistrar ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.guildregistrar then return end
 
 	local GuildRegistrarFrame = _G["GuildRegistrarFrame"]
 	GuildRegistrarFrame:StripTextures(true)
@@ -21,7 +21,7 @@ local function LoadSkin()
 	for i = 1, GuildRegistrarFrameEditBox:GetNumRegions() do
 		local region = select(i, GuildRegistrarFrameEditBox:GetRegions())
 		if region and region:GetObjectType() == "Texture" then
-			if region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Left" or region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Right" then
+			if (region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Left") or (region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Right") then
 				region:Kill()
 			end
 		end
@@ -34,7 +34,11 @@ local function LoadSkin()
 	S:HandleCloseButton(GuildRegistrarFrameCloseButton)
 
 	for i = 1, 2 do
-		_G["GuildRegistrarButton"..i]:GetFontString():SetTextColor(1, 1, 1)
+		local button = _G["GuildRegistrarButton"..i]
+
+		S:HandleButtonHighlight(button)
+
+		button:GetFontString():SetTextColor(1, 1, 1)
 	end
 
 	GuildRegistrarPurchaseText:SetTextColor(1, 1, 1)

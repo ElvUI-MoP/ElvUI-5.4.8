@@ -4,13 +4,11 @@ local S = E:GetModule("Skins")
 local _G = _G
 local pairs, unpack = pairs, unpack
 
-local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.inspect then return end
 
-	local InspectFrame = _G["InspectFrame"]
 	InspectFrame:StripTextures(true)
 	InspectFrame:SetTemplate("Transparent")
 
@@ -22,11 +20,6 @@ local function LoadSkin()
 		S:HandleTab(_G["InspectFrameTab"..i])
 	end
 
-	InspectModelFrame:StripTextures()
-	InspectModelFrame:CreateBackdrop("Default")
-	InspectModelFrame.backdrop:Point("TOPLEFT", E.PixelMode and -1 or -2, E.PixelMode and 1 or 2)
-	InspectModelFrame.backdrop:Point("BOTTOMRIGHT", E.PixelMode and 1 or 2, E.PixelMode and -2 or -3)
-
 	InspectModelFrameBorderTopLeft:Kill()
 	InspectModelFrameBorderTopRight:Kill()
 	InspectModelFrameBorderTop:Kill()
@@ -37,10 +30,14 @@ local function LoadSkin()
 	InspectModelFrameBorderBottom:Kill()
 	InspectModelFrameBorderBottom2:Kill()
 
+	InspectModelFrame:StripTextures()
+	InspectModelFrame:CreateBackdrop()
+	InspectModelFrame.backdrop:Point("TOPLEFT", E.PixelMode and -1 or -2, E.PixelMode and 1 or 2)
+	InspectModelFrame.backdrop:Point("BOTTOMRIGHT", E.PixelMode and 1 or 2, E.PixelMode and -2 or -3)
+
 	--Re-add the overlay texture which was removed via StripTextures
 	InspectModelFrameBackgroundOverlay:SetTexture(0, 0, 0)
 
---[[
 	-- Give inspect frame model backdrop it's color back
 	for _, corner in pairs({"TopLeft", "TopRight", "BotLeft", "BotRight"}) do
 		local bg = _G["InspectModelFrameBackground"..corner]
@@ -54,7 +51,6 @@ local function LoadSkin()
 			end)
 		end
 	end
-]]
 
 	local slots = {
 		"HeadSlot",
@@ -78,14 +74,14 @@ local function LoadSkin()
 	}
 
 	for _, slot in pairs(slots) do
+		local button = _G["Inspect"..slot]
 		local icon = _G["Inspect"..slot.."IconTexture"]
-		local slot = _G["Inspect"..slot]
 
-		slot:StripTextures()
-		slot:CreateBackdrop("Default")
-		slot.backdrop:SetAllPoints()
-		slot:SetFrameLevel(slot:GetFrameLevel() + 2)
-		slot:StyleButton(nil, true)
+		button:StripTextures()
+		button:CreateBackdrop()
+		button.backdrop:SetAllPoints()
+		button:SetFrameLevel(button:GetFrameLevel() + 2)
+		button:StyleButton()
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside()
@@ -106,35 +102,30 @@ local function LoadSkin()
 				elseif quality then
 					button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					return
- 				end
+				end
 			end
+		else
+			button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
-		button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
- 	end)
+	end)
 
-	-- Control Frame
-	InspectModelFrameControlFrame:StripTextures()
-	InspectModelFrameControlFrame:Size(123, 23)
+	-- PvP Tab
+	InspectPVPFrame:StripTextures()
 
-	local controlbuttons = {
-		"InspectModelFrameControlFrameZoomInButton",
-		"InspectModelFrameControlFrameZoomOutButton",
-		"InspectModelFrameControlFramePanButton",
-		"InspectModelFrameControlFrameRotateRightButton",
-		"InspectModelFrameControlFrameRotateLeftButton",
-		"InspectModelFrameControlFrameRotateResetButton"
-	}
+	for _, Section in pairs({"RatedBG", "Arena2v2", "Arena3v3", "Arena5v5"}) do
+		local Frame = InspectPVPFrame[Section]
+		Frame:CreateBackdrop("Transparent")
+		Frame.backdrop:Point("TOPLEFT", 0, -1)
+		Frame.backdrop:Point("BOTTOMRIGHT", 0, 1)
+		Frame:EnableMouse(true)
 
-	for i = 1, #controlbuttons do
-		S:HandleButton(_G[controlbuttons[i]])
-		_G[controlbuttons[i].."Bg"]:Hide()
+		Frame:HookScript("OnEnter", function(self)
+			self.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+		end)
+		Frame:HookScript("OnLeave", function(self)
+			self.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		end)
 	end
-
-	InspectModelFrameControlFrameZoomOutButton:Point("LEFT", "InspectModelFrameControlFrameZoomInButton", "RIGHT", 2, 0)
-	InspectModelFrameControlFramePanButton:Point("LEFT", "InspectModelFrameControlFrameZoomOutButton", "RIGHT", 2, 0)
-	InspectModelFrameControlFrameRotateRightButton:Point("LEFT", "InspectModelFrameControlFramePanButton", "RIGHT", 2, 0)
-	InspectModelFrameControlFrameRotateLeftButton:Point("LEFT", "InspectModelFrameControlFrameRotateRightButton", "RIGHT", 2, 0)
-	InspectModelFrameControlFrameRotateResetButton:Point("LEFT", "InspectModelFrameControlFrameRotateLeftButton", "RIGHT", 2, 0)
 
 	-- Talent Tab
 	InspectTalentFrame:StripTextures()
@@ -148,7 +139,7 @@ local function LoadSkin()
 
 	Specialization.specIcon:SetTexCoord(unpack(E.TexCoords))
 	Specialization.specIcon.backdrop = CreateFrame("Frame", nil, Specialization)
-	Specialization.specIcon.backdrop:SetTemplate("Default")
+	Specialization.specIcon.backdrop:SetTemplate()
 	Specialization.specIcon.backdrop:SetOutside(Specialization.specIcon)
 	Specialization.specIcon:SetParent(Specialization.specIcon.backdrop)
 
@@ -171,13 +162,13 @@ local function LoadSkin()
 				self.tooltip = description
 
 				if role == "DAMAGER" then
-					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\dps.tga")
+					self.roleIcon:SetTexture(E.Media.Textures.DPS)
 					self.roleIcon:Size(19)
 				elseif role == "TANK" then
-					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\tank.tga")
+					self.roleIcon:SetTexture(E.Media.Textures.Tank)
 					self.roleIcon:Size(20)
 				elseif role == "HEALER" then
-					self.roleIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\healer.tga")
+					self.roleIcon:SetTexture(E.Media.Textures.Healer)
 					self.roleIcon:Size(20)
 				end
 				self.roleIcon:SetTexCoord(unpack(E.TexCoords))
@@ -193,7 +184,7 @@ local function LoadSkin()
 
 			if button then
 				button:StripTextures()
-				button:CreateBackdrop("Default")
+				button:CreateBackdrop()
 				button:Size(30)
 				button:StyleButton(nil, true)
 				button:GetHighlightTexture():SetInside(button.backdrop)
@@ -215,7 +206,7 @@ local function LoadSkin()
 	TalentsTalentRow1:Point("TOPLEFT", 20, -142)
 
 	InspectTalentFrame:HookScript("OnShow", function(self)
-		if self.isGlyphsDone then return end
+		if self.isSkinned then return end
 
 		for i = 1, 6 do
 			local Glyph = InspectGlyphs["Glyph"..i]
@@ -223,18 +214,19 @@ local function LoadSkin()
 			Glyph:SetTemplate("Default", true)
 			Glyph:StyleButton(nil, true)
 			Glyph:SetFrameLevel(Glyph:GetFrameLevel() + 5)
-			Glyph.ring:Kill()
+
 			Glyph.highlight:SetTexture(nil)
 			Glyph.glyph:Kill()
+			Glyph.ring:Kill()
 
 			Glyph.icon = Glyph:CreateTexture(nil, "OVERLAY")
 			Glyph.icon:SetInside()
 			Glyph.icon:SetTexCoord(unpack(E.TexCoords))
 
 			if i % 2 == 1 then
-				Glyph:Size(Glyph:GetWidth() * .6, Glyph:GetHeight() * .6)
+				Glyph:Size(40)
 			else
-				Glyph:Size(Glyph:GetWidth() * .8, Glyph:GetHeight() * .8)
+				Glyph:Size(60)
 			end
 		end
 
@@ -247,7 +239,7 @@ local function LoadSkin()
 
 		InspectGlyphFrameGlyph_UpdateGlyphs(self.InspectGlyphs, false)
 
-		self.isGlyphsDone = true
+		self.isSkinned = true
 	end)
 
 	hooksecurefunc("InspectGlyphFrameGlyph_UpdateSlot", function(self)
@@ -264,23 +256,9 @@ local function LoadSkin()
 		end
 	end)
 
-	-- PVP Tab
-	InspectPVPFrame:StripTextures()
-
-	for _, Section in pairs({"RatedBG", "Arena2v2", "Arena3v3", "Arena5v5"}) do
-		local Frame = InspectPVPFrame[Section]
-		Frame:CreateBackdrop("Transparent")
-		Frame.backdrop:Point("TOPLEFT", 0, -1)
-		Frame.backdrop:Point("BOTTOMRIGHT", 0, 1)
-		Frame:EnableMouse(true)
-
-		Frame:HookScript("OnEnter", S.SetModifiedBackdrop)
-		Frame:HookScript("OnLeave", S.SetOriginalBackdrop)
-	end
-
 	-- Guild Tab
 	InspectGuildFrame.bg = CreateFrame("Frame", nil, InspectGuildFrame)
-	InspectGuildFrame.bg:SetTemplate("Default")	
+	InspectGuildFrame.bg:SetTemplate()
 	InspectGuildFrame.bg:Point("TOPLEFT", 7, -63)
 	InspectGuildFrame.bg:Point("BOTTOMRIGHT", -9, 27)
 	InspectGuildFrame.bg:SetBackdropColor(0, 0, 0, 0)
@@ -297,6 +275,9 @@ local function LoadSkin()
 	InspectGuildFrameGuildName:SetParent(InspectGuildFrame.bg)
 	InspectGuildFrameGuildLevel:SetParent(InspectGuildFrame.bg)
 	InspectGuildFrameGuildNumMembers:SetParent(InspectGuildFrame.bg)
+
+	-- Control Frame
+	S:HandleModelControlFrame(InspectModelFrameControlFrame)
 end
 
 S:AddCallbackForAddon("Blizzard_InspectUI", "Inspect", LoadSkin)

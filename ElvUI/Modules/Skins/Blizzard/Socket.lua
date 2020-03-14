@@ -3,58 +3,72 @@ local S = E:GetModule("Skins")
 
 local _G = _G
 local unpack = unpack
-local format = format
 
 local GetNumSockets = GetNumSockets
 local GetSocketTypes = GetSocketTypes
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.socket ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.socket then return end
 
-	local ItemSocketingFrame = _G["ItemSocketingFrame"]
 	ItemSocketingFrame:StripTextures()
 	ItemSocketingFrame:SetTemplate("Transparent")
-
-	ItemSocketingScrollFrame:StripTextures()
-	ItemSocketingScrollFrame:CreateBackdrop("Transparent")
+	ItemSocketingFrame:Height(390)
 
 	ItemSocketingFrameInset:Kill()
 	ItemSocketingFramePortrait:Kill()
+
+	ItemSocketingScrollFrame:StripTextures()
+	ItemSocketingScrollFrame:CreateBackdrop("Transparent")
+	ItemSocketingScrollFrame:Point("TOPLEFT", 10, -30)
+	ItemSocketingScrollFrame:Height(269)
+
+	S:HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2)
+	ItemSocketingScrollFrameScrollBar:Point("TOPLEFT", ItemSocketingScrollFrame, "TOPRIGHT", 7, -18)
+	ItemSocketingScrollFrameScrollBar:Point("BOTTOMLEFT", ItemSocketingScrollFrame, "BOTTOMRIGHT", 7, 19)
 
 	S:HandleButton(ItemSocketingSocketButton)
 	ItemSocketingSocketButton:Point("BOTTOMRIGHT", -5, 5)
 
 	S:HandleCloseButton(ItemSocketingFrameCloseButton)
 
-	S:HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2)
-
 	for i = 1, MAX_NUM_SOCKETS do
-		local button = _G[("ItemSocketingSocket%d"):format(i)]
-		local button_bracket = _G[("ItemSocketingSocket%dBracketFrame"):format(i)]
-		local button_bg = _G[("ItemSocketingSocket%dBackground"):format(i)]
-		local button_icon = _G[("ItemSocketingSocket%dIconTexture"):format(i)]
+		local button = _G["ItemSocketingSocket"..i]
+		local icon = _G["ItemSocketingSocket"..i.."IconTexture"]
+		local bg = _G["ItemSocketingSocket"..i.."Background"]
+		local bracket = _G["ItemSocketingSocket"..i.."BracketFrame"]
+		local shine = _G["ItemSocketingSocket"..i.."Shine"]
 
 		button:StripTextures()
-		button:StyleButton(false)
-		button:SetTemplate("Default", true)
+		button:SetTemplate("Transparent")
+		button:StyleButton()
 
-		button_bracket:Kill()
-		button_bg:Kill()
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside()
 
-		button_icon:SetTexCoord(unpack(E.TexCoords))
-		button_icon:SetInside()
+		shine:Size(40)
+		shine:Point("CENTER")
+
+		bracket:Kill()
+		bg:Kill()
 	end
 
 	hooksecurefunc("ItemSocketingFrame_Update", function()
 		local numSockets = GetNumSockets()
 		for i = 1, numSockets do
-			local button = _G[("ItemSocketingSocket%d"):format(i)]
-			local gemColor = GetSocketTypes(i)
-			local color = GEM_TYPE_INFO[gemColor]
+			local button = _G["ItemSocketingSocket"..i]
+			local color = GEM_TYPE_INFO[GetSocketTypes(i)]
 
 			button:SetBackdropColor(color.r, color.g, color.b, 0.15)
 			button:SetBackdropBorderColor(color.r, color.g, color.b)
+		end
+
+		if numSockets == 3 then
+			ItemSocketingSocket1:Point("BOTTOM", ItemSocketingFrame, "BOTTOM", -80, 38)
+		elseif numSockets == 2 then
+			ItemSocketingSocket1:Point("BOTTOM", ItemSocketingFrame, "BOTTOM", -36, 38)
+		else
+			ItemSocketingSocket1:Point("BOTTOM", ItemSocketingFrame, "BOTTOM", 0, 38)
 		end
 	end)
 end

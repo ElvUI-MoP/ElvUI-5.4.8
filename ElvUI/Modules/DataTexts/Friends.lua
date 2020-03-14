@@ -1,7 +1,7 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
-local type, pairs = type, pairs
+local type = type
 local sort, wipe, next = table.sort, wipe, next
 local format, find, join, gsub = string.format, string.find, string.join, string.gsub
 
@@ -18,10 +18,7 @@ local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
 local ToggleFriendsFrame = ToggleFriendsFrame
 local EasyMenu = EasyMenu
-local AFK, DND = AFK, DND
-local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
-local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local AFK, DND, FRIENDS = AFK, DND, FRIENDS
 
 local menuFrame = CreateFrame("Frame", "FriendDatatextRightClickMenu", E.UIParent, "UIDropDownMenuTemplate")
 local menuList = {
@@ -31,8 +28,8 @@ local menuList = {
 	{text = PLAYER_STATUS, hasArrow = true, notCheckable = true,
 		menuList = {
 			{text = "|cff2BC226"..AVAILABLE.."|r", notCheckable = true, func = function() if IsChatAFK() then SendChatMessage("", "AFK") elseif IsChatDND() then SendChatMessage("", "DND") end end},
-			{text = "|cffE7E716"..DND.."|r", notCheckable = true, func = function() if not IsChatAFK() then SendChatMessage("", "DND") end end},
-			{text = "|cffFF0000"..AFK.."|r", notCheckable = true, func = function() if not IsChatDND() then SendChatMessage("", "AFK") end end}
+			{text = "|cffE7E716"..DND.."|r", notCheckable = true, func = function() if not IsChatDND() then SendChatMessage("", "DND") end end},
+			{text = "|cffFF0000"..AFK.."|r", notCheckable = true, func = function() if not IsChatAFK() then SendChatMessage("", "AFK") end end}
 		}
 	}
 }
@@ -60,7 +57,7 @@ local displayString = ""
 local statusTable = {" |cffFFFFFF[|r|cffFF9900"..L["AFK"].."|r|cffFFFFFF]|r", " |cffFFFFFF[|r|cffFF3333"..L["DND"].."|r|cffFFFFFF]|r", ""}
 local groupedTable = {"|cffaaaaaa*|r", ""}
 local friendTable = {}
-local friendOnline, friendOffline = gsub(ERR_FRIEND_ONLINE_SS, "\124Hplayer:%%s\124h%[%%s%]\124h",""), gsub(ERR_FRIEND_OFFLINE_S,"%%s","")
+local friendOnline, friendOffline = gsub(ERR_FRIEND_ONLINE_SS, "\124Hplayer:%%s\124h%[%%s%]\124h", ""), gsub(ERR_FRIEND_OFFLINE_S, "%%s", "")
 local dataValid = false
 local lastPanel
 
@@ -72,24 +69,14 @@ end
 
 local function BuildFriendTable(total)
 	wipe(friendTable)
-	local name, level, class, area, connected, status, note
 	for i = 1, total do
-		name, level, class, area, connected, status, note = GetFriendInfo(i)
-
-		if status == "<"..AFK..">" then
-			status = statusTable[1]
-		elseif status == "<"..DND..">" then
-			status = statusTable[2]
-		else
-			status = statusTable[3]
-		end
+		local name, level, class, area, connected, status, note = GetFriendInfo(i)
 
 		if connected then
-			--other non-english locales require this
-			for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
-			for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if class == v then class = k end end
+			local className = E:UnlocalizedClassName(class) or ""
+			local state = statusTable[(status == "<"..AFK..">" and 1) or (status == "<"..DND..">" and 2) or 3]
 
-			friendTable[i] = {name, level, class, area, connected, status, note}
+			friendTable[i] = {name, level, className, area, connected, state, note}
 		end
 	end
 	if next(friendTable) then
@@ -136,8 +123,8 @@ local function OnClick(_, btn)
 						shouldSkip = true
 					end
 					if not shouldSkip then
-						classc, levelc = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[info[3]]) or RAID_CLASS_COLORS[info[3]], GetQuestDifficultyColor(info[2])
-						classc = classc or GetQuestDifficultyColor(info[2])
+						classc, levelc = E:ClassColor(info[3]), GetQuestDifficultyColor(info[2])
+						if not classc then classc = levelc end
 
 						menuCountWhispers = menuCountWhispers + 1
 						menuList[3].menuList[menuCountWhispers] = {text = format(levelNameString, levelc.r*255, levelc.g*255, levelc.b*255, info[2], classc.r*255, classc.g*255, classc.b*255, info[1]), arg1 = info[1], notCheckable=true, func = whisperClick}
@@ -184,9 +171,8 @@ local function OnEnter(self)
 				end
 				if not shouldSkip then
 					if GetRealZoneText() == info[4] then zonec = activezone else zonec = inactivezone end
-					classc, levelc = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[info[3]]) or RAID_CLASS_COLORS[info[3]], GetQuestDifficultyColor(info[2])
-
-					classc = classc or GetQuestDifficultyColor(info[2])
+					classc, levelc = E:ClassColor(info[3]), GetQuestDifficultyColor(info[2])
+					if not classc then classc = levelc end
 
 					if UnitInParty(info[1]) or UnitInRaid(info[1]) then grouped = 1 else grouped = 2 end
 					DT.tooltip:AddDoubleLine(format(levelNameClassString, levelc.r*255, levelc.g*255, levelc.b*255, info[2], info[1], groupedTable[grouped], " "..info[6]), info[4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)

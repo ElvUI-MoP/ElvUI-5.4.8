@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local mod = E:NewModule("RaidBrowser", "AceEvent-3.0", "AceHook-3.0")
+local mod = E:GetModule("RaidBrowser")
 
 local twipe, tsort = table.wipe, table.sort
 local format = string.format
@@ -27,6 +27,7 @@ end
 
 function mod:Button_OnEnter()
 	local name, level, _, className, comment, partyMembers, _, _, encountersTotal, encountersComplete, isIneligible, _, isTank, isHealer, isDamage = SearchLFGGetResults(self.index)
+
 	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 50, 16)
 
 	if partyMembers > 0 then
@@ -48,6 +49,7 @@ function mod:Button_OnEnter()
 
 		for i = 0, partyMembers do
 			local memberName, _, _, className, _, _, _, isTank, isHealer, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, avgILevel = SearchLFGGetPartyResults(self.index, i)
+
 			if avgILevel and avgILevel > 0 then
 				groupILevel = groupILevel + avgILevel
 				groupMembers = groupMembers + 1
@@ -60,8 +62,8 @@ function mod:Button_OnEnter()
 				end
 
 				if className then
-					for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if className == v then className = k end end
-					classTextColor = RAID_CLASS_COLORS[className]
+					local classFileName = E:UnlocalizedClassName(className)
+					classTextColor = E:ClassColor(classFileName)
 				else
 					classTextColor = NORMAL_FONT_COLOR
 				end
@@ -96,6 +98,7 @@ function mod:Button_OnEnter()
 
 	if partyMembers == 0 then
 		GameTooltip:AddLine("\n"..LFG_TOOLTIP_ROLES)
+
 		if isTank then
 			GameTooltip:AddLine(TANK)
 			GameTooltip:AddTexture("Interface\\LFGFrame\\LFGRole", 0.5, 0.75, 0, 1)
@@ -112,8 +115,10 @@ function mod:Button_OnEnter()
 
 	if encountersComplete > 0 or isIneligible then
 		GameTooltip:AddLine("\n"..BOSSES)
+
 		for i = 1, encountersTotal do
 			local bossName, _, isKilled, isIneligible = SearchLFGGetEncounterResults(self.index, i)
+
 			if isKilled then
 				GameTooltip:AddDoubleLine(bossName, BOSS_DEAD, 1, 0, 0, 1, 0, 0)
 			elseif isIneligible then
@@ -134,12 +139,12 @@ function mod:LFRBrowseFrameListButton_SetData(button, index)
 
 	local classTextColor
 	if class then
-		classTextColor = RAID_CLASS_COLORS[class]
+		classTextColor = E:ClassColor(class)
 	else
 		classTextColor = NORMAL_FONT_COLOR
 	end
 
-	button.name:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)	
+	button.name:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 	button.level:SetText(format("%.0f", avgILevel))
 
 	if specID and specID > 0 then
@@ -151,17 +156,20 @@ function mod:SearchLFGSort()
 	if self.sortType == "level" then
 		sortOrderIlvl = not sortOrderIlvl
 		SearchLFGGetResults = mod.SearchLFGGetResultsILVL
+
 		if LFRBrowseFrame:IsVisible() then
 			LFRBrowseFrameList_Update(true)
 		end
 	elseif self.sortType == "class" then
 		sortOrderSpec = not sortOrderSpec
 		SearchLFGGetResults = mod.SearchLFGGetResultsSpec
+
 		if LFRBrowseFrame:IsVisible() then
 			LFRBrowseFrameList_Update(true)
 		end
 	else
 		SearchLFGGetResults = SearchLFGGetResults_Old
+
 		if self.sortType then
 			SearchLFGSort(self.sortType)
 		end
@@ -182,6 +190,7 @@ function mod:SearchLFGGetResultsSpec()
 	end
 
 	tsort(idx, SortBySpec)
+
 	return SearchLFGGetResults_Old(idx[self])
 end
 
@@ -197,6 +206,7 @@ function mod:SearchLFGGetResultsILVL()
 	end
 
 	tsort(idx, SortByILevel)
+
 	return SearchLFGGetResults_Old(idx[self])
 end
 
@@ -205,6 +215,7 @@ function mod:Initialize()
 
 	for i = 1, NUM_LFR_LIST_BUTTONS do
 		local button = _G["LFRBrowseFrameListButton"..i]
+
 		button:SetScript("OnEnter", self.Button_OnEnter)
 		button.level:SetWidth(22)
 	end

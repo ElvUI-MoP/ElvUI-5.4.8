@@ -4,10 +4,8 @@ local S = E:GetModule("Skins")
 local _G = _G
 local unpack, select = unpack, select
 
-local GetCVar = GetCVar
-
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.debug ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.debug then return end
 
 	ScriptErrorsFrame:SetParent(E.UIParent)
 	ScriptErrorsFrame:SetTemplate("Transparent")
@@ -52,20 +50,51 @@ local function LoadSkin()
 
 	if E.private.skins.blizzard.tooltip then
 		FrameStackTooltip:HookScript("OnShow", function(self)
-			if not self.template then
-				self:SetTemplate("Transparent")
-			end
+			self:SetTemplate("Transparent")
+			self:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			self:SetBackdropColor(unpack(E.media.backdropfadecolor))
 		end)
 
 		EventTraceTooltip:HookScript("OnShow", function(self)
-			if not self.template then
-				self:SetTemplate("Transparent", nil, true) --ignore updates
-			else
-				self:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				self:SetBackdropColor(unpack(E.media.backdropfadecolor))
-			end
+			self:SetTemplate("Transparent")
+			self:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			self:SetBackdropColor(unpack(E.media.backdropfadecolor))
 		end)
 	end
+
+	-- FrameStack Highlight
+	CreateFrame("Frame", "FrameStackHighlight")
+	FrameStackHighlight:SetFrameStrata("TOOLTIP")
+	FrameStackHighlight.texture = FrameStackHighlight:CreateTexture(nil, "BORDER")
+	FrameStackHighlight.texture:SetAllPoints()
+	FrameStackHighlight.texture:SetTexture(0, 1, 0, 0.4)
+
+	hooksecurefunc("FrameStackTooltip_Toggle", function()
+		if not FrameStackTooltip:IsVisible() then
+			FrameStackHighlight:Hide()
+		end
+	end)
+
+	local lastUpdate = 0
+	FrameStackTooltip:HookScript("OnUpdate", function(_, elapsed)
+		lastUpdate = lastUpdate - elapsed
+
+		if lastUpdate <= 0 then
+			lastUpdate = FRAMESTACK_UPDATE_TIME
+
+			local highlightFrame = GetMouseFocus()
+			FrameStackHighlight:ClearAllPoints()
+
+			if highlightFrame and highlightFrame ~= _G["WorldFrame"] then
+				FrameStackHighlight:Point("BOTTOMLEFT", highlightFrame)
+				FrameStackHighlight:Point("TOPRIGHT", highlightFrame)
+
+				FrameStackHighlight:Show()
+			else
+				FrameStackHighlight:Hide()
+			end
+		end
+	end)
 
 	S:HandleCloseButton(EventTraceFrameCloseButton)
 end

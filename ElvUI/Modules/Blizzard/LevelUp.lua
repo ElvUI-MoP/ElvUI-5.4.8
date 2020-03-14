@@ -1,22 +1,27 @@
-local E, L, DF = unpack(select(2, ...))
+local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Blizzard")
 
-local Holder = CreateFrame("Frame", "LevelUpHolder", UIParent)
-Holder:SetSize(200, 20)
-Holder:SetPoint("TOP", E.UIParent, "TOP", 0, -120)
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
+
+local Holder
+local function Reanchor(frame, _, anchor)
+	if anchor and (anchor ~= Holder) then
+		frame:ClearAllPoints()
+		frame:Point("TOP", Holder)
+	end
+end
 
 function B:Handle_LevelUpDisplay()
-	E:CreateMover(Holder, "LevelUpMover", L["Level Up Display"])
-
-	local function Reanchor(frame, _, anchor)
-		if anchor ~= Holder then
-			frame:ClearAllPoints()
-			frame:SetPoint("TOP", Holder)
-		end
+	if not Holder then
+		Holder = CreateFrame("Frame", "LevelUpHolder", E.UIParent)
+		Holder:Size(200, 20)
+		Holder:Point("TOP", E.UIParent, "TOP", 0, -120)
 	end
 
-	--Level Up Display
+	E:CreateMover(Holder, "LevelUpMover", L["Level Up Display"])
+
 	LevelUpDisplay:ClearAllPoints()
-	LevelUpDisplay:SetPoint("TOP", Holder)
+	LevelUpDisplay:Point("TOP", Holder)
 	hooksecurefunc(LevelUpDisplay, "SetPoint", Reanchor)
 end

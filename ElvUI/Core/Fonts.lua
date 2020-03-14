@@ -42,7 +42,7 @@ function E:UpdateBlizzardFonts()
 		SetCVar("CombatHealing", 0)
 
 		-- set an invisible font for xp, honor kill, etc
-		COMBAT = [=[Interface\Addons\ElvUI\media\fonts\Invisible.ttf]=]
+		COMBAT = E.Media.Fonts.Invisible
 	end
 
 	UNIT_NAME_FONT		= NAMEFONT
@@ -59,13 +59,16 @@ function E:UpdateBlizzardFonts()
 		SetFont(NumberFont_Outline_Med,				NUMBER, self.db.general.fontSize, "OUTLINE")
 		SetFont(NumberFont_Shadow_Med,				NORMAL, self.db.general.fontSize)
 		SetFont(NumberFont_Shadow_Small,			NORMAL, self.db.general.fontSize)
-		SetFont(QuestTitleFont,						NORMAL, self.db.general.fontSize + 8)
+		SetFont(ChatFontSmall,						NORMAL, self.db.general.fontSize)
+		SetFont(QuestFontHighlight,					NORMAL, self.db.general.fontSize)
 		SetFont(QuestFont,							NORMAL, self.db.general.fontSize)
 		SetFont(QuestFont_Large,					NORMAL, 14)
 		SetFont(QuestFont_Huge,						NORMAL, 15, nil, SHADOWCOLOR, BIGOFFSET)
 		SetFont(QuestFont_Super_Huge,				NORMAL, 22, nil, SHADOWCOLOR, BIGOFFSET)
 		SetFont(QuestFont_Shadow_Huge,				NORMAL, 15, nil, SHADOWCOLOR, NORMALOFFSET)
 		SetFont(QuestFont_Shadow_Small,				NORMAL, 14, nil, SHADOWCOLOR, NORMALOFFSET)
+		SetFont(QuestTitleFont,						NORMAL, self.db.general.fontSize + 8)
+		SetFont(QuestTitleFontBlackShadow,			NORMAL, self.db.general.fontSize + 8)
 		SetFont(SystemFont_Large,					NORMAL, 15)
 		SetFont(GameFontNormalMed3,					NORMAL, 15)
 		SetFont(SystemFont_Shadow_Huge1,			NORMAL, 20, MONOCHROME.."OUTLINE")
@@ -103,5 +106,6 @@ function E:UpdateBlizzardFonts()
 		SetFont(BossEmoteNormalHuge,				NORMAL, 24)
 		SetFont(Game13FontShadow,					NORMAL, 14)
 		SetFont(GameFont_Gigantic,					NORMAL, 32, nil, SHADOWCOLOR, BIGOFFSET)
+		SetFont(SystemFont_Shadow_Med2,				NORMAL, self.db.general.fontSize * 1.1)
 	end
 end

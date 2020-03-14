@@ -1,7 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 
-local select = select
 local floor = math.floor
 
 local CreateFrame = CreateFrame
@@ -29,7 +28,7 @@ end
 function UF:AltPowerBarPostUpdate(unit, cur, _, max)
 	if not self.barType then return end
 
-	local perc = (cur and max and max > 0) and floor((cur/max)*100) or 0
+	local perc = (cur and max and max > 0) and floor((cur / max) * 100) or 0
 	local parent = self:GetParent()
 
 	if perc < 35 then
@@ -56,7 +55,7 @@ function UF:AltPowerBarPostUpdate(unit, cur, _, max)
 		if perc > 0 then
 			self.text:SetFormattedText("|cffD7BEA5[|r%d%%|cffD7BEA5]|r", perc)
 		else
-			self.text:SetText(nil)
+			self.text:SetText("")
 		end
 	end
 end
@@ -68,13 +67,14 @@ function UF:Configure_AltPower(frame)
 	if frame.USE_POWERBAR then
 		frame:EnableElement("AlternativePower")
 		altpower.text:SetAlpha(1)
-		altpower:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING+frame.BORDER)
+		altpower:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING + frame.BORDER)
 		if not frame.USE_PORTRAIT_OVERLAY then
-			altpower:Point("TOPRIGHT", frame, "TOPRIGHT", -(frame.PORTRAIT_WIDTH+frame.BORDER), -frame.BORDER)
+			altpower:Point("TOPRIGHT", frame, "TOPRIGHT", -(frame.PORTRAIT_WIDTH + frame.BORDER), -frame.BORDER)
 		else
 			altpower:Point("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER, -frame.BORDER)
 		end
-		altpower.Smooth = UF.db.smoothbars
+
+		E:SetSmoothing(altpower, UF.db.smoothbars)
 	else
 		frame:DisableElement("AlternativePower")
 		altpower.text:SetAlpha(0)

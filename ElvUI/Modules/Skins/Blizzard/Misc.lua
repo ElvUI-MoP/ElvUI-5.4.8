@@ -4,38 +4,31 @@ local S = E:GetModule("Skins")
 local _G = _G
 local unpack = unpack
 
-local UnitIsUnit = UnitIsUnit
-local IsAddOnLoaded = IsAddOnLoaded
-
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.misc ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.misc then return end
 
 	-- ESC/Menu Buttons
 	GameMenuFrame:StripTextures()
 	GameMenuFrame:CreateBackdrop("Transparent")
 
 	local BlizzardMenuButtons = {
-		"Options",
-		"UIOptions",
-		"Keybindings",
-		"Macros",
-		"AddOns",
-		"Logout",
-		"Store",
-		"Quit",
-		"Continue",
-		"Help"
+		GameMenuButtonOptions,
+		GameMenuButtonUIOptions,
+		GameMenuButtonKeybindings,
+		GameMenuButtonMacros,
+		GameMenuButtonLogout,
+		GameMenuButtonStore,
+		GameMenuButtonQuit,
+		GameMenuButtonContinue,
+		GameMenuButtonHelp,
+		GameMenuFrame.ElvUI
 	}
 
 	for i = 1, #BlizzardMenuButtons do
-		local ElvuiMenuButtons = _G["GameMenuButton"..BlizzardMenuButtons[i]]
-		if ElvuiMenuButtons then
-			S:HandleButton(ElvuiMenuButtons)
+		local menuButton = BlizzardMenuButtons[i]
+		if menuButton then
+			S:HandleButton(menuButton)
 		end
-	end
-
-	if IsAddOnLoaded("OptionHouse") then
-		S:HandleButton(GameMenuButtonOptionHouse)
 	end
 
 	-- Static Popups
@@ -58,7 +51,7 @@ local function LoadSkin()
 		S:HandleEditBox(_G["StaticPopup"..i.."MoneyInputFrameSilver"])
 		S:HandleEditBox(_G["StaticPopup"..i.."MoneyInputFrameCopper"])
 
-		closeButton:StripTextures()
+		closeButton:StripTextures(true)
 		S:HandleCloseButton(closeButton)
 
 		itemFrame:GetNormalTexture():Kill()
@@ -144,12 +137,6 @@ local function LoadSkin()
 	ReadyCheckFrameText:SetTextColor(1, 1, 1)
 
 	ReadyCheckListenerFrame:SetAlpha(0)
-
-	ReadyCheckFrame:HookScript("OnShow", function(self) -- bug fix, don't show it if initiator
-		if UnitIsUnit("player", self.initiator) then
-			self:Hide()
-		end
-	end)
 
 	-- Coin PickUp Frame
 	CoinPickupFrame:StripTextures()
@@ -303,59 +290,112 @@ local function LoadSkin()
 
 	S:HandleTab(ChannelPulloutTab)
 	ChannelPulloutTab:Size(107, 26)
-	ChannelPulloutTabText:Point("LEFT", ChannelPulloutTabLeft, "RIGHT", 0, 0)
+	ChannelPulloutTabText:Point("LEFT", ChannelPulloutTabLeft, "RIGHT", 0, 4)
 
 	S:HandleCloseButton(ChannelPulloutCloseButton)
 	ChannelPulloutCloseButton:Size(32)
 
 	-- Dropdown Menu
+	hooksecurefunc("UIDropDownMenu_CreateFrames", function(level, index)
+		local listFrame = _G["DropDownList"..level]
+		local listFrameName = listFrame:GetName()
+		local expandArrow = _G[listFrameName.."Button"..index.."ExpandArrow"]
+
+		if expandArrow then
+			expandArrow:Size(16)
+			expandArrow:SetNormalTexture(E.Media.Textures.ArrowUp)
+			expandArrow:GetNormalTexture():SetRotation(S.ArrowRotation.right)
+			expandArrow:GetNormalTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
+		end
+
+		local Backdrop = _G[listFrameName.."Backdrop"]
+		if not Backdrop.template then Backdrop:StripTextures() end
+		Backdrop:SetTemplate("Transparent")
+
+		local menuBackdrop = _G[listFrameName.."MenuBackdrop"]
+		if not menuBackdrop.template then menuBackdrop:StripTextures() end
+		menuBackdrop:SetTemplate("Transparent")
+	end)
+
 	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
 		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
-			local dropBackdrop = _G["DropDownList"..i.."Backdrop"]
-			local dropMenuBackdrop = _G["DropDownList"..i.."MenuBackdrop"]
-
-			dropBackdrop:SetTemplate("Transparent")
-			dropMenuBackdrop:SetTemplate("Transparent")
-
 			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
+				local button = _G["DropDownList"..i.."Button"..j]
+				local check = _G["DropDownList"..i.."Button"..j.."Check"]
+				local uncheck = _G["DropDownList"..i.."Button"..j.."UnCheck"]
 				local highlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
 				local colorSwatch = _G["DropDownList"..i.."Button"..j.."ColorSwatch"]
+				local r, g, b = unpack(E.media.rgbvaluecolor)
 
-				highlight:SetTexture(1, 1, 1, 0.3)
-				S:HandleColorSwatch(colorSwatch, 14)
+				if not button.isSkinned then
+					button:CreateBackdrop()
+					button.backdrop:SetOutside(check)
+
+					highlight:SetTexture(E.Media.Textures.Highlight)
+					highlight:SetVertexColor(r, g, b, 0.7)
+					highlight:SetInside()
+					highlight:SetBlendMode("BLEND")
+					highlight:SetDrawLayer("BACKGROUND")
+
+					check:SetTexture(E.media.normTex)
+					check:SetVertexColor(r, g, b)
+					check:Size(12)
+
+					uncheck:SetTexture()
+
+					S:HandleColorSwatch(colorSwatch, 12)
+
+					button.isSkinned = true
+				end
+			end
+		end
+	end)
+
+	hooksecurefunc("ToggleDropDownMenu", function(level)
+		if not level then level = 1 end
+
+		for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
+			local button = _G["DropDownList"..level.."Button"..i]
+			local check = _G["DropDownList"..level.."Button"..i.."Check"]
+
+			check:SetTexCoord(0, 1, 0, 1)
+
+			if not button.notCheckable then
+				if button.backdrop then
+					button.backdrop:Show()
+				end
+			else
+				if button.backdrop then
+					button.backdrop:Hide()
+				end
 			end
 		end
 	end)
 
 	-- Chat Menu
-	local ChatMenus = {
-		"ChatMenu",
-		"EmoteMenu",
-		"LanguageMenu",
-		"VoiceMacroMenu"
-	}
-
-	for i = 1, #ChatMenus do
-		if _G[ChatMenus[i]] == _G["ChatMenu"] then
-			_G[ChatMenus[i]]:HookScript("OnShow", function(self)
-				self:SetTemplate("Transparent", true)
+	for _, frame in pairs({"ChatMenu", "EmoteMenu", "LanguageMenu", "VoiceMacroMenu"}) do
+		if _G[frame] == _G["ChatMenu"] then
+			_G[frame]:HookScript("OnShow", function(self)
+				self:SetTemplate("Transparent")
 				self:SetBackdropColor(unpack(E.media.backdropfadecolor))
 				self:ClearAllPoints()
 				self:Point("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 30)
 			end)
 		else
-			_G[ChatMenus[i]]:HookScript("OnShow", function(self)
-				self:SetTemplate("Transparent", true)
+			_G[frame]:HookScript("OnShow", function(self)
+				self:SetTemplate("Transparent")
 				self:SetBackdropColor(unpack(E.media.backdropfadecolor))
 			end)
 		end
-	end
 
-	for i = 1, 32 do
-		_G["ChatMenuButton"..i]:StyleButton()
-		_G["EmoteMenuButton"..i]:StyleButton()
-		_G["LanguageMenuButton"..i]:StyleButton()
-		_G["VoiceMacroMenuButton"..i]:StyleButton()
+		for i = 1, 32 do
+			local button = _G[frame.."Button"..i]
+			local r, g, b = unpack(E.media.rgbvaluecolor)
+
+			button:SetHighlightTexture(E.Media.Textures.Highlight)
+			button:GetHighlightTexture():SetVertexColor(r, g, b, 0.5)
+			button:GetHighlightTexture():SetInside()
+		end
 	end
 end
 

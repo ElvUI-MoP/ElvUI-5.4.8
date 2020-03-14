@@ -6,9 +6,8 @@ local _G = _G
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tabard ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.tabard then return end
 
-	local TabardFrame = _G["TabardFrame"]
 	TabardFrame:StripTextures()
 	TabardFrame:SetTemplate("Transparent")
 
@@ -21,7 +20,7 @@ local function LoadSkin()
 	TabardFrameCostFrame:StripTextures()
 	TabardFrameCustomizationFrame:StripTextures()
 
-	TabardModel:CreateBackdrop("Default")
+	TabardModel:CreateBackdrop()
 
 	S:HandleButton(TabardFrameCancelButton)
 	S:HandleButton(TabardFrameAcceptButton)
@@ -46,10 +45,11 @@ local function LoadSkin()
 	end
 
 	for i = 1, 5 do
-		local custom = "TabardFrameCustomization" .. i
+		local custom = "TabardFrameCustomization"..i
+
 		_G[custom]:StripTextures()
-		S:HandleNextPrevButton(_G[custom .. "LeftButton"])
-		S:HandleNextPrevButton(_G[custom .. "RightButton"])
+		S:HandleNextPrevButton(_G[custom.."LeftButton"])
+		S:HandleNextPrevButton(_G[custom.."RightButton"])
 
 		if i > 1 then
 			_G[custom]:ClearAllPoints()

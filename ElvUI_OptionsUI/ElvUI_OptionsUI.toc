@@ -1,0 +1,27 @@
+## Interface: 50400
+## Author: Elv, Bunny, Apollyon
+## Version: 1.07
+## Title: |cff00fcceE|r|cffe5e3e3lvUI|r |cff00fcceO|r|cffe5e3e3ptionsUI|r
+## Notes: Options for ElvUI.
+## RequiredDeps: ElvUI
+## LoadOnDemand: true
+
+Libraries\Load_Libraries.xml
+Locales\Load_Locales.xml
+Core.lua
+General.lua
+ActionBars.lua
+Auras.lua
+Bags.lua
+Chat.lua
+Cooldown.lua
+DataTexts.lua
+DataBars.lua
+Filters.lua
+Skins.lua
+Tooltip.lua
+Unitframes.lua
+Nameplates.lua
+Maps.lua
+ModuleControl.lua
+Tags.lua

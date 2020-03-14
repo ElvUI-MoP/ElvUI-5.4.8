@@ -12,9 +12,9 @@ local BATTLEGROUND_HOLIDAY = BATTLEGROUND_HOLIDAY
 local DUNGEONS = DUNGEONS
 local RAID_FINDER = RAID_FINDER
 
-local TANK_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\tank:14:14|t"
-local HEALER_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\healer:14:14|t"
-local DPS_ICON = "|TInterface\\AddOns\\ElvUI\\media\\textures\\dps:14:14|t"
+local TANK_ICON = E:TextureString(E.Media.Textures.Tank, ":14:14")
+local HEALER_ICON = E:TextureString(E.Media.Textures.Healer, ":14:14")
+local DPS_ICON = E:TextureString(E.Media.Textures.DPS, ":14:14")
 local NOBONUSREWARDS = BATTLEGROUND_HOLIDAY..": N/A"
 local lastPanel
 local enteredFrame = false
@@ -71,15 +71,6 @@ end
 local function OnClick()
 	PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame)
 end
-
-local function ValueColorUpdate(hex)
-	NOBONUSREWARDS = BATTLEGROUND_HOLIDAY..": "..hex.."N/A|r"
-
-	if lastPanel ~= nil then
-		OnEvent(lastPanel)
-	end
-end
-E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 local function OnEnter(self)
 	if not enteredFrame then
@@ -151,6 +142,11 @@ local function OnEnter(self)
 	DT.tooltip:Show()
 end
 
+local function OnLeave()
+	DT.tooltip:Hide()
+	enteredFrame = false
+end
+
 local updateInterval = 10
 local function OnUpdate(self, elapsed)
 	if self.timeSinceUpdate and self.timeSinceUpdate > updateInterval then
@@ -166,9 +162,13 @@ local function OnUpdate(self, elapsed)
 	end
 end
 
-local function OnLeave()
-	DT.tooltip:Hide()
-	enteredFrame = false
+local function ValueColorUpdate(hex)
+	NOBONUSREWARDS = BATTLEGROUND_HOLIDAY..": "..hex.."N/A|r"
+
+	if lastPanel ~= nil then
+		OnEvent(lastPanel)
+	end
 end
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("Call to Arms", {"PLAYER_ENTERING_WORLD", "LFG_UPDATE_RANDOM_INFO"}, OnEvent, OnUpdate, OnClick, OnEnter, OnLeave, BATTLEGROUND_HOLIDAY)

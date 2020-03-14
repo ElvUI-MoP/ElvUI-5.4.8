@@ -11,7 +11,7 @@ local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES
 
 local BossHeader = CreateFrame("Frame", "BossHeader", UIParent)
 function UF:Construct_BossFrames(frame)
- 	frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
+	frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
 	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 100)
 
@@ -28,14 +28,15 @@ function UF:Construct_BossFrames(frame)
 	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
 	frame.AlternativePower = self:Construct_AltPowerBar(frame)
 	frame.ClassBar = "AlternativePower"
-	frame.Range = self:Construct_Range(frame)
+	frame.Fader = self:Construct_Fader()
+	frame.Cutaway = self:Construct_Cutaway(frame)
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
 	frame:SetAttribute("type2", "focus")
 	frame.customTexts = {}
 
 	BossHeader:Point("BOTTOMRIGHT", E.UIParent, "RIGHT", -105, -165)
-	E:CreateMover(BossHeader, BossHeader:GetName().."Mover", L["Boss Frames"], nil, nil, nil, "ALL,PARTY,RAID", nil, "unitframe,boss,generalGroup")
+	E:CreateMover(BossHeader, BossHeader:GetName().."Mover", L["Boss Frames"], nil, nil, nil, "ALL,PARTY,RAID", nil, "unitframe,groupUnits,boss,generalGroup")
 	frame.mover = BossHeader.mover
 
 	frame.unitframeType = "boss"
@@ -48,21 +49,17 @@ function UF:Update_BossFrames(frame, db)
 		frame.ORIENTATION = db.orientation
 		frame.UNIT_WIDTH = db.width
 		frame.UNIT_HEIGHT = db.infoPanel.enable and (db.height + db.infoPanel.height) or db.height
-
 		frame.USE_POWERBAR = db.power.enable
 		frame.POWERBAR_DETACHED = db.power.detachFromFrame
 		frame.USE_INSET_POWERBAR = not frame.POWERBAR_DETACHED and db.power.width == "inset" and frame.USE_POWERBAR
 		frame.USE_MINI_POWERBAR = (not frame.POWERBAR_DETACHED and db.power.width == "spaced" and frame.USE_POWERBAR)
-		frame.USE_POWERBAR_OFFSET = db.power.offset ~= 0 and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
+		frame.USE_POWERBAR_OFFSET = (db.power.width == "offset" and db.power.offset ~= 0) and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
 		frame.POWERBAR_OFFSET = frame.USE_POWERBAR_OFFSET and db.power.offset or 0
-
 		frame.POWERBAR_HEIGHT = not frame.USE_POWERBAR and 0 or db.power.height
-		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER*2))/2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2)))
-
+		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER * 2)) / 2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING) * 2)))
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT and (db.portrait.overlay or frame.ORIENTATION == "MIDDLE")
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
-
 		frame.CAN_HAVE_CLASSBAR = true
 		frame.MAX_CLASS_BAR = 0
 		frame.USE_CLASSBAR = true
@@ -70,12 +67,10 @@ function UF:Update_BossFrames(frame, db)
 		frame.CLASSBAR_DETACHED = false
 		frame.USE_MINI_CLASSBAR = false
 		frame.CLASSBAR_HEIGHT = frame.CLASSBAR_SHOWN and db.power.height or 0
-		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2) - frame.PORTRAIT_WIDTH  - frame.POWERBAR_OFFSET
+		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING) * 2) - frame.PORTRAIT_WIDTH  - frame.POWERBAR_OFFSET
 		frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN) and 0 or (frame.CLASSBAR_HEIGHT + frame.SPACING)
-
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
-
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
 
 		frame.VARIABLES_SET = true
@@ -87,30 +82,19 @@ function UF:Update_BossFrames(frame, db)
 	frame:Size(frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
 
 	UF:Configure_InfoPanel(frame)
-
 	UF:Configure_HealthBar(frame)
-
 	UF:UpdateNameSettings(frame)
-
 	UF:Configure_Power(frame)
-
 	UF:Configure_Portrait(frame)
-
 	UF:EnableDisable_Auras(frame)
-	UF:Configure_Auras(frame, "Buffs")
-	UF:Configure_Auras(frame, "Debuffs")
-
+	UF:Configure_AllAuras(frame)
 	UF:Configure_Castbar(frame)
-
 	UF:Configure_RaidIcon(frame)
-
 	UF:Configure_AltPower(frame)
-
 	UF:Configure_DebuffHighlight(frame)
-
 	UF:Configure_CustomTexts(frame)
-
-	UF:Configure_Range(frame)
+	UF:Configure_Fader(frame)
+	UF:Configure_Cutaway(frame)
 
 	frame:ClearAllPoints()
 	if frame.index == 1 then

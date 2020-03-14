@@ -1,29 +1,30 @@
-local E, L, DF = unpack(select(2, ...))
+local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Blizzard")
 
 local _G = _G
 
-local GetVehicleUIIndicatorSeat = GetVehicleUIIndicatorSeat
-local GetVehicleUIIndicator = GetVehicleUIIndicator
 local hooksecurefunc = hooksecurefunc
+local GetVehicleUIIndicator = GetVehicleUIIndicator
+local GetVehicleUIIndicatorSeat = GetVehicleUIIndicatorSeat
+local VehicleSeatIndicator_SetUpVehicle = VehicleSeatIndicator_SetUpVehicle
 
 local function VehicleSeatIndicator_SetPosition(_, _, parent)
 	if (parent == "MinimapCluster") or (parent == _G["MinimapCluster"]) then
 		VehicleSeatIndicator:ClearAllPoints()
-		VehicleSeatIndicator:SetPoint("TOPLEFT", VehicleSeatMover, "TOPLEFT", 0, 0)
+		VehicleSeatIndicator:Point("TOPLEFT", VehicleSeatMover, "TOPLEFT", 0, 0)
 	end
 end
 
 local function VehicleSetUp(vehicleID)
-	VehicleSeatIndicator:SetSize(E.db.general.vehicleSeatIndicatorSize, E.db.general.vehicleSeatIndicatorSize)
+	VehicleSeatIndicator:Size(E.db.general.vehicleSeatIndicatorSize, E.db.general.vehicleSeatIndicatorSize)
 	local _, numSeatIndicators = GetVehicleUIIndicator(vehicleID)
 	if numSeatIndicators then
 		for i = 1, numSeatIndicators do
 			local button = _G["VehicleSeatIndicatorButton"..i]
-			button:SetSize(E.db.general.vehicleSeatIndicatorSize / 4, E.db.general.vehicleSeatIndicatorSize / 4)
+			button:Size(E.db.general.vehicleSeatIndicatorSize / 4, E.db.general.vehicleSeatIndicatorSize / 4)
 			local _, xOffset, yOffset = GetVehicleUIIndicatorSeat(vehicleID, i)
 			button:ClearAllPoints()
-			button:SetPoint("CENTER", button:GetParent(), "TOPLEFT", xOffset * E.db.general.vehicleSeatIndicatorSize, -yOffset * E.db.general.vehicleSeatIndicatorSize)
+			button:Point("CENTER", button:GetParent(), "TOPLEFT", xOffset * E.db.general.vehicleSeatIndicatorSize, -yOffset * E.db.general.vehicleSeatIndicatorSize)
 		end
 	end
 end
@@ -40,9 +41,9 @@ function B:PositionVehicleFrame()
 		VehicleSeatIndicator.PositionVehicleFrameHooked = true
 	end
 
-	VehicleSeatIndicator:SetSize(E.db.general.vehicleSeatIndicatorSize, E.db.general.vehicleSeatIndicatorSize)
+	VehicleSeatIndicator:Size(E.db.general.vehicleSeatIndicatorSize, E.db.general.vehicleSeatIndicatorSize)
 
-    if VehicleSeatIndicator.currSkin then
+	if VehicleSeatIndicator.currSkin then
 		VehicleSetUp(VehicleSeatIndicator.currSkin)
-    end
+	end
 end

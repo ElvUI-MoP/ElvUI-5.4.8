@@ -1,7 +1,10 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local D = E:NewModule("DebugTools", "AceEvent-3.0", "AceHook-3.0")
+local D = E:GetModule("DebugTools")
 
-E.DebugTools = D
+local CreateFrame = CreateFrame
+local InCombatLockdown = InCombatLockdown
+local GetCVarBool = GetCVarBool
+local StaticPopup_Hide = StaticPopup_Hide
 
 function D:ModifyErrorFrame()
 	ScriptErrorsFrameScrollFrameText.cursorOffset = 0
@@ -23,7 +26,7 @@ function D:ModifyErrorFrame()
 		end
 
 		if index > 0 then
-			ScriptErrorsFrame.locals[index] = ScriptErrorsFrame.locals[index] or L["No locals to dump"]
+			ScriptErrorsFrame.locals[index] = ScriptErrorsFrame.locals[index] or "No locals to dump"
 		end
 
 		Orig_ScriptErrorsFrame_Update(...)
@@ -83,7 +86,7 @@ function D:ModifyErrorFrame()
 	ScriptErrorsFrame.close:SetSize(75, BUTTON_HEIGHT)
 
 	ScriptErrorsFrame.indexLabel:ClearAllPoints()
-	ScriptErrorsFrame.indexLabel:SetPoint("BOTTOMLEFT", ScriptErrorsFrame, "BOTTOMLEFT", -6, 8)	
+	ScriptErrorsFrame.indexLabel:SetPoint("BOTTOMLEFT", ScriptErrorsFrame, "BOTTOMLEFT", -6, 8)
 end
 
 function D:ScriptErrorsFrame_UpdateButtons()
@@ -121,7 +124,7 @@ function D:PLAYER_REGEN_DISABLED()
 	ScriptErrorsFrame:SetParent(self.HideFrame)
 end
 
-function D:TaintError(event, addonName, addonFunc)	
+function D:TaintError(event, addonName, addonFunc)
 	if GetCVarBool("scriptErrors") ~= 1 or E.db.general.taintLog ~= true then return end
 	ScriptErrorsFrame_OnError(L["%s: %s tried to call the protected function '%s'."]:format(event, addonName or "<name>", addonFunc or "<func>"), false)
 end
@@ -133,6 +136,7 @@ function D:StaticPopup_Show(name)
 end
 
 function D:Initialize()
+	self.Initialized = true
 	self.HideFrame = CreateFrame("Frame")
 	self.HideFrame:Hide()
 

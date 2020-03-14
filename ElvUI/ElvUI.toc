@@ -1,19 +1,19 @@
 ﻿## Interface: 50400
 ## Author: Elv, Bunny, Apollyon
-## Version: 1.24
-## Title: |cff00dd91E|r|cffe5e3e3lvUI|r
+## Version: 1.23
+## Title: |cff00fcceE|r|cffe5e3e3lvUI|r
 ## Notes: User Interface replacement AddOn for World of Warcraft.
 ## SavedVariables: ElvDB, ElvPrivateDB
 ## SavedVariablesPerCharacter: ElvCharacterDB
 ## OptionalDeps: Blizzard_DebugTools, Blizzard_PetJournal, SharedMedia, Tukui, Gatherer, Masque
 ## X-oUF: ElvUF
 
-developer\load_developer.xml
+Developer\Load_Developer.xml
 Libraries\Load_Libraries.xml
-init.lua
-locales\load_locales.xml
-media\load_media.xml
-Settings\Load_Config.xml
-core\load_core.xml
-layout\load_layout.xml
-modules\load_modules.xml
+Init.lua
+Locales\Load_Locales.xml
+Media\Load_Media.xml
+Settings\Load_Settings.xml
+Core\Load_Core.xml
+Layout\Load_Layout.xml
+Modules\Load_Modules.xml

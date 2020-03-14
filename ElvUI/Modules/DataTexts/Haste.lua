@@ -23,7 +23,7 @@ local lastPanel
 
 local function OnEvent(self)
 	local hasteRating
-	if E.role == "Caster" then
+	if E.Role == "Caster" then
 		hasteRating = GetCombatRating(CR_HASTE_SPELL)
 	elseif E.myclass == "HUNTER" then
 		hasteRating = GetCombatRating(CR_HASTE_RANGED)
@@ -31,6 +31,7 @@ local function OnEvent(self)
 		hasteRating = GetCombatRating(CR_HASTE_MELEE)
 	end
 	self.text:SetFormattedText(displayNumberString, SPELL_HASTE_ABBR, hasteRating)
+
 	lastPanel = self
 end
 
@@ -38,7 +39,7 @@ local function OnEnter(self)
 	DT:SetupTooltip(self)
 
 	local text, tooltip
-	if E.role == "Caster" then
+	if E.Role == "Caster" then
 		text = SPELL_HASTE
 		tooltip = format(SPELL_HASTE_TOOLTIP, GetCombatRatingBonus(CR_HASTE_SPELL))
 	elseif E.myclass == "HUNTER" then

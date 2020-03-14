@@ -2,7 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.movepad ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.movepad then return end
 
 	MovePadFrame:StripTextures()
 	MovePadFrame:SetTemplate("Transparent")

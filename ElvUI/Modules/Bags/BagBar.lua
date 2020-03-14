@@ -35,7 +35,7 @@ end
 function B:SizeAndPositionBagBar()
 	if not ElvUIBags then return end
 
- 	local buttonSpacing = E.db.bags.bagBar.spacing
+	local buttonSpacing = E.db.bags.bagBar.spacing
 	local backdropSpacing = E.db.bags.bagBar.backdropSpacing
 	local bagBarSize = E.db.bags.bagBar.size
 	local showBackdrop = E.db.bags.bagBar.showBackdrop
@@ -117,9 +117,11 @@ function B:LoadBagBar()
 	MainMenuBarBackpackButton:SetParent(ElvUIBags)
 	MainMenuBarBackpackButton.SetParent = E.dummy
 	MainMenuBarBackpackButton:ClearAllPoints()
+
 	MainMenuBarBackpackButtonCount:FontTemplate(nil, 10)
 	MainMenuBarBackpackButtonCount:ClearAllPoints()
 	MainMenuBarBackpackButtonCount:Point("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -1, 4)
+
 	MainMenuBarBackpackButton:HookScript("OnEnter", OnEnter)
 	MainMenuBarBackpackButton:HookScript("OnLeave", OnLeave)
 

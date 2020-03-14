@@ -7,8 +7,8 @@ local InCombatLockdown = InCombatLockdown
 local GetManaRegen = GetManaRegen
 local MANA_REGEN = MANA_REGEN
 
-local lastPanel
 local displayNumberString = ""
+local lastPanel
 
 local function OnEvent(self)
 	local baseMR, castingMR = GetManaRegen()

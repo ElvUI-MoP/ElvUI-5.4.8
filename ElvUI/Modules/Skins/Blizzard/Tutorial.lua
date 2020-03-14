@@ -1,10 +1,8 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local unpack = unpack
-
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tutorial ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.tutorial then return end
 
 	TutorialFrameAlertButton:StripTextures()
 	TutorialFrameAlertButton:SetTemplate("Default", true)

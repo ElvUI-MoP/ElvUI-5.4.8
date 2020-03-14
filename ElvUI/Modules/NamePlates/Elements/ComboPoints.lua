@@ -1,19 +1,17 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local mod = E:GetModule("NamePlates")
+local NP = E:GetModule("NamePlates")
 local LSM = E.Libs.LSM
 
-local unpack = unpack
-
+local CreateFrame = CreateFrame
 local GetComboPoints = GetComboPoints
 local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
-function mod:UpdateElement_CPoints(frame)
-	if not frame.UnitType then return end
+function NP:Update_CPoints(frame)
 	if frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "FRIENDLY_NPC" then return end
-	if self.db.units[frame.UnitType].comboPoints.enable ~= true then return end
+	if not self.db.units[frame.UnitType].comboPoints.enable then return end
 
 	local numPoints
-	if UnitExists("target") and frame.isTarget then
+	if frame.isTarget then
 		numPoints = GetComboPoints("player", "target")
 	end
 
@@ -31,48 +29,87 @@ function mod:UpdateElement_CPoints(frame)
 	end
 end
 
-function mod:ConfigureElement_CPoints(frame)
-	if not frame.UnitType then return end
+function NP:Configure_CPointsScale(frame, scale, noPlayAnimation)
 	if frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "FRIENDLY_NPC" then return end
+	if not NP.db.units then return end
+	local db = self.db.units[frame.UnitType].comboPoints
+	if not db.enable then return end
+
+	if noPlayAnimation then
+		frame.CPoints:SetWidth(((db.width * 5) + (db.spacing * 4)) * scale)
+		frame.CPoints:SetHeight(db.height * scale)
+	else
+		if frame.CPoints.scale:IsPlaying() then
+			frame.CPoints.scale:Stop()
+		end
+
+		frame.CPoints.scale.width:SetChange(((db.width * 5) + (db.spacing * 4)) * scale)
+		frame.CPoints.scale.height:SetChange(db.height * scale)
+		frame.CPoints.scale:Play()
+	end
+end
+
+function NP:Configure_CPoints(frame, configuring)
+	if frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "FRIENDLY_NPC" then return end
+	local db = self.db.units[frame.UnitType].comboPoints
+	if not db.enable then return end
 
 	local comboPoints = frame.CPoints
-	local healthShown = self.db.units[frame.UnitType].healthbar.enable or (frame.isTarget and self.db.alwaysShowTargetHealth)
+	local healthShown = self.db.units[frame.UnitType].health.enable or (frame.isTarget and self.db.alwaysShowTargetHealth)
 
 	comboPoints:ClearAllPoints()
 	if healthShown then
-		comboPoints:Point("CENTER", frame.HealthBar, "BOTTOM", self.db.units[frame.UnitType].comboPoints.xOffset, self.db.units[frame.UnitType].comboPoints.yOffset)
+		comboPoints:Point("CENTER", frame.Health, "BOTTOM", db.xOffset, db.yOffset)
 	else
-		comboPoints:Point("CENTER", frame, "TOP", self.db.units[frame.UnitType].comboPoints.xOffset, self.db.units[frame.UnitType].comboPoints.yOffset)
+		comboPoints:Point("CENTER", frame, "TOP", db.xOffset, db.yOffset)
 	end
 
-	local width, height
 	for i = 1, MAX_COMBO_POINTS do
 		comboPoints[i]:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar))
-		comboPoints[i]:SetStatusBarColor(unpack(E:GetColorTable(self.db.comboBar.colors[i])))
+		comboPoints[i]:SetStatusBarColor(unpack(E:GetColorTable(self.db.colors.comboPoints[i])))
 
 		if i == 3 then
 			comboPoints[i]:Point("CENTER", comboPoints, "CENTER")
 		elseif i == 1 or i == 2 then
-			comboPoints[i]:Point("RIGHT", comboPoints[i + 1], "LEFT", -self.db.units[frame.UnitType].comboPoints.spacing, 0)
+			comboPoints[i]:Point("RIGHT", comboPoints[i + 1], "LEFT", -db.spacing, 0)
 		else
-			comboPoints[i]:Point("LEFT", comboPoints[i - 1], "RIGHT", self.db.units[frame.UnitType].comboPoints.spacing, 0)
+			comboPoints[i]:Point("LEFT", comboPoints[i - 1], "RIGHT", db.spacing, 0)
 		end
 
-		width = self.db.units[frame.UnitType].comboPoints.width
-		height = self.db.units[frame.UnitType].comboPoints.height
+		comboPoints[i]:Width(healthShown and db.width * (frame.ThreatScale or 1) * (NP.db.useTargetScale and NP.db.targetScale or 1) or db.width)
+		comboPoints[i]:Height(healthShown and db.height * (frame.ThreatScale or 1) * (NP.db.useTargetScale and NP.db.targetScale or 1) or db.height)
+	end
 
-		comboPoints[i]:Width(healthShown and width * (frame.ThreatScale or 1) * (self.db.useTargetScale and self.db.targetScale or 1) or width)
-		comboPoints[i]:Height(healthShown and height * (frame.ThreatScale or 1) * (self.db.useTargetScale and self.db.targetScale or 1) or height)
+	comboPoints.spacing = db.spacing * (MAX_COMBO_POINTS - 1)
+
+	if configuring then
+		self:Configure_CPointsScale(frame, frame.currentScale or 1, configuring)
 	end
 end
 
-function mod:ConstructElement_CPoints(parent)
+local function CPoints_OnSizeChanged(self, width)
+	width = width - self.spacing
+
+	for i = 1, MAX_COMBO_POINTS do
+		self[i]:SetWidth(width * 0.2)
+	end
+end
+
+function NP:Construct_CPoints(parent)
 	local comboBar = CreateFrame("Frame", "$parentComboPoints", parent)
 	comboBar:SetSize(68, 1)
 	comboBar:Hide()
 
+	comboBar.scale = CreateAnimationGroup(comboBar)
+	comboBar.scale.width = comboBar.scale:CreateAnimation("Width")
+	comboBar.scale.width:SetDuration(0.2)
+	comboBar.scale.height = comboBar.scale:CreateAnimation("Height")
+	comboBar.scale.height:SetDuration(0.2)
+
+	comboBar:SetScript("OnSizeChanged", CPoints_OnSizeChanged)
+
 	for i = 1, MAX_COMBO_POINTS do
-		comboBar[i] = CreateFrame("StatusBar", comboBar:GetName().."ComboPoint"..i, comboBar)
+		comboBar[i] = CreateFrame("StatusBar", "$parentComboPoint"..i, comboBar)
 
 		self:StyleFrame(comboBar[i])
 	end

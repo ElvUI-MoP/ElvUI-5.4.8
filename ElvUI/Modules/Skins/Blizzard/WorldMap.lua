@@ -4,9 +4,8 @@ local S = E:GetModule("Skins")
 local _G = _G
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.worldmap ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.worldmap then return end
 
-	local WorldMapFrame = _G["WorldMapFrame"]
 	WorldMapFrame:CreateBackdrop("Transparent")
 
 	WorldMapDetailFrame:CreateBackdrop()
@@ -18,38 +17,50 @@ local function LoadSkin()
 	WorldMapQuestDetailScrollFrame:Point("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOMLEFT", -25, -207)
 	WorldMapQuestDetailScrollFrame:CreateBackdrop("Transparent")
 	WorldMapQuestDetailScrollFrame.backdrop:Point("TOPLEFT", 24, 2)
-	WorldMapQuestDetailScrollFrame.backdrop:Point("BOTTOMRIGHT", 23, -3)
+	WorldMapQuestDetailScrollFrame.backdrop:Point("BOTTOMRIGHT", 23, -4)
 	WorldMapQuestDetailScrollFrame:SetHitRectInsets(24, -23, 0, -2)
 	WorldMapQuestDetailScrollFrame.backdrop:SetFrameLevel(WorldMapQuestDetailScrollFrame:GetFrameLevel())
 
 	WorldMapQuestDetailScrollChildFrame:SetScale(1)
+	S:HandleScrollBar(WorldMapQuestDetailScrollFrameScrollBar, 4)
+	WorldMapQuestDetailScrollFrameScrollBar:ClearAllPoints()
+	WorldMapQuestDetailScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestDetailScrollFrame, "TOPRIGHT", 22, -16)
+	WorldMapQuestDetailScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestDetailScrollFrame, "BOTTOMRIGHT", 0, 14)
 
 	WorldMapQuestRewardScrollFrame:Width(340)
 	WorldMapQuestRewardScrollFrame:Point("LEFT", WorldMapQuestDetailScrollFrame, "RIGHT", 8, 0)
 	WorldMapQuestRewardScrollFrame:CreateBackdrop("Transparent")
 	WorldMapQuestRewardScrollFrame.backdrop:Point("TOPLEFT", 20, 2)
-	WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -3)
+	WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -4)
 	WorldMapQuestRewardScrollFrame:SetHitRectInsets(20, -22, 0, -2)
 	WorldMapQuestRewardScrollFrame.backdrop:SetFrameLevel(WorldMapQuestRewardScrollFrame:GetFrameLevel())
 
 	WorldMapQuestRewardScrollChildFrame:SetScale(1)
+	S:HandleScrollBar(WorldMapQuestRewardScrollFrameScrollBar, 4)
+	WorldMapQuestRewardScrollFrameScrollBar:ClearAllPoints()
+	WorldMapQuestRewardScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestRewardScrollFrame, "TOPRIGHT", 21, -16)
+	WorldMapQuestRewardScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestRewardScrollFrame, "BOTTOMRIGHT", 0, 14)
 
 	WorldMapQuestScrollFrame:CreateBackdrop("Transparent")
-	WorldMapQuestScrollFrame.backdrop:Point("TOPLEFT", 0, 2)
-	WorldMapQuestScrollFrame.backdrop:Point("BOTTOMRIGHT", 25, -2)
+	WorldMapQuestScrollFrame.backdrop:Point("TOPLEFT", -1, 1)
+	WorldMapQuestScrollFrame.backdrop:Point("BOTTOMRIGHT", 25, -3)
 	WorldMapQuestScrollFrame.backdrop:SetFrameLevel(WorldMapQuestScrollFrame:GetFrameLevel())
 
 	S:HandleScrollBar(WorldMapQuestScrollFrameScrollBar)
-	S:HandleScrollBar(WorldMapQuestDetailScrollFrameScrollBar, 4)
-	S:HandleScrollBar(WorldMapQuestRewardScrollFrameScrollBar, 4)
+	WorldMapQuestScrollFrameScrollBar:ClearAllPoints()
+	WorldMapQuestScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestScrollFrame, "TOPRIGHT", 21, -20)
+	WorldMapQuestScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestScrollFrame, "BOTTOMRIGHT", 0, 18)
+
+	WorldMapQuestHighlightBar:SetTexture(E.Media.Textures.Highlight)
+	WorldMapQuestHighlightBar:SetAlpha(0.35)
+
+	WorldMapQuestSelectBar:SetTexture(E.Media.Textures.Highlight)
+	WorldMapQuestSelectBar:SetAlpha(0.35)
 
 	S:HandleCloseButton(WorldMapFrameCloseButton)
 
-	S:HandleCloseButton(WorldMapFrameSizeDownButton, nil, "-")
-	WorldMapFrameSizeDownButton.text:Point("CENTER")
-
-	S:HandleCloseButton(WorldMapFrameSizeUpButton, nil, "+")
-	WorldMapFrameSizeUpButton.text:Point("CENTER", 0, -1)
+	S:HandleArrowButton(WorldMapFrameSizeUpButton)
+	S:HandleArrowButton(WorldMapFrameSizeDownButton, true)
 
 	S:HandleDropDownBox(WorldMapLevelDropDown)
 	S:HandleDropDownBox(WorldMapZoneMinimapDropDown)
@@ -58,15 +69,13 @@ local function LoadSkin()
 	S:HandleDropDownBox(WorldMapShowDropDown)
 
 	S:HandleButton(WorldMapZoomOutButton)
-	WorldMapZoomOutButton:Point("LEFT", WorldMapZoneDropDown, "RIGHT", 0, 4)
+	WorldMapZoomOutButton:Point("LEFT", WorldMapZoneDropDown, "RIGHT", 0, 0)
 
 	S:HandleNextPrevButton(WorldMapLevelUpButton)
-	SquareButton_SetIcon(WorldMapLevelUpButton, "UP")
 	WorldMapLevelUpButton:Point("TOPLEFT", WorldMapLevelDropDown, "TOPRIGHT", -2, 6)
 	WorldMapLevelUpButton:Size(16)
 
 	S:HandleNextPrevButton(WorldMapLevelDownButton)
-	SquareButton_SetIcon(WorldMapLevelDownButton, "DOWN")
 	WorldMapLevelDownButton:Point("BOTTOMLEFT", WorldMapLevelDropDown, "BOTTOMRIGHT", -2, 3)
 	WorldMapLevelDownButton:Size(16)
 

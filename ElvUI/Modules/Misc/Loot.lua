@@ -6,7 +6,7 @@ local tinsert = table.insert
 local max = math.max
 
 local CreateFrame = CreateFrame
-local LootSlotHasItem = LootSlotHasItem
+local LootSlotIsItem = LootSlotIsItem
 local CursorUpdate = CursorUpdate
 local ResetCursor = ResetCursor
 local IsModifiedClick = IsModifiedClick
@@ -27,7 +27,6 @@ local GetCursorPosition = GetCursorPosition
 local GetLootSlotInfo = GetLootSlotInfo
 local GiveMasterLoot = GiveMasterLoot
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
-local TEXTURE_ITEM_QUEST_BANG = TEXTURE_ITEM_QUEST_BANG
 local LOOT = LOOT
 
 local lootFrame, lootFrameHolder
@@ -115,7 +114,7 @@ local function createSlot(id)
 	local iconFrame = CreateFrame("Frame", nil, frame)
 	iconFrame:Size(iconSize - 2)
 	iconFrame:Point("RIGHT", frame)
-	iconFrame:SetTemplate("Default")
+	iconFrame:SetTemplate()
 	frame.iconFrame = iconFrame
 	E.frames[iconFrame] = nil
 
@@ -147,9 +146,9 @@ local function createSlot(id)
 	frame.drop = drop
 
 	local questTexture = iconFrame:CreateTexture(nil, "OVERLAY")
+	questTexture:SetTexture(E.Media.Textures.BagQuestIcon)
+	questTexture:SetTexCoord(0, 1, 0, 1)
 	questTexture:SetInside()
-	questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG)
-	questTexture:SetTexCoord(unpack(E.TexCoords))
 	frame.questTexture = questTexture
 
 	lootFrame.slots[id] = frame
@@ -159,7 +158,10 @@ end
 function M:LOOT_SLOT_CLEARED(_, slot)
 	if not lootFrame:IsShown() then return end
 
-	lootFrame.slots[slot]:Hide()
+	if lootFrame.slots[slot] then
+		lootFrame.slots[slot]:Hide()
+	end
+
 	anchorSlots(lootFrame)
 end
 
@@ -187,8 +189,6 @@ function M:LOOT_OPENED(_, autoLoot)
 		CloseLoot(autoLoot == 0)
 	end
 
-	local items = GetNumLootItems()
-
 	if IsFishingLoot() then
 		lootFrame.title:SetText(L["Fishy Loot"])
 	elseif not UnitIsFriend("player", "target") and UnitIsDead("target") then
@@ -215,6 +215,8 @@ function M:LOOT_OPENED(_, autoLoot)
 	end
 
 	local m, w, t = 0, 0, lootFrame.title:GetStringWidth()
+	local items = GetNumLootItems()
+
 	if items > 0 then
 		for i = 1, items do
 			local slot = lootFrame.slots[i] or createSlot(i)
@@ -251,17 +253,13 @@ function M:LOOT_OPENED(_, autoLoot)
 			end
 			w = max(w, slot.name:GetStringWidth())
 
-			local questTexture = slot.questTexture
+			slot.questTexture:Hide()
 			if questId and not isActive then
-				questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG)
-				questTexture:Show()
+				slot.questTexture:Show()
 				ActionButton_ShowOverlayGlow(slot.iconFrame)
 			elseif questId or isQuestItem then
-				questTexture:SetTexture(TEXTURE_ITEM_QUEST_BORDER)
-				questTexture:Show()
 				ActionButton_ShowOverlayGlow(slot.iconFrame)
 			else
-				questTexture:Hide()
 				ActionButton_HideOverlayGlow(slot.iconFrame)
 			end
 
@@ -281,7 +279,6 @@ function M:LOOT_OPENED(_, autoLoot)
 		end
 		slot.icon:SetTexture[[Interface\Icons\INV_Misc_Herb_AncientLichen]]
 
-		items = 1
 		w = max(w, slot.name:GetStringWidth())
 
 		slot.count:Hide()
@@ -308,11 +305,11 @@ function M:LoadLoot()
 
 	lootFrame = CreateFrame("Button", "ElvLootFrame", lootFrameHolder)
 	lootFrame:SetClampedToScreen(true)
-	lootFrame:SetPoint("TOPLEFT")
+	lootFrame:Point("TOPLEFT")
 	lootFrame:Size(256, 64)
 	lootFrame:SetTemplate("Transparent")
 	lootFrame:SetFrameStrata("DIALOG")
-	lootFrame:SetToplevel(true)	
+	lootFrame:SetToplevel(true)
 	lootFrame.title = lootFrame:CreateFontString(nil, "OVERLAY")
 	lootFrame.title:FontTemplate(nil, nil, "OUTLINE")
 	lootFrame.title:Point("BOTTOMLEFT", lootFrame, "TOPLEFT", 0, 1)
@@ -329,7 +326,7 @@ function M:LoadLoot()
 	self:RegisterEvent("OPEN_MASTER_LOOT_LIST")
 	self:RegisterEvent("UPDATE_MASTER_LOOT_LIST")
 
-	E:CreateMover(lootFrameHolder, "LootFrameMover", L["Loot Frame"], nil, nil, nil, nil, nil, "general,general")
+	E:CreateMover(lootFrameHolder, "LootFrameMover", L["Loot Frame"], nil, nil, nil, nil, nil, "general,blizzUIImprovements")
 
 	-- Fuzz
 	LootFrame:UnregisterAllEvents()
@@ -347,8 +344,8 @@ function M:LoadLoot()
 		CloseDropDownMenus()
 	end
 
-	E.PopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].OnAccept = function(self, data)
+	E.PopupDialogs.CONFIRM_LOOT_DISTRIBUTION.OnAccept = function(self, data)
 		GiveMasterLoot(ss, data)
 	end
-	StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].preferredIndex = 3
+	StaticPopupDialogs.CONFIRM_LOOT_DISTRIBUTION.preferredIndex = 3
 end

@@ -1,6 +1,10 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local B = E:NewModule("Blizzard", "AceEvent-3.0", "AceHook-3.0")
-E.Blizzard = B
+local B = E:GetModule("Blizzard")
+local Skins = E:GetModule("Skins")
+
+local CreateFrame = CreateFrame
+local IsAddOnLoaded = IsAddOnLoaded
+local UnitIsUnit = UnitIsUnit
 
 function B:Initialize()
 	self:EnhanceColorPicker()
@@ -12,13 +16,14 @@ function B:Initialize()
 	self:SkinBlizzTimers()
 	self:PositionVehicleFrame()
 	self:MoveWatchFrame()
-	self:ErrorFrameSize()
 	self:Handle_LevelUpDisplay()
 
- 	if not IsAddOnLoaded("SimplePowerBar") then
- 		self:PositionAltPowerBar()
+	if not IsAddOnLoaded("SimplePowerBar") then
+		self:PositionAltPowerBar()
 		self:SkinAltPowerBar()
 	end
+
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", SetMapToCurrentZone)
 
 	if GetLocale() == "deDE" then
 		DAY_ONELETTER_ABBR = "%d d"
@@ -32,34 +37,36 @@ function B:Initialize()
 		end
 	end)
 
+	ReadyCheckFrame:HookScript("OnShow", function(self)
+		if UnitIsUnit("player", self.initiator) then
+			self:Hide()
+		end
+	end)
+
 	-- MicroButton Talent Alert
 	if E.global.general.showMissingTalentAlert then
 		TalentMicroButtonAlert:StripTextures(true)
 		TalentMicroButtonAlert:SetTemplate("Transparent")
 		TalentMicroButtonAlert:ClearAllPoints()
-		TalentMicroButtonAlert:SetPoint("CENTER", E.UIParent, "TOP", 0, -75)
+		TalentMicroButtonAlert:Point("CENTER", E.UIParent, "TOP", 0, -75)
 		TalentMicroButtonAlert:Width(230)
 
 		TalentMicroButtonAlertArrow:Hide()
 		TalentMicroButtonAlert.Arrow:Hide()
 		TalentMicroButtonAlert.Text:Point("TOPLEFT", 42, -23)
 		TalentMicroButtonAlert.Text:FontTemplate()
-		E:GetModule("Skins"):HandleCloseButton(TalentMicroButtonAlert.CloseButton)
+		Skins:HandleCloseButton(TalentMicroButtonAlert.CloseButton)
 
 		TalentMicroButtonAlert.tex = TalentMicroButtonAlert:CreateTexture(nil, "OVERLAY")
 		TalentMicroButtonAlert.tex:Point("LEFT", 5, -4)
 		TalentMicroButtonAlert.tex:SetTexture("Interface\\DialogFrame\\UI-Dialog-Icon-AlertNew")
-		TalentMicroButtonAlert.tex:SetSize(32, 32)
+		TalentMicroButtonAlert.tex:Size(32)
 
 		TalentMicroButtonAlert.button = CreateFrame("Button", nil, TalentMicroButtonAlert, nil)
 		TalentMicroButtonAlert.button:SetAllPoints(TalentMicroButtonAlert)
 		TalentMicroButtonAlert.button:HookScript("OnClick", function()
-			if not PlayerTalentFrame then
-				TalentFrame_LoadUI()
-			end
-			if not GlyphFrame then
-				GlyphFrame_LoadUI()
-			end
+			if not PlayerTalentFrame then TalentFrame_LoadUI() end
+			if not GlyphFrame then GlyphFrame_LoadUI() end
 			if not PlayerTalentFrame:IsShown() then
 				ShowUIPanel(PlayerTalentFrame)
 			else
@@ -69,6 +76,8 @@ function B:Initialize()
 	else
 		TalentMicroButtonAlert:Kill() -- Kill it, because then the blizz default will show
 	end
+
+	self.Initialized = true
 end
 
 local function InitializeCallback()

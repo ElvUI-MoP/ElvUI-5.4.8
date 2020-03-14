@@ -12,15 +12,15 @@ local C_BlackMarket_GetItemInfoByIndex = C_BlackMarket.GetItemInfoByIndex
 local C_BlackMarket_GetHotItem = C_BlackMarket.GetHotItem
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.bmah ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.bmah then return end
 
-	local BlackMarketFrame = _G["BlackMarketFrame"]
 	BlackMarketFrame:StripTextures()
 	BlackMarketFrame:SetTemplate("Transparent")
 
 	BlackMarketFrame.Inset:StripTextures()
-	BlackMarketFrame.Inset:CreateBackdrop()
-	BlackMarketFrame.Inset.backdrop:SetAllPoints()
+	BlackMarketFrame.Inset:CreateBackdrop("Transparent")
+	BlackMarketFrame.Inset.backdrop:Point("TOPLEFT", 0, -5)
+	BlackMarketFrame.Inset.backdrop:Point("BOTTOMRIGHT", -20, 5)
 
 	BlackMarketFrame.ColumnName:StripTextures()
 	BlackMarketFrame.ColumnLevel:StripTextures()
@@ -33,13 +33,17 @@ local function LoadSkin()
 
 	S:HandleCloseButton(BlackMarketFrame.CloseButton)
 
-	S:HandleScrollBar(BlackMarketScrollFrameScrollBar, 4)
+	S:HandleScrollBar(BlackMarketScrollFrameScrollBar)
+	BlackMarketScrollFrameScrollBar:ClearAllPoints()
+	BlackMarketScrollFrameScrollBar:Point("TOPRIGHT", BlackMarketScrollFrame, 30, -13)
+	BlackMarketScrollFrameScrollBar:Point("BOTTOMRIGHT", BlackMarketScrollFrame, 0, 13)
 
 	S:HandleEditBox(BlackMarketBidPriceGold)
 	BlackMarketBidPriceGold.backdrop:Point("TOPLEFT", -2, 0)
 	BlackMarketBidPriceGold.backdrop:Point("BOTTOMRIGHT", -2, 0)
 
 	S:HandleButton(BlackMarketFrame.BidButton)
+	BlackMarketFrame.BidButton:Point("BOTTOMRIGHT", -276, 5)
 
 	local function SkinBlackMarketItems()
 		local buttons = BlackMarketScrollFrame.buttons
@@ -51,18 +55,21 @@ local function LoadSkin()
 			local button = buttons[i]
 			local index = offset + i
 
-			if not button.skinned then
+			if not button.isSkinned then
 				S:HandleItemButton(button.Item)
-				button:StripTextures("BACKGROUND")
-				button:StyleButton()
+				button:StripTextures()
+
+				S:HandleButtonHighlight(button)
+				button.handledHighlight:SetInside()
 
 				button.Item:Size(E.PixelMode and 33 or 30)
 				button.Item:Point("TOPLEFT", -3, -(E.PixelMode and 2 or 3))
 
-				button.Selection:SetTexture(1, 1, 1, 0.30)
+				button.Selection:SetTexture(E.Media.Textures.Highlight)
+				button.Selection:SetAlpha(0.35)
 				button.Selection:SetInside()
 
-				button.skinned = true
+				button.isSkinned = true
 			end
 
 			if type(numItems) == "number" and index <= numItems then
@@ -72,11 +79,18 @@ local function LoadSkin()
 
 					if link then
 						local quality = select(3, GetItemInfo(link))
+
 						if quality then
-							button.Name:SetTextColor(GetItemQualityColor(quality))
-							button.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+							local r, g, b = GetItemQualityColor(quality)
+
+							button.Name:SetTextColor(r, g, b)
+							button.handledHighlight:SetVertexColor(r, g, b)
+							button.Selection:SetVertexColor(r, g, b)
+							button.Item.backdrop:SetBackdropBorderColor(r, g, b)
 						else
 							button.Name:SetTextColor(1, 1, 1)
+							button.handledHighlight:SetVertexColor(1, 1, 1)
+							button.Selection:SetVertexColor(1, 1, 1)
 							button.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 						end
 					end
@@ -96,13 +110,14 @@ local function LoadSkin()
 
 	BlackMarketFrame.HotDeal.Level:ClearAllPoints()
 	BlackMarketFrame.HotDeal.Level:Point("BOTTOMLEFT", BlackMarketFrame.HotDeal.Item, 0, -20)
+
 	BlackMarketFrame.HotDeal.Type:ClearAllPoints()
 	BlackMarketFrame.HotDeal.Type:Point("BOTTOMLEFT", BlackMarketFrame.HotDeal.Item, 75, -20)
 
 	BlackMarketFrame.bg = CreateFrame("Frame", nil, BlackMarketFrame)
-	BlackMarketFrame.bg:SetTemplate("Default")
-	BlackMarketFrame.bg:Point("TOPLEFT", 640, -70)
-	BlackMarketFrame.bg:Point("BOTTOMRIGHT", -8, 26)
+	BlackMarketFrame.bg:SetTemplate("Transparent")
+	BlackMarketFrame.bg:Point("TOPLEFT", 640, -75)
+	BlackMarketFrame.bg:Point("BOTTOMRIGHT", -8, 31)
 	BlackMarketFrame.bg:SetFrameLevel(BlackMarketFrame.bg:GetFrameLevel() - 1)
 
 	hooksecurefunc("BlackMarketFrame_UpdateHotItem", function(self)

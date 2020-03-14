@@ -14,7 +14,7 @@ local GetRaidBuffTrayAuraInfo = GetRaidBuffTrayAuraInfo
 local CooldownFrame_SetTimer = CooldownFrame_SetTimer
 local NUM_LE_RAID_BUFF_TYPES = NUM_LE_RAID_BUFF_TYPES
 
-local Masque = E.Masque
+local Masque = E.Libs.Masque
 local MasqueGroup = Masque and Masque:Group("ElvUI", "Consolidated Buffs")
 
 A.DefaultIcons = {
@@ -29,9 +29,12 @@ A.DefaultIcons = {
 }
 
 function A:UpdateConsolidatedTime(elapsed)
+	if self.expiration == nil then return end
+
 	self.expiration = self.expiration - elapsed
-	if self.nextupdate > 0 then
-		self.nextupdate = self.nextupdate - elapsed
+
+	if self.nextUpdate > 0 then
+		self.nextUpdate = self.nextUpdate - elapsed
 		return
 	end
 
@@ -41,22 +44,31 @@ function A:UpdateConsolidatedTime(elapsed)
 		return
 	end
 
-	local timeColors, timeThreshold = E.TimeColors, E.db.cooldown.threshold
-	if not timeThreshold then
-		timeThreshold = E.TimeThreshold
-	end
+	local threshold = E.db.cooldown.threshold
+	if not threshold then threshold = E.TimeThreshold end
 
-	local hhmmThreshold, mmssThreshold
-	if E.db.cooldown.checkSeconds then
-		hhmmThreshold, mmssThreshold = E.db.cooldown.hhmmThreshold, E.db.cooldown.mmssThreshold
-	else
-		hhmmThreshold, mmssThreshold = E.db.cooldown.checkSeconds and E.db.cooldown.hhmmThreshold or nil, E.db.cooldown.checkSeconds and E.db.cooldown.mmssThreshold or nil
-	end
+	local hhmmThreshold = E.db.cooldown.checkSeconds and E.db.cooldown.hhmmThreshold or nil
+	local mmssThreshold = E.db.cooldown.checkSeconds and E.db.cooldown.mmssThreshold or nil
+	local textColors = E.db.cooldown.useIndicatorColor and E.TimeIndicatorColors or nil
 
-	local value1, formatID, nextUpdate, value2 = E:GetTimeInfo(self.expiration, timeThreshold, hhmmThreshold, mmssThreshold)
+	local value, id, nextUpdate, remainder = E:GetTimeInfo(self.expiration, threshold, hhmmThreshold, mmssThreshold)
+	local style = E.TimeFormats[id]
 	self.nextUpdate = nextUpdate
 
-	self.timer:SetFormattedText(format("%s%s|r", timeColors[formatID], E.TimeFormats[formatID][1]), value1, value2)
+	if style then
+		local which = textColors and 2 or 1
+
+		if textColors then
+			self.timer:SetFormattedText(style[which], value, textColors[id], remainder)
+		else
+			self.timer:SetFormattedText(style[which], value, remainder)
+		end
+	end
+
+	local color = E.TimeColors[id]
+	if color then
+		self.timer:SetTextColor(color.r, color.g, color.b)
+	end
 end
 
 function A:UpdateReminder(event, unit)
@@ -70,27 +82,27 @@ function A:UpdateReminder(event, unit)
 		local button = self.frame[i]
 
 		if spellName then
-			button.expiration = expirationTime - GetTime()
 			button.duration = duration
-			button.nextupdate = 0
 			button.t:SetTexture(texture)
 
 			if (duration == 0 and expirationTime == 0) or E.db.auras.consolidatedBuffs.durations ~= true then
-				button.t:SetAlpha(reverseStyle == true and 1 or 0.3)
+				button.t:SetAlpha(reverseStyle and 1 or 0.3)
 				button:SetScript("OnUpdate", nil)
 				button.timer:SetText(nil)
 				CooldownFrame_SetTimer(button.cd, 0, 0, 0)
 			else
-				CooldownFrame_SetTimer(button.cd, expirationTime - duration, duration, 1)
+				button.expiration = expirationTime - GetTime()
+				button.nextUpdate = 0
 				button.t:SetAlpha(1)
-				button.cd:SetReverse(reverseStyle == true and true or false)
+				CooldownFrame_SetTimer(button.cd, expirationTime - duration, duration, 1)
+				button.cd:SetReverse(reverseStyle and true or false)
 				button:SetScript("OnUpdate", A.UpdateConsolidatedTime)
 			end
 			button.spellName = spellName
 		else
 			CooldownFrame_SetTimer(button.cd, 0, 0, 0)
 			button.spellName = nil
-			button.t:SetAlpha(reverseStyle == true and 0.3 or 1)
+			button.t:SetAlpha(reverseStyle and 0.3 or 1)
 			button:SetScript("OnUpdate", nil)
 			button.timer:SetText(nil)
 			button.t:SetTexture(self.DefaultIcons[i])
@@ -198,7 +210,7 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 	twipe(ignoreIcons)
 
 	if E.db.auras.consolidatedBuffs.filter then
-		if E.role == "Caster" then
+		if E.Role == "Caster" then
 			ignoreIcons[3] = true
 			ignoreIcons[4] = 2
 		else
@@ -209,7 +221,6 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 
 	for i = 1, NUM_LE_RAID_BUFF_TYPES do
 		local button = frame[i]
-		button.t:SetAlpha(1)
 		button:ClearAllPoints()
 
 		button:SetWidth(E.ConsolidatedBuffsWidth)
@@ -253,38 +264,11 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 		else
 			A:DisableCB()
 		end
+	else
+		self:UpdateReminder()
 	end
 
 	if MasqueGroup and E.private.auras.masque.consolidatedBuffs and E.db.auras.consolidatedBuffs.enable then MasqueGroup:ReSkin() end
-end
-
-function A:Construct_ConsolidatedBuffs()
-	local frame = CreateFrame("Frame", "ElvUI_ConsolidatedBuffs", Minimap)
-
-	if not Masque or not E.private.auras.masque.consolidatedBuffs then
-		frame:SetTemplate("Default")
-	end
-
-	frame:Width(E.ConsolidatedBuffsWidth)
-	if E.db.auras.consolidatedBuffs.position == "LEFT" then
-		frame:Point("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing*3, 0)
-		frame:Point("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing*3, 0)
-	else
-		frame:Point("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing*3, 0)
-		frame:Point("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing*3, 0)
-	end
-	self.frame = frame
-
-	for i = 1, NUM_LE_RAID_BUFF_TYPES do
-		frame[i] = self:CreateButton(i)
-		frame[i]:SetID(i)
-	end
-
-	if Masque and MasqueGroup then
-		A.CBMasqueGroup = MasqueGroup
-	end
-
-	self:Update_ConsolidatedBuffsSettings()
 end
 
 function A:UpdatePosition()
@@ -309,4 +293,33 @@ function A:UpdatePosition()
 		ElvUI_ConsolidatedBuffs:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing*3, 0)
 		ElvUI_ConsolidatedBuffs:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing*3, 0)
 	end
+end
+
+function A:Construct_ConsolidatedBuffs()
+	local frame = CreateFrame("Frame", "ElvUI_ConsolidatedBuffs", Minimap)
+
+	if not Masque or not E.private.auras.masque.consolidatedBuffs then
+		frame:SetTemplate()
+	end
+
+	frame:Width(E.ConsolidatedBuffsWidth)
+	if E.db.auras.consolidatedBuffs.position == "LEFT" then
+		frame:Point("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing*3, 0)
+		frame:Point("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing*3, 0)
+	else
+		frame:Point("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing*3, 0)
+		frame:Point("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing*3, 0)
+	end
+	self.frame = frame
+
+	for i = 1, NUM_LE_RAID_BUFF_TYPES do
+		frame[i] = self:CreateButton(i)
+		frame[i]:SetID(i)
+	end
+
+	if Masque and MasqueGroup then
+		A.CBMasqueGroup = MasqueGroup
+	end
+
+	self:Update_ConsolidatedBuffsSettings()
 end

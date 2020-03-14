@@ -2,77 +2,46 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local unpack, select = unpack, select
+local unpack = unpack
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trainer ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.trainer then return end
 
-	ClassTrainerScrollFrameScrollChild:StripTextures()
+	ClassTrainerFrame:StripTextures()
+	ClassTrainerFrame:CreateBackdrop("Transparent")
+	ClassTrainerFrame.backdrop:Point("TOPLEFT", 4, 0)
+	ClassTrainerFrame:Height(472)
+
 	ClassTrainerFrameBottomInset:StripTextures()
 
 	ClassTrainerFrameInset:Kill()
 	ClassTrainerFramePortrait:Kill()
-	ClassTrainerScrollFrameScrollBarBG:Kill()
-	ClassTrainerScrollFrameScrollBarTop:Kill()
-	ClassTrainerScrollFrameScrollBarBottom:Kill()
-	ClassTrainerScrollFrameScrollBarMiddle:Kill()
 
-	for i = 1, 8 do
-		local button = _G["ClassTrainerScrollFrameButton"..i]
-		local icon = _G["ClassTrainerScrollFrameButton"..i.."Icon"]
-		local money = _G["ClassTrainerScrollFrameButton"..i.."MoneyFrame"]
-
-		button:StripTextures()
-		button:CreateBackdrop()
-		button.backdrop:SetInside()
-
-		button.selectedTex:SetTexture(1, 1, 1, 0.3)
-		button.selectedTex:SetInside(button.backdrop)
-		button.selectedTex:SetParent(button.backdrop)
-
-		money:SetScale(0.88)
-		money:Point("TOPRIGHT", 9, -6)
-		money:SetParent(button.backdrop)
-
-		button.name:SetParent(button.backdrop)
-		button.subText:SetParent(button.backdrop)
-
-		button.bg = CreateFrame("Frame", nil, button)
-		button.bg:SetTemplate("Default")
-		button.bg:SetOutside(icon)
-
-		icon:SetTexCoord(unpack(E.TexCoords))
-		icon:Size(E.PixelMode and 43 or 34)
-		if i == 1 then
-			icon:Point("TOPLEFT", E.PixelMode and 2 or 7, E.PixelMode and -2 or -6)
-		else
-			icon:Point("TOPLEFT", E.PixelMode and 2 or 6, E.PixelMode and -2 or -6)
-		end
-		icon:SetParent(button.bg)
-	end
-
-	local ClassTrainerFrame = _G["ClassTrainerFrame"]
-	ClassTrainerFrame:StripTextures()
-	ClassTrainerFrame:CreateBackdrop("Transparent")
-	ClassTrainerFrame:Height(ClassTrainerFrame:GetHeight() + 42)
-
-	ClassTrainerTrainButton:StripTextures()
 	S:HandleButton(ClassTrainerTrainButton)
+	ClassTrainerTrainButton:Point("BOTTOMRIGHT", -5, 5)
+
+	S:HandleDropDownBox(ClassTrainerFrameFilterDropDown)
+	ClassTrainerFrameFilterDropDown:Point("TOPRIGHT", 0, -52)
 
 	S:HandleCloseButton(ClassTrainerFrameCloseButton, ClassTrainerFrame)
 
-	S:HandleScrollBar(ClassTrainerScrollFrameScrollBar, 5)
+	-- Status Bar
+	ClassTrainerStatusBar:StripTextures()
+	ClassTrainerStatusBar:CreateBackdrop()
+	ClassTrainerStatusBar:Size(321, 18)
+	ClassTrainerStatusBar:SetStatusBarTexture(E.media.normTex)
+	ClassTrainerStatusBar:SetStatusBarColor(0.11, 0.50, 1.00)
+	ClassTrainerStatusBar:ClearAllPoints()
+	ClassTrainerStatusBar:Point("TOP", ClassTrainerFrame, 3, -30)
 
-	S:HandleDropDownBox(ClassTrainerFrameFilterDropDown)
-	ClassTrainerFrameFilterDropDown:Point("TOPRIGHT", -10, -50)
+	ClassTrainerStatusBar.rankText:Point("CENTER")
+	ClassTrainerStatusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
 
+	-- Step Button
 	ClassTrainerFrameSkillStepButton:StripTextures()
-	ClassTrainerFrameSkillStepButton:SetTemplate()
-	ClassTrainerFrameSkillStepButton:StyleButton()
-
-	ClassTrainerFrameSkillStepButton.icon:SetTexCoord(unpack(E.TexCoords))
-	ClassTrainerFrameSkillStepButton.icon:Point("TOPLEFT", E.PixelMode and 0 or 4, -(E.PixelMode and 1 or 4))
-	ClassTrainerFrameSkillStepButton.icon:Size(E.PixelMode and 38 or 32)
+	ClassTrainerFrameSkillStepButton:SetTemplate("Transparent")
+	ClassTrainerFrameSkillStepButton:Size(322, 40)
+	ClassTrainerFrameSkillStepButton:Point("TOPLEFT", ClassTrainerFrameInset, 5, -5)
 
 	ClassTrainerFrameSkillStepButton.selectedTex:SetTexture(1, 1, 1, 0.3)
 	ClassTrainerFrameSkillStepButton.selectedTex:SetInside()
@@ -81,23 +50,51 @@ local function LoadSkin()
 	ClassTrainerFrameSkillStepButton.bg:SetTemplate()
 	ClassTrainerFrameSkillStepButton.bg:SetOutside(ClassTrainerFrameSkillStepButton.icon)
 
+	ClassTrainerFrameSkillStepButton.icon:SetTexCoord(unpack(E.TexCoords))
+	ClassTrainerFrameSkillStepButton.icon:Point("TOPLEFT", E.PixelMode and 0 or 4, -(E.PixelMode and 1 or 4))
+	ClassTrainerFrameSkillStepButton.icon:Size(E.PixelMode and 38 or 32)
 	ClassTrainerFrameSkillStepButton.icon:SetParent(ClassTrainerFrameSkillStepButton.bg)
 
 	ClassTrainerFrameSkillStepButton.name:Point("TOPLEFT", 42, -1)
 
-	ClassTrainerFrameSkillStepButtonMoneyFrame:SetScale(0.90)
 	ClassTrainerFrameSkillStepButtonMoneyFrame:Point("TOPRIGHT", 10, -3)
 
-	ClassTrainerStatusBar:StripTextures()
-	ClassTrainerStatusBar:CreateBackdrop("Default")
-	ClassTrainerStatusBar:Size(300, 18)
-	ClassTrainerStatusBar:SetStatusBarTexture(E.media.normTex)
-	ClassTrainerStatusBar:SetStatusBarColor(0.11, 0.50, 1.00)
-	ClassTrainerStatusBar:ClearAllPoints()
-	ClassTrainerStatusBar:Point("TOP", ClassTrainerFrame, "TOP", 0, -30)
+	-- Scroll Frame
+	ClassTrainerScrollFrame:CreateBackdrop("Transparent")
+	ClassTrainerScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -2)
 
-	ClassTrainerStatusBar.rankText:Point("CENTER")
-	ClassTrainerStatusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
+	S:HandleScrollBar(ClassTrainerScrollFrameScrollBar)
+	ClassTrainerScrollFrameScrollBar:ClearAllPoints()
+	ClassTrainerScrollFrameScrollBar:Point("TOPRIGHT", ClassTrainerScrollFrame, 23, -15)
+	ClassTrainerScrollFrameScrollBar:Point("BOTTOMRIGHT", ClassTrainerScrollFrame, 0, 14)
+
+	for i = 1, 8 do
+		local button = _G["ClassTrainerScrollFrameButton"..i]
+
+		button:StripTextures()
+
+		button.selectedTex:SetTexture(E.Media.Textures.Highlight)
+		button.selectedTex:SetAlpha(0.35)
+		button.selectedTex:SetTexCoord(0, 1, 0, 1)
+		button.selectedTex.SetTexCoord = E.noop
+		button.selectedTex:Point("TOPLEFT", 0, -(E.PixelMode and 1 or 3))
+		button.selectedTex:Point("BOTTOMRIGHT")
+
+		S:HandleButtonHighlight(button)
+		button.handledHighlight:Point("TOPLEFT", 0, -(E.PixelMode and 1 or 3))
+		button.handledHighlight:Point("BOTTOMRIGHT")
+
+		button.bg = CreateFrame("Frame", nil, button)
+		button.bg:SetTemplate()
+		button.bg:SetOutside(button.icon)
+
+		button.icon:SetTexCoord(unpack(E.TexCoords))
+		button.icon:Size(E.PixelMode and 44 or 40)
+		button.icon:Point("TOPLEFT", E.PixelMode and 3 or 6, -(E.PixelMode and 2 or 3))
+		button.icon:SetParent(button.bg)
+
+		button.money:Point("TOPRIGHT", 9, -6)
+	end
 end
 
 S:AddCallbackForAddon("Blizzard_TrainerUI", "Trainer", LoadSkin)

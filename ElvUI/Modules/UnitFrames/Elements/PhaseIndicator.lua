@@ -4,8 +4,8 @@ local UF = E:GetModule("UnitFrames")
 local unpack = unpack
 
 local texCoords = {
-    [1] = {1 / 128, 33 / 128, 1 / 64, 33 / 64},
-    [2] = {34 / 128, 66 / 128, 1 / 64, 33 / 64},
+	[1] = {1/128, 33/128, 1/64, 33/64},
+	[2] = {34/128, 66/128, 1/64, 33/64}
 }
 
 function UF:PostUpdate_PhaseIcon(isInSamePhase)
@@ -18,7 +18,7 @@ function UF:Construct_PhaseIcon(frame)
 	local PhaseIndicator = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "ARTWORK", nil, 1)
 	PhaseIndicator:SetSize(30, 30)
 	PhaseIndicator:SetPoint("CENTER", frame.Health, "CENTER")
-	PhaseIndicator:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\phaseIcons")
+	PhaseIndicator:SetTexture(E.Media.Textures.PhaseIcons)
 	PhaseIndicator:SetDrawLayer("OVERLAY", 7)
 
 	PhaseIndicator.PostUpdate = UF.PostUpdate_PhaseIcon

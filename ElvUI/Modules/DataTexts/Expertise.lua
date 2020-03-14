@@ -11,7 +11,6 @@ local GetExpertisePercent = GetExpertisePercent
 local GetExpertise = GetExpertise
 local IsDualWielding = IsDualWielding
 local UnitAttackSpeed = UnitAttackSpeed
-local UnitLevel = UnitLevel
 local CR_EXPERTISE_TOOLTIP = CR_EXPERTISE_TOOLTIP
 local CR_EXPERTISE = CR_EXPERTISE
 local DODGE_CHANCE = DODGE_CHANCE
@@ -21,7 +20,6 @@ local STAT_TARGET_LEVEL = STAT_TARGET_LEVEL
 
 local displayString = ""
 local skullTexture = "|TInterface\\TargetingFrame\\UI-TargetingFrame-Skull:0|t"
-local playerLevel = UnitLevel("player")
 local text, level
 local dodgeDisplay, parryDisplay
 local lastPanel
@@ -66,7 +64,7 @@ local function OnEnter(self)
 
 	for i = 0, 3 do
 		local mainhandDodge, offhandDodge = GetEnemyDodgeChance(i)
-		level = playerLevel + i
+		level = E.mylevel + i
 
 		mainhandDodge = format("%.2f%%", mainhandDodge)
 		offhandDodge = format("%.2f%%", offhandDodge)
@@ -90,7 +88,7 @@ local function OnEnter(self)
 
 	for i = 0, 3 do
 		local mainhandParry, offhandParry = GetEnemyParryChance(i)
-		level = playerLevel + i
+		level = E.mylevel + i
 
 		mainhandParry = format("%.2f%%", mainhandParry)
 		offhandParry = format("%.2f%%", offhandParry)

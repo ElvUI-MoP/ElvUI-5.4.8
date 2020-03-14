@@ -70,7 +70,7 @@ function UF:PostUpdateStagger(maxHealth, stagger, staggerPercent, r, g, b)
 		end
 	end
 
-	self.bg:SetVertexColor(r, g, b, 0.15)
+	self.bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
 
 	local stateChanged = false
 	local isShown = self:IsShown()

@@ -2,88 +2,134 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local split = string.split
+local pairs = pairs
+local format, split = string.format, string.split
+
+local FauxScrollFrame_GetOffset = FauxScrollFrame_GetOffset
+local GetBattlefieldScore = GetBattlefieldScore
+local IsActiveBattlefieldArena = IsActiveBattlefieldArena
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.bgscore ~= true then return end
-
-	for i = 19, MAX_WORLDSTATE_SCORE_BUTTONS do
-		_G["WorldStateScoreButton"..i]:StripTextures()
-	end
-	MAX_WORLDSTATE_SCORE_BUTTONS = 18 WorldStateScoreFrame_Resize()
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.bgscore then return end
 
 	WorldStateScoreFrame:StripTextures()
 	WorldStateScoreFrame:SetTemplate("Transparent")
 
-	WorldStateScoreScrollFrame:StripTextures()
 	WorldStateScoreFrameInset:Kill()
 
-	S:HandleCloseButton(WorldStateScoreFrameCloseButton)
-	S:HandleScrollBar(WorldStateScoreScrollFrameScrollBar)
 	S:HandleButton(WorldStateScoreFrameLeaveButton)
 
-	for i = 1, 3 do 
-		S:HandleTab(_G["WorldStateScoreFrameTab"..i])
+	for _, tab in pairs({"KB", "Deaths", "HK", "DamageDone", "HealingDone", "HonorGained", "Name", "Class", "Team", "RatingChange"}) do
+		_G["WorldStateScoreFrame"..tab]:StyleButton()
 	end
 
-	WorldStateScoreFrameTab1:Point("TOPLEFT", WorldStateScoreFrame, "BOTTOMLEFT", 5, 2)
-
-	WorldStateScoreFrameKB:StyleButton()
-	WorldStateScoreFrameDeaths:StyleButton()
-	WorldStateScoreFrameHK:StyleButton()
-	WorldStateScoreFrameDamageDone:StyleButton()
-	WorldStateScoreFrameHealingDone:StyleButton()
-	WorldStateScoreFrameHonorGained:StyleButton()
-	WorldStateScoreFrameName:StyleButton()
-	WorldStateScoreFrameClass:StyleButton()
-	WorldStateScoreFrameTeam:StyleButton()
-	WorldStateScoreFrameRatingChange:StyleButton()
-
-	for i = 1, 5 do 
+	for i = 1, 5 do
 		_G["WorldStateScoreColumn"..i]:StyleButton()
 	end
+
+	S:HandleCloseButton(WorldStateScoreFrameCloseButton)
+	WorldStateScoreFrameCloseButton:Point("TOPRIGHT", 4, 6)
+
+	-- Winner Frame
+	WorldStateScoreWinnerFrame:StripTextures()
+	WorldStateScoreWinnerFrame:CreateBackdrop("Transparent")
+	WorldStateScoreWinnerFrame:Point("TOPLEFT", 1, -1)
+	WorldStateScoreWinnerFrame:Point("TOPRIGHT", -1, -1)
+
+	WorldStateScoreWinnerFrameRight:SetTexture(E.Media.Textures.Highlight)
+	WorldStateScoreWinnerFrameRight:SetAlpha(0.85)
+	WorldStateScoreWinnerFrameRight:SetInside(WorldStateScoreWinnerFrame.backdrop)
+
+	WorldStateScoreWinnerFrameText:Point("CENTER")
+
+	WorldStateScoreWinnerFrame:HookScript("OnShow", function()
+		WorldStateScoreFrameLabel:Hide()
+	end)
+	WorldStateScoreWinnerFrame:HookScript("OnHide", function()
+		WorldStateScoreFrameLabel:Show()
+	end)
+
+	-- Scroll Frame
+	WorldStateScoreScrollFrame:StripTextures()
+	WorldStateScoreScrollFrame:CreateBackdrop("Transparent")
+	WorldStateScoreScrollFrame.backdrop:Point("TOPLEFT", 0, 1)
+	WorldStateScoreScrollFrame.backdrop:Point("BOTTOMRIGHT", -0, -4)
+	WorldStateScoreScrollFrame:Show()
+	WorldStateScoreScrollFrame.Hide = E.noop
+
+	S:HandleScrollBar(WorldStateScoreScrollFrameScrollBar)
+	WorldStateScoreScrollFrameScrollBar:ClearAllPoints()
+	WorldStateScoreScrollFrameScrollBar:Point("TOPRIGHT", WorldStateScoreScrollFrame, "TOPRIGHT", 24, -17)
+	WorldStateScoreScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldStateScoreScrollFrame, "BOTTOMRIGHT", 0, 14)
+
+	for i = 1, MAX_WORLDSTATE_SCORE_BUTTONS do
+		local button = _G["WorldStateScoreButton"..i]
+
+		button.factionRight:ClearAllPoints()
+		button.factionRight:Point("TOPLEFT", 1, 0)
+		button.factionRight:Point("BOTTOMRIGHT", -24, 1)
+		button.factionRight:SetTexture(E.Media.Textures.Highlight)
+		button.factionRight:SetAlpha(0.85)
+		button.factionRight:SetTexCoord(0.1, 0.9, 0, 1)
+		button.factionRight:Hide()
+
+		button.factionLeft:ClearAllPoints()
+		button.factionLeft:Point("TOPLEFT", 1, 0)
+		button.factionLeft:Point("BOTTOMRIGHT", -24, 1)
+		button.factionLeft:SetTexture(E.Media.Textures.Highlight)
+		button.factionLeft:SetBlendMode("ADD")
+		button.factionLeft:SetAlpha(0.40)
+		button.factionLeft:Hide()
+
+		button.factionLeft._Show = button.factionLeft.Show
+		button.factionLeft.Show = button.factionLeft.Hide
+	end
+	MAX_WORLDSTATE_SCORE_BUTTONS = 18
+	WorldStateScoreFrame_Resize()
 
 	hooksecurefunc("WorldStateScoreFrame_Update", function()
 		local inArena = IsActiveBattlefieldArena()
 		local offset = FauxScrollFrame_GetOffset(WorldStateScoreScrollFrame)
+		local _, name, faction, class, button, nameText, realmText, classColor, color
 
 		for i = 1, MAX_WORLDSTATE_SCORE_BUTTONS do
-			local index = offset + i
-			local name, _, _, _, _, faction, _, _, class = GetBattlefieldScore(index)
+			name, _, _, _, _, faction, _, _, class = GetBattlefieldScore(offset + i)
 			if name then
-				local n, r = split("-", name, 2)
-				local myName = UnitName("player")
+				button = _G["WorldStateScoreButton"..i]
+				nameText, realmText = split("-", name, 2)
+				classColor = E:ClassColor(class)
 
-				if name == myName then
-					n = "> "..n.." <"
+				if name == E.myname then
+					button.factionRight:Hide()
+					button.factionLeft:_Show()
+					button.factionLeft:SetVertexColor(1, 1, 1)
 				end
 
-				if r then
-					local color
+				if realmText then
 					if inArena then
-						if faction == 1 then
-							color = "|cffffd100"
-						else
-							color = "|cff19ff19"
-						end
+						color = faction == 1 and "|cffffd100" or "|cff19ff19"
 					else
-						if faction == 1 then
-							color = "|cff00adf0"
-						else
-							color = "|cffff1919"
-						end
+						color = faction == 1 and "|cff00adf0" or "|cffff1919"
 					end
-					r = color..r.."|r"
-					n = n.."|cffffffff - |r"..r
+					nameText = format("%s|cffffffff - |r%s%s|r", nameText, color, realmText)
 				end
 
-				local classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-
-				_G["WorldStateScoreButton"..i.."NameText"]:SetText(n)
-				_G["WorldStateScoreButton"..i.."NameText"]:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
+				button.name.text:SetText(nameText)
+				button.name.text:SetTextColor(classColor.r, classColor.g, classColor.b)
 			end
 		end
 	end)
+
+	-- Bottom Tabs
+	for i = 1, 3 do
+		local tab = _G["WorldStateScoreFrameTab"..i]
+
+		S:HandleTab(tab)
+
+		if i == 1 then
+			tab:Point("TOPLEFT", WorldStateScoreFrame, "BOTTOMLEFT", 5, 2)
+		end
+	end
 end
 
 S:AddCallback("WorldStateScore", LoadSkin)

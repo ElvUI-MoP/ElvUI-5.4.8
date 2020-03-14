@@ -1,6 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local TOTEMS = E:NewModule("Totems", "AceEvent-3.0")
-E.TotemBar = TOTEMS
+local TOTEMS = E:GetModule("Totems")
 
 local _G = _G
 local unpack = unpack
@@ -99,11 +98,11 @@ function TOTEMS:PositionAndSize()
 	end
 
 	if self.db.growthDirection == "HORIZONTAL" then
-		self.bar:Width(self.db.size*(MAX_TOTEMS) + self.db.spacing*(MAX_TOTEMS) + self.db.spacing)
-		self.bar:Height(self.db.size + self.db.spacing*2)
+		self.bar:Width(self.db.size * (MAX_TOTEMS) + self.db.spacing * (MAX_TOTEMS) + self.db.spacing)
+		self.bar:Height(self.db.size + self.db.spacing * 2)
 	else
-		self.bar:Height(self.db.size*(MAX_TOTEMS) + self.db.spacing*(MAX_TOTEMS) + self.db.spacing)
-		self.bar:Width(self.db.size + self.db.spacing*2)
+		self.bar:Height(self.db.size * (MAX_TOTEMS) + self.db.spacing * (MAX_TOTEMS) + self.db.spacing)
+		self.bar:Width(self.db.size + self.db.spacing * 2)
 	end
 	self:Update()
 end
@@ -116,9 +115,9 @@ function TOTEMS:Initialize()
 	self.bar = bar
 
 	for i = 1, MAX_TOTEMS do
-		local frame = CreateFrame("Button", bar:GetName().."Totem"..i, bar)
+		local frame = CreateFrame("Button", "$parentTotem"..i, bar)
 		frame:SetID(i)
-		frame:SetTemplate("Default")
+		frame:SetTemplate()
 		frame:StyleButton()
 		frame:Hide()
 
@@ -127,16 +126,18 @@ function TOTEMS:Initialize()
 		frame.holder:SetAllPoints()
 
 		frame.iconTexture = frame:CreateTexture(nil, "ARTWORK")
-		frame.iconTexture:SetInside()
 		frame.iconTexture:SetTexCoord(unpack(E.TexCoords))
+		frame.iconTexture:SetInside()
 
-		frame.cooldown = CreateFrame("Cooldown", frame:GetName().."Cooldown", frame, "CooldownFrameTemplate")
+		frame.cooldown = CreateFrame("Cooldown", "$parentCooldown", frame, "CooldownFrameTemplate")
 		frame.cooldown:SetReverse(true)
 		frame.cooldown:SetInside()
 		E:RegisterCooldown(frame.cooldown)
 
 		self.bar[i] = frame
 	end
+
+	self.Initialized = true
 
 	self:PositionAndSize()
 

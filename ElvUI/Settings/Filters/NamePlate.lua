@@ -1,126 +1,190 @@
 local E, L, V, P, G = unpack(select(2, ...))
 
-G["nameplates"]["filters"] = {
-	["Boss"] = {
-		["triggers"] = {
-			["level"] = true,
-			["curlevel"] = -1,
-			["nameplateType"] = {
-				["enable"] = true,
-				["enemyNPC"] = true
+G.nameplates.filters = {
+	ElvUI_Boss = {
+		triggers = {
+			level = true,
+			curlevel = -1,
+			nameplateType = {
+				enable = true,
+				enemyNPC = true
 			}
 		},
-		["actions"] = {
-			["scale"] = 1.15
+		actions = {
+			scale = 1.15
+		}
+	},
+	ElvUI_Target = {
+		triggers = {
+			isTarget = true
+		},
+		actions = {
+			scale = 1.2
+		}
+	},
+	ElvUI_NonTarget = {
+		triggers = {
+			notTarget = true,
+			requireTarget = true,
+			nameplateType = {
+				enable = true,
+				friendlyPlayer = true,
+				friendlyNPC = true,
+				enemyPlayer = true,
+				enemyNPC = true
+			}
+		},
+		actions = {
+			alpha = 30
+		}
+	},
+	ElvUI_Totem = {
+		triggers = {
+			totems = {
+				enable = true
+			}
+		},
+		actions = {
+			iconOnly = true
 		}
 	}
 }
 
-E["StyleFilterDefaults"] = {
-	["triggers"] = {
-		["priority"] = 1,
-		["isTarget"] = false,
-		["notTarget"] = false,
-		["level"] = false,
-		["casting"] = {
-			["interruptible"] = false,
-			["spells"] = {}
+E.StyleFilterDefaults = {
+	triggers = {
+		priority = 1,
+		isTarget = false,
+		notTarget = false,
+		level = false,
+		casting = {
+			isCasting = false,
+			isChanneling = false,
+			notCasting = false,
+			notChanneling = false,
+			interruptible = false,
+			notSpell = false,
+			spells = {}
 		},
-		["role"] = {
-			["tank"] = false,
-			["healer"] = false,
-			["damager"] = false
+		role = {
+			tank = false,
+			healer = false,
+			damager = false
 		},
-		["curlevel"] = 0,
-		["maxlevel"] = 0,
-		["minlevel"] = 0,
-		["healthThreshold"] = false,
-		["healthUsePlayer"] = false,
-		["underHealthThreshold"] = 0,
-		["overHealthThreshold"] = 0,
-		["powerThreshold"] = false,
-		["underPowerThreshold"] = 0,
-		["overPowerThreshold"] = 0,
-		["names"] = {},
-		["nameplateType"] = {
-			["enable"] = false,
-			["friendlyPlayer"] = false,
-			["friendlyNPC"] = false,
-			["enemyPlayer"] = false,
-			["enemyNPC"] = false
+		raidTarget = {
+			star = false,
+			circle = false,
+			diamond = false,
+			triangle = false,
+			moon = false,
+			square = false,
+			cross = false,
+			skull = false
 		},
-		["reactionType"] = {
-			["enabled"] = false,
-			["hostile"] = false,
-			["neutral"] = false,
-			["friendly"] = false
+		curlevel = 0,
+		maxlevel = 0,
+		minlevel = 0,
+		healthThreshold = false,
+		healthUsePlayer = false,
+		underHealthThreshold = 0,
+		overHealthThreshold = 0,
+		powerThreshold = false,
+		underPowerThreshold = 0,
+		overPowerThreshold = 0,
+		names = {},
+		nameplateType = {
+			enable = false,
+			friendlyPlayer = false,
+			friendlyNPC = false,
+			enemyPlayer = false,
+			enemyNPC = false
 		},
-		["instanceType"] = {
-			["none"] = false,
-			["party"] = false,
-			["raid"] = false,
-			["arena"] = false,
-			["pvp"] = false
+		reactionType = {
+			enabled = false,
+			hostile = false,
+			neutral = false,
+			friendly = false
 		},
-		["instanceDifficulty"] = {
-			["dungeon"] = {
-				["normal"] = false,
-				["heroic"] = false
+		instanceType = {
+			none = false,
+			sanctuary = false,
+			party = false,
+			raid = false,
+			arena = false,
+			pvp = false
+		},
+		instanceDifficulty = {
+			dungeon = {
+				normal = false,
+				heroic = false
 			},
-			["raid"] = {
-				["normal"] = false,
-				["heroic"] = false
+			raid = {
+				normal = false,
+				heroic = false
 			}
 		},
-		["cooldowns"] = {
-			["names"] = {},
-			["mustHaveAll"] = false
+		cooldowns = {
+			names = {},
+			mustHaveAll = false
 		},
-		["buffs"] = {
-			["mustHaveAll"] = false,
-			["missing"] = false,
-			["names"] = {},
-			["minTimeLeft"] = 0,
-			["maxTimeLeft"] = 0
+		buffs = {
+			mustHaveAll = false,
+			missing = false,
+			names = {},
+			minTimeLeft = 0,
+			maxTimeLeft = 0
 		},
-		["debuffs"] = {
-			["mustHaveAll"] = false,
-			["missing"] = false,
-			["names"] = {},
-			["minTimeLeft"] = 0,
-			["maxTimeLeft"] = 0
+		debuffs = {
+			mustHaveAll = false,
+			missing = false,
+			names = {},
+			minTimeLeft = 0,
+			maxTimeLeft = 0
 		},
-		["inCombat"] = false,
-		["outOfCombat"] = false
+		totems = {
+			enable = false,
+			e1 = true, e2 = true, e3 = true, e4 = true,
+			f1 = true, f2 = true, f3 = true,
+			w1 = true, w2 = true,
+			a1 = true, a2 = true, a3 = true, a4 = true,
+			o1 = true
+		},
+		uniqueUnits = {
+			enable = false,
+			u1 = true, u2 = true
+		},
+		inCombat = false,
+		outOfCombat = false
 	},
-	["actions"] = {
-		["color"] = {
-			["health"] = false,
-			["border"] = false,
-			["name"] = false,
-			["healthColor"] = {r = 1, g = 1, b = 1, a = 1},
-			["borderColor"] = {r = 1, g = 1, b = 1, a = 1},
-			["nameColor"] = {r = 1, g = 1, b = 1, a = 1}
+	actions = {
+		color = {
+			health = false,
+			border = false,
+			name = false,
+			healthColor = {r = 1, g = 1, b = 1, a = 1},
+			borderColor = {r = 1, g = 1, b = 1, a = 1},
+			nameColor = {r = 1, g = 1, b = 1, a = 1}
 		},
-		["texture"] = {
-			["enable"] = false,
-			["texture"] = "ElvUI Norm"
+		texture = {
+			enable = false,
+			texture = "ElvUI Norm"
 		},
-		["flash"] = {
-			["enable"] = false,
-			["color"] = {r = 1, g = 1, b = 1, a = 1},
-			["speed"] = 4
+		flash = {
+			enable = false,
+			color = {r = 1, g = 1, b = 1, a = 1},
+			speed = 4
 		},
-		["hide"] = false,
-		["nameOnly"] = false,
-		["scale"] = 1.0,
-		["alpha"] = -1
+		hide = false,
+		nameOnly = false,
+		icon = false,
+		iconOnly = false,
+		scale = 1.0,
+		alpha = -1
 	}
 }
 
 G.nameplates.specialFilters = {
-	["Personal"] = true,
-	["nonPersonal"] = true,
-	["blockNonPersonal"] = true,
-	["blockNoDuration"] = true
+	Personal = true,
+	nonPersonal = true,
+	blockNonPersonal = true,
+	blockNoDuration = true
 }

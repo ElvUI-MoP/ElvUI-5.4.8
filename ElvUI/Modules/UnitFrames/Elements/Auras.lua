@@ -2,12 +2,11 @@ local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 local LSM = E.Libs.LSM
 
-local unpack = unpack
-local tinsert, sort = tinsert, sort
-local format, strfind, strsplit = string.format, strfind, strsplit
-local ceil = math.ceil
+local select, unpack = select, unpack
+local sort = sort
+local ceil, huge = math.ceil, math.huge
+local format, strfind, strsplit, strmatch = format, strfind, strsplit, strmatch
 
-local GetTime = GetTime
 local CreateFrame = CreateFrame
 local IsShiftKeyDown = IsShiftKeyDown
 local IsAltKeyDown = IsAltKeyDown
@@ -46,169 +45,106 @@ function UF:Construct_Debuffs(frame)
 	return debuffs
 end
 
+local function OnClick(btn)
+	local mod = E.db.unitframe.auraBlacklistModifier
+	if mod == "NONE" or not ((mod == "SHIFT" and IsShiftKeyDown()) or (mod == "ALT" and IsAltKeyDown()) or (mod == "CTRL" and IsControlKeyDown())) then return end
+	local auraName = btn.name
+
+	if auraName then
+		E:Print(format(L["The spell '%s' has been added to the Blacklist unitframe aura filter."], auraName))
+		E.global.unitframe.aurafilters.Blacklist.spells[btn.spellID] = {enable = true, priority = 0}
+
+		UF:Update_AllFrames()
+	end
+end
+
 function UF:Construct_AuraIcon(button)
 	local offset = UF.thinBorders and E.mult or E.Border
-
-	button.text = button.cd:CreateFontString(nil, "OVERLAY")
-	button.text:Point("CENTER", 1, 1)
-	button.text:SetJustifyH("CENTER")
-
 	button:SetTemplate("Default", nil, nil, UF.thinBorders, true)
-
-	-- cooldown override settings
-	if not button.timerOptions then
-		button.timerOptions = {}
-	end
-
-	button.timerOptions.reverseToggle = UF.db.cooldown.reverse
-	button.timerOptions.hideBlizzard = UF.db.cooldown.hideBlizzard
-
-	if UF.db.cooldown.override and E.TimeColors.unitframe then
-		button.timerOptions.timeColors, button.timerOptions.timeThreshold = E.TimeColors.unitframe, UF.db.cooldown.threshold
-	else
-		button.timerOptions.timeColors, button.timerOptions.timeThreshold = nil, nil
-	end
-
-	if UF.db.cooldown.checkSeconds then
-		button.timerOptions.hhmmThreshold, button.timerOptions.mmssThreshold = UF.db.cooldown.hhmmThreshold, UF.db.cooldown.mmssThreshold
-	else
-		button.timerOptions.hhmmThreshold, button.timerOptions.mmssThreshold = nil, nil
-	end
-
-	if UF.db.cooldown.fonts and UF.db.cooldown.fonts.enable then
-		button.timerOptions.fontOptions = UF.db.cooldown.fonts
-	elseif E.db.cooldown.fonts and E.db.cooldown.fonts.enable then
-		button.timerOptions.fontOptions = E.db.cooldown.fonts
-	else
-		button.timerOptions.fontOptions = nil
-	end
 
 	button.cd:SetReverse(true)
 	button.cd:SetInside(button, offset, offset)
 
 	button.icon:SetInside(button, offset, offset)
-	button.icon:SetTexCoord(unpack(E.TexCoords))
 	button.icon:SetDrawLayer("ARTWORK")
 
 	button.count:ClearAllPoints()
 	button.count:Point("BOTTOMRIGHT", 1, 1)
 	button.count:SetJustifyH("RIGHT")
 
-	button.overlay:SetTexture(nil)
-	button.stealable:SetTexture(nil)
+	button.overlay:SetTexture()
+	button.stealable:SetTexture()
 
 	button:RegisterForClicks("RightButtonUp")
-	button:SetScript("OnClick", function(btn)
-		if E.db.unitframe.auraBlacklistModifier == "NONE" or not ((E.db.unitframe.auraBlacklistModifier == "SHIFT" and IsShiftKeyDown()) or (E.db.unitframe.auraBlacklistModifier == "ALT" and IsAltKeyDown()) or (E.db.unitframe.auraBlacklistModifier == "CTRL" and IsControlKeyDown())) then return end
-		local auraName = btn.name
+	button:SetScript("OnClick", OnClick)
 
-		if auraName then
-			E:Print(format(L["The spell '%s' has been added to the Blacklist unitframe aura filter."], auraName))
-			E.global.unitframe.aurafilters.Blacklist.spells[btn.spellID] = {
-				["enable"] = true,
-				["priority"] = 0
-			}
+	button.cd.CooldownOverride = "unitframe"
+	E:RegisterCooldown(button.cd)
 
-			UF:Update_AllFrames()
-		end
-	end)
+	local auras = button:GetParent()
+	local frame = auras:GetParent()
+	button.db = frame.db and frame.db[auras.type]
 
-	-- support cooldown override
-	if not button.isRegisteredCooldown then
-		button.CooldownOverride = "unitframe"
-		button.isRegisteredCooldown = true
+	UF:UpdateAuraSettings(auras, button)
+end
 
-		if not E.RegisteredCooldowns.unitframe then E.RegisteredCooldowns.unitframe = {} end
-		tinsert(E.RegisteredCooldowns.unitframe, button)
+function UF:UpdateAuraSettings(auras, button)
+	if button.db then
+		button.count:FontTemplate(LSM:Fetch("font", button.db.countFont), button.db.countFontSize, button.db.countFontOutline)
+	end
+	if button.icon then
+		button.icon:SetTexCoord(unpack(E.TexCoords))
 	end
 
-	UF:UpdateAuraIconSettings(button, true)
+	button:Size((auras and auras.size) or 30)
+
+	button.needsUpdateCooldownPosition = true
 end
 
 function UF:EnableDisable_Auras(frame)
 	if frame.db.debuffs.enable or frame.db.buffs.enable then
-		if not frame:IsElementEnabled("Aura") then
-			frame:EnableElement("Aura")
+		if not frame:IsElementEnabled("Auras") then
+			frame:EnableElement("Auras")
 		end
+		frame:SetAuraUpdateMethod(E.global.unitframe.effectiveAura)
+		frame:SetAuraUpdateSpeed(E.global.unitframe.effectiveAuraSpeed)
 	else
-		if frame:IsElementEnabled("Aura") then
-			frame:DisableElement("Aura")
+		if frame:IsElementEnabled("Auras") then
+			frame:DisableElement("Auras")
 		end
 	end
 end
 
-local function ReverseUpdate(frame)
-	UF:Configure_Auras(frame, "Debuffs")
-	UF:Configure_Auras(frame, "Buffs")
+function UF:UpdateAuraCooldownPosition(button)
+	button.cd.timer.text:ClearAllPoints()
+	local point = (button.db and button.db.durationPosition) or "CENTER"
+	if point == "CENTER" then
+		button.cd.timer.text:Point(point, 1, 0)
+	else
+		local bottom, right = point:find("BOTTOM"), point:find("RIGHT")
+		button.cd.timer.text:Point(point, right and -1 or 1, bottom and 1 or -1)
+	end
+
+	button.needsUpdateCooldownPosition = nil
 end
 
-function UF:Configure_Auras(frame, auraType)
+function UF:Configure_AllAuras(frame)
 	if not frame.VARIABLES_SET then return end
+
+	if frame.Buffs then frame.Buffs:ClearAllPoints() end
+	if frame.Debuffs then frame.Debuffs:ClearAllPoints() end
+
+	UF:Configure_Auras(frame, "Buffs")
+	UF:Configure_Auras(frame, "Debuffs")
+end
+
+function UF:Configure_Auras(frame, which)
+	if not frame.VARIABLES_SET then return end
+
 	local db = frame.db
-
-	local auras = frame[auraType]
-	auraType = auraType:lower()
-	local rows = db[auraType].numrows
-
-	local totalWidth = frame.UNIT_WIDTH - frame.SPACING*2
-	if frame.USE_POWERBAR_OFFSET then
-		local powerOffset = ((frame.ORIENTATION == "MIDDLE" and 2 or 1) * frame.POWERBAR_OFFSET)
-
-		if not (db[auraType].attachTo == "POWER" and frame.ORIENTATION == "MIDDLE") then
-			totalWidth = totalWidth - powerOffset
-		end
-	end
-	auras:Width(totalWidth)
-
-	auras.forceShow = frame.forceShowAuras
-	auras.num = db[auraType].perrow * rows
-	auras.size = db[auraType].sizeOverride ~= 0 and db[auraType].sizeOverride or ((((auras:GetWidth() - (auras.spacing*(auras.num/rows - 1))) / auras.num)) * rows)
-
-	if db[auraType].sizeOverride and db[auraType].sizeOverride > 0 then
-		auras:Width(db[auraType].perrow * db[auraType].sizeOverride)
-	end
-
-	local attachTo = self:GetAuraAnchorFrame(frame, db[auraType].attachTo, db.debuffs.attachTo == "BUFFS" and db.buffs.attachTo == "DEBUFFS")
-	local x, y = E:GetXYOffset(db[auraType].anchorPoint, frame.SPACING) --Use frame.SPACING override since it may be different from E.Spacing due to forced thin borders
-
-	if db[auraType].attachTo == "FRAME" then
-		y = 0
-	elseif db[auraType].attachTo == "HEALTH" or db[auraType].attachTo == "POWER" then
-		local newX = E:GetXYOffset(db[auraType].anchorPoint, -frame.BORDER)
-		local _, newY = E:GetXYOffset(db[auraType].anchorPoint, (frame.BORDER + frame.SPACING))
-		x = newX
-		y = newY
-	else
-		x = 0
-	end
-
-	if (auraType == "buffs" and frame.Debuffs.attachTo and frame.Debuffs.attachTo == frame.Buffs and db[auraType].attachTo == "DEBUFFS") then
-		--Update Debuffs first, as we would otherwise get conflicting anchor points
-		--This is usually only an issue on profile change
-		ReverseUpdate(frame)
-		return
-	end
-
-	auras:ClearAllPoints()
-	auras:Point(E.InversePoints[db[auraType].anchorPoint], attachTo, db[auraType].anchorPoint, x + db[auraType].xOffset, y + db[auraType].yOffset)
-	auras:Height(auras.size * rows)
-	auras["growth-y"] = strfind(db[auraType].anchorPoint, "TOP") and "UP" or "DOWN"
-	auras["growth-x"] = db[auraType].anchorPoint == "LEFT" and "LEFT" or  db[auraType].anchorPoint == "RIGHT" and "RIGHT" or (strfind(db[auraType].anchorPoint, "LEFT") and "RIGHT" or "LEFT")
-	auras.initialAnchor = E.InversePoints[db[auraType].anchorPoint]
-
-	--These are needed for SmartAuraPosition
-	auras.attachTo = attachTo
-	auras.point = E.InversePoints[db[auraType].anchorPoint]
-	auras.anchorPoint = db[auraType].anchorPoint
-	auras.xOffset = x + db[auraType].xOffset
-	auras.yOffset = y + db[auraType].yOffset
-
-	if db[auraType].enable then
-		auras:Show()
-		UF:UpdateAuraIconSettings(auras)
-	else
-		auras:Hide()
-	end
+	local auras = frame[which]
+	local auraType = which:lower()
+	auras.db = db[auraType]
 
 	local position = db.smartAuraPosition
 	if position == "BUFFS_ON_DEBUFFS" then
@@ -216,6 +152,8 @@ function UF:Configure_Auras(frame, auraType)
 			E:Print(format(L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."], L["Buffs"], L["Debuffs"], L["Frame"]))
 			db.debuffs.attachTo = "FRAME"
 			frame.Debuffs.attachTo = frame
+			frame.Debuffs:ClearAllPoints()
+			frame.Debuffs:Point(frame.Debuffs.initialAnchor, frame.Debuffs.attachTo, frame.Debuffs.anchorPoint, frame.Debuffs.xOffset, frame.Debuffs.yOffset)
 		end
 		db.buffs.attachTo = "DEBUFFS"
 		frame.Buffs.attachTo = frame.Debuffs
@@ -226,6 +164,8 @@ function UF:Configure_Auras(frame, auraType)
 			E:Print(format(L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."], L["Debuffs"], L["Buffs"], L["Frame"]))
 			db.buffs.attachTo = "FRAME"
 			frame.Buffs.attachTo = frame
+			frame.Buffs:ClearAllPoints()
+			frame.Buffs:Point(frame.Buffs.initialAnchor, frame.Buffs.attachTo, frame.Buffs.anchorPoint, frame.Buffs.xOffset, frame.Buffs.yOffset)
 		end
 		db.debuffs.attachTo = "BUFFS"
 		frame.Debuffs.attachTo = frame.Buffs
@@ -236,6 +176,8 @@ function UF:Configure_Auras(frame, auraType)
 			E:Print(format(L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."], L["Buffs"], L["Debuffs"], L["Frame"]))
 			db.debuffs.attachTo = "FRAME"
 			frame.Debuffs.attachTo = frame
+			frame.Debuffs:ClearAllPoints()
+			frame.Debuffs:Point(frame.Debuffs.initialAnchor, frame.Debuffs.attachTo, frame.Debuffs.anchorPoint, frame.Debuffs.xOffset, frame.Debuffs.yOffset)
 		end
 		db.buffs.attachTo = "DEBUFFS"
 		frame.Buffs.attachTo = frame.Debuffs
@@ -246,6 +188,8 @@ function UF:Configure_Auras(frame, auraType)
 			E:Print(format(L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."], L["Debuffs"], L["Buffs"], L["Frame"]))
 			db.buffs.attachTo = "FRAME"
 			frame.Buffs.attachTo = frame
+			frame.Buffs:ClearAllPoints()
+			frame.Buffs:Point(frame.Buffs.initialAnchor, frame.Buffs.attachTo, frame.Buffs.anchorPoint, frame.Buffs.xOffset, frame.Buffs.yOffset)
 		end
 		db.debuffs.attachTo = "BUFFS"
 		frame.Debuffs.attachTo = frame.Buffs
@@ -255,16 +199,78 @@ function UF:Configure_Auras(frame, auraType)
 		frame.Buffs.PostUpdate = nil
 		frame.Debuffs.PostUpdate = nil
 	end
+
+	if db.debuffs.attachTo == "BUFFS" and db.buffs.attachTo == "DEBUFFS" then
+		E:Print(format(L["%s frame has a conflicting anchor point. Forcing the Buffs to be attached to the main unitframe."], E:StringTitle(frame:GetName())))
+		db.buffs.attachTo = "FRAME"
+	end
+
+	local rows = auras.db.numrows
+	auras.spacing = auras.db.spacing
+	auras.attachTo = self:GetAuraAnchorFrame(frame, auras.db.attachTo)
+
+	if auras.db.sizeOverride and auras.db.sizeOverride > 0 then
+		auras:Width(auras.db.perrow * auras.db.sizeOverride + ((auras.db.perrow - 1) * auras.spacing))
+	else
+		local totalWidth = frame.UNIT_WIDTH - frame.SPACING*2
+		if frame.USE_POWERBAR_OFFSET and not (auras.attachTo == "POWER" and frame.ORIENTATION == "MIDDLE") then
+			local powerOffset = ((frame.ORIENTATION == "MIDDLE" and 2 or 1) * frame.POWERBAR_OFFSET)
+			totalWidth = totalWidth - powerOffset
+		end
+		auras:Width(totalWidth)
+	end
+
+	auras.num = auras.db.perrow * rows
+	auras.size = auras.db.sizeOverride ~= 0 and auras.db.sizeOverride or ((((auras:GetWidth() - (auras.spacing*(auras.num/rows - 1))) / auras.num)) * rows)
+	auras.forceShow = frame.forceShowAuras
+	auras.disableMouse = auras.db.clickThrough
+	auras.anchorPoint = auras.db.anchorPoint
+	auras.initialAnchor = E.InversePoints[auras.anchorPoint]
+	auras["growth-y"] = strfind(auras.anchorPoint, "TOP") and "UP" or "DOWN"
+	auras["growth-x"] = auras.anchorPoint == "LEFT" and "LEFT" or  auras.anchorPoint == "RIGHT" and "RIGHT" or (strfind(auras.anchorPoint, "LEFT") and "RIGHT" or "LEFT")
+
+	local x, y = E:GetXYOffset(auras.anchorPoint, frame.SPACING) --Use frame.SPACING override since it may be different from E.Spacing due to forced thin borders
+	if auras.attachTo == "FRAME" then
+		y = 0
+	elseif auras.attachTo == "HEALTH" or auras.attachTo == "POWER" then
+		x = E:GetXYOffset(auras.anchorPoint, -frame.BORDER)
+		y = select(2, E:GetXYOffset(auras.anchorPoint, (frame.BORDER + frame.SPACING)))
+	else
+		x = 0
+	end
+	auras.xOffset = x + auras.db.xOffset
+	auras.yOffset = y + auras.db.yOffset
+
+	local index = 1
+	while auras[index] do
+		local button = auras[index]
+		if button then
+			button.db = auras.db
+			UF:UpdateAuraSettings(auras, button)
+		end
+
+		index = index + 1
+	end
+
+	auras:ClearAllPoints()
+	auras:Point(auras.initialAnchor, auras.attachTo, auras.anchorPoint, auras.xOffset, auras.yOffset)
+	auras:Height(auras.size * rows)
+
+	if auras.db.enable then
+		auras:Show()
+	else
+		auras:Hide()
+	end
 end
 
 local function SortAurasByTime(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
-			local aTime = a.expiration or -1
-			local bTime = b.expiration or -1
+			local aTime = a.noTime and huge or a.expiration or -1
+			local bTime = b.noTime and huge or b.expiration or -1
 			if (aTime and bTime) then
-				if(sortDirection == "DESCENDING") then
+				if sortDirection == "DESCENDING" then
 					return aTime < bTime
 				else
 					return aTime > bTime
@@ -277,13 +283,13 @@ local function SortAurasByTime(a, b)
 end
 
 local function SortAurasByName(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
 			local aName = a.spell or ""
 			local bName = b.spell or ""
-			if (aName and bName) then
-				if(sortDirection == "DESCENDING") then
+			if aName and bName then
+				if sortDirection == "DESCENDING" then
 					return aName < bName
 				else
 					return aName > bName
@@ -296,13 +302,13 @@ local function SortAurasByName(a, b)
 end
 
 local function SortAurasByDuration(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
-			local aTime = a.duration or -1
-			local bTime = b.duration or -1
-			if (aTime and bTime) then
-				if(sortDirection == "DESCENDING") then
+			local aTime = a.noTime and huge or a.duration or -1
+			local bTime = b.noTime and huge or b.duration or -1
+			if aTime and bTime then
+				if sortDirection == "DESCENDING" then
 					return aTime < bTime
 				else
 					return aTime > bTime
@@ -315,12 +321,12 @@ local function SortAurasByDuration(a, b)
 end
 
 local function SortAurasByCaster(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
 			local aPlayer = a.isPlayer or false
 			local bPlayer = b.isPlayer or false
-			if(sortDirection == "DESCENDING") then
+			if sortDirection == "DESCENDING" then
 				return (aPlayer and not bPlayer)
 			else
 				return (not aPlayer and bPlayer)
@@ -350,192 +356,107 @@ function UF:SortAuras()
 	return 1, #self --from/to range needed for the :SetPosition call in oUF aura element. Without this aura icon position gets all whacky when not sorted by index
 end
 
-function UF:AuraIconUpdate(frame, db, button, font, outline, customFont)
-	if customFont and (button.timerOptions and button.timerOptions.fontOptions and button.timerOptions.fontOptions.enable) then
-		button.text:FontTemplate(customFont, button.timerOptions.fontOptions.fontSize, button.timerOptions.fontOptions.fontOutline)
-	else
-		button.text:FontTemplate(font, db.fontSize, outline)
-	end
-
-	button.count:FontTemplate(font, db.countFontSize or db.fontSize, outline)
-	button.unit = frame.unit -- used to update cooldown text
-
-	if db.clickThrough and button:IsMouseEnabled() then
-		button:EnableMouse(false)
-	elseif not db.clickThrough and not button:IsMouseEnabled() then
-		button:EnableMouse(true)
-	end
-end
-
-function UF:UpdateAuraIconSettings(auras, noCycle)
-	local frame = auras:GetParent()
-	local type = auras.type
-
-	if noCycle then
-		frame = auras:GetParent():GetParent()
-		type = auras:GetParent().type
-	end
-
-	if not frame.db then return end
-	local index, db = 1, frame.db[type]
-	auras.db = db
-
-	if db then
-		local font = LSM:Fetch("font", E.db.unitframe.font)
-		local outline = E.db.unitframe.fontOutline
-		local customFont
-
-		if not noCycle then
-			while auras[index] do
-				if (not customFont) and (auras[index].timerOptions and auras[index].timerOptions.fontOptions) then
-					customFont = LSM:Fetch("font", auras[index].timerOptions.fontOptions.font)
-				end
-
-				UF:AuraIconUpdate(frame, db, auras[index], font, outline, customFont)
-
-				index = index + 1
-			end
-		else
-			if auras.timerOptions and auras.timerOptions.fontOptions then
-				customFont = LSM:Fetch("font", auras.timerOptions.fontOptions.font)
-			end
-
-			UF:AuraIconUpdate(frame, db, auras, font, outline, customFont)
-		end
-	end
-end
-
-local unstableAffliction = GetSpellInfo(30108);
-local vampiricTouch = GetSpellInfo(34914);
-function UF:PostUpdateAura(unit, button)
-	local auras = button:GetParent()
-	local frame = auras:GetParent()
-	local type = auras.type
-	local db = frame.db and frame.db[type]
-
-	if db then
-		if db.clickThrough and button:IsMouseEnabled() then
-			button:EnableMouse(false)
-		elseif not db.clickThrough and not button:IsMouseEnabled() then
-			button:EnableMouse(true)
-		end
-	end
-
+function UF:PostUpdateAura(_, button)
 	if button.isDebuff then
-		if(not button.isFriend and not button.isPlayer) then --[[and (not E.isDebuffWhiteList[name])]]
+		if not button.isFriend and not button.isPlayer then --[[and (not E.isDebuffWhiteList[name])]]
 			button:SetBackdropBorderColor(0.9, 0.1, 0.1)
-			button.icon:SetDesaturated((unit and not strfind(unit, "arena%d")) and true or false)
+			button.icon:SetDesaturated(button.canDesaturate)
 		else
-			local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
-			if button.name and (button.name == unstableAffliction or button.name == vampiricTouch) and E.myclass ~= "WARLOCK" then
+			if E.BadDispels[button.spellID] and E:IsDispellableByMe(button.dtype) then
 				button:SetBackdropBorderColor(0.05, 0.85, 0.94)
 			else
+				local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
 				button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
 			end
 			button.icon:SetDesaturated(false)
 		end
 	else
 		if button.isStealable and not button.isFriend then
-			button:SetBackdropBorderColor(237/255, 234/255, 142/255)
+			button:SetBackdropBorderColor(0.93, 0.91, 0.55, 1.0)
 		else
 			button:SetBackdropBorderColor(unpack(E.media.unitframeBorderColor))
 		end
 	end
 
-	local size = button:GetParent().size
-	if size then
-		button:SetSize(size, size)
+	if button.needsUpdateCooldownPosition and (button.cd and button.cd.timer and button.cd.timer.text) then
+		UF:UpdateAuraCooldownPosition(button)
 	end
+end
 
-	if E:Cooldown_IsEnabled(button) then
-		if button.expiration and button.duration and (button.duration ~= 0) then
-			local getTime = GetTime()
-			if not button:GetScript("OnUpdate") then
-				button.expirationTime = button.expiration
-				button.expirationSaved = button.expiration - getTime
-				button.nextupdate = -1
-				button:SetScript("OnUpdate", UF.UpdateAuraTimer)
+function UF:CheckFilter(name, caster, spellID, isFriend, isPlayer, isUnit, allowDuration, noDuration, canDispell, ...)
+	for i = 1, select("#", ...) do
+		local filterName = select(i, ...)
+		local friendCheck = (isFriend and strmatch(filterName, "^Friendly:([^,]*)")) or (not isFriend and strmatch(filterName, "^Enemy:([^,]*)")) or nil
+		if friendCheck ~= false then
+			if friendCheck ~= nil and (G.unitframe.specialFilters[friendCheck] or E.global.unitframe.aurafilters[friendCheck]) then
+				filterName = friendCheck -- this is for our filters to handle Friendly and Enemy
 			end
-			if (button.expirationTime ~= button.expiration) or (button.expirationSaved ~= (button.expiration - getTime)) then
-				button.expirationTime = button.expiration
-				button.expirationSaved = button.expiration - getTime
-				button.nextupdate = -1
-			end
-		end
+			local filter = E.global.unitframe.aurafilters[filterName]
+			if filter then
+				local filterType = filter.type
+				local spellList = filter.spells
+				local spell = spellList and (spellList[spellID] or spellList[name])
 
-		if button.expiration and button.duration and (button.duration == 0 or button.expiration <= 0) then
-			button.expirationTime = nil
-			button.expirationSaved = nil
-			button:SetScript("OnUpdate", nil)
-			if button.text:GetFont() then
-				button.text:SetText("")
+				if filterType and (filterType == "Whitelist") and (spell and spell.enable) and allowDuration then
+					return true, spell.priority -- this is the only difference from auarbars code
+				elseif filterType and (filterType == "Blacklist") and (spell and spell.enable) then
+					return false
+				end
+			elseif filterName == "Personal" and isPlayer and allowDuration then
+				return true
+			elseif filterName == "nonPersonal" and (not isPlayer) and allowDuration then
+				return true
+			elseif filterName == "CastByUnit" and (caster and isUnit) and allowDuration then
+				return true
+			elseif filterName == "notCastByUnit" and (caster and not isUnit) and allowDuration then
+				return true
+			elseif filterName == "Dispellable" and canDispell and allowDuration then
+				return true
+			elseif filterName == "notDispellable" and (not canDispell) and allowDuration then
+				return true
+			elseif filterName == "blockNoDuration" and noDuration then
+				return false
+			elseif filterName == "blockNonPersonal" and (not isPlayer) then
+				return false
+			elseif filterName == "blockDispellable" and canDispell then
+				return false
+			elseif filterName == "blockNotDispellable" and (not canDispell) then
+				return false
 			end
 		end
 	end
 end
 
-function UF:UpdateAuraTimer(elapsed)
-	self.expirationSaved = self.expirationSaved - elapsed
-	if self.nextupdate > 0 then
-		self.nextupdate = self.nextupdate - elapsed
-		return
-	end
+function UF:AuraFilter(unit, button, name, _, _, count, debuffType, duration, expiration, caster, isStealable, _, spellID)
+	if not name then return end -- checking for an aura that is not there, pass nil to break while loop
 
-	local textHasFont = self.text and self.text:GetFont()
-	if (not E:Cooldown_IsEnabled(self)) or (self.expirationSaved <= 0) then
-		self:SetScript("OnUpdate", nil)
+	local db = button.db or self.db
+	if not db then return true elseif db.filters then db = db.filters end
 
-		if textHasFont then
-			self.text:SetText("")
-		end
+	local isPlayer = (caster == "player" or caster == "vehicle")
+	local isFriend = unit and UnitIsFriend("player", unit) and not UnitCanAttack("player", unit)
 
-		return
-	end
-
-	local timeColors, timeThreshold = (self.timerOptions and self.timerOptions.timeColors) or E.TimeColors, (self.timerOptions and self.timerOptions.timeThreshold) or E.db.cooldown.threshold
-	if not timeThreshold then timeThreshold = E.TimeThreshold end
-
-	local hhmmThreshold = (self.timerOptions and self.timerOptions.hhmmThreshold) or (E.db.cooldown.checkSeconds and E.db.cooldown.hhmmThreshold)
-	local mmssThreshold = (self.timerOptions and self.timerOptions.mmssThreshold) or (E.db.cooldown.checkSeconds and E.db.cooldown.mmssThreshold)
-
-	local value1, formatid, nextupdate, value2 = E:GetTimeInfo(self.expirationSaved, timeThreshold, hhmmThreshold, mmssThreshold)
-	self.nextupdate = nextupdate
-
-	if textHasFont then
-		self.text:SetFormattedText(format("%s%s|r", timeColors[formatid], E.TimeFormats[formatid][2]), value1, value2)
-	end
-end
-
-function UF:AuraFilter(unit, button, name, _, _, _, debuffType, duration, expiration, caster, isStealable, _, spellID)
-	local db = self:GetParent().db
-	if not db or not db[self.type] then return true; end
-
-	db = db[self.type]
-
-	if not name then return nil end
-	local filterCheck, isUnit, isFriend, isPlayer, canDispell, allowDuration, noDuration, spellPriority
-
-	isPlayer = (caster == "player" or caster == "vehicle")
-	isFriend = unit and UnitIsFriend("player", unit) and not UnitCanAttack("player", unit)
-
+	button.canDesaturate = db.desaturate
 	button.isPlayer = isPlayer
 	button.isFriend = isFriend
 	button.isStealable = isStealable
 	button.dtype = debuffType
 	button.duration = duration
 	button.expiration = expiration
+	button.stackCount = count
 	button.name = name
 	button.spellID = spellID
-	button.owner = caster --what uses this?
-	button.spell = name --what uses this? (SortAurasByName?)
+	button.owner = caster
+	button.spell = name
 	button.priority = 0
 
-	noDuration = (not duration or duration == 0)
-	allowDuration = noDuration or (duration and (duration > 0) and (db.maxDuration == 0 or duration <= db.maxDuration) and (db.minDuration == 0 or duration >= db.minDuration))
+	local noDuration = (not duration or duration == 0)
+	local allowDuration = noDuration or (duration and duration > 0 and (not db.maxDuration or db.maxDuration == 0 or duration <= db.maxDuration) and (not db.minDuration or db.minDuration == 0 or duration >= db.minDuration))
+	local filterCheck, spellPriority
 
-	if db.priority ~= "" then
-		isUnit = unit and caster and UnitIsUnit(unit, caster)
-		canDispell = (self.type == "buffs" and isStealable) or (self.type == "debuffs" and debuffType and E:IsDispellableByMe(debuffType))
+	if db.priority and db.priority ~= "" then
+		local isUnit = unit and caster and UnitIsUnit(unit, caster)
+		local canDispell = (self.type == "buffs" and isStealable) or (self.type == "debuffs" and debuffType and E:IsDispellableByMe(debuffType))
 		filterCheck, spellPriority = UF:CheckFilter(name, caster, spellID, isFriend, isPlayer, isUnit, allowDuration, noDuration, canDispell, strsplit(",", db.priority))
 		if spellPriority then button.priority = spellPriority end -- this is the only difference from auarbars code
 	else
@@ -553,10 +474,10 @@ function UF:UpdateBuffsHeaderPosition()
 
 	if numDebuffs == 0 then
 		buffs:ClearAllPoints()
-		buffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		buffs:Point(debuffs.initialAnchor, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	else
 		buffs:ClearAllPoints()
-		buffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		buffs:Point(buffs.initialAnchor, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	end
 end
 
@@ -568,10 +489,10 @@ function UF:UpdateDebuffsHeaderPosition()
 
 	if numBuffs == 0 then
 		debuffs:ClearAllPoints()
-		debuffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		debuffs:Point(buffs.initialAnchor, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	else
 		debuffs:ClearAllPoints()
-		debuffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		debuffs:Point(debuffs.initialAnchor, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	end
 end
 
@@ -584,10 +505,10 @@ function UF:UpdateBuffsPositionAndDebuffHeight()
 
 	if numDebuffs == 0 then
 		buffs:ClearAllPoints()
-		buffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		buffs:Point(debuffs.initialAnchor, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	else
 		buffs:ClearAllPoints()
-		buffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		buffs:Point(buffs.initialAnchor, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	end
 
 	if numDebuffs > 0 then
@@ -607,10 +528,10 @@ function UF:UpdateDebuffsPositionAndBuffHeight()
 
 	if numBuffs == 0 then
 		debuffs:ClearAllPoints()
-		debuffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		debuffs:Point(buffs.initialAnchor, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	else
 		debuffs:ClearAllPoints()
-		debuffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		debuffs:Point(debuffs.initialAnchor, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	end
 
 	if numBuffs > 0 then
@@ -633,7 +554,7 @@ function UF:UpdateBuffsHeight()
 	else
 		buffs:Height(buffs.size)
 		-- Any way to get rid of the last row as well?
-		-- Using buffs:SetHeight(0) makes frames anchored to this one disappear
+		-- Using buffs:Height(0) makes frames anchored to this one disappear
 	end
 end
 
@@ -649,6 +570,6 @@ function UF:UpdateDebuffsHeight()
 	else
 		debuffs:Height(debuffs.size)
 		-- Any way to get rid of the last row as well?
-		-- Using debuffs:SetHeight(0) makes frames anchored to this one disappear
+		-- Using debuffs:Height(0) makes frames anchored to this one disappear
 	end
 end

@@ -4,23 +4,19 @@ local S = E:GetModule("Skins")
 local unpack = unpack
 
 local GetItemUpgradeItemInfo = GetItemUpgradeItemInfo
-local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.itemUpgrade ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.itemUpgrade then return end
 
-	local ItemUpgradeFrame = _G["ItemUpgradeFrame"]
 	ItemUpgradeFrame:StripTextures()
 	ItemUpgradeFrame:SetTemplate("Transparent")
 
 	ItemUpgradeFrame.FinishedGlow:Kill()
 	ItemUpgradeFrame.ButtonFrame:DisableDrawLayer("BORDER")
 
-	ItemUpgradeFrame.FinishedGlow:Kill()
-
 	ItemUpgradeFrameMoneyFrame:StripTextures()
 
-	S:HandleButton(ItemUpgradeFrameUpgradeButton, true)
+	S:HandleButton(ItemUpgradeFrameUpgradeButton)
 
 	S:HandleCloseButton(ItemUpgradeFrameCloseButton)
 
@@ -29,6 +25,8 @@ local function LoadSkin()
 	ItemUpgradeFrame.ItemButton:StyleButton()
 
 	ItemUpgradeFrame.ItemButton.IconTexture:SetInside()
+	ItemUpgradeFrame.ItemButton.IconTexture:SetTexCoord(unpack(E.TexCoords))
+	ItemUpgradeFrame.ItemButton.IconTexture.SetTexCoord = E.noop
 
 	ItemUpgradeFrame.ItemButton.Cost.Icon:SetTexCoord(unpack(E.TexCoords))
 	ItemUpgradeFrame.ItemButton.Cost.Icon:Size(16)
@@ -42,13 +40,13 @@ local function LoadSkin()
 	ItemUpgradeFrame.MissingDescription:SetTextColor(1, 1, 1)
 	ItemUpgradeFrame.NoMoreUpgrades:SetTextColor(1, 1, 1)
 
-	hooksecurefunc("ItemUpgradeFrame_Update", function(self)
+	hooksecurefunc("ItemUpgradeFrame_Update", function()
 		local icon, _, quality = GetItemUpgradeItemInfo()
-		if icon then
-			ItemUpgradeFrame.ItemButton.IconTexture:SetTexCoord(unpack(E.TexCoords))
-		else
-			ItemUpgradeFrame.ItemButton.IconTexture:SetTexture(nil)
+
+		if not icon then
+			ItemUpgradeFrame.ItemButton.IconTexture:SetTexture()
 		end
+
 		if quality then
 			ItemUpgradeFrame.ItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 		else

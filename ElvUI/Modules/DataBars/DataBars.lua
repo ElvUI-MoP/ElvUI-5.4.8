@@ -1,12 +1,9 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local mod = E:NewModule("DataBars", "AceEvent-3.0")
-E.DataBars = mod
-
-local _G = _G
+local mod = E:GetModule("DataBars")
 
 local CreateFrame = CreateFrame
-local GetExpansionLevel = GetExpansionLevel;
-local MAX_PLAYER_LEVEL_TABLE = MAX_PLAYER_LEVEL_TABLE;
+local GetExpansionLevel = GetExpansionLevel
+local MAX_PLAYER_LEVEL_TABLE = MAX_PLAYER_LEVEL_TABLE
 
 function mod:OnLeave()
 	if (self == ElvUI_ExperienceBar and mod.db.experience.mouseover) or (self == ElvUI_ReputationBar and mod.db.reputation.mouseover) then
@@ -53,6 +50,7 @@ function mod:PLAYER_LEVEL_UP(level)
 end
 
 function mod:Initialize()
+	self.Initialized = true
 	self.db = E.db.databars
 
 	self:LoadExperienceBar()

@@ -1,33 +1,34 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
+local tonumber, tostring = tonumber, tostring
 local join, match = string.join, string.match
 
 local displayString = ""
 local lastPanel
-local self = lastPanel
 
 local vengeance = GetSpellInfo(93098) or GetSpellInfo(76691)
-local value, tooltip, tooltiptext
 
-tooltip = CreateFrame("GameTooltip", "VengeanceTooltip", E.UIParent, "GameTooltipTemplate")
-tooltiptext = _G[tooltip:GetName().."TextLeft2"]
+local tooltip = CreateFrame("GameTooltip", "VengeanceTooltip", E.UIParent, "GameTooltipTemplate")
 tooltip:SetOwner(E.UIParent, "ANCHOR_NONE")
-tooltiptext:SetText("")
+tooltip.text = _G[tooltip:GetName().."TextLeft2"]
+tooltip.text:SetText("")
 
 local function OnEvent(self)
 	if VengeanceTooltip and not VengeanceTooltip:IsShown() then
-		tooltiptext = _G[tooltip:GetName().."TextLeft2"]
 		tooltip:SetOwner(E.UIParent, "ANCHOR_NONE")
-		tooltiptext:SetText("")
+		tooltip.text = _G[tooltip:GetName().."TextLeft2"]
+		tooltip.text:SetText("")
 	end
 
+	local value
 	local name = UnitAura("player", vengeance, nil, "PLAYER|HELPFUL")
 
 	if name then
 		tooltip:ClearLines()
 		tooltip:SetUnitBuff("player", name)
-		value = (tooltiptext:GetText() and tonumber(match(tostring(tooltiptext:GetText()), "%d+"))) or -1
+
+		value = (tooltip.text:GetText() and tonumber(match(tostring(tooltip.text:GetText()), "%d+"))) or -1
 	else
 		value = 0
 	end

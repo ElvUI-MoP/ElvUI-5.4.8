@@ -29,7 +29,7 @@ do
 			E:CancelTimer(E.massiveShakeTimer)
 		end
 
-		E.global.aprilFools = true;
+		E.global.aprilFools = true
 		E:StaticPopup_Hide("HARLEM_SHAKE")
 		twipe(self.massiveShakeObjects)
 		DoEmote("Dance")
@@ -58,11 +58,9 @@ do
 
 		SetCVar("Sound_EnableAllSound", 1)
 		SetCVar("Sound_EnableMusic", 1)
-		PlayMusic([[Interface\AddOns\ElvUI\media\sounds\harlemshake.ogg]])
+		PlayMusic(E.Media.Sounds.HarlemShake)
 		E:ScheduleTimer("DoTheHarlemShake", 15.5)
 
-		local UF = E:GetModule("UnitFrames")
-		local AB = E:GetModule("ActionBars")
 		self.massiveShakeObjects = {}
 		tinsert(self.massiveShakeObjects, GameTooltip)
 		tinsert(self.massiveShakeObjects, Minimap)
@@ -71,6 +69,13 @@ do
 		tinsert(self.massiveShakeObjects, RightChatPanel)
 		tinsert(self.massiveShakeObjects, LeftChatToggleButton)
 		tinsert(self.massiveShakeObjects, RightChatToggleButton)
+
+		if ElvUI_ReputationBar then
+			tinsert(self.massiveShakeObjects, ElvUI_ReputationBar)
+		end
+		if ElvUI_ExperienceBar then
+			tinsert(self.massiveShakeObjects, ElvUI_ExperienceBar)
+		end
 
 		for unit in pairs(UF.units) do
 			tinsert(self.massiveShakeObjects, UF[unit])
@@ -96,6 +101,12 @@ do
 			local button = _G["PetActionButton"..i]
 			if button then
 				tinsert(self.massiveShakeObjects, button)
+			end
+		end
+
+		if ElvUI_MicroBar then
+			for i = 1, #MICRO_BUTTONS do
+				tinsert(self.massiveShakeObjects, _G[MICRO_BUTTONS[i]])
 			end
 		end
 	end
@@ -179,13 +190,13 @@ do
 			t.transparentAurabars = self.db.unitframe.colors.transparentAurabars
 
 			--Apply new settings
-			self.db.general.backdropfadecolor = {r =131/255, g =36/255, b = 130/255, a = 0.36}
+			self.db.general.backdropfadecolor = {r = 131/255, g = 36/255, b = 130/255, a = 0.36}
 			self.db.general.backdropcolor = {r = 223/255, g = 76/255, b = 188/255}
 			self.db.general.bordercolor = {r = 223/255, g = 217/255, b = 47/255}
 			self.db.general.valuecolor = {r = 223/255, g = 217/255, b = 47/255}
 
-			self.db.chat.panelBackdropNameLeft = [[Interface\AddOns\ElvUI\media\textures\helloKittyChat]]
-			self.db.chat.panelBackdropNameRight = [[Interface\AddOns\ElvUI\media\textures\helloKittyChat]]
+			self.db.chat.panelBackdropNameLeft = E.Media.Textures.HelloKittyChat
+			self.db.chat.panelBackdropNameRight = E.Media.Textures.HelloKittyChat
 
 			self.db.unitframe.colors.castColor = {r = 223/255, g = 76/255, b = 188/255}
 			self.db.unitframe.colors.transparentCastbar = true
@@ -198,7 +209,7 @@ do
 
 			SetCVar("Sound_EnableAllSound", 1)
 			SetCVar("Sound_EnableMusic", 1)
-			PlayMusic([[Interface\AddOns\ElvUI\media\sounds\helloKitty.ogg]])
+			PlayMusic(E.Media.Sounds.HelloKitty)
 			E:StaticPopup_Show("HELLO_KITTY_END")
 
 			self.db.general.kittys = true
@@ -258,7 +269,7 @@ do
 		if HelloKittyLeft then
 			HelloKittyLeft:Show()
 			HelloKittyRight:Show()
-			return;
+			return
 		end
 		local helloKittyLeft = CreateFrame("Frame", "HelloKittyLeft", UIParent)
 		helloKittyLeft:SetSize(120, 128)
@@ -268,7 +279,7 @@ do
 		helloKittyLeft:Point("BOTTOMLEFT", LeftChatPanel, "BOTTOMRIGHT", 2, -4)
 		helloKittyLeft.tex = helloKittyLeft:CreateTexture(nil, "OVERLAY")
 		helloKittyLeft.tex:SetAllPoints()
-		helloKittyLeft.tex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\helloKitty")
+		helloKittyLeft.tex:SetTexture(E.Media.Textures.HelloKitty)
 		helloKittyLeft.tex:SetTexCoord(0, 0, 0, 1, 0, 0, 0, 1)
 		helloKittyLeft.curFrame = 1
 		helloKittyLeft.countUp = true
@@ -285,7 +296,7 @@ do
 		helloKittyRight:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMLEFT", -2, -4)
 		helloKittyRight.tex = helloKittyRight:CreateTexture(nil, "OVERLAY")
 		helloKittyRight.tex:SetAllPoints()
-		helloKittyRight.tex:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\helloKitty")
+		helloKittyRight.tex:SetTexture(E.Media.Textures.HelloKitty)
 		helloKittyRight.tex:SetTexCoord(0, 0, 0, 1, 0, 0, 0, 1)
 		helloKittyRight.curFrame = 10
 		helloKittyRight.countUp = false
@@ -335,7 +346,7 @@ do
 			HelloKittyLeft:Hide()
 			HelloKittyRight:Hide()
 			self.db.general.kittys = nil
-			return;
+			return
 		end
 
 		self.db.tempSettings = nil

@@ -2,13 +2,16 @@ local E, L, V, P, G = unpack(select(2, ...))
 local M = E:GetModule("Misc")
 local CH = E:GetModule("Chat")
 
-local select, unpack, type = select, unpack, type
-local strlower, format = strlower, string.format
+local select, unpack = select, unpack
+local gsub, gmatch, format, lower = string.gsub, string.gmatch, string.format, string.lower
 
 local Ambiguate = Ambiguate
 local CreateFrame = CreateFrame
 local GetPlayerInfoByGUID = GetPlayerInfoByGUID
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local WorldFrame = WorldFrame
+local WorldGetChildren = WorldFrame.GetChildren
+
+local PRIEST_COLOR = RAID_CLASS_COLORS.PRIEST
 
 --Message caches
 local messageToGUID = {}
@@ -40,16 +43,16 @@ function M:UpdateBubbleBorder()
 	if E.private.chat.enable and E.private.general.classColorMentionsSpeech then
 		local classColorTable, lowerCaseWord, isFirstWord, rebuiltString, tempWord, wordMatch, classMatch
 		if text and text:match("%s-%S+%s*") then
-			for word in text:gmatch("%s-%S+%s*") do
-				tempWord = word:gsub("^[%s%p]-([^%s%p]+)([%-]?[^%s%p]-)[%s%p]*$","%1%2")
-				lowerCaseWord = tempWord:lower()
+			for word in gmatch(text, "%s-%S+%s*") do
+				tempWord = gsub(word, "^[%s%p]-([^%s%p]+)([%-]?[^%s%p]-)[%s%p]*$", "%1%2")
+				lowerCaseWord = lower(tempWord)
 
 				classMatch = CH.ClassNames[lowerCaseWord]
 				wordMatch = classMatch and lowerCaseWord
 
-				if(wordMatch and not E.global.chat.classColorMentionExcludedNames[wordMatch]) then
-					classColorTable = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classMatch] or RAID_CLASS_COLORS[classMatch]
-					word = word:gsub(tempWord:gsub("%-","%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
+				if wordMatch and not E.global.chat.classColorMentionExcludedNames[wordMatch] then
+					classColorTable = E:ClassColor(classMatch)
+					word = gsub(word, gsub(tempWord, "%-","%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
 				end
 
 				if not isFirstWord then
@@ -70,17 +73,16 @@ end
 function M:AddChatBubbleName(chatBubble, guid, name)
 	if not name then return end
 
-	local defaultColor, color = "ffffffff"
-	if guid ~= nil and guid ~= "" then
-		local _, class = GetPlayerInfoByGUID(guid)
-		if class then
-			color = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] and CUSTOM_CLASS_COLORS[class].colorStr) or (RAID_CLASS_COLORS[class] and RAID_CLASS_COLORS[class].colorStr)
+	local color = PRIEST_COLOR
+	if guid and guid ~= "" then
+		local _, Class = GetPlayerInfoByGUID(guid)
+		if Class then
+			local c = E:ClassColor(Class)
+			if c then color = c end
 		end
-	else
-		color = defaultColor
 	end
 
-	chatBubble.Name:SetFormattedText("|c%s%s|r", color, name)
+	chatBubble.Name:SetFormattedText("|c%s%s|r", color.colorStr, name)
 end
 
 function M:SkinBubble(frame)
@@ -100,7 +102,6 @@ function M:SkinBubble(frame)
 	else
 		name:SetPoint("TOPLEFT", 5, 6)
 	end
-	--name:SetPoint("TOPLEFT", 5, 5)
 	name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -5, -5)
 	name:SetJustifyH("LEFT")
 	name:FontTemplate(E.Libs.LSM:Fetch("font", E.private.general.chatBubbleFont), E.private.general.chatBubbleFontSize * 0.85, E.private.general.chatBubbleFontOutline)
@@ -206,19 +207,21 @@ function M:SkinBubble(frame)
 	frame.isSkinnedElvUI = true
 end
 
+function M:IsChatBubble(frame)
+	for i = 1, frame:GetNumRegions() do
+		local region = select(i, frame:GetRegions())
+		if region.GetTexture and region:GetTexture() and region:GetTexture() == [[Interface\Tooltips\ChatBubble-Background]] then
+			return true
+		end
+	end
+	return false
+end
+
 local function ChatBubble_OnEvent(self, event, msg, sender, _, _, _, _, _, _, _, _, _, guid)
 	if not E.private.general.chatBubbleName then return end
 
 	messageToGUID[msg] = guid
 	messageToSender[msg] = Ambiguate(sender, "none")
-end
-
-function M:IsChatBubble(frame)
-	for i = 1, frame:GetNumRegions() do
-		local region = select(i, frame:GetRegions())
-		if(region.GetTexture and region:GetTexture() and type(region:GetTexture() == "string") and strlower(region:GetTexture()) == [[interface\tooltips\chatbubble-background]]) then return true end
-	end
-	return false
 end
 
 local numChildren = 0
@@ -232,10 +235,10 @@ local function ChatBubble_OnUpdate(self, elapsed)
 	if M.BubbleFrame.lastupdate < .1 then return end
 	M.BubbleFrame.lastupdate = 0
 
-	local count = WorldFrame:GetNumChildren()
+	local count = select("#", WorldGetChildren(WorldFrame))
 	if count ~= numChildren then
 		for i = numChildren + 1, count do
-			local frame = select(i, WorldFrame:GetChildren())
+			local frame = select(i, WorldGetChildren(WorldFrame))
 
 			if M:IsChatBubble(frame) then
 				if not frame.isSkinnedElvUI then
@@ -243,24 +246,14 @@ local function ChatBubble_OnUpdate(self, elapsed)
 				end
 			end
 		end
+
 		numChildren = count
 	end
 end
 
-function M:ToggleChatBubbleScript()
-	if E.private.general.chatBubbles ~= "disabled" then
-		M.BubbleFrame:SetScript("OnEvent", ChatBubble_OnEvent)
-		M.BubbleFrame:SetScript("OnUpdate", ChatBubble_OnUpdate)
-	else
-		M.BubbleFrame:SetScript("OnEvent", nil)
-		M.BubbleFrame:SetScript("OnUpdate", nil)
-		--Clear caches
-		wipe(messageToGUID)
-		wipe(messageToSender)
-	end
-end
-
 function M:LoadChatBubbles()
+	if E.private.general.chatBubbles == "disabled" then return end
+
 	self.BubbleFrame = CreateFrame("Frame")
 
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_SAY")
@@ -269,4 +262,7 @@ function M:LoadChatBubbles()
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_MONSTER_SAY")
 	self.BubbleFrame:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+
+	self.BubbleFrame:SetScript("OnEvent", ChatBubble_OnEvent)
+	self.BubbleFrame:SetScript("OnUpdate", ChatBubble_OnUpdate)
 end

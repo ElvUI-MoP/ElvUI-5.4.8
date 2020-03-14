@@ -1,9 +1,14 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
+local AB = E:GetModule("ActionBars")
+local UF = E:GetModule("UnitFrames")
+local Misc = E:GetModule("Misc")
+local Bags = E:GetModule("Bags")
+local Skins = E:GetModule("Skins")
 
 local _G = _G
 local pairs, type, unpack, assert = pairs, type, unpack, assert
-local tremove, tContains, tinsert, wipe = tremove, tContains, tinsert, table.wipe
-local lower, format = string.lower, string.format
+local tremove, tContains, tinsert, wipe = tremove, tContains, tinsert, wipe
+local strlower, format = strlower, string.format
 
 local CreateFrame = CreateFrame
 local IsAddOnLoaded = IsAddOnLoaded
@@ -11,7 +16,7 @@ local UnitIsDeadOrGhost, InCinematic = UnitIsDeadOrGhost, InCinematic
 local GetBindingFromClick, RunBinding = GetBindingFromClick, RunBinding
 local PurchaseSlot, GetBankSlotCost = PurchaseSlot, GetBankSlotCost
 local MoneyFrame_Update = MoneyFrame_Update
-local SetCVar, DisableAddOn = SetCVar, DisableAddOn
+local SetCVar, EnableAddOn, DisableAddOn = SetCVar, EnableAddOn, DisableAddOn
 local ReloadUI, PlaySound, StopMusic = ReloadUI, PlaySound, StopMusic
 local StaticPopup_Resize = StaticPopup_Resize
 local AutoCompleteEditBox_OnEnterPressed = AutoCompleteEditBox_OnEnterPressed
@@ -21,17 +26,41 @@ local STATICPOPUP_TEXTURE_ALERT = STATICPOPUP_TEXTURE_ALERT
 local STATICPOPUP_TEXTURE_ALERTGEAR = STATICPOPUP_TEXTURE_ALERTGEAR
 local YES, NO, OKAY, CANCEL, ACCEPT, DECLINE = YES, NO, OKAY, CANCEL, ACCEPT, DECLINE
 
+local DOWNLOAD_URL = "https://github.com/ElvUI-MoP"
+
 E.PopupDialogs = {}
 E.StaticPopup_DisplayedFrames = {}
 
-E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
-	text = L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-MoP"],
+E.PopupDialogs.ELVUI_UPDATED_WHILE_RUNNING = {
+	text = L["ElvUI was updated while the game is still running. Please relaunch the game, as this is required for the files to be properly updated."],
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnShow = function(self, data)
+		local secureButton = E:StaticPopup_GetSecureButton("Quit")
+		if secureButton then
+			E:StaticPopup_PositionSecureButton(self, self.button1, secureButton)
+		else
+			secureButton = E:StaticPopup_CreateSecureButton(self, self.button1, _G.QUIT, "/quit")
+			E:StaticPopup_SetSecureButton("Quit", secureButton)
+		end
+
+		if data and data.mismatch then
+			self.button2:Disable()
+		end
+
+		self.button1:Hide()
+	end,
+	whileDead = 1
+}
+
+E.PopupDialogs.ELVUI_UPDATE_AVAILABLE = {
+	text = L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-Cataclysm"],
 	hasEditBox = 1,
 	OnShow = function(self)
 		self.editBox:SetAutoFocus(false)
 		self.editBox.width = self.editBox:GetWidth()
 		self.editBox:Width(220)
-		self.editBox:SetText("https://github.com/ElvUI-MoP")
+		self.editBox:SetText(DOWNLOAD_URL)
 		self.editBox:HighlightText()
 		ChatEdit_FocusActiveWindow()
 	end,
@@ -51,8 +80,8 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 		self:GetParent():Hide()
 	end,
 	EditBoxOnTextChanged = function(self)
-		if self:GetText() ~= "https://github.com/ElvUI-MoP" then
-			self:SetText("https://github.com/ElvUI-MoP")
+		if self:GetText() ~= DOWNLOAD_URL then
+			self:SetText(DOWNLOAD_URL)
 		end
 		self:HighlightText()
 		self:ClearFocus()
@@ -64,7 +93,7 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 	showAlert = 1
 }
 
-E.PopupDialogs["ELVUI_EDITBOX"] = {
+E.PopupDialogs.ELVUI_EDITBOX = {
 	text = E.title,
 	button1 = OKAY,
 	hasEditBox = 1,
@@ -97,129 +126,121 @@ E.PopupDialogs["ELVUI_EDITBOX"] = {
 		self:ClearFocus()
 	end,
 	OnAccept = E.noop,
-	timeout = 0,
 	whileDead = 1,
 	preferredIndex = 3,
 	hideOnEscape = 1,
 }
 
-E.PopupDialogs["CLIENT_UPDATE_REQUEST"] = {
-	text = L["Detected that your ElvUI Config addon is out of date. Not having your ElvUI Config addon up to date will result in missing options."],
+E.PopupDialogs.CLIENT_UPDATE_REQUEST = {
+	text = L["Detected that your ElvUI OptionsUI addon is out of date. Not having your ElvUI OptionsUI addon up to date will result in missing options."],
 	button1 = OKAY,
 	OnAccept = E.noop,
 	showAlert = 1
 }
 
-E.PopupDialogs["CLIQUE_ADVERT"] = {
-	text = L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."],
-	button1 = YES,
-	OnAccept = E.noop,
-	showAlert = 1
-}
-
-E.PopupDialogs["CONFIRM_LOSE_BINDING_CHANGES"] = {
+E.PopupDialogs.CONFIRM_LOSE_BINDING_CHANGES = {
 	text = CONFIRM_LOSE_BINDING_CHANGES,
 	button1 = OKAY,
 	button2 = CANCEL,
 	OnAccept = function()
-		E:GetModule("ActionBars"):ChangeBindingProfile()
-		E:GetModule("ActionBars").bindingsChanged = nil
+		AB:ChangeBindingProfile()
+		AB.bindingsChanged = nil
 	end,
 	OnCancel = function()
-		if ElvUIBindPopupWindowCheckButton:GetChecked() then
-			ElvUIBindPopupWindowCheckButton:SetChecked()
-		else
-			ElvUIBindPopupWindowCheckButton:SetChecked(1)
-		end
+		local isChecked = ElvUIBindPopupWindowCheckButton:GetChecked()
+		ElvUIBindPopupWindowCheckButton:SetChecked(not isChecked)
 	end,
-	timeout = 0,
 	whileDead = 1,
 	showAlert = 1
 }
 
-E.PopupDialogs["TUKUI_ELVUI_INCOMPATIBLE"] = {
+E.PopupDialogs.TUKUI_ELVUI_INCOMPATIBLE = {
 	text = L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."],
 	OnAccept = function() DisableAddOn("ElvUI") ReloadUI() end,
 	OnCancel = function() DisableAddOn("Tukui") ReloadUI() end,
 	button1 = "ElvUI",
 	button2 = "Tukui",
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-E.PopupDialogs["DISABLE_INCOMPATIBLE_ADDON"] = {
+E.PopupDialogs.DISABLE_INCOMPATIBLE_ADDON = {
 	text = L["Do you swear not to post in technical support about something not working without first disabling the addon/module combination first?"],
 	OnAccept = function() E.global.ignoreIncompatible = true end,
-	OnCancel = function() E:StaticPopup_Hide("DISABLE_INCOMPATIBLE_ADDON") E:StaticPopup_Show("INCOMPATIBLE_ADDON", E.PopupDialogs["INCOMPATIBLE_ADDON"].addon, E.PopupDialogs["INCOMPATIBLE_ADDON"].module) end,
+	OnCancel = function() E:StaticPopup_Hide("DISABLE_INCOMPATIBLE_ADDON") E:StaticPopup_Show("INCOMPATIBLE_ADDON", E.PopupDialogs.INCOMPATIBLE_ADDON.addon, E.PopupDialogs.INCOMPATIBLE_ADDON.module) end,
 	button1 = L["I Swear"],
 	button2 = DECLINE,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-E.PopupDialogs["INCOMPATIBLE_ADDON"] = {
+E.PopupDialogs.INCOMPATIBLE_ADDON = {
 	text = L["INCOMPATIBLE_ADDON"],
-	OnAccept = function() DisableAddOn(E.PopupDialogs["INCOMPATIBLE_ADDON"].addon) ReloadUI() end,
-	OnCancel = function() E.private[lower(E.PopupDialogs["INCOMPATIBLE_ADDON"].module)].enable = false ReloadUI() end,
+	OnAccept = function() DisableAddOn(E.PopupDialogs.INCOMPATIBLE_ADDON.addon) ReloadUI() end,
+	OnCancel = function() E.private[strlower(E.PopupDialogs.INCOMPATIBLE_ADDON.module)].enable = false ReloadUI() end,
 	button3 = L["Disable Warning"],
 	OnAlt = function ()
 		E:StaticPopup_Hide("INCOMPATIBLE_ADDON")
 		E:StaticPopup_Show("DISABLE_INCOMPATIBLE_ADDON")
 	end,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-E.PopupDialogs["FAILED_UISCALE"] = {
+E.PopupDialogs.UISCALE_CHANGE = {
+	text = L["The UI Scale has been changed, if you would like to preview the change press the preview button. It is recommended that you reload your User Interface for the best appearance."],
+	OnAccept = function() ReloadUI() end,
+	OnCancel = E.noop,
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	button3 = L["Preview Changes"],
+	OnAlt = function() E:PixelScaleChanged("UISCALE_CHANGE") end,
+	whileDead = 1,
+	hideOnEscape = false
+}
+
+E.PopupDialogs.FAILED_UISCALE = {
 	text = L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."],
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function() E.global.general.autoScale = false ReloadUI() end,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
-};
+}
 
-E.PopupDialogs["CONFIG_RL"] = {
+E.PopupDialogs.CONFIG_RL = {
 	text = L["One or more of the changes you have made require a ReloadUI."],
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = ReloadUI,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-E.PopupDialogs["GLOBAL_RL"] = {
+E.PopupDialogs.GLOBAL_RL = {
 	text = L["One or more of the changes you have made will effect all characters using this addon. You will have to reload the user interface to see the changes you have made."],
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = ReloadUI,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-E.PopupDialogs["PRIVATE_RL"] = {
+E.PopupDialogs.PRIVATE_RL = {
 	text = L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = ReloadUI,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-E.PopupDialogs["RESET_UF_UNIT"] = {
+E.PopupDialogs.RESET_UF_UNIT = {
 	text = L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function(self)
 		if self.data and self.data.unit then
-			local UF = E:GetModule("UnitFrames")
 			UF:ResetUnitSettings(self.data.unit)
 			if self.data.mover then
 				E:ResetMovers(self.data.mover)
@@ -229,7 +250,7 @@ E.PopupDialogs["RESET_UF_UNIT"] = {
 				UF:CreateAndUpdateHeaderGroup(self.data.unit, nil, nil, true)
 			end
 
-			if IsAddOnLoaded("ElvUI_Config") then
+			if IsAddOnLoaded("ElvUI_OptionsUI") then
 				local ACD = E.Libs.AceConfigDialog
 				if ACD and ACD.OpenFrames and ACD.OpenFrames.ElvUI then
 					ACD:SelectGroup("ElvUI", "unitframe", self.data.unit)
@@ -239,12 +260,11 @@ E.PopupDialogs["RESET_UF_UNIT"] = {
 			E:Print(L["Error resetting UnitFrame."])
 		end
 	end,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,
 }
 
-E.PopupDialogs["RESET_UF_AF"] = {
+E.PopupDialogs.RESET_UF_AF = {
 	text = L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
@@ -261,12 +281,11 @@ E.PopupDialogs["RESET_UF_AF"] = {
 			end
 		end
 	end,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,
 }
 
-E.PopupDialogs["RESET_NP_AF"] = {
+E.PopupDialogs.RESET_NP_AF = {
 	text = L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
@@ -280,29 +299,27 @@ E.PopupDialogs["RESET_NP_AF"] = {
 			end
 		end
 	end,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,
 }
 
-E.PopupDialogs["KEYBIND_MODE"] = {
+E.PopupDialogs.KEYBIND_MODE = {
 	text = L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."],
-	button1 = L['Save'],
-	button2 = L['Discard'],
-	OnAccept = function() E:GetModule("ActionBars"):DeactivateBindMode(true) end,
-	OnCancel = function() E:GetModule("ActionBars"):DeactivateBindMode(false) end,
-	timeout = 0,
+	button1 = L["Save"],
+	button2 = L["Discard"],
+	OnAccept = function() AB:DeactivateBindMode(true) end,
+	OnCancel = function() AB:DeactivateBindMode(false) end,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-E.PopupDialogs["DELETE_GRAYS"] = {
+E.PopupDialogs.DELETE_GRAYS = {
 	text = format("|cffff0000%s|r", L["Delete gray items?"]),
 	button1 = YES,
 	button2 = NO,
-	OnAccept = function() E:GetModule("Bags"):VendorGrays(true) end,
+	OnAccept = function() Bags:VendorGrays(true) end,
 	OnShow = function(self)
-		MoneyFrame_Update(self.moneyFrame, E.PopupDialogs["DELETE_GRAYS"].Money)
+		MoneyFrame_Update(self.moneyFrame, E.PopupDialogs.DELETE_GRAYS.Money)
 	end,
 	timeout = 4,
 	whileDead = 1,
@@ -310,7 +327,7 @@ E.PopupDialogs["DELETE_GRAYS"] = {
 	hasMoneyFrame = 1
 }
 
-E.PopupDialogs["BUY_BANK_SLOT"] = {
+E.PopupDialogs.BUY_BANK_SLOT = {
 	text = CONFIRM_BUY_BANK_SLOT,
 	button1 = YES,
 	button2 = NO,
@@ -319,36 +336,32 @@ E.PopupDialogs["BUY_BANK_SLOT"] = {
 		MoneyFrame_Update(self.moneyFrame, GetBankSlotCost())
 	end,
 	hasMoneyFrame = 1,
-	timeout = 0,
 	hideOnEscape = 1
 }
 
-E.PopupDialogs["CANNOT_BUY_BANK_SLOT"] = {
+E.PopupDialogs.CANNOT_BUY_BANK_SLOT = {
 	text = L["Can't buy anymore slots!"],
 	button1 = ACCEPT,
-	timeout = 0,
 	whileDead = 1
 }
 
-E.PopupDialogs["NO_BANK_BAGS"] = {
+E.PopupDialogs.NO_BANK_BAGS = {
 	text = L["You must purchase a bank slot first!"],
 	button1 = ACCEPT,
-	timeout = 0,
 	whileDead = 1
 }
 
-E.PopupDialogs["RESETUI_CHECK"] = {
+E.PopupDialogs.RESETUI_CHECK = {
 	text = L["Are you sure you want to reset every mover back to it's default position?"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function()
 		E:ResetAllUI()
 	end,
-	timeout = 0,
 	whileDead = 1
 }
 
-E.PopupDialogs["HARLEM_SHAKE"] = {
+E.PopupDialogs.HARLEM_SHAKE = {
 	text = L["ElvUI needs to perform database optimizations please be patient."],
 	button1 = OKAY,
 	OnAccept = function()
@@ -356,24 +369,22 @@ E.PopupDialogs["HARLEM_SHAKE"] = {
 			E:StopHarlemShake()
 		else
 			E:BeginHarlemShake()
-			return true;
+			return true
 		end
 	end,
-	timeout = 0,
 	whileDead = 1
 }
 
-E.PopupDialogs["HELLO_KITTY"] = {
+E.PopupDialogs.HELLO_KITTY = {
 	text = L["ElvUI needs to perform database optimizations please be patient."],
 	button1 = OKAY,
 	OnAccept = function()
 		E:SetupHelloKitty()
 	end,
-	timeout = 0,
 	whileDead = 1
 }
 
-E.PopupDialogs["HELLO_KITTY_END"] = {
+E.PopupDialogs.HELLO_KITTY_END = {
 	text = L["Do you enjoy the new ElvUI?"],
 	button1 = L["Yes, Keep Changes!"],
 	button2 = L["No, Revert Changes!"],
@@ -389,45 +400,40 @@ E.PopupDialogs["HELLO_KITTY_END"] = {
 		SetCVar("Sound_EnableAllSound", E.oldEnableAllSound)
 		SetCVar("Sound_EnableMusic", E.oldEnableMusic)
 	end,
-	timeout = 0,
 	whileDead = 1
 }
 
-E.PopupDialogs["DISBAND_RAID"] = {
+E.PopupDialogs.DISBAND_RAID = {
 	text = L["Are you sure you want to disband the group?"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() E:GetModule("Misc"):DisbandRaidGroup() end,
-	timeout = 0,
+	OnAccept = function() Misc:DisbandRaidGroup() end,
 	whileDead = 1
 }
 
-E.PopupDialogs["CONFIRM_LOOT_DISTRIBUTION"] = {
+E.PopupDialogs.CONFIRM_LOOT_DISTRIBUTION = {
 	text = CONFIRM_LOOT_DISTRIBUTION,
 	button1 = YES,
 	button2 = NO,
-	timeout = 0,
 	hideOnEscape = 1
 }
 
-E.PopupDialogs["RESET_PROFILE_PROMPT"] = {
+E.PopupDialogs.RESET_PROFILE_PROMPT = {
 	text = L["Are you sure you want to reset all the settings on this profile?"],
 	button1 = YES,
 	button2 = NO,
-	timeout = 0,
 	hideOnEscape = 1,
 	OnAccept = function() E:ResetProfile() end
 }
 
-E.PopupDialogs["WARNING_BLIZZARD_ADDONS"] = {
+E.PopupDialogs.WARNING_BLIZZARD_ADDONS = {
 	text = L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."],
 	button1 = OKAY,
-	timeout = 0,
 	hideOnEscape = false,
 	OnAccept = function() EnableAddOn("Blizzard_CompactRaidFrames") ReloadUI() end,
 }
 
-E.PopupDialogs["APPLY_FONT_WARNING"] = {
+E.PopupDialogs.APPLY_FONT_WARNING = {
 	text = L["Are you sure you want to apply this font to all ElvUI elements?"],
 	OnAccept = function()
 		local font = E.db.general.font
@@ -448,7 +454,7 @@ E.PopupDialogs["APPLY_FONT_WARNING"] = {
 		E.db.chat.font = font
 		E.db.chat.fontSize = fontSize
 		E.db.chat.tabFont = font
-		E.db.chat.tapFontSize = fontSize
+		E.db.chat.tabFontSize = fontSize
 		E.db.datatexts.font = font
 		E.db.datatexts.fontSize = fontSize
 		E.db.general.minimap.locationFont = font
@@ -470,13 +476,39 @@ E.PopupDialogs["APPLY_FONT_WARNING"] = {
 	OnCancel = function() E:StaticPopup_Hide("APPLY_FONT_WARNING") end,
 	button1 = YES,
 	button2 = CANCEL,
-	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false
 }
 
-local MAX_STATIC_POPUPS = 4
+E.PopupDialogs.MODULE_COPY_CONFIRM = {
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	whileDead = 1,
+	hideOnEscape = false
+}
 
+E.PopupDialogs.SCRIPT_PROFILE = {
+	text = L["You are using CPU Profiling. This causes decreased performance. Do you want to disable it or continue?"],
+	button1 = L["Disable"],
+	button2 = L["Continue"],
+	OnAccept = function()
+		SetCVar("scriptProfile", 0)
+		ReloadUI()
+	end,
+	OnCancel = E.noop,
+	showAlert = 1,
+	whileDead = 1,
+	hideOnEscape = false
+}
+
+E.PopupDialogs.ELVUI_CONFIG_FOUND = {
+    text = L["You still have ElvUI_Config installed. ElvUI_Config has been renamed to ElvUI_OptionsUI, please remove it."],
+    button1 = ACCEPT,
+    whileDead = 1,
+    hideOnEscape = false
+}
+
+local MAX_STATIC_POPUPS = 4
 function E:StaticPopup_OnShow()
 	PlaySound("igMainMenuOpen")
 
@@ -494,7 +526,7 @@ function E:StaticPopup_OnShow()
 	end
 
 	-- boost static popups over ace gui
-	if IsAddOnLoaded("ElvUI_Config") then
+	if IsAddOnLoaded("ElvUI_OptionsUI") then
 		local ACD = E.Libs.AceConfigDialog
 		if ACD and ACD.OpenFrames and ACD.OpenFrames.ElvUI then
 			self.frameStrataIncreased = true
@@ -535,7 +567,7 @@ function E:StaticPopupSpecial_Hide(frame)
 end
 
 function E:StaticPopup_CollapseTable()
-	local displayedFrames = E.StaticPopup_DisplayedFrames;
+	local displayedFrames = E.StaticPopup_DisplayedFrames
 	local index = #displayedFrames
 	while((index >= 1) and (not displayedFrames[index]:IsShown())) do
 		tremove(displayedFrames, index)
@@ -546,6 +578,8 @@ end
 function E:StaticPopup_SetUpPosition(dialog)
 	if not tContains(E.StaticPopup_DisplayedFrames, dialog) then
 		local lastFrame = E.StaticPopup_DisplayedFrames[#E.StaticPopup_DisplayedFrames]
+		dialog:ClearAllPoints()
+
 		if lastFrame then
 			dialog:Point("TOP", lastFrame, "BOTTOM", 0, -4)
 		else
@@ -631,47 +665,47 @@ function E:StaticPopup_OnHide()
 
 		local popupFrameLevel = self:GetFrameLevel()
 		if popupFrameLevel > 100 then
-			self:SetFrameLevel(popupFrameLevel-100)
+			self:SetFrameLevel(popupFrameLevel - 100)
 		end
 	end
 end
 
 function E:StaticPopup_OnUpdate(elapsed)
+	local info = E.PopupDialogs[self.which]
+
 	if self.timeleft and self.timeleft > 0 then
-		local which = self.which
-		local timeleft = self.timeleft - elapsed
-		if timeleft <= 0 then
-			if not E.PopupDialogs[which].timeoutInformationalOnly then
-				self.timeleft = 0
-				local OnCancel = E.PopupDialogs[which].OnCancel
-				if OnCancel then
-					OnCancel(self, self.data, "timeout")
+		self.timeleft = self.timeleft - elapsed
+		if self.timeleft <= 0 then
+			if not info.timeoutInformationalOnly then
+				self.timeleft = nil
+
+				if info.OnCancel then
+					info.OnCancel(self, self.data, "timeout")
 				end
 				self:Hide()
 			end
 			return
 		end
-		self.timeleft = timeleft
 	end
 
 	if self.startDelay then
-		local which = self.which
-		local timeleft = self.startDelay - elapsed
-		if timeleft <= 0 then
+		self.startDelay = self.startDelay - elapsed
+		if self.startDelay <= 0 then
 			self.startDelay = nil
-			local text = _G[self:GetName().."Text"]
-			text:SetFormattedText(E.PopupDialogs[which].text, text.text_arg1, text.text_arg2)
-			local button1 = _G[self:GetName().."Button1"]
-			button1:Enable()
-			StaticPopup_Resize(self, which)
+
+			local name = self:GetName()
+			local text = _G[name.."Text"]
+			text:SetFormattedText(info.text, text.text_arg1, text.text_arg2)
+			_G[name.."Button1"]:Enable()
+
+			StaticPopup_Resize(self, self.which)
+
 			return
 		end
-		self.startDelay = timeleft
 	end
 
-	local onUpdate = E.PopupDialogs[self.which].OnUpdate
-	if onUpdate then
-		onUpdate(self, elapsed)
+	if info.OnUpdate then
+		info.OnUpdate(self, elapsed)
 	end
 end
 
@@ -748,7 +782,7 @@ function E:StaticPopup_FindVisible(which, data)
 	end
 	for index = 1, MAX_STATIC_POPUPS, 1 do
 		local frame = _G["ElvUI_StaticPopup"..index]
-		if frame:IsShown() and (frame.which == which) and (not info.multiple or (frame.data == data)) then
+		if frame and frame:IsShown() and (frame.which == which) and (not info.multiple or (frame.data == data)) then
 			return frame
 		end
 	end
@@ -858,7 +892,7 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 		end
 		for i = index, MAX_STATIC_POPUPS do
 			local frame = _G["ElvUI_StaticPopup"..i]
-			if not frame:IsShown() then
+			if frame and not frame:IsShown() then
 				dialog = frame
 				break
 			end
@@ -868,7 +902,7 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 		if not dialog and info.preferredIndex then
 			for i = 1, info.preferredIndex do
 				local frame = _G["ElvUI_StaticPopup"..i]
-				if not frame:IsShown() then
+				if frame and not frame:IsShown() then
 					dialog = frame
 					break
 				end
@@ -1088,10 +1122,59 @@ function E:StaticPopup_Hide(which, data)
 	end
 end
 
+-- Static popup secure buttons
+local SecureButtons = {}
+local SecureOnEnter = function(s) s.text:SetTextColor(1, 1, 1) end
+local SecureOnLeave = function(s) s.text:SetTextColor(1, 0.17, 0.26) end
+function E:StaticPopup_CreateSecureButton(popup, button, text, macro)
+	local btn = CreateFrame("Button", nil, popup, "SecureActionButtonTemplate")
+	btn:SetAttribute("type", "macro")
+	btn:SetAttribute("macrotext", macro)
+	btn:SetAllPoints(button)
+	btn:Size(button:GetSize())
+	btn:HookScript("OnEnter", SecureOnEnter)
+	btn:HookScript("OnLeave", SecureOnLeave)
+	Skins:HandleButton(btn)
+
+	local t = btn:CreateFontString(nil, "OVERLAY", btn)
+	t:Point("CENTER", 0, 1)
+	t:FontTemplate(nil, nil, "NONE")
+	t:SetJustifyH("CENTER")
+	t:SetText(text)
+	btn.text = t
+
+	btn:SetFontString(t)
+	btn:SetTemplate(nil, true)
+	SecureOnLeave(btn)
+
+	return btn
+end
+
+function E:StaticPopup_GetAllSecureButtons()
+	return SecureButtons
+end
+
+function E:StaticPopup_GetSecureButton(which)
+	return SecureButtons[which]
+end
+
+function E:StaticPopup_PositionSecureButton(popup, popupButton, secureButton)
+	secureButton:SetParent(popup)
+	secureButton:SetAllPoints(popupButton)
+	secureButton:Size(popupButton:GetSize())
+end
+
+function E:StaticPopup_SetSecureButton(which, btn)
+	if SecureButtons[which] then
+		error("A secure StaticPopup Button called `"..which.."` already exists.")
+	end
+
+	SecureButtons[which] = btn
+end
+
 function E:Contruct_StaticPopups()
 	E.StaticPopupFrames = {}
 
-	local S = self:GetModule("Skins")
 	for index = 1, MAX_STATIC_POPUPS do
 		E.StaticPopupFrames[index] = CreateFrame("Frame", "ElvUI_StaticPopup"..index, E.UIParent, "StaticPopupTemplate")
 		E.StaticPopupFrames[index]:SetID(index)
@@ -1117,10 +1200,10 @@ function E:Contruct_StaticPopups()
 		E.StaticPopupFrames[index]:SetTemplate("Transparent")
 
 		for i = 1, 3 do
-			S:HandleButton(_G[name.."Button"..i])
+			Skins:HandleButton(_G[name.."Button"..i])
 		end
 
-		S:HandleEditBox(_G[name.."EditBox"])
+		Skins:HandleEditBox(_G[name.."EditBox"])
 		for k = 1, _G[name.."EditBox"]:GetNumRegions() do
 			local region = select(k, _G[name.."EditBox"]:GetRegions())
 			if region and region:IsObjectType("Texture") then
@@ -1129,9 +1212,9 @@ function E:Contruct_StaticPopups()
 				end
 			end
 		end
-		S:HandleEditBox(_G[name.."MoneyInputFrameGold"])
-		S:HandleEditBox(_G[name.."MoneyInputFrameSilver"])
-		S:HandleEditBox(_G[name.."MoneyInputFrameCopper"])
+		Skins:HandleEditBox(_G[name.."MoneyInputFrameGold"])
+		Skins:HandleEditBox(_G[name.."MoneyInputFrameSilver"])
+		Skins:HandleEditBox(_G[name.."MoneyInputFrameCopper"])
 		_G[name.."EditBox"].backdrop:Point("TOPLEFT", -2, -4)
 		_G[name.."EditBox"].backdrop:Point("BOTTOMRIGHT", 2, 4)
 		_G[name.."ItemFrameNameFrame"]:Kill()

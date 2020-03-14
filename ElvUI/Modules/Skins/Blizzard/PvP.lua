@@ -6,7 +6,6 @@ local pairs, unpack = pairs, unpack
 local find = string.find
 
 local function LoadSkin()
-
 	PVPUIFrame:StripTextures()
 	PVPUIFrame:SetTemplate("Transparent")
 	PVPUIFrame.LeftInset:StripTextures()
@@ -17,18 +16,18 @@ local function LoadSkin()
 	for i = 1, 3 do
 		local button = _G["PVPQueueFrameCategoryButton"..i]
 
-		button:SetTemplate("Default")
+		button:SetTemplate()
 		button.Background:Kill()
 		button.Ring:Kill()
 
-		button:CreateBackdrop("Default")
+		button:CreateBackdrop()
 		button.backdrop:SetOutside(button.Icon)
 		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
 
 		button:StyleButton(nil, true)
 
 		button.Icon:Size(58)
-		button.Icon:SetTexCoord(.15, .85, .15, .85)
+		button.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 		button.Icon:Point("LEFT", button, 1, 0)
 		button.Icon:SetParent(button.backdrop)
 	end
@@ -37,6 +36,7 @@ local function LoadSkin()
 	PVPQueueFrame.CategoryButton1.CurrencyIcon:SetTexCoord(unpack(E.TexCoords))
 	PVPQueueFrame.CategoryButton1.CurrencyIcon:Size(20)
 	PVPQueueFrame.CategoryButton1.CurrencyIcon:Point("TOPLEFT", PVPQueueFrame.CategoryButton1, "BOTTOMLEFT", 79, 30)
+
 	PVPQueueFrame.CategoryButton1.CurrencyAmount:FontTemplate(nil, 13, "OUTLINE")
 	PVPQueueFrame.CategoryButton1.CurrencyAmount:Point("LEFT", PVPQueueFrame.CategoryButton1.CurrencyIcon, "RIGHT", 7, 0)
 
@@ -44,6 +44,7 @@ local function LoadSkin()
 	PVPQueueFrame.CategoryButton2.CurrencyIcon:SetTexCoord(unpack(E.TexCoords))
 	PVPQueueFrame.CategoryButton2.CurrencyIcon:Size(20)
 	PVPQueueFrame.CategoryButton2.CurrencyIcon:Point("TOPLEFT", PVPQueueFrame.CategoryButton2, "BOTTOMLEFT", 79, 30)
+
 	PVPQueueFrame.CategoryButton2.CurrencyAmount:FontTemplate(nil, 13, "OUTLINE")
 	PVPQueueFrame.CategoryButton2.CurrencyAmount:Point("LEFT", PVPQueueFrame.CategoryButton2.CurrencyIcon, "RIGHT", 7, 0)
 
@@ -51,19 +52,21 @@ local function LoadSkin()
 	S:HandleDropDownBox(HonorFrameTypeDropDown)
 	HonorFrameTypeDropDown:Width(200)
 	HonorFrameTypeDropDown:ClearAllPoints()
-	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 163, 318)
+	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 143, 322)
 
 	HonorFrame.Inset:StripTextures()
 
 	S:HandleScrollBar(HonorFrameSpecificFrameScrollBar)
-	HonorFrameSpecificFrameScrollBar:Point("TOPLEFT", HonorFrameSpecificFrame, "TOPRIGHT", 0, -13)
+	HonorFrameSpecificFrameScrollBar:ClearAllPoints()
+	HonorFrameSpecificFrameScrollBar:Point("TOPRIGHT", HonorFrameSpecificFrame, 22, -15)
+	HonorFrameSpecificFrameScrollBar:Point("BOTTOMRIGHT", HonorFrameSpecificFrame, 0, 13)
 
-	S:HandleButton(HonorFrameSoloQueueButton, true)
-	HonorFrameSoloQueueButton:Point("BOTTOMLEFT", 19, 0)
+	S:HandleButton(HonorFrameSoloQueueButton)
+	HonorFrameSoloQueueButton:Point("BOTTOMLEFT", 4, 0)
 	HonorFrameSoloQueueButton:Height(20)
 
-	S:HandleButton(HonorFrameGroupQueueButton, true)
-	HonorFrameGroupQueueButton:Point("BOTTOMRIGHT", -19, 0)
+	S:HandleButton(HonorFrameGroupQueueButton)
+	HonorFrameGroupQueueButton:Point("BOTTOMRIGHT", -31, 0)
 	HonorFrameGroupQueueButton:Height(20)
 
 	hooksecurefunc("HonorFrameBonusFrame_Update", function()
@@ -154,22 +157,23 @@ local function LoadSkin()
 
 	for i = 1, 9 do
 		local button = _G["HonorFrameSpecificFrameButton"..i]
-		local icon = _G["HonorFrameSpecificFrameButton"..i].Icon
-		local selected = _G["HonorFrameSpecificFrameButton"..i].SelectedTexture
 
 		button:StripTextures()
 		button:CreateBackdrop()
-		button.backdrop:SetOutside(icon)
-
-		button:StyleButton(nil, true)
+		button.backdrop:SetOutside(button.Icon)
 		button:Width(300)
 
-		selected:SetTexture(0, 0.7, 1, 0.20)
-		selected:SetInside()
+		S:HandleButtonHighlight(button)
+		button.handledHighlight:SetInside()
 
-		icon:Point("TOPLEFT", E.PixelMode and 3 or 5, E.PixelMode and -2 or -3)
-		icon:Size(E.PixelMode and 36 or 32)
-		icon:SetParent(button.backdrop)
+		button.SelectedTexture:SetTexture(E.Media.Textures.Highlight)
+		button.SelectedTexture:SetVertexColor(0, 0.7, 1, 0.35)
+		button.SelectedTexture:SetInside()
+		button.SelectedTexture:SetTexCoord(0, 1, 0, 1)
+
+		button.Icon:Point("TOPLEFT", E.PixelMode and 3 or 5, E.PixelMode and -2 or -3)
+		button.Icon:Size(E.PixelMode and 36 or 32)
+		button.Icon:SetParent(button.backdrop)
 	end
 
 	-- Conquest Frame
@@ -182,7 +186,7 @@ local function LoadSkin()
 	ConquestFrame.NoSeason:Point("BOTTOMRIGHT", E.PixelMode and 0 or -1, E.PixelMode and 5 or 6)
 
 	ConquestPointsBar:StripTextures()
-	ConquestPointsBar:CreateBackdrop("Default")
+	ConquestPointsBar:CreateBackdrop()
 	ConquestPointsBar.backdrop:Point("TOPLEFT", ConquestPointsBar.progress, "TOPLEFT", -1, 1)
 	ConquestPointsBar.backdrop:Point("BOTTOMRIGHT", ConquestPointsBar, "BOTTOMRIGHT", 1, 2)
 	ConquestPointsBar.progress:SetTexture(E.media.normTex)
@@ -202,7 +206,7 @@ local function LoadSkin()
 	ConquestFrame.RatedBGReward.Amount:ClearAllPoints()
 	ConquestFrame.RatedBGReward.Amount:Point("LEFT", ConquestFrame.RatedBGReward.Icon, -27, 0)
 
-	S:HandleButton(ConquestJoinButton, true)
+	S:HandleButton(ConquestJoinButton)
 	ConquestJoinButton:Point("BOTTOM", 0, 8)
 
 	local function handleButton(button)
@@ -228,7 +232,7 @@ local function LoadSkin()
 
 	ConquestTooltip:SetTemplate("Transparent")
 
-	S:HandleButton(WarGameStartButton, true)
+	S:HandleButton(WarGameStartButton)
 	S:HandleScrollBar(WarGamesFrameScrollFrameScrollBar)
 
 	WarGamesFrameScrollFrame:CreateBackdrop("Transparent")
@@ -236,36 +240,40 @@ local function LoadSkin()
 	WarGamesFrameScrollFrame.backdrop:Point("BOTTOMRIGHT", -5, -4)
 
 	for i = 1, 8 do
-		local warGamesEntry = _G["WarGamesFrameScrollFrameButton"..i].Entry
-		local warGamesIcon = _G["WarGamesFrameScrollFrameButton"..i].Entry.Icon
-		local warGamesSelected = _G["WarGamesFrameScrollFrameButton"..i].Entry.SelectedTexture
-		local warGamesHeader = _G["WarGamesFrameScrollFrameButton"..i].Header
+		local button = _G["WarGamesFrameScrollFrameButton"..i]
 
-		warGamesEntry:StripTextures()
-		warGamesEntry:CreateBackdrop()
-		warGamesEntry.backdrop:SetOutside(warGamesIcon)
-		warGamesEntry:StyleButton(nil, true)
-		warGamesEntry:Width(300)
+		button.Entry:StripTextures()
+		button.Entry:CreateBackdrop()
+		button.Entry.backdrop:SetOutside(button.Entry.Icon)
+		button.Entry:Width(300)
 
-		warGamesSelected:SetTexture(0, 0.7, 1, 0.20)
-		warGamesSelected:SetInside()
+		S:HandleButtonHighlight(button.Entry)
+		button.Entry.handledHighlight:SetInside()
 
-		warGamesIcon:Point("TOPLEFT", E.PixelMode and 2 or 5, -(E.PixelMode and 2 or 4))
-		warGamesIcon:Size(E.PixelMode and 36 or 32)
-		warGamesIcon:SetParent(warGamesEntry.backdrop)
+		button.Entry.SelectedTexture:SetTexture(E.Media.Textures.Highlight)
+		button.Entry.SelectedTexture:SetVertexColor(0, 0.7, 1, 0.35)
+		button.Entry.SelectedTexture:SetInside()
+		button.Entry.SelectedTexture:SetTexCoord(0, 1, 0, 1)
 
-		warGamesHeader:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
-		warGamesHeader.SetNormalTexture = E.noop
-		warGamesHeader:GetNormalTexture():Size(14)
-		warGamesHeader:GetNormalTexture():Point("LEFT", 3, 0)
-		warGamesHeader:SetHighlightTexture("")
-		warGamesHeader.SetHighlightTexture = E.noop
+		button.Entry.Icon:Point("TOPLEFT", E.PixelMode and 2 or 5, -(E.PixelMode and 2 or 4))
+		button.Entry.Icon:Size(E.PixelMode and 36 or 32)
+		button.Entry.Icon:SetParent(button.Entry.backdrop)
 
-		hooksecurefunc(warGamesHeader, "SetNormalTexture", function(self, texture)
+		button.Header:SetNormalTexture(E.Media.Textures.Plus)
+		button.Header.SetNormalTexture = E.noop
+		button.Header:GetNormalTexture():Size(14)
+		button.Header:GetNormalTexture():Point("LEFT", 3, 0)
+
+		button.Header:SetHighlightTexture("")
+		button.Header.SetHighlightTexture = E.noop
+
+		hooksecurefunc(button.Header, "SetNormalTexture", function(self, texture)
+			local normal = self:GetNormalTexture()
+
 			if find(texture, "MinusButton") then
-				self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+				normal:SetTexture(E.Media.Textures.Minus)
 			elseif find(texture, "PlusButton") then
-				self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+				normal:SetTexture(E.Media.Textures.Plus)
 			end
 		end)
 	end
@@ -274,7 +282,7 @@ end
 S:AddCallbackForAddon("Blizzard_PVPUI", "PVPUI", LoadSkin)
 
 local function LoadSecondarySkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.pvp ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.pvp then return end
 
 	-- PvP Ready Dialog
 	PVPReadyDialog:StripTextures()

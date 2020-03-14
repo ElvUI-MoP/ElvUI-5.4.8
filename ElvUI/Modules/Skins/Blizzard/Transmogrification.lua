@@ -5,7 +5,7 @@ local _G = _G
 local pairs, unpack, select = pairs, unpack, select
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.transmogrify ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.transmogrify then return end
 
 	TransmogrifyFrame:StripTextures()
 	TransmogrifyFrame:SetTemplate("Transparent")
@@ -27,30 +27,22 @@ local function LoadSkin()
 	S:HandleCloseButton(TransmogrifyArtFrameCloseButton)
 
 	local slots = {
-		"Head",
-		"Shoulder",
-		"Chest",
-		"Waist",
-		"Legs",
-		"Feet",
-		"Wrist",
-		"Hands",
-		"Back",
-		"MainHand",
-		"SecondaryHand"
+		"HeadSlot", "ShoulderSlot", "ChestSlot", "WaistSlot",
+		"LegsSlot", "FeetSlot", "WristSlot", "HandsSlot", "BackSlot",
+		"MainHandSlot", "SecondaryHandSlot"
 	}
 
 	for _, slot in pairs(slots) do
-		local icon = _G["TransmogrifyFrame"..slot.."SlotIconTexture"]
-		local popout = _G["TransmogrifyFrame" .. slot .. "SlotPopoutButton"]
-		local slot = _G["TransmogrifyFrame"..slot.."Slot"]
+		local item = _G["TransmogrifyFrame"..slot]
+		local icon = _G["TransmogrifyFrame"..slot.."IconTexture"]
+		local popout = _G["TransmogrifyFrame"..slot.."PopoutButton"]
 
-		if slot then
-			slot:StripTextures()
-			slot:StyleButton(false)
-			slot:SetFrameLevel(slot:GetFrameLevel() + 2)
-			slot:CreateBackdrop("Default")
-			slot.backdrop:SetAllPoints()
+		if item then
+			item:StripTextures()
+			item:CreateBackdrop()
+			item:StyleButton()
+			item:SetFrameLevel(item:GetFrameLevel() + 2)
+			item.backdrop:SetAllPoints()
 
 			icon:SetTexCoord(unpack(E.TexCoords))
 			icon:SetInside()
@@ -65,19 +57,37 @@ local function LoadSkin()
 			popout.icon = popout:CreateTexture(nil, "ARTWORK")
 			popout.icon:Size(14)
 			popout.icon:Point("CENTER")
-			popout.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
+			popout.icon:SetTexture(E.Media.Textures.ArrowUp)
 
 			if slot.verticalFlyout then
 				popout:Size(27, 11)
-				SquareButton_SetIcon(popout, "DOWN")
-				popout:Point("TOP", slot, "BOTTOM", 0, 5)
+				popout:Point("TOP", item, "BOTTOM", 0, 5)
+				popout.icon:SetRotation(3.14)
 			else
 				popout:Size(11, 27)
-				SquareButton_SetIcon(popout, "RIGHT")
-				popout:Point("LEFT", slot, "RIGHT", -5, 0)
+				popout:Point("LEFT", item, "RIGHT", -5, 0)
+				popout.icon:SetRotation(-1.57)
 			end
 		end
 	end
+
+	hooksecurefunc("EquipmentFlyoutPopoutButton_SetReversed", function(self, isReversed)
+		if self:GetParent():GetParent() ~= TransmogrifyFrame then return end
+
+		if self:GetParent().verticalFlyout then
+			if isReversed then
+				self.icon:SetRotation(0)
+			else
+				self.icon:SetRotation(3.14)
+			end
+		else
+			if isReversed then
+				self.icon:SetRotation(1.57)
+			else
+				self.icon:SetRotation(-1.57)
+			end
+		end
+	end)
 
 	-- Confirmation Popup
 	TransmogrifyConfirmationPopup:SetParent(UIParent)
@@ -98,28 +108,7 @@ local function LoadSkin()
 	end)
 
 	-- Control Frame
-	TransmogrifyModelFrameControlFrame:StripTextures()
-	TransmogrifyModelFrameControlFrame:Size(123, 23)
-
-	local controlbuttons = {
-		"TransmogrifyModelFrameControlFrameZoomInButton",
-		"TransmogrifyModelFrameControlFrameZoomOutButton",
-		"TransmogrifyModelFrameControlFramePanButton",
-		"TransmogrifyModelFrameControlFrameRotateRightButton",
-		"TransmogrifyModelFrameControlFrameRotateLeftButton",
-		"TransmogrifyModelFrameControlFrameRotateResetButton"
-	}
-
-	for i = 1, #controlbuttons do
-		S:HandleButton(_G[controlbuttons[i]])
-		_G[controlbuttons[i].."Bg"]:Hide()
-	end
-
-	TransmogrifyModelFrameControlFrameZoomOutButton:Point("LEFT", "TransmogrifyModelFrameControlFrameZoomInButton", "RIGHT", 2, 0)
-	TransmogrifyModelFrameControlFramePanButton:Point("LEFT", "TransmogrifyModelFrameControlFrameZoomOutButton", "RIGHT", 2, 0)
-	TransmogrifyModelFrameControlFrameRotateRightButton:Point("LEFT", "TransmogrifyModelFrameControlFramePanButton", "RIGHT", 2, 0)
-	TransmogrifyModelFrameControlFrameRotateLeftButton:Point("LEFT", "TransmogrifyModelFrameControlFrameRotateRightButton", "RIGHT", 2, 0)
-	TransmogrifyModelFrameControlFrameRotateResetButton:Point("LEFT", "TransmogrifyModelFrameControlFrameRotateLeftButton", "RIGHT", 2, 0)
+	S:HandleModelControlFrame(TransmogrifyModelFrameControlFrame)
 end
 
 S:AddCallbackForAddon("Blizzard_ItemAlterationUI", "ItemAlterationUI", LoadSkin)

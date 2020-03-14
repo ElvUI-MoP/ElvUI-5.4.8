@@ -5,7 +5,7 @@ local _G = _G
 local pairs = pairs
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.raid ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.raid then return end
 
 	local StripAllTextures = {
 		"RaidGroup1",
@@ -26,7 +26,7 @@ local function LoadSkin()
 		end
 	end
 
-	for i = 1, MAX_RAID_GROUPS*5 do
+	for i = 1, MAX_RAID_GROUPS * 5 do
 		S:HandleButton(_G["RaidGroupButton"..i], true)
 	end
 

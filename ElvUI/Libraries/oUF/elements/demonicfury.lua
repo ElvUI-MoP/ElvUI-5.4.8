@@ -94,10 +94,6 @@ local function Enable(self, unit)
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
-		if element.bg then
-			element.bg:SetAlpha(0.15)
-		end
-
 		return true
 	end
 end

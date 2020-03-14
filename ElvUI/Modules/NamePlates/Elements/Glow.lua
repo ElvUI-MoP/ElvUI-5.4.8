@@ -1,6 +1,8 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local mod = E:GetModule("NamePlates")
+local NP = E:GetModule("NamePlates")
 local LSM = E.Libs.LSM
+
+local ipairs = ipairs
 
 local CreateFrame = CreateFrame
 
@@ -16,141 +18,169 @@ Target Glow Style Option Variables
 	style8 - Background + Side Arrows
 ]]
 
-function mod:UpdatePoisiton_Arrow(frame, shouldShow)
-	if frame.TopArrow and (shouldShow ~= 2) and (self.db.targetGlow == "style3" or self.db.targetGlow == "style5" or self.db.targetGlow == "style6") then -- top arrow
-		local topArrowSpace = -3
-		if self.db.units[frame.UnitType].showName and (frame.Name:GetText() ~= nil and frame.Name:GetText() ~= "") then
-			topArrowSpace = self.db.fontSize + topArrowSpace
-		end
-		frame.TopArrow:Point("BOTTOM", frame.HealthBar, "TOP", 0, topArrowSpace)
+function NP:Update_Glow(frame)
+	local showIndicator
 
-		if shouldShow then
-			frame.TopArrow:Show()
-		end
-	end
-
-	if (frame.LeftArrow and frame.RightArrow) and (shouldShow ~= 2) and (self.db.targetGlow == "style4" or self.db.targetGlow == "style7" or self.db.targetGlow == "style8") then -- side arrows
-		frame.RightArrow:Point("RIGHT", frame.HealthBar, "LEFT", 3, 0)
-		frame.LeftArrow:Point("LEFT", frame.HealthBar, "RIGHT", -3, 0)
-
-		if shouldShow then
-			frame.RightArrow:Show()
-			frame.LeftArrow:Show()
-		end
-	end
-end
-
-function mod:UpdatePosition_Glow(frame, shouldShow)
-	local castBar = frame.CastBar and frame.CastBar:IsShown() and frame.CastBar
-	local iconPosition = castBar and (castBar.Icon and castBar.Icon:IsShown()) and (frame.UnitType and self.db.units[frame.UnitType].castbar.iconPosition)
-
-	if frame.Glow and (self.db.targetGlow == "style1" or self.db.targetGlow == "style5" or self.db.targetGlow == "style7") then -- original glow
-		local offset = E:Scale(E.PixelMode and 6 or 8) -- edgeSize is 6 (not attached to the backdrop needs +1 for pixel mode or +3 for non pixel mode)
-		if self.db.units[frame.UnitType].castbar.offset < 4 then
-			frame.Glow:SetOutside((iconPosition == "LEFT" and castBar.Icon) or frame.HealthBar, offset, offset, (iconPosition == "RIGHT" and castBar.Icon) or castBar)
-		else
-			frame.Glow:SetOutside(frame.HealthBar, offset, offset)
-		end
-
-		if shouldShow then
-			frame.Glow:Show()
-		end
-	end
-
-	if frame.Glow2 and (self.db.targetGlow == "style2" or self.db.targetGlow == "style6" or self.db.targetGlow == "style8") then -- new background glow
-		local scale = 1
-		if self.db.useTargetScale then
-			if self.db.targetScale >= 0.75 then
-				scale = self.db.targetScale
-			else
-				scale = 0.75
-			end
-		end
-
-		local size = (E.Border+14+(castBar and 3 or 0))*scale
-		frame.Glow2:Point("TOPLEFT", (iconPosition == "LEFT" and castBar.Icon) or frame.HealthBar, "TOPLEFT", -(size*2), size)
-		frame.Glow2:Point("BOTTOMRIGHT", (iconPosition == "RIGHT" and castBar.Icon) or castBar or frame.HealthBar, "BOTTOMRIGHT", size*2, -size)
-
-		if shouldShow then
-			frame.Glow2:Show()
-		end
-	end
-end
-
-function mod:UpdateElement_Glow(frame)
-	if frame.TopArrow:IsShown() then frame.TopArrow:Hide() end
-	if frame.LeftArrow:IsShown() then frame.LeftArrow:Hide() end
-	if frame.RightArrow:IsShown() then frame.RightArrow:Hide() end
-	if frame.Glow2:IsShown() then frame.Glow2:Hide() end
-	if frame.Glow:IsShown() then frame.Glow:Hide() end
-	if not frame.HealthBar:IsShown() then return end
-
-	local shouldShow, r, g, b, a = 0
-	if frame.isTarget and self.db.targetGlow ~= "none" then
-		r, g, b, a = self.db.glowColor.r, self.db.glowColor.g, self.db.glowColor.b, self.db.glowColor.a
-		shouldShow = 1
+	if frame.isTarget then
+		showIndicator = 1
 	elseif self.db.lowHealthThreshold > 0 then
 		local health = frame.oldHealthBar:GetValue()
 		local _, maxHealth = frame.oldHealthBar:GetMinMaxValues()
 		local perc = health / maxHealth
-		if perc <= self.db.lowHealthThreshold then
+
+		if health > 1 and perc <= self.db.lowHealthThreshold then
 			if perc <= self.db.lowHealthThreshold / 2 then
-				r, g, b, a = 1, 0, 0, 1
+				showIndicator = 2
 			else
-				r, g, b, a = 1, 1, 0, 1
+				showIndicator = 3
 			end
-
-			shouldShow = 2
 		end
 	end
 
-	if shouldShow ~= 0 then
-		self:UpdatePosition_Glow(frame, shouldShow)
-		self:UpdatePoisiton_Arrow(frame, shouldShow)
+	local glowStyle = self.db.units.TARGET.glowStyle
+	local healthIsShown = frame.Health:IsShown()
 
-		if frame.Glow and (r ~= frame.Glow.r or g ~= frame.Glow.g or b ~= frame.Glow.b or a ~= frame.Glow.a) then
-			frame.Glow:SetBackdropBorderColor(r, g, b, a)
-			frame.Glow2:SetVertexColor(r, g, b, a)
-			frame.TopArrow:SetVertexColor(r, g, b, a)
-			frame.LeftArrow:SetVertexColor(r, g, b, a)
-			frame.RightArrow:SetVertexColor(r, g, b, a)
-			frame.Glow.r, frame.Glow.g, frame.Glow.b, frame.Glow.a = r, g, b, a
+	if not healthIsShown then
+		if glowStyle == "style1" then
+			glowStyle = "none"
+		elseif glowStyle == "style5" then
+			glowStyle = "style3"
+		elseif glowStyle == "style7" then
+			glowStyle = "style4"
+		end
+	end
+
+	if showIndicator and glowStyle ~= "none" then
+		local r, g, b
+
+		if showIndicator == 1 then
+			local color = self.db.colors.glowColor
+			r, g, b = color.r, color.g, color.b
+		elseif showIndicator == 2 then
+			r, g, b = 1, 0, 0
+		else
+			r, g, b = 1, 1, 0
+		end
+
+		-- Indicators
+		frame.TopIndicator:SetVertexColor(r, g, b)
+		frame.LeftIndicator:SetVertexColor(r, g, b)
+		frame.RightIndicator:SetVertexColor(r, g, b)
+
+		if glowStyle == "style3" or glowStyle == "style5" or glowStyle == "style6" then
+			frame.LeftIndicator:Hide()
+			frame.RightIndicator:Hide()
+			frame.TopIndicator:Show()
+		elseif glowStyle == "style4" or glowStyle == "style7" or glowStyle == "style8" then
+			frame.TopIndicator:Hide()
+			frame.LeftIndicator:Show()
+			frame.RightIndicator:Show()
+		end
+
+		-- Spark / Shadow
+		frame.Shadow:SetBackdropBorderColor(r, g, b)
+		frame.Spark:SetVertexColor(r, g, b)
+
+		if glowStyle == "style1" or glowStyle == "style5" or glowStyle == "style7" then
+			frame.Spark:Hide()
+			frame.Shadow:Show()
+		elseif glowStyle == "style2" or glowStyle == "style6" or glowStyle == "style8" then
+			frame.Shadow:Hide()
+			frame.Spark:Show()
+		end
+	else
+		frame.TopIndicator:Hide()
+		frame.LeftIndicator:Hide()
+		frame.RightIndicator:Hide()
+		frame.Shadow:Hide()
+		frame.Spark:Hide()
+	end
+end
+
+function NP:Configure_Glow(frame)
+	local glowStyle = self.db.units.TARGET.glowStyle
+	local healthIsShown = frame.Health:IsShown()
+
+	if not healthIsShown then
+		if glowStyle == "style1" then
+			glowStyle = "none"
+		elseif glowStyle == "style5" then
+			glowStyle = "style3"
+		elseif glowStyle == "style7" then
+			glowStyle = "style4"
+		end
+	end
+
+	if glowStyle ~= "none" then
+		local color = self.db.colors.glowColor
+		local r, g, b, a = color.r, color.g, color.b, color.a
+
+		-- Indicators
+		frame.LeftIndicator:SetVertexColor(r, g, b)
+		frame.RightIndicator:SetVertexColor(r, g, b)
+		frame.TopIndicator:SetVertexColor(r, g, b)
+
+		frame.LeftIndicator:ClearAllPoints()
+		frame.RightIndicator:ClearAllPoints()
+		frame.TopIndicator:ClearAllPoints()
+
+		if glowStyle == "style3" or glowStyle == "style5" or glowStyle == "style6" then
+			if healthIsShown then
+				frame.TopIndicator:SetPoint("BOTTOM", frame.Health, "TOP", 0, 6)
+			else
+				frame.TopIndicator:SetPoint("BOTTOM", frame.Name, "TOP", 0, 8)
+			end
+		elseif glowStyle == "style4" or glowStyle == "style7" or glowStyle == "style8" then
+			if healthIsShown then
+				frame.LeftIndicator:SetPoint("LEFT", frame.Health, "RIGHT", -3, 0)
+				frame.RightIndicator:SetPoint("RIGHT", frame.Health, "LEFT", 3, 0)
+			else
+				frame.LeftIndicator:SetPoint("LEFT", frame.Name, "RIGHT", 20, 0)
+				frame.RightIndicator:SetPoint("RIGHT", frame.Name, "LEFT", -20, 0)
+			end
+		end
+
+		-- Spark / Shadow
+		frame.Shadow:SetBackdropBorderColor(r, g, b)
+		frame.Shadow:SetAlpha(a)
+
+		frame.Spark:SetVertexColor(r, g, b, a)
+		frame.Spark:ClearAllPoints()
+
+		if glowStyle == "style1" or glowStyle == "style5" or glowStyle == "style7" then
+			frame.Shadow:SetOutside(frame.Health, E:Scale(E.PixelMode and 6 or 8), E:Scale(E.PixelMode and 6 or 8))
+		elseif glowStyle == "style2" or glowStyle == "style6" or glowStyle == "style8" then
+			if healthIsShown then
+				local size = E.Border + 14
+				frame.Spark:SetPoint("TOPLEFT", frame.Health, -(size * 2), size)
+				frame.Spark:SetPoint("BOTTOMRIGHT", frame.Health, (size * 2), -size)
+			else
+				local nameIsShown = frame.Name:IsShown()
+				frame.Spark:SetPoint("TOPLEFT", nameIsShown and frame.Name or frame.IconFrame, -20, 8)
+				frame.Spark:SetPoint("BOTTOMRIGHT", nameIsShown and frame.Name or frame.IconFrame, 20, -8)
+			end
 		end
 	end
 end
 
-function mod:ConfigureElement_Glow(frame)
+local Textures = {"Spark", "TopIndicator", "LeftIndicator", "RightIndicator"}
 
-end
+function NP:Construct_Glow(frame)
+	frame.Shadow = CreateFrame("Frame", "$parentGlow", frame)
+	frame.Shadow:SetFrameLevel(frame.Health:GetFrameLevel() - 1)
+	frame.Shadow:SetBackdrop({edgeFile = LSM:Fetch("border", "ElvUI GlowBorder"), edgeSize = E:Scale(6)})
+	frame.Shadow:Hide()
 
-function mod:ConstructElement_Glow(frame)
-	local f = CreateFrame("Frame", nil, frame)
-	f:SetFrameLevel(frame.HealthBar:GetFrameLevel() - 1)
-	f:SetBackdrop({edgeFile = LSM:Fetch("border", "ElvUI GlowBorder"), edgeSize = E:Scale(6)})
-	f:Hide()
+	for _, object in ipairs(Textures) do
+		frame[object] = frame:CreateTexture(nil, "BACKGROUND")
+		frame[object]:Hide()
+	end
 
-	local glow = frame:CreateTexture(nil, "BACKGROUND")
-	glow:SetTexture([[Interface\AddOns\ElvUI\media\textures\spark]])
-	glow:Hide()
-	frame.Glow2 = glow
-
-	local top = frame:CreateTexture(nil, "BACKGROUND")
-	top:SetTexture([[Interface\AddOns\ElvUI\media\textures\nameplateTargetIndicator]])
-	top:Size(45)
-	top:Hide()
-	frame.TopArrow = top
-
-	local left = frame:CreateTexture(nil, "BACKGROUND")
-	left:SetTexture([[Interface\AddOns\ElvUI\media\textures\nameplateTargetIndicatorLeft]])
-	left:Size(45)
-	left:Hide()
-	frame.LeftArrow = left
-
-	local right = frame:CreateTexture(nil, "BACKGROUND")
-	right:SetTexture([[Interface\AddOns\ElvUI\media\textures\nameplateTargetIndicatorRight]])
-	right:Size(45)
-	right:Hide()
-	frame.RightArrow = right
-
-	return f
+	frame.Spark:SetTexture(E.Media.Textures.Spark)
+	frame.TopIndicator:SetTexture(E.Media.Textures.ArrowUp)
+	frame.TopIndicator:SetRotation(3.14)
+	frame.LeftIndicator:SetTexture(E.Media.Textures.ArrowUp)
+	frame.LeftIndicator:SetRotation(1.57)
+	frame.RightIndicator:SetTexture(E.Media.Textures.ArrowUp)
+	frame.RightIndicator:SetRotation(-1.57)
 end

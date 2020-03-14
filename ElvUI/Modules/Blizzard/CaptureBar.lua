@@ -1,9 +1,7 @@
-local E, L, DF = unpack(select(2, ...))
+local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Blizzard")
 
 local _G = _G
-
-local pvpHolder = CreateFrame("Frame", "PvPHolder", E.UIParent)
 
 function B:WorldStateAlwaysUpFrame_Update()
 	local captureBar
@@ -12,7 +10,7 @@ function B:WorldStateAlwaysUpFrame_Update()
 
 		if captureBar and captureBar:IsShown() then
 			captureBar:ClearAllPoints()
-			captureBar:Point("TOP", pvpHolder, "BOTTOM", 0, -75)
+			captureBar:Point("TOP", PvPHolder, "BOTTOM", 0, -75)
 		end
 	end
 
@@ -25,7 +23,7 @@ function B:WorldStateAlwaysUpFrame_Update()
 		if frame then
 			if i == 1 then
 				frame:ClearAllPoints()
-				frame:Point("CENTER", pvpHolder, "CENTER", 0, 5)
+				frame:Point("CENTER", PvPHolder, "CENTER", 0, 5)
 			end
 
 			text:ClearAllPoints()
@@ -41,10 +39,12 @@ function B:WorldStateAlwaysUpFrame_Update()
 end
 
 function B:PositionCaptureBar()
+	local PvPHolder = CreateFrame("Frame", "PvPHolder", E.UIParent)
+	PvPHolder:Size(30, 70)
+	PvPHolder:Point("TOP", E.UIParent, "TOP", 0, -4)
+
+	E:CreateMover(PvPHolder, "PvPMover", L["PvP"], nil, nil, nil, "ALL")
+	PvPHolder:SetAllPoints(PvPMover)
+
 	self:SecureHook("WorldStateAlwaysUpFrame_Update")
-
-	pvpHolder:Size(30, 70)
-	pvpHolder:Point("TOP", E.UIParent, "TOP", 0, -4)
-
-	E:CreateMover(pvpHolder, "PvPMover", L["PvP"], nil, nil, nil, "ALL")
 end

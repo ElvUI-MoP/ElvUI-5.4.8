@@ -9,7 +9,6 @@ local GetMeleeMissChance = GetMeleeMissChance
 local GetSpellMissChance = GetSpellMissChance
 local GetRangedMissChance = GetRangedMissChance
 local IsDualWielding = IsDualWielding
-local UnitLevel = UnitLevel
 local CR_HIT_MELEE = CR_HIT_MELEE
 local CR_HIT_SPELL = CR_HIT_SPELL
 local CR_HIT_RANGED = CR_HIT_RANGED
@@ -22,7 +21,6 @@ local STAT_HIT_RANGED_TOOLTIP = STAT_HIT_RANGED_TOOLTIP
 local STAT_HIT_NORMAL_ATTACKS = STAT_HIT_NORMAL_ATTACKS
 local STAT_HIT_SPECIAL_ATTACKS = STAT_HIT_SPECIAL_ATTACKS
 
-local playerLevel = UnitLevel("player")
 local skullTexture = "|TInterface\\TargetingFrame\\UI-TargetingFrame-Skull:0|t"
 local displayString = ""
 local hitRatingBonus
@@ -30,7 +28,7 @@ local missChance, level
 local lastPanel
 
 local function OnEvent(self)
-	if E.role == "Caster" then
+	if E.Role == "Caster" then
 		hitRatingBonus = GetCombatRatingBonus(CR_HIT_SPELL)
 	else
 		if E.myclass == "HUNTER" then
@@ -55,7 +53,7 @@ local function OnEnter(self)
 
 		for i = 0, 3 do
 			missChance = format("%.2f%%", GetSpellMissChance(i))
-			level = playerLevel + i
+			level = E.mylevel + i
 			if i == 3 then
 				level = level.." / "..skullTexture
 			end
@@ -70,7 +68,7 @@ local function OnEnter(self)
 
 			for i = 0, 3 do
 				missChance = format("%.2f%%", GetRangedMissChance(i))
-				level = playerLevel + i
+				level = E.mylevel + i
 				if i == 3 then
 					level = level.." / "..skullTexture
 				end
@@ -89,7 +87,7 @@ local function OnEnter(self)
 
 			for i = 0, 3 do
 				missChance = format("%.2f%%", GetMeleeMissChance(i, false))
-				level = playerLevel + i
+				level = E.mylevel + i
 				if i == 3 then
 					level = level.." / "..skullTexture
 				end
@@ -103,7 +101,7 @@ local function OnEnter(self)
 
 				for i = 0, 3 do
 					missChance = format("%.2f%%", GetMeleeMissChance(i, true))
-					level = playerLevel + i
+					level = E.mylevel + i
 					if i == 3 then
 						level = level.." / "..skullTexture
 					end

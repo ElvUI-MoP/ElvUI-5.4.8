@@ -1,4 +1,6 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
+local DT = E:GetModule("DataTexts")
+local AB = E:GetModule("ActionBars")
 
 local _G = _G
 local tonumber, type = tonumber, type
@@ -6,7 +8,7 @@ local format, lower, split = string.format, string.lower, string.split
 
 local InCombatLockdown = InCombatLockdown
 local UIFrameFadeOut, UIFrameFadeIn = UIFrameFadeOut, UIFrameFadeIn
-local EnableAddOn, DisableAddOn, DisableAllAddOns = EnableAddOn, DisableAddOn, DisableAllAddOns
+local EnableAddOn, DisableAllAddOns = EnableAddOn, DisableAllAddOns
 local SetCVar = SetCVar
 local ReloadUI = ReloadUI
 local GuildControlGetNumRanks = GuildControlGetNumRanks
@@ -39,7 +41,7 @@ function E:LuaError(msg)
 	if msg == "on" then
 		DisableAllAddOns()
 		EnableAddOn("ElvUI")
-		EnableAddOn("ElvUI_Config")
+		EnableAddOn("ElvUI_OptionsUI")
 		SetCVar("scriptErrors", 1)
 		ReloadUI()
 	elseif msg == "off" then
@@ -51,7 +53,6 @@ function E:LuaError(msg)
 end
 
 function E:BGStats()
-	local DT = E:GetModule("DataTexts")
 	DT.ForceHideBGStats = nil
 	DT:LoadDataTexts()
 
@@ -75,7 +76,7 @@ end
 
 function FarmMode()
 	if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
-	if E.private.general.minimap.enable ~= true then return end
+	if not E.private.general.minimap.enable then return end
 
 	if Minimap:IsShown() then
 		UIFrameFadeOut(Minimap, 0.3)
@@ -101,6 +102,8 @@ function E:FarmMode(msg)
 	FarmMode()
 end
 
+-- make this a locale later?
+local MassKickMessage = "Guild Cleanup Results: Removed all guild members below rank %s, that have a minimal level of %s, and have not been online for at least: %s days."
 function E:MassGuildKick(msg)
 	local minLevel, minDays, minRankIndex = split(",", msg)
 	minRankIndex = tonumber(minRankIndex)
@@ -117,7 +120,9 @@ function E:MassGuildKick(msg)
 		return
 	end
 
-	if not minRankIndex then minRankIndex = GuildControlGetNumRanks() - 1 end
+	if not minRankIndex then
+		minRankIndex = GuildControlGetNumRanks() - 1
+	end
 
 	for i = 1, GetNumGuildMembers() do
 		local name, _, rankIndex, level, _, _, note, officerNote, connected, _, classFileName = GetGuildRosterInfo(i)
@@ -129,13 +134,14 @@ function E:MassGuildKick(msg)
 
 		if not connected then
 			local years, months, days = GetGuildRosterLastOnline(i)
-			if days ~= nil and ((years > 0 or months > 0 or days >= minDays) and rankIndex >= minRankIndex) and note ~= nil and officerNote ~= nil and (level <= minLevelx) then
+			if days ~= nil and ((years > 0 or months > 0 or days >= minDays) and rankIndex >= minRankIndex)
+			and note ~= nil and officerNote ~= nil and (level <= minLevelx) then
 				GuildUninvite(name)
 			end
 		end
 	end
 
-	SendChatMessage("Guild Cleanup Results: Removed all guild members below rank "..GuildControlGetRankName(minRankIndex)..", that have a minimal level of "..minLevel..", and have not been online for at least: "..minDays.." days.", "GUILD")
+	SendChatMessage(format(MassKickMessage, GuildControlGetRankName(minRankIndex), minLevel, minDays), "GUILD")
 end
 
 local num_frames = 0
@@ -146,7 +152,7 @@ local f = CreateFrame("Frame")
 f:Hide()
 f:SetScript("OnUpdate", OnUpdate)
 
-local toggleMode, debugTimer = false, 0
+local toggleMode, debugTimer, cpuImpactMessage = false, 0, "Consumed %sms per frame. Each frame took %sms to render."
 function E:GetCPUImpact()
 	if not GetCVarBool("scriptProfile") then
 		E:Print("For `/cpuimpact` to work, you need to enable script profiling via: `/console scriptProfile 1` then reload. Disable after testing by setting it back to 0.")
@@ -164,7 +170,7 @@ function E:GetCPUImpact()
 		UpdateAddOnCPUUsage()
 
 		local per, passed = ((num_frames == 0 and 0) or (GetAddOnCPUUsage("ElvUI") / num_frames)), ((num_frames == 0 and 0) or (ms_passed / num_frames))
-		self:Print("Consumed "..(per and per > 0 and format("%.3f", per) or 0).."ms per frame. Each frame took "..(passed and passed > 0 and format("%.3f", passed) or 0).."ms to render.")
+		self:Print(format(cpuImpactMessage, per and per > 0 and format("%.3f", per) or 0, passed and passed > 0 and format("%.3f", passed) or 0))
 		toggleMode = false
 	end
 end
@@ -213,7 +219,7 @@ local BLIZZARD_ADDONS = {
 	"Blizzard_TokenUI",
 	"Blizzard_TradeSkillUI",
 	"Blizzard_TrainerUI",
-	"Blizzard_VoidStorageUI",
+	"Blizzard_VoidStorageUI"
 }
 
 function E:EnableBlizzardAddOns()
@@ -226,28 +232,42 @@ function E:EnableBlizzardAddOns()
 	end
 end
 
+do -- Blizzard Commands
+	-- ReloadUI: /rl, /reloadui, /reload  NOTE: /reload is from SLASH_RELOAD
+	if not SlashCmdList.RELOADUI then
+		SLASH_RELOADUI1 = "/rl"
+		SLASH_RELOADUI2 = "/reloadui"
+		SlashCmdList.RELOADUI = ReloadUI
+	end
+end
+
 function E:LoadCommands()
-	self:RegisterChatCommand("in", "DelayScriptCall");
-	self:RegisterChatCommand("ec", "ToggleConfig");
-	self:RegisterChatCommand("elvui", "ToggleConfig");
-	self:RegisterChatCommand("cpuimpact", "GetCPUImpact");
-	self:RegisterChatCommand("cpuusage", "GetTopCPUFunc");
-	self:RegisterChatCommand("bgstats", "BGStats");
-	self:RegisterChatCommand("hellokitty", "HelloKittyToggle");
-	self:RegisterChatCommand("hellokittyfix", "HelloKittyFix");
-	self:RegisterChatCommand("harlemshake", "HarlemShakeToggle");
-	self:RegisterChatCommand("luaerror", "LuaError");
-	self:RegisterChatCommand("egrid", "Grid");
-	self:RegisterChatCommand("moveui", "ToggleConfigMode");
-	self:RegisterChatCommand("resetui", "ResetUI");
-	self:RegisterChatCommand("enable", "EnableAddon");
-	self:RegisterChatCommand("disable", "DisableAddon");
-	self:RegisterChatCommand("farmmode", "FarmMode");
+	self:RegisterChatCommand("in", "DelayScriptCall")
+	self:RegisterChatCommand("ec", "ToggleOptionsUI")
+	self:RegisterChatCommand("elvui", "ToggleOptionsUI")
+	self:RegisterChatCommand("cpuimpact", "GetCPUImpact")
+	self:RegisterChatCommand("cpuusage", "GetTopCPUFunc")
+	-- cpuusage args: module, showall, delay, minCalls
+	--- Example1: /cpuusage all
+	--- Example2: /cpuusage Bags true
+	--- Example3: /cpuusage UnitFrames nil 50 25
+	---- Note: showall, delay, and minCalls will default if not set
+	---- arg1 can be 'all' this will scan all registered modules!
+
+	self:RegisterChatCommand("bgstats", "BGStats")
+	self:RegisterChatCommand("hellokitty", "HelloKittyToggle")
+	self:RegisterChatCommand("hellokittyfix", "HelloKittyFix")
+	self:RegisterChatCommand("harlemshake", "HarlemShakeToggle")
+	self:RegisterChatCommand("luaerror", "LuaError")
+	self:RegisterChatCommand("egrid", "Grid")
+	self:RegisterChatCommand("moveui", "ToggleMoveMode")
+	self:RegisterChatCommand("resetui", "ResetUI")
+	self:RegisterChatCommand("farmmode", "FarmMode")
 	self:RegisterChatCommand("cleanguild", "MassGuildKick")
 	self:RegisterChatCommand("enableblizzard", "EnableBlizzardAddOns")
 	self:RegisterChatCommand("estatus", "ShowStatusReport")
 
-	if E:GetModule("ActionBars") and E.private.actionbar.enable then
-		self:RegisterChatCommand("kb", E:GetModule("ActionBars").ActivateBindMode);
+	if E.private.actionbar.enable then
+		self:RegisterChatCommand("kb", AB.ActivateBindMode)
 	end
 end

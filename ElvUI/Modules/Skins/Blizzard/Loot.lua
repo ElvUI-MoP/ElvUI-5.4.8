@@ -20,12 +20,11 @@ local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES
 local LOOT, ITEMS = LOOT, ITEMS
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.loot ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.loot then return end
 
 	-- Loot History Frame
-	local LootHistoryFrame = _G["LootHistoryFrame"]
 	LootHistoryFrame:StripTextures()
-	LootHistoryFrame:SetTemplate('Transparent')
+	LootHistoryFrame:SetTemplate("Transparent")
 
 	LootHistoryFrameScrollFrame:StripTextures()
 
@@ -41,9 +40,7 @@ local function LoadSkin()
 	LootHistoryFrame.ResizeButton.icon = LootHistoryFrame.ResizeButton:CreateTexture(nil, "ARTWORK")
 	LootHistoryFrame.ResizeButton.icon:Size(20, 17)
 	LootHistoryFrame.ResizeButton.icon:Point("CENTER")
-	LootHistoryFrame.ResizeButton.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
-
-	SquareButton_SetIcon(LootHistoryFrame.ResizeButton, "DOWN")
+	LootHistoryFrame.ResizeButton.icon:SetTexture(E.Media.Textures.ArrowUp)
 
 	S:HandleScrollBar(LootHistoryFrameScrollFrameScrollBar)
 
@@ -65,36 +62,35 @@ local function LoadSkin()
 				frame.Icon:SetTexCoord(unpack(E.TexCoords))
 				frame.Icon:SetParent(frame.backdrop)
 
-				frame.ToggleButton:Point("LEFT", 2, 0)
+				frame.ToggleButton:Point("LEFT", 4, 0)
 
-				frame.ToggleButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+				frame.ToggleButton:SetNormalTexture(E.Media.Textures.Plus)
 				frame.ToggleButton.SetNormalTexture = E.noop
-				frame.ToggleButton:GetNormalTexture():Size(14)
-				frame.ToggleButton:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+				frame.ToggleButton:GetNormalTexture():Size(18)
 
-				frame.ToggleButton:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+				frame.ToggleButton:SetPushedTexture(E.Media.Textures.Plus)
 				frame.ToggleButton.SetPushedTexture = E.noop
-				frame.ToggleButton:GetPushedTexture():Size(14)
-				frame.ToggleButton:GetPushedTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+				frame.ToggleButton:GetPushedTexture():Size(18)
 
-				frame.ToggleButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+				frame.ToggleButton:SetDisabledTexture(E.Media.Textures.Plus)
 				frame.ToggleButton.SetDisabledTexture = E.noop
-				frame.ToggleButton:GetDisabledTexture():Size(14)
-				frame.ToggleButton:GetDisabledTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+				frame.ToggleButton:GetDisabledTexture():Size(18)
 
 				frame.ToggleButton:SetHighlightTexture("")
 				frame.ToggleButton.SetHighlightTexture = E.noop
 
 				hooksecurefunc(frame.ToggleButton, "SetNormalTexture", function(self, texture)
+					local normal, pushed = self:GetNormalTexture(), self:GetPushedTexture()
+
 					if find(texture, "MinusButton") then
-						self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
-						self:GetPushedTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+						normal:SetTexture(E.Media.Textures.Minus)
+						pushed:SetTexture(E.Media.Textures.Minus)
 					elseif find(texture, "PlusButton") then
-						self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
-						self:GetPushedTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+						normal:SetTexture(E.Media.Textures.Plus)
+						pushed:SetTexture(E.Media.Textures.Plus)
 					else
-						self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
-						self:GetPushedTexture():SetTexCoord(0, 0, 0, 0)
+						normal:SetTexture()
+						pushed:SetTexture()
 					end
 				end)
 
@@ -105,7 +101,6 @@ local function LoadSkin()
 	hooksecurefunc("LootHistoryFrame_FullUpdate", UpdateLoots)
 
 	-- MasterLoot Frame
-	local MasterLooterFrame = _G["MasterLooterFrame"]
 	MasterLooterFrame:StripTextures()
 	MasterLooterFrame:SetTemplate("Transparent")
 	MasterLooterFrame:SetFrameStrata("TOOLTIP")
@@ -128,6 +123,7 @@ local function LoadSkin()
 
 		for i = 1, MasterLooterFrame:GetNumChildren() do
 			local child = select(i, MasterLooterFrame:GetChildren())
+
 			if child and not child.isSkinned and not child:GetName() then
 				if child:GetObjectType() == "Button" then
 					if child:GetPushedTexture() then
@@ -137,6 +133,7 @@ local function LoadSkin()
 						child:SetTemplate()
 						child:StyleButton()
 					end
+
 					child.isSkinned = true
 				end
 			end
@@ -144,7 +141,6 @@ local function LoadSkin()
 	end)
 
 	-- Bonus Roll Frame
-	local BonusRollFrame = _G["BonusRollFrame"]
 	BonusRollFrame:StripTextures()
 	BonusRollFrame:SetTemplate("Transparent")
 
@@ -163,11 +159,11 @@ local function LoadSkin()
 
 	BonusRollFrame.BlackBackgroundHoist.Background:Hide()
 	BonusRollFrame.BlackBackgroundHoist.b = CreateFrame("Frame", nil, BonusRollFrame)
-	BonusRollFrame.BlackBackgroundHoist.b:SetTemplate("Default")
+	BonusRollFrame.BlackBackgroundHoist.b:SetTemplate()
 	BonusRollFrame.BlackBackgroundHoist.b:SetOutside(BonusRollFrame.PromptFrame.Timer)
 
 	BonusRollFrame.SpecIcon.b = CreateFrame("Frame", nil, BonusRollFrame)
-	BonusRollFrame.SpecIcon.b:SetTemplate("Default")
+	BonusRollFrame.SpecIcon.b:SetTemplate()
 	BonusRollFrame.SpecIcon.b:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 2)
 	BonusRollFrame.SpecIcon.b:SetSize(BonusRollFrame.SpecIcon:GetSize())
 	BonusRollFrame.SpecIcon.b:SetFrameLevel(6)
@@ -221,9 +217,16 @@ local function LoadSkin()
 	-- Loot Frame
 	if E.private.general.loot then return end
 
-	local LootFrame = _G["LootFrame"]
 	LootFrame:StripTextures()
 	LootFrame:SetTemplate("Transparent")
+
+	LootFramePortraitOverlay:SetParent(E.HiddenFrame)
+
+	S:HandleNextPrevButton(LootFrameUpButton)
+	LootFrameUpButton:Size(24)
+
+	S:HandleNextPrevButton(LootFrameDownButton)
+	LootFrameDownButton:Size(24)
 
 	LootFrame:EnableMouseWheel(true)
 	LootFrame:SetScript("OnMouseWheel", function(_, value)
@@ -239,15 +242,6 @@ local function LoadSkin()
 	end)
 
 	LootFrameInset:Kill()
-	LootFramePortraitOverlay:SetParent(E.HiddenFrame)
-
-	S:HandleNextPrevButton(LootFrameUpButton)
-	SquareButton_SetIcon(LootFrameUpButton, "UP")
-	LootFrameUpButton:Point("BOTTOMLEFT", 25, 20)
-
-	S:HandleNextPrevButton(LootFrameDownButton)
-	SquareButton_SetIcon(LootFrameDownButton, "DOWN")
-	LootFrameDownButton:Point("BOTTOMLEFT", 145, 20)
 
 	S:HandleCloseButton(LootFrameCloseButton)
 	LootFrameCloseButton:Point("CENTER", LootFrame, "TOPRIGHT", -87, -26)
@@ -283,18 +277,23 @@ local function LoadSkin()
 		S:HandleItemButton(button, true)
 
 		button.bg = CreateFrame("Frame", nil, button)
-		button.bg:SetTemplate("Default")
+		button.bg:SetTemplate()
 		button.bg:Point("TOPLEFT", 40, 0)
 		button.bg:Point("BOTTOMRIGHT", 110, 0)
 		button.bg:SetFrameLevel(button.bg:GetFrameLevel() - 1)
 
-		questTexture:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\bagQuestIcon.tga")
+		questTexture:SetTexture(E.Media.Textures.BagQuestIcon)
 		questTexture.SetTexture = E.noop
 		questTexture:SetTexCoord(0, 1, 0, 1)
 		questTexture:SetInside()
 
 		nameFrame:Hide()
 	end
+
+	local QuestColors = {
+		questStarter = {E.db.bags.colors.items.questStarter.r, E.db.bags.colors.items.questStarter.g, E.db.bags.colors.items.questStarter.b},
+		questItem =	{E.db.bags.colors.items.questItem.r, E.db.bags.colors.items.questItem.g, E.db.bags.colors.items.questItem.b}
+	}
 
 	hooksecurefunc("LootFrame_UpdateButton", function(index)
 		local numLootItems = LootFrame.numLootItems
@@ -306,7 +305,7 @@ local function LoadSkin()
 		local button = _G["LootButton"..index]
 		local slot = (numLootToShow * (LootFrame.page - 1)) + index
 
-		if slot <= numLootItems then 
+		if slot <= numLootItems then
 			if LootSlotHasItem(slot) and index <= numLootToShow then
 				local texture, _, _, quality, _, isQuestItem, questId, isActive = GetLootSlotInfo(slot)
 				if texture then
@@ -315,10 +314,10 @@ local function LoadSkin()
 					questTexture:Hide()
 
 					if questId and not isActive then
-						button.backdrop:SetBackdropBorderColor(1.0, 1.0, 0.0)
+						button.backdrop:SetBackdropBorderColor(unpack(QuestColors.questStarter))
 						questTexture:Show()
 					elseif questId or isQuestItem then
-						button.backdrop:SetBackdropBorderColor(1.0, 0.3, 0.3)
+						button.backdrop:SetBackdropBorderColor(unpack(QuestColors.questItem))
 					elseif quality then
 						button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
@@ -331,25 +330,21 @@ local function LoadSkin()
 end
 
 local function LoadRollSkin()
-	if E.private.general.lootRoll then return end
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lootRoll then return end
 
 	local function OnShow(self)
-		local cornerTexture = _G[self:GetName().."Corner"]
-		local iconFrame = _G[self:GetName().."IconFrame"]
-		local statusBar = _G[self:GetName().."Timer"]
 		local _, _, _, quality = GetLootRollItemInfo(self.rollID)
+		local r, g, b = GetItemQualityColor(quality)
 
 		self:SetTemplate("Transparent")
 
-		cornerTexture:SetTexture()
-
-		iconFrame:SetBackdropBorderColor(GetItemQualityColor(quality))
-		statusBar:SetStatusBarColor(GetItemQualityColor(quality))
+		self.IconFrame:SetBackdropBorderColor(r, g, b)
+		self.Timer:SetStatusBarColor(r, g, b)
 	end
 
 	for i = 1, NUM_GROUP_LOOT_FRAMES do
 		local frame = _G["GroupLootFrame"..i]
+
 		frame:StripTextures()
 		frame:ClearAllPoints()
 
@@ -359,33 +354,24 @@ local function LoadRollSkin()
 			frame:Point("TOP", _G["GroupLootFrame"..i - 1], "BOTTOM", 0, -4)
 		end
 
-		local frameName = frame:GetName()
+		frame.IconFrame:SetTemplate()
+		frame.IconFrame:StyleButton()
+		frame.IconFrame.Border:Hide()
 
-		local iconFrame = _G[frameName.."IconFrame"]
-		iconFrame:SetTemplate("Default")
-		iconFrame:StyleButton()
+		frame.IconFrame.Icon:SetInside()
+		frame.IconFrame.Icon:SetTexCoord(unpack(E.TexCoords))
 
-		local icon = _G[frameName.."IconFrameIcon"]
-		icon:SetInside()
-		icon:SetTexCoord(unpack(E.TexCoords))
+		frame.Timer:StripTextures()
+		frame.Timer:CreateBackdrop()
+		frame.Timer:SetStatusBarTexture(E.media.normTex)
+		frame.Timer:Point("BOTTOMLEFT", 6, 9)
+		E:RegisterStatusBar(frame.Timer)
 
-		local statusBar = _G[frameName.."Timer"]
-		statusBar:StripTextures()
-		statusBar:CreateBackdrop("Default")
-		statusBar:SetStatusBarTexture(E.media.normTex)
-		E:RegisterStatusBar(statusBar)
+		S:HandleCloseButton(frame.PassButton, frame)
 
-		local decoration = _G[frameName.."Decoration"]
-		decoration:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Gold-Dragon")
-		decoration:Size(130)
-		decoration:Point("TOPLEFT", -37, 20)
-
-		local pass = _G[frameName.."PassButton"]
-		S:HandleCloseButton(pass, frame)
-
-		_G["GroupLootFrame"..i]:HookScript("OnShow", OnShow)
+		frame:HookScript("OnShow", OnShow)
 	end
 end
 
 S:AddCallback("Loot", LoadSkin)
-S:AddCallback("LootRoll", LoadRollSkin) 
+S:AddCallback("LootRoll", LoadRollSkin)

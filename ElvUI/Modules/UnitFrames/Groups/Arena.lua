@@ -8,45 +8,57 @@ local _G = _G
 local unpack = unpack
 
 local CreateFrame = CreateFrame
-local GetArenaOpponentSpec = GetArenaOpponentSpec
 local GetSpecializationInfoByID = GetSpecializationInfoByID
-local IsInInstance = IsInInstance
-local UnitExists = UnitExists
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
-local ArenaHeader = CreateFrame("Frame", "ArenaHeader", UIParent)
+local ArenaHeader = CreateFrame("Frame", "ArenaHeader", E.UIParent)
 
-function UF:UpdatePrep(event, unit, status)
-	if (event == "ARENA_OPPONENT_UPDATE" or event == "UNIT_NAME_UPDATE") and unit ~= self.unit then return end
+function UF:ToggleArenaPreparationInfo(frame, show, specName, specTexture, specClass)
+	if not (frame and frame.ArenaPrepSpec and frame.ArenaPrepIcon) then return end
 
-	local _, instanceType = IsInInstance()
-	if not UF.db.units.arena.enable or instanceType ~= "arena" or (UnitExists(self.unit) and status ~= "unseen") then
-		self:Hide()
-		return
-	end
+	local specIcon = (frame.db and frame.db.pvpSpecIcon) and frame:IsElementEnabled('PVPSpecIcon')
 
-	local s = GetArenaOpponentSpec(UF[self.unit]:GetID())
-	local _, spec, texture, class
+	frame.forceInRange = show -- used to force unitframe range
 
-	if s and s > 0 then
-		_, spec, _, texture, _, _, class = GetSpecializationInfoByID(s)
-	end
+	if show then -- during `PostUpdateArenaPreparation` this means spec class and name exist
+		frame.ArenaPrepSpec:SetText(specName.."  -  "..LOCALIZED_CLASS_NAMES_MALE[specClass])
+		frame.Health.value:Hide()
 
-	if class and spec then
-		local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-		self.SpecClass:SetText(spec.."  -  "..LOCALIZED_CLASS_NAMES_MALE[class])
-		self.Health:SetStatusBarColor(color.r, color.g, color.b)
-		self.Icon:SetTexture(texture or [[INTERFACE\ICONS\INV_MISC_QUESTIONMARK]])
-		self:Show()
-	else
-		self:Hide()
+		if specIcon then
+			frame.ArenaPrepIcon:SetTexture(specTexture or [[INTERFACE\ICONS\INV_MISC_QUESTIONMARK]])
+			frame.ArenaPrepIcon.bg:Show()
+			frame.ArenaPrepIcon:Show()
+			frame.PVPSpecIcon:Hide()
+		end
+	else -- mainly called from `PostUpdateArenaFrame` to hide them
+		frame.ArenaPrepSpec:SetText('')
+		frame.Health.value:Show()
+
+		if specIcon then
+			frame.ArenaPrepIcon.bg:Hide()
+			frame.ArenaPrepIcon:Hide()
+			frame.PVPSpecIcon:Show()
+		end
 	end
 end
 
+function UF:PostUpdateArenaFrame(event)
+	if self and event and (event ~= 'ARENA_PREP_OPPONENT_SPECIALIZATIONS' and event ~= 'PLAYER_ENTERING_WORLD') then
+		UF:ToggleArenaPreparationInfo(self)
+	end
+end
+
+function UF:PostUpdateArenaPreparation(_, specID)
+	local _, specName, specTexture, specClass
+	if specID and specID > 0 then
+		_, specName, _, specTexture, _, specClass = GetSpecializationInfoByID(specID)
+	end
+
+	UF:ToggleArenaPreparationInfo(self and self.__owner, specClass and specName, specName, specTexture, specClass)
+end
+
 function UF:Construct_ArenaFrames(frame)
- 	frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
+	frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
 	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 100)
 
@@ -65,50 +77,36 @@ function UF:Construct_ArenaFrames(frame)
 		frame.TargetGlow = self:Construct_TargetGlow(frame)
 		frame.Trinket = self:Construct_Trinket(frame)
 		frame.PVPSpecIcon = self:Construct_PVPSpecIcon(frame)
-		frame.Range = self:Construct_Range(frame)
+		frame.Fader = self:Construct_Fader()
 		frame:SetAttribute("type2", "focus")
 
 		frame.customTexts = {}
 		frame.InfoPanel = self:Construct_InfoPanel(frame)
 		frame.unitframeType = "arena"
+
+		-- Arena Preparation
+		frame.ArenaPrepIcon = frame:CreateTexture(nil, 'OVERLAY')
+		frame.ArenaPrepIcon.bg = CreateFrame('Frame', nil, frame)
+		frame.ArenaPrepIcon.bg:SetAllPoints(frame.PVPSpecIcon.bg)
+		frame.ArenaPrepIcon.bg:SetTemplate()
+		frame.ArenaPrepIcon:SetParent(frame.ArenaPrepIcon.bg)
+		frame.ArenaPrepIcon:SetTexCoord(unpack(E.TexCoords))
+		frame.ArenaPrepIcon:SetInside(frame.ArenaPrepIcon.bg)
+		frame.ArenaPrepIcon.bg:Hide()
+		frame.ArenaPrepIcon:Hide()
+
+		frame.ArenaPrepSpec = frame.Health:CreateFontString(nil, "OVERLAY")
+		frame.ArenaPrepSpec:Point("CENTER")
+		UF:Configure_FontString(frame.ArenaPrepSpec)
+
+		frame.Health.PostUpdateArenaPreparation = self.PostUpdateArenaPreparation -- used to update arena prep info
+		frame.PostUpdate = self.PostUpdateArenaFrame -- used to hide arena prep info
 	end
 
-	if not frame.PrepFrame and not frame.isChild then
-		frame.prepFrame = CreateFrame("Frame", frame:GetName().."PrepFrame", UIParent)
-		frame.prepFrame:SetFrameStrata("BACKGROUND")
-		frame.prepFrame:SetAllPoints(frame)
-		frame.prepFrame:SetID(frame:GetID())
-		frame.prepFrame:SetScript("OnEvent", UF.UpdatePrep)
-		frame.prepFrame.unit = frame.unit
-
-		frame.prepFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-		frame.prepFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
-		frame.prepFrame:RegisterEvent("UNIT_NAME_UPDATE")
-		frame.prepFrame:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
-
-		frame.prepFrame.Health = CreateFrame("StatusBar", nil, frame.prepFrame)
-		frame.prepFrame.Health:Point("BOTTOMLEFT", frame.prepFrame, "BOTTOMLEFT", E.Border, E.Border)
-		frame.prepFrame.Health:Point("TOPRIGHT", frame.prepFrame, "TOPRIGHT", -(E.Border + E.db.unitframe.units.arena.height), -E.Border)
-		frame.prepFrame.Health:CreateBackdrop()
-
-		frame.prepFrame.Icon = frame.prepFrame:CreateTexture(nil, "OVERLAY")
-		frame.prepFrame.Icon.bg = CreateFrame("Frame", nil, frame.prepFrame)
-		frame.prepFrame.Icon.bg:Point("TOPLEFT", frame.prepFrame.Health.backdrop, "TOPRIGHT", E.PixelMode and -1 or 1, 0)
-		frame.prepFrame.Icon.bg:Point("BOTTOMRIGHT", frame.prepFrame, "BOTTOMRIGHT", 0, 0)
-		frame.prepFrame.Icon.bg:SetTemplate("Default")
-		frame.prepFrame.Icon:SetParent(frame.prepFrame.Icon.bg)
-		frame.prepFrame.Icon:SetTexCoord(unpack(E.TexCoords))
-		frame.prepFrame.Icon:SetInside(frame.prepFrame.Icon.bg)
-		UF.statusbars[frame.prepFrame.Health] = true
-
-		frame.prepFrame.SpecClass = frame.prepFrame.Health:CreateFontString(nil, "OVERLAY")
-		frame.prepFrame.SpecClass:Point("CENTER")
-		UF:Configure_FontString(frame.prepFrame.SpecClass)
-		--frame.prepFrame:Hide()
-	end
+	frame.Cutaway = self:Construct_Cutaway(frame)
 
 	ArenaHeader:Point("BOTTOMRIGHT", E.UIParent, "RIGHT", -105, -165)
-	E:CreateMover(ArenaHeader, ArenaHeader:GetName().."Mover", L["Arena Frames"], nil, nil, nil, "ALL,ARENA", nil, "unitframe,arena,generalGroup")
+	E:CreateMover(ArenaHeader, ArenaHeader:GetName().."Mover", L["Arena Frames"], nil, nil, nil, "ALL,ARENA", nil, "unitframe,groupUnits,arena,generalGroup")
 	frame.mover = ArenaHeader.mover
 end
 
@@ -118,64 +116,45 @@ function UF:Update_ArenaFrames(frame, db)
 	do
 		frame.ORIENTATION = db.orientation
 		frame.UNIT_WIDTH = db.width
-		frame.UNIT_HEIGHT = db.infoPanel.enable and db.height + db.infoPanel.height or db.height
-
+		frame.UNIT_HEIGHT = db.infoPanel.enable and (db.height + db.infoPanel.height) or db.height
 		frame.USE_POWERBAR = db.power.enable
 		frame.POWERBAR_DETACHED = db.power.detachFromFrame
 		frame.USE_INSET_POWERBAR = not frame.POWERBAR_DETACHED and db.power.width == "inset" and frame.USE_POWERBAR
 		frame.USE_MINI_POWERBAR = (not frame.POWERBAR_DETACHED and db.power.width == "spaced" and frame.USE_POWERBAR)
-		frame.USE_POWERBAR_OFFSET = db.power.offset ~= 0 and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
+		frame.USE_POWERBAR_OFFSET = (db.power.width == "offset" and db.power.offset ~= 0) and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
 		frame.POWERBAR_OFFSET = frame.USE_POWERBAR_OFFSET and db.power.offset or 0
-
 		frame.POWERBAR_HEIGHT = not frame.USE_POWERBAR and 0 or db.power.height
 		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER*2))/2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2)))
-
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
-
 		frame.STAGGER_WIDTH = db.pvpSpecIcon and frame.UNIT_HEIGHT or 0
 		frame.CLASSBAR_YOFFSET = 0
-
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
-
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
-
 		frame.PVPINFO_WIDTH = db.pvpSpecIcon and frame.UNIT_HEIGHT or 0
 
 		frame.VARIABLES_SET = true
 	end
 
 	frame.colors = ElvUF.colors
-	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
 	frame:Size(frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
 
 	UF:Configure_InfoPanel(frame)
-
 	UF:Configure_HealthBar(frame)
-
 	UF:UpdateNameSettings(frame)
-
 	UF:Configure_Power(frame)
-
 	UF:Configure_Portrait(frame)
-
 	UF:EnableDisable_Auras(frame)
-	UF:Configure_Auras(frame, "Buffs")
-	UF:Configure_Auras(frame, "Debuffs")
-
+	UF:Configure_AllAuras(frame)
 	UF:Configure_Castbar(frame)
-
 	UF:Configure_PVPSpecIcon(frame)
-
 	UF:Configure_Trinket(frame)
-
-	UF:Configure_Range(frame)
-
+	UF:Configure_Fader(frame)
 	UF:Configure_HealComm(frame)
-
+	UF:Configure_Cutaway(frame)
 	UF:Configure_CustomTexts(frame)
 
 	frame:ClearAllPoints()
@@ -212,4 +191,4 @@ function UF:Update_ArenaFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF.unitgroupstoload.arena = {5}
+UF.unitgroupstoload.arena = {5, "ELVUI_UNITTARGET"}

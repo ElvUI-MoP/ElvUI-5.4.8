@@ -1,97 +1,97 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local mod = E:GetModule("NamePlates")
+local NP = E:GetModule("NamePlates")
 local LSM = E.Libs.LSM
 
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local PRIEST_COLOR = RAID_CLASS_COLORS.PRIEST
 
-function mod:UpdateElement_HealthOnValueChanged()
+function NP:Update_HealthOnValueChanged()
 	local frame = self:GetParent():GetParent().UnitFrame
 	if not frame.UnitType then return end -- Bugs
 
-	mod:UpdateElement_Health(frame)
-	mod:UpdateElement_HealthColor(frame)
-	mod:UpdateElement_Glow(frame)
-	mod:UpdateElement_Filters(frame, "UNIT_HEALTH")
+	NP:Update_Health(frame)
+	NP:Update_HealthColor(frame)
+	NP:Update_Glow(frame)
+	NP:StyleFilterUpdate(frame, "UNIT_HEALTH")
 end
 
-function mod:UpdateElement_HealthColor(frame)
-	if not frame.HealthBar:IsShown() then return end
+function NP:Update_HealthColor(frame)
+	if not frame.Health:IsShown() then return end
 
 	local r, g, b, classColor, useClassColor
 	local scale = 1
+	local class, reaction = frame.UnitClass, frame.UnitReaction
+	local db = self.db.colors
 
-	local class = frame.UnitClass
 	if class then
-		classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-		useClassColor = mod.db.units[frame.UnitType].healthbar.useClassColor
+		classColor = E:ClassColor(class) or PRIEST_COLOR
+		useClassColor = NP.db.units[frame.UnitType].health.useClassColor
 	end
 
 	if classColor and ((frame.UnitType == "FRIENDLY_PLAYER" and useClassColor) or (frame.UnitType == "ENEMY_PLAYER" and useClassColor)) then
 		r, g, b = classColor.r, classColor.g, classColor.b
-	elseif frame.UnitReaction == 1 then
-		r, g, b = mod.db.reactions.tapped.r, mod.db.reactions.tapped.g, mod.db.reactions.tapped.b
+	elseif reaction and reaction == 1 then
+		r, g, b = db.reactions.tapped.r, db.reactions.tapped.g, db.reactions.tapped.b
 	else
-		local status = mod:UnitDetailedThreatSituation(frame)
+		local status = frame.ThreatStatus
 		if status then
 			if status == 3 then
 				if E:GetPlayerRole() == "TANK" then
-					r, g, b = mod.db.threat.goodColor.r, mod.db.threat.goodColor.g, mod.db.threat.goodColor.b
-					scale = mod.db.threat.goodScale
+					r, g, b = db.threat.goodColor.r, db.threat.goodColor.g, db.threat.goodColor.b
+					scale = NP.db.threat.goodScale
 				else
-					r, g, b = mod.db.threat.badColor.r, mod.db.threat.badColor.g, mod.db.threat.badColor.b
-					scale = mod.db.threat.badScale
+					r, g, b = db.threat.badColor.r, db.threat.badColor.g, db.threat.badColor.b
+					scale = NP.db.threat.badScale
 				end
 			elseif status == 2 then
 				if E:GetPlayerRole() == "TANK" then
-					r, g, b = mod.db.threat.badTransition.r, mod.db.threat.badTransition.g, mod.db.threat.badTransition.b
+					r, g, b = db.threat.badTransition.r, db.threat.badTransition.g, db.threat.badTransition.b
 				else
-					r, g, b = mod.db.threat.goodTransition.r, mod.db.threat.goodTransition.g, mod.db.threat.goodTransition.b
+					r, g, b = db.threat.goodTransition.r, db.threat.goodTransition.g, db.threat.goodTransition.b
 				end
 				scale = 1
 			elseif status == 1 then
 				if E:GetPlayerRole() == "TANK" then
-					r, g, b = mod.db.threat.goodTransition.r, mod.db.threat.goodTransition.g, mod.db.threat.goodTransition.b
+					r, g, b = db.threat.goodTransition.r, db.threat.goodTransition.g, db.threat.goodTransition.b
 				else
-					r, g, b = mod.db.threat.badTransition.r, mod.db.threat.badTransition.g, mod.db.threat.badTransition.b
+					r, g, b = db.threat.badTransition.r, db.threat.badTransition.g, db.threat.badTransition.b
 				end
 				scale = 1
 			else
 				if E:GetPlayerRole() == "TANK" then
-					r, g, b = mod.db.threat.badColor.r, mod.db.threat.badColor.g, mod.db.threat.badColor.b
-					scale = mod.db.threat.badScale
+					r, g, b = db.threat.badColor.r, db.threat.badColor.g, db.threat.badColor.b
+					scale = self.db.threat.badScale
 				else
-					r, g, b = mod.db.threat.goodColor.r, mod.db.threat.goodColor.g, mod.db.threat.goodColor.b
-					scale = mod.db.threat.goodScale
+					r, g, b = db.threat.goodColor.r, db.threat.goodColor.g, db.threat.goodColor.b
+					scale = self.db.threat.goodScale
 				end
 			end
 		end
 
-		if (not status) or (status and not mod.db.threat.useThreatColor) then
-			local reactionType = frame.UnitReaction
-			if reactionType == 4 then
-				r, g, b = mod.db.reactions.neutral.r, mod.db.reactions.neutral.g, mod.db.reactions.neutral.b
-			elseif reactionType > 4 then
+		if (not status) or (status and not NP.db.threat.useThreatColor) then
+			if reaction and reaction == 4 then
+				r, g, b = db.reactions.neutral.r, db.reactions.neutral.g, db.reactions.neutral.b
+			elseif reaction and reaction > 4 then
 				if frame.UnitType == "FRIENDLY_PLAYER" then
-					r, g, b = mod.db.reactions.friendlyPlayer.r, mod.db.reactions.friendlyPlayer.g, mod.db.reactions.friendlyPlayer.b
+					r, g, b = db.reactions.friendlyPlayer.r, db.reactions.friendlyPlayer.g, db.reactions.friendlyPlayer.b
 				else
-					r, g, b = mod.db.reactions.good.r, mod.db.reactions.good.g, mod.db.reactions.good.b
+					r, g, b = db.reactions.good.r, db.reactions.good.g, db.reactions.good.b
 				end
 			else
-				r, g, b = mod.db.reactions.bad.r, mod.db.reactions.bad.g, mod.db.reactions.bad.b
+				r, g, b = db.reactions.bad.r, db.reactions.bad.g, db.reactions.bad.b
 			end
 		end
 	end
 
-	if r ~= frame.HealthBar.r or g ~= frame.HealthBar.g or b ~= frame.HealthBar.b then
+	if r ~= frame.Health.r or g ~= frame.Health.g or b ~= frame.Health.b then
 		if not frame.HealthColorChanged then
-			frame.HealthBar:SetStatusBarColor(r, g, b)
+			frame.Health:SetStatusBarColor(r, g, b)
 			if frame.HealthColorChangeCallbacks then
 				for _, cb in ipairs(frame.HealthColorChangeCallbacks) do
 					cb(self, frame, r, g, b)
 				end
 			end
 		end
-		frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = r, g, b
+		frame.Health.r, frame.Health.g, frame.Health.b = r, g, b
 	end
 
 	if frame.ThreatScale ~= scale then
@@ -103,34 +103,26 @@ function mod:UpdateElement_HealthColor(frame)
 	end
 end
 
-function mod:UpdateElement_Health(frame)
+function NP:Update_Health(frame)
 	local health = frame.oldHealthBar:GetValue()
 	local _, maxHealth = frame.oldHealthBar:GetMinMaxValues()
-	frame.HealthBar:SetMinMaxValues(0, maxHealth)
-
-	if frame.MaxHealthChangeCallbacks then
-		for _, cb in ipairs(frame.MaxHealthChangeCallbacks) do
-			cb(self, frame, maxHealth)
-		end
-	end	
+	frame.Health:SetMinMaxValues(0, maxHealth)
 
 	if frame.HealthValueChangeCallbacks then
 		for _, cb in ipairs(frame.HealthValueChangeCallbacks) do
-			cb(self, frame, health)
+			cb(self, frame, health, maxHealth)
 		end
 	end
 
-	frame.HealthBar:SetValue(health)
-	frame:GetParent().UnitFrame.FlashTexture:Point("TOPRIGHT", frame.HealthBar:GetStatusBarTexture(), "TOPRIGHT") --idk why this fixes this
+	frame.Health:SetValue(health)
+	frame.FlashTexture:Point("TOPRIGHT", frame.Health:GetStatusBarTexture(), "TOPRIGHT") --idk why this fixes this
 
-	if self.db.units[frame.UnitType].healthbar.text.enable then
-		frame.HealthBar.text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].healthbar.text.format, health, maxHealth))
-	else
-		frame.HealthBar.text:SetText("")
+	if self.db.units[frame.UnitType].health.text.enable then
+		frame.Health.Text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].health.text.format, health, maxHealth))
 	end
 end
 
-function mod:RegisterHealthBarCallbacks(frame, valueChangeCB, colorChangeCB, maxHealthChangeCB)
+function NP:RegisterHealthCallbacks(frame, valueChangeCB, colorChangeCB)
 	if valueChangeCB then
 		frame.HealthValueChangeCallbacks = frame.HealthValueChangeCallbacks or {}
 		tinsert(frame.HealthValueChangeCallbacks, valueChangeCB)
@@ -140,41 +132,71 @@ function mod:RegisterHealthBarCallbacks(frame, valueChangeCB, colorChangeCB, max
 		frame.HealthColorChangeCallbacks = frame.HealthColorChangeCallbacks or {}
 		tinsert(frame.HealthColorChangeCallbacks, colorChangeCB)
 	end
+end
 
-	if maxHealthChangeCB then
-		frame.MaxHealthChangeCallbacks = frame.MaxHealthChangeCallbacks or {}
-		tinsert(frame.MaxHealthChangeCallbacks, maxHealthChangeCB)
+function NP:Update_HealthBar(frame)
+	if self.db.units[frame.UnitType].health.enable or (frame.isTarget and self.db.alwaysShowTargetHealth) then
+		frame.Health:Show()
+	else
+		frame.Health:Hide()
 	end
 end
 
-function mod:ConfigureElement_HealthBar(frame, configuring)
-	local healthBar = frame.HealthBar
+function NP:Configure_HealthBarScale(frame, scale, noPlayAnimation)
+	local db = NP.db.units[frame.UnitType].health
 
-	healthBar:SetPoint("TOP", frame, "CENTER", 0, self.db.units[frame.UnitType].castbar.height + 3)
+	if noPlayAnimation then
+		frame.Health:SetWidth(db.width * scale)
+		frame.Health:SetHeight(db.height * scale)
+	else
+		if frame.Health.scale:IsPlaying() then
+			frame.Health.scale:Stop()
+		end
 
-	healthBar:SetWidth(self.db.units[frame.UnitType].healthbar.width * (frame.ThreatScale or 1) * (frame.isTarget and self.db.useTargetScale and self.db.targetScale or 1))
-	healthBar:SetHeight(self.db.units[frame.UnitType].healthbar.height * (frame.ThreatScale or 1) * (frame.isTarget and self.db.useTargetScale and self.db.targetScale or 1))
-
-	healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar), "BORDER")
-
-	if (not configuring) and (self.db.units[frame.UnitType].healthbar.enable or frame.isTarget) then
-		healthBar:Show()
+		frame.Health.scale.width:SetChange(db.width * scale)
+		frame.Health.scale.height:SetChange(db.height * scale)
+		frame.Health.scale:Play()
 	end
-
-	healthBar.text:SetAllPoints(healthBar)
-	healthBar.text:SetFont(LSM:Fetch("font", self.db.healthFont), self.db.healthFontSize, self.db.healthFontOutline)
 end
 
-function mod:ConstructElement_HealthBar(parent)
-	local frame = CreateFrame("StatusBar", "$parentHealthBar", parent)
+function NP:Configure_Health(frame, configuring)
+	if not NP.db.units then return end
+	local db = self.db.units[frame.UnitType].health
+	local healthBar = frame.Health
+
+	healthBar:SetPoint("TOP", frame, "TOP", 0, 0)
+
+	if configuring then
+		healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar), "BORDER")
+
+		self:Configure_HealthBarScale(frame, frame.currentScale or 1, configuring)
+
+		E:SetSmoothing(healthBar, self.db.smoothbars)
+
+		if db.text.enable then
+			healthBar.Text:ClearAllPoints()
+			healthBar.Text:Point(E.InversePoints[db.text.position], db.text.parent == "Nameplate" and frame or frame[db.text.parent], db.text.position, db.text.xOffset, db.text.yOffset)
+			healthBar.Text:FontTemplate(LSM:Fetch("font", db.text.font), db.text.fontSize, db.text.fontOutline)
+			healthBar.Text:Show()
+		else
+			healthBar.Text:Hide()
+		end
+	end
+end
+
+local function Health_OnSizeChanged(self, width)
+	local health = self:GetValue()
+	local _, maxHealth = self:GetMinMaxValues()
+
+	self:GetStatusBarTexture():SetPoint("TOPRIGHT", -(width * ((maxHealth - health) / maxHealth)), 0)
+end
+
+function NP:Construct_Health(parent)
+	local frame = CreateFrame("StatusBar", "$parentHealth", parent)
 	frame:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar), "BORDER")
 	self:StyleFrame(frame)
 
-	frame:SetScript("OnSizeChanged", function(self, width)
-		local health = self:GetValue()
-		local _, maxHealth = self:GetMinMaxValues()
-		self:GetStatusBarTexture():SetPoint("TOPRIGHT", -(width * ((maxHealth - health) / maxHealth)), 0)
-	end)
+	frame:SetScript("OnSizeChanged", Health_OnSizeChanged)
 
 	parent.FlashTexture = frame:CreateTexture(nil, "OVERLAY")
 	parent.FlashTexture:SetTexture(LSM:Fetch("background", "ElvUI Blank"))
@@ -182,9 +204,9 @@ function mod:ConstructElement_HealthBar(parent)
 	parent.FlashTexture:Point("TOPRIGHT", frame:GetStatusBarTexture(), "TOPRIGHT")
 	parent.FlashTexture:Hide()
 
-	frame.text = frame:CreateFontString(nil, "OVERLAY")
-	frame.text:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
-	frame.text:SetWordWrap(false)
+	frame.Text = frame:CreateFontString(nil, "OVERLAY")
+	frame.Text:SetAllPoints(frame)
+	frame.Text:SetWordWrap(false)
 
 	frame.scale = CreateAnimationGroup(frame)
 	frame.scale.width = frame.scale:CreateAnimation("Width")

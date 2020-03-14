@@ -1,6 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local AFKString = _G["AFK"]
-local AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0")
+local mod = E:GetModule("AFK")
 local CH = E:GetModule("Chat")
 
 local _G = _G
@@ -8,28 +7,28 @@ local tostring = tostring
 local floor = math.floor
 local format, strsub, gsub = string.format, string.sub, string.gsub
 
-local GetTime = GetTime
 local CreateFrame = CreateFrame
-local InCombatLockdown = InCombatLockdown
 local CinematicFrame = CinematicFrame
+local Chat_GetChatCategory = Chat_GetChatCategory
+local ChatHistory_GetAccessID = ChatHistory_GetAccessID
+local GetTime = GetTime
+local GetColoredName = GetColoredName
+local GetScreenWidth = GetScreenWidth
+local GetScreenHeight = GetScreenHeight
+local GetGuildInfo = GetGuildInfo
+local GetBattlefieldStatus = GetBattlefieldStatus
+local InCombatLockdown = InCombatLockdown
+local IsInGuild = IsInGuild
+local IsShiftKeyDown = IsShiftKeyDown
 local MovieFrame = MovieFrame
 local MoveViewLeftStart = MoveViewLeftStart
 local MoveViewLeftStop = MoveViewLeftStop
-local IsInGuild = IsInGuild
-local GetGuildInfo = GetGuildInfo
-local GetBattlefieldStatus = GetBattlefieldStatus
+local UnitCastingInfo = UnitCastingInfo
 local UnitIsAFK = UnitIsAFK
 local SetCVar = SetCVar
-local UnitCastingInfo = UnitCastingInfo
-local IsShiftKeyDown = IsShiftKeyDown
-local GetColoredName = GetColoredName
-local Chat_GetChatCategory = Chat_GetChatCategory
-local ChatHistory_GetAccessID = ChatHistory_GetAccessID
-local GetScreenWidth = GetScreenWidth
-local GetScreenHeight = GetScreenHeight
 local Screenshot = Screenshot
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local DND = DND
+
+local AFK, DND = AFK, DND
 
 local CAMERA_SPEED = 0.035
 local ignoreKeys = {
@@ -46,8 +45,8 @@ if E.isMacClient then
 	printKeys[_G["KEY_PRINTSCREEN_MAC"]] = true
 end
 
-function AFK:UpdateTimer()
-	local time = GetTime() - self.startTime;
+function mod:UpdateTimer()
+	local time = GetTime() - self.startTime
 	self.AFKMode.bottom.time:SetFormattedText("%02d:%02d", floor(time / 60), time % 60)
 end
 
@@ -56,7 +55,7 @@ local function StopAnimation(self)
 	self:SetScript("OnUpdate", nil)
 	self:SetScript("OnAnimFinished", nil)
 end
- 
+
 local function UpdateAnimation(self, elapsed)
 	self.animTime = self.animTime + (elapsed * 1000)
 	self:SetSequenceTime(67, self.animTime)
@@ -72,7 +71,7 @@ local function OnAnimFinished(self)
 	end
 end
 
-function AFK:SetAFK(status)
+function mod:SetAFK(status)
 	if InCombatLockdown() or CinematicFrame:IsShown() or MovieFrame:IsShown() then return end
 
 	if status and not self.isAFK then
@@ -129,7 +128,7 @@ function AFK:SetAFK(status)
 	end
 end
 
-function AFK:OnEvent(event, ...)
+function mod:OnEvent(event, ...)
 	if event == "PLAYER_REGEN_DISABLED" or event == "LFG_PROPOSAL_SHOW" or event == "UPDATE_BATTLEFIELD_STATUS" then
 		if event == "UPDATE_BATTLEFIELD_STATUS" then
 			local status = GetBattlefieldStatus(...)
@@ -153,6 +152,7 @@ function AFK:OnEvent(event, ...)
 	if not E.db.general.afk then return end
 	if InCombatLockdown() or CinematicFrame:IsShown() or MovieFrame:IsShown() then return end
 	if UnitCastingInfo("player") ~= nil then
+		--Don't activate afk if player is crafting stuff, check back in 30 seconds
 		self:ScheduleTimer("OnEvent", 30)
 		return
 	end
@@ -164,7 +164,7 @@ function AFK:OnEvent(event, ...)
 	end
 end
 
-function AFK:Toggle()
+function mod:Toggle()
 	if E.db.general.afk then
 		self:RegisterEvent("PLAYER_FLAGS_CHANGED", "OnEvent")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnEvent")
@@ -182,14 +182,14 @@ function AFK:Toggle()
 	end
 end
 
-local function OnKeyDown(self, key)
+local function OnKeyDown(_, key)
 	if ignoreKeys[key] then return end
 
 	if printKeys[key] then
 		Screenshot()
 	else
-		AFK:SetAFK(false)
-		AFK:ScheduleTimer("OnEvent", 60)
+		mod:SetAFK(false)
+		mod:ScheduleTimer("OnEvent", 60)
 	end
 end
 
@@ -248,22 +248,24 @@ local function Chat_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg
 	local accessID = ChatHistory_GetAccessID(chatGroup, chatTarget)
 	local typeID = ChatHistory_GetAccessID(type, chatTarget, arg12 == "" and arg13 or arg12)
 	if CH.db.shortChannels then
-		body = body:gsub("|Hchannel:(.-)|h%[(.-)%]|h", CH.ShortChannel)
-		body = body:gsub("^(.-|h) "..L["whispers"], "%1")
-		body = body:gsub("<"..AFKString..">", "[|cffFF0000"..L["AFK"].."|r] ")
-		body = body:gsub("<"..DND..">", "[|cffE7E716"..L["DND"].."|r] ")
-		body = body:gsub("%[BN_CONVERSATION:", "%[".."")
+		body = gsub(body, "|Hchannel:(.-)|h%[(.-)%]|h", CH.ShortChannel)
+		body = gsub(body, "^(.-|h) "..L["whispers"], "%1")
+		body = gsub(body, "<"..AFK..">", "[|cffFF0000"..AFK.."|r] ")
+		body = gsub(body, "<"..DND..">", "[|cffE7E716"..DND.."|r] ")
+		body = gsub(body, "%[BN_CONVERSATION:", "%[".."")
 	end
 
 	self:AddMessage(body, info.r, info.g, info.b, info.id, false, accessID, typeID)
 end
 
-function AFK:Initialize()
+function mod:Initialize()
+	self.Initialized = true
+
 	if E.global.afkEnabled then
 		E.global.afkEnabled = nil
 	end
 
-	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass]
+	local classColor = E:ClassColor(E.myclass)
 
 	self.AFKMode = CreateFrame("Frame", "ElvUIAFKFrame")
 	self.AFKMode:SetFrameLevel(1)
@@ -301,7 +303,7 @@ function AFK:Initialize()
 	self.AFKMode.bottom.logo = self.AFKMode:CreateTexture(nil, "OVERLAY")
 	self.AFKMode.bottom.logo:Size(320, 150)
 	self.AFKMode.bottom.logo:Point("CENTER", self.AFKMode.bottom, "CENTER", 0, 50)
-	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo")
+	self.AFKMode.bottom.logo:SetTexture(E.Media.Textures.Logo)
 
 	local factionGroup, size, offsetX, offsetY, nameOffsetX, nameOffsetY = E.myfaction, 140, -20, -16, -10, -28
 	if factionGroup == "Neutral" then
@@ -341,7 +343,7 @@ function AFK:Initialize()
 end
 
 local function InitializeCallback()
-	AFK:Initialize()
+	mod:Initialize()
 end
 
-E:RegisterModule(AFK:GetName(), InitializeCallback)
+E:RegisterModule(mod:GetName(), InitializeCallback)

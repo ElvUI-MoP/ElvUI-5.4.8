@@ -11,8 +11,8 @@ local colors = {
 		0, 1, 0
 	},
 	health = {49 / 255, 207 / 255, 37 / 255},
-	disconnected = {.6, .6, .6},
-	tapped = {.6, .6, .6},
+	disconnected = {0.6, 0.6, 0.6},
+	tapped = {0.6, 0.6, 0.6},
 	runes = {
 		{1, 0, 0}, -- blood
 		{0, 0.5, 0}, -- unholy
@@ -23,8 +23,11 @@ local colors = {
 	debuff = {},
 	reaction = {},
 	power = {},
+	threat = {},
 }
 
+-- We do this because people edit the vars directly, and changing the default
+-- globals makes SPICE FLOW!
 local function customClassColors()
 	if(CUSTOM_CLASS_COLORS) then
 		local function updateColors()
@@ -33,7 +36,7 @@ local function customClassColors()
 			end
 
 			for _, obj in next, oUF.objects do
-				obj:UpdateAllElements("CUSTOM_CLASS_COLORS")
+				obj:UpdateAllElements('CUSTOM_CLASS_COLORS')
 			end
 		end
 
@@ -98,11 +101,15 @@ colors.power[13] = colors.power.SHADOW_ORBS
 colors.power[14] = colors.power.BURNING_EMBERS
 colors.power[15] = colors.power.DEMONIC_FURY
 
+for i = 0, 3 do
+	colors.threat[i] = {GetThreatStatusColor(i)}
+end
+
 local function colorsAndPercent(a, b, ...)
 	if(a <= 0 or b == 0) then
 		return nil, ...
-	elseif a >= b then
-		return nil, select(select("#", ...) - 2, ...)
+	elseif(a >= b) then
+		return nil, select(-3, ...)
 	end
 
 	local num = select('#', ...) / 3
@@ -110,7 +117,20 @@ local function colorsAndPercent(a, b, ...)
 	return relperc, select((segment * 3) + 1, ...)
 end
 
-local function RGBColorGradient(...)
+-- http://www.wowwiki.com/ColorGradient
+--[[ Colors: oUF:RGBColorGradient(a, b, ...)
+Used to convert a percent value (the quotient of `a` and `b`) into a gradient from 2 or more RGB colors. If more than 2
+colors are passed, the gradient will be between the two colors which perc lies in an evenly divided range. A RGB color
+is a sequence of 3 consecutive RGB percent values (in the range [0-1]). If `a` is negative or `b` is zero then the first
+RGB color (the first 3 RGB values passed to the function) is returned. If `a` is bigger than or equal to `b`, then the
+last 3 RGB values are returned.
+
+* self - the global oUF object
+* a    - value used as numerator to calculate the percentage (number)
+* b    - value used as denominator to calculate the percentage (number)
+* ...  - a list of RGB percent values. At least 6 values should be passed (number [0-1])
+--]]
+function oUF:RGBColorGradient(...)
 	local relperc, r1, g1, b1, r2, g2, b2 = colorsAndPercent(...)
 	if(relperc) then
 		return r1 + (r2 - r1) * relperc, g1 + (g2 - g1) * relperc, b1 + (b2 - b1) * relperc
@@ -119,12 +139,13 @@ local function RGBColorGradient(...)
 	end
 end
 
+-- HCY functions are based on http://www.chilliant.com/rgb2hsv.html
 local function getY(r, g, b)
 	return 0.299 * r + 0.587 * g + 0.114 * b
 end
 
-function oUF:RGBToHCY(r, g, b)
-	local min, max = min(r, g, b), max(r, g, b)
+local function rgbToHCY(r, g, b)
+	local min, max = math.min(r, g, b), math.max(r, g, b)
 	local chroma = max - min
 	local hue
 	if(chroma > 0) then
@@ -140,12 +161,11 @@ function oUF:RGBToHCY(r, g, b)
 	return hue, chroma, getY(r, g, b)
 end
 
-local math_abs = math.abs
-function oUF:HCYtoRGB(hue, chroma, luma)
+local function hcyToRGB(hue, chroma, luma)
 	local r, g, b = 0, 0, 0
 	if(hue and luma > 0) then
 		local h2 = hue * 6
-		local x = chroma * (1 - math_abs(h2 % 2 - 1))
+		local x = chroma * (1 - math.abs(h2 % 2 - 1))
 		if(h2 < 1) then
 			r, g, b = chroma, x, 0
 		elseif(h2 < 2) then
@@ -174,14 +194,26 @@ function oUF:HCYtoRGB(hue, chroma, luma)
 	return r, g, b
 end
 
-local function HCYColorGradient(...)
+--[[ Colors: oUF:HCYColorGradient(a, b, ...)
+Used to convert a percent value (the quotient of `a` and `b`) into a gradient from 2 or more HCY colors. If more than 2
+colors are passed, the gradient will be between the two colors which perc lies in an evenly divided range. A HCY color
+is a sequence of 3 consecutive values in the range [0-1]. If `a` is negative or `b` is zero then the first
+HCY color (the first 3 HCY values passed to the function) is returned. If `a` is bigger than or equal to `b`, then the
+last 3 HCY values are returned.
+
+* self - the global oUF object
+* a    - value used as numerator to calculate the percentage (number)
+* b    - value used as denominator to calculate the percentage (number)
+* ...  - a list of HCY color values. At least 6 values should be passed (number [0-1])
+--]]
+function oUF:HCYColorGradient(...)
 	local relperc, r1, g1, b1, r2, g2, b2 = colorsAndPercent(...)
 	if(not relperc) then
 		return r1, g1, b1
 	end
 
-	local h1, c1, y1 = self:RGBToHCY(r1, g1, b1)
-	local h2, c2, y2 = self:RGBToHCY(r2, g2, b2)
+	local h1, c1, y1 = rgbToHCY(r1, g1, b1)
+	local h2, c2, y2 = rgbToHCY(r2, g2, b2)
 	local c = c1 + (c2 - c1) * relperc
 	local y = y1 + (y2 - y1) * relperc
 
@@ -193,23 +225,27 @@ local function HCYColorGradient(...)
 			dh = dh - 1
 		end
 
-		return self:HCYtoRGB((h1 + dh * relperc) % 1, c, y)
+		return hcyToRGB((h1 + dh * relperc) % 1, c, y)
 	else
-		return self:HCYtoRGB(h1 or h2, c, y)
+		return hcyToRGB(h1 or h2, c, y)
 	end
 end
 
-local function ColorGradient(...)
-	return (oUF.useHCYColorGradient and HCYColorGradient or RGBColorGradient)(...)
+--[[ Colors: oUF:ColorGradient(a, b, ...) or frame:ColorGradient(a, b, ...)
+Used as a proxy to call the proper gradient function depending on the user's preference. If `oUF.useHCYColorGradient` is
+set to true, `:HCYColorGradient` will be called, else `:RGBColorGradient`.
+
+* self - the global oUF object or a unit frame
+* a    - value used as numerator to calculate the percentage (number)
+* b    - value used as denominator to calculate the percentage (number)
+* ...  - a list of color values. At least 6 values should be passed (number [0-1])
+--]]
+function oUF:ColorGradient(...)
+	return (oUF.useHCYColorGradient and oUF.HCYColorGradient or oUF.RGBColorGradient)(self, ...)
 end
 
-Private.colors = colors
-
 oUF.colors = colors
-oUF.ColorGradient = ColorGradient
-oUF.RGBColorGradient = RGBColorGradient
-oUF.HCYColorGradient = HCYColorGradient
 oUF.useHCYColorGradient = false
 
 frame_metatable.__index.colors = colors
-frame_metatable.__index.ColorGradient = ColorGradient
+frame_metatable.__index.ColorGradient = oUF.ColorGradient

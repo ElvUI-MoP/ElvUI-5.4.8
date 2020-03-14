@@ -1,9 +1,10 @@
 local E, L, V, P, G = unpack(select(2, ...))
-local THREAT = E:NewModule("Threat", "AceEvent-3.0")
+local THREAT = E:GetModule("Threat")
+local DT = E:GetModule("DataTexts")
 local LSM = E.Libs.LSM
 
 local pairs, select = pairs, select
-local twipe = table.wipe
+local wipe = wipe
 
 local CreateFrame = CreateFrame
 local UnitReaction = UnitReaction
@@ -15,13 +16,9 @@ local UnitName = UnitName
 local UnitIsUnit = UnitIsUnit
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local GetThreatStatusColor = GetThreatStatusColor
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local UNKNOWN = UNKNOWN
 
-E.Threat = THREAT
 THREAT.list = {}
-
-local DT -- used to hold the DT module when we need it
 
 function THREAT:UpdatePosition()
 	if self.db.position == "RIGHTCHAT" then
@@ -31,8 +28,7 @@ function THREAT:UpdatePosition()
 		self.bar:SetInside(LeftChatDataPanel)
 		self.bar:SetParent(LeftChatDataPanel)
 	end
-	local fontTemplate = LSM:Fetch("font", self.db.textfont)
-	self.bar.text:FontTemplate(fontTemplate, self.db.textSize, self.db.textOutline)
+	self.bar.text:FontTemplate(LSM:Fetch("font", self.db.textfont), self.db.textSize, self.db.textOutline)
 	self.bar:SetFrameStrata("MEDIUM")
 end
 
@@ -52,12 +48,12 @@ function THREAT:GetColor(unit)
 	local unitReaction = UnitReaction(unit, "player")
 	local _, unitClass = UnitClass(unit)
 	if UnitIsPlayer(unit) then
-		local class = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[unitClass] or RAID_CLASS_COLORS[unitClass]
+		local class = E:ClassColor(unitClass)
 		if not class then return 194, 194, 194 end
-		return class.r*255, class.g*255, class.b*255
+		return class.r * 255, class.g * 255, class.b * 255
 	elseif unitReaction then
 		local reaction = ElvUF.colors.reaction[unitReaction]
-		return reaction[1]*255, reaction[2]*255, reaction[3]*255
+		return reaction[1] * 255, reaction[2] * 255, reaction[3] * 255
 	else
 		return 194, 194, 194
 	end
@@ -72,7 +68,7 @@ function THREAT:Update()
 		return
 	end
 
-	local isInGroup, isInRaid, petExists = IsInGroup(), IsInRaid(), UnitExists('pet')
+	local isInGroup, isInRaid, petExists = IsInGroup(), IsInRaid(), UnitExists("pet")
 	local _, status, percent = UnitDetailedThreatSituation("player", "target")
 	if percent and percent > 0 and (isInGroup or petExists) then
 		local name = UnitName("target")
@@ -102,7 +98,7 @@ function THREAT:Update()
 				local r, g, b = self:GetColor(largestUnit)
 				self.bar.text:SetFormattedText(L["ABOVE_THREAT_FORMAT"], name, percent, leadPercent, r, g, b, UnitName(largestUnit) or UNKNOWN)
 
-				if E.role == "Tank" then
+				if E.Role == "Tank" then
 					self.bar:SetStatusBarColor(0, 0.839, 0)
 					self.bar:SetValue(leadPercent)
 				else
@@ -123,7 +119,7 @@ function THREAT:Update()
 		self.bar:Hide()
 	end
 
-	twipe(self.list)
+	wipe(self.list)
 end
 
 function THREAT:ToggleEnable()
@@ -143,15 +139,14 @@ function THREAT:ToggleEnable()
 end
 
 function THREAT:Initialize()
-	DT = E:GetModule("DataTexts")
-
+	self.Initialized = true
 	self.db = E.db.general.threat
 
 	self.bar = CreateFrame("StatusBar", "ElvUI_ThreatBar", E.UIParent)
 	self.bar:SetStatusBarTexture(E.media.normTex)
 	E:RegisterStatusBar(self.bar)
 	self.bar:SetMinMaxValues(0, 100)
-	self.bar:CreateBackdrop("Default")
+	self.bar:CreateBackdrop("Default", true)
 
 	self.bar.text = self.bar:CreateFontString(nil, "OVERLAY")
 	self.bar.text:FontTemplate(self.db.textfont, self.db.textSize, self.db.textOutline)

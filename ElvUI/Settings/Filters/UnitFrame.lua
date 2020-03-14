@@ -1,4 +1,5 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
+local UF = E:GetModule("UnitFrames")
 
 local print, unpack = print, unpack
 
@@ -15,14 +16,19 @@ local function SpellName(id)
 end
 
 local function Defaults(priorityOverride)
-	return {["enable"] = true, ["priority"] = priorityOverride or 0, ["stackThreshold"] = 0}
+	return {
+		enable = true,
+		priority = priorityOverride or 0,
+		stackThreshold = 0
+	}
 end
 
 G.unitframe.aurafilters = {}
 
-G.unitframe.aurafilters["CCDebuffs"] = {
-	["type"] = "Whitelist",
-	["spells"] = {
+-- These are debuffs that are some form of CC
+G.unitframe.aurafilters.CCDebuffs = {
+	type = "Whitelist",
+	spells = {
 	-- Death Knight
 		[47476] = Defaults(),	-- Strangulate
 		[49203] = Defaults(),	-- Hungering Cold
@@ -154,9 +160,10 @@ G.unitframe.aurafilters["CCDebuffs"] = {
 	}
 }
 
-G.unitframe.aurafilters["TurtleBuffs"] = {
-	["type"] = "Whitelist",
-	["spells"] = {
+-- These are buffs that can be considered "protection" buffs
+G.unitframe.aurafilters.TurtleBuffs = {
+	type = "Whitelist",
+	spells = {
 	-- Mage
 		[45438] = Defaults(5),	-- Ice Block
 		[115610] = Defaults(),	-- Temporal Shield
@@ -224,9 +231,9 @@ G.unitframe.aurafilters["TurtleBuffs"] = {
 	}
 }
 
-G.unitframe.aurafilters["PlayerBuffs"] = {
-	["type"] = "Whitelist",
-	["spells"] = {
+G.unitframe.aurafilters.PlayerBuffs = {
+	type = "Whitelist",
+	spells = {
 	-- Mage
 		[45438] = Defaults(),	-- Ice Block
 		[115610] = Defaults(),	-- Temporal Shield
@@ -380,9 +387,10 @@ G.unitframe.aurafilters["PlayerBuffs"] = {
 	}
 }
 
-G.unitframe.aurafilters["Blacklist"] = {
-	["type"] = "Blacklist",
-	["spells"] = {
+-- Buffs that really we dont need to see
+G.unitframe.aurafilters.Blacklist = {
+	type = "Blacklist",
+	spells = {
 	-- Spells
 		[36032] = Defaults(),	-- Arcane Charge
 		[132365] = Defaults(),	-- Vengeance
@@ -412,9 +420,13 @@ G.unitframe.aurafilters["Blacklist"] = {
 	}
 }
 
-G.unitframe.aurafilters["Whitelist"] = {
-	["type"] = "Whitelist",
-	["spells"] = {
+--[[
+	This should be a list of important buffs that we always want to see when they are active
+	bloodlust, paladin hand spells, raid cooldowns, etc..
+]]
+G.unitframe.aurafilters.Whitelist = {
+	type = "Whitelist",
+	spells = {
 		[31821] = Defaults(),	-- Devotion Aura
 		[2825] = Defaults(),	-- Bloodlust
 		[32182] = Defaults(),	-- Heroism
@@ -427,27 +439,37 @@ G.unitframe.aurafilters["Whitelist"] = {
 	}
 }
 
-G.unitframe.aurafilters["RaidDebuffs"] = {
-	["type"] = "Whitelist",
-	["spells"] = {
+-- RAID DEBUFFS: This should be pretty self explainitory
+G.unitframe.aurafilters.RaidDebuffs = {
+	type = "Whitelist",
+	spells = {
 	-- Mogu'shan Vaults
 		-- The Stone Guard
+		[125206] = Defaults(),	-- Rend Flesh
+		[130395] = Defaults(),	-- Jasper Chains
 		[116281] = Defaults(),	-- Cobalt Mine Blast
 		-- Feng the Accursed
+		[131788] = Defaults(),	-- Lightning Lash
+		[116942] = Defaults(),	-- Flaming Spear
+		[131790] = Defaults(),	-- Arcane Shock
+		[131792] = Defaults(),	-- Shadowburn
+		[116374] = Defaults(),	-- Lightning Charge
 		[116784] = Defaults(),	-- Wildfire Spark
 		[116417] = Defaults(),	-- Arcane Resonance
-		[116942] = Defaults(),	-- Flaming Spear
 		-- Gara'jal the Spiritbinder
-		[116161] = Defaults(),	-- Crossed Over
 		[122151] = Defaults(),	-- Voodoo Doll
+		[116161] = Defaults(),	-- Crossed Over
+		[117723] = Defaults(),	-- Frail Soul
 		-- The Spirit Kings
 		[117708] = Defaults(),	-- Maddening Shout
 		[118303] = Defaults(),	-- Fixate
 		[118048] = Defaults(),	-- Pillaged
 		[118135] = Defaults(),	-- Pinned Down
+		[118163] = Defaults(),	-- Robbed Blind
 		-- Elegon
 		[117878] = Defaults(),	-- Overcharged
 		[117949] = Defaults(),	-- Closed Circuit
+		[132222] = Defaults(),	-- Destabilizing Energies
 		-- Will of the Emperor
 		[116835] = Defaults(),	-- Devastating Arc
 		[116778] = Defaults(),	-- Focused Defense
@@ -465,10 +487,13 @@ G.unitframe.aurafilters["RaidDebuffs"] = {
 		[122835] = Defaults(),	-- Pheromones
 		[123081] = Defaults(),	-- Pungency
 		-- Wind Lord Mel'jarak
-		[122125] = Defaults(),	-- Corrosive Resin Pool
-		[121885] = Defaults(),	-- Amber Prison
-		-- Wind Lord Mel'jarak
+		[129078] = Defaults(),	-- Amber Prison
+		[122055] = Defaults(),	-- Residue
+		[122064] = Defaults(),	-- Corrosive Resin
+		[123963] = Defaults(),	-- Kor'thik Strike
+		-- Amber-Shaper Un'sok
 		[121949] = Defaults(),	-- Parasitic Growth
+		[122370] = Defaults(),	-- Reshape Life
 	-- Terrace of Endless Spring
 		-- Protectors of the Endless
 		[117436] = Defaults(),	-- Lightning Prison
@@ -478,77 +503,158 @@ G.unitframe.aurafilters["RaidDebuffs"] = {
 		[122752] = Defaults(),	-- Shadow Breath
 		[123011] = Defaults(),	-- Terrorize
 		[116161] = Defaults(),	-- Crossed Over
+		[122777] = Defaults(),	-- Nightmares
+		[123036] = Defaults(),	-- Fright
 		-- Lei Shi
 		[123121] = Defaults(),	-- Spray
+		[123705] = Defaults(),	-- Scary Fog
 		-- Sha of Fear
 		[119985] = Defaults(),	-- Dread Spray
 		[119086] = Defaults(),	-- Penetrating Bolt
 		[119775] = Defaults(),	-- Reaching Attack	
 		[122151] = Defaults(),	-- Voodoo Doll
+		[120669] = Defaults(),	-- Naked and Afraid
+		[120629] = Defaults(),	-- Huddle in Terror
 	-- Throne of Thunder
 		-- Trash
 		[138349] = Defaults(),	-- Static Wound
 		[137371] = Defaults(),	-- Thundering Throw
+		-- Jin'rokh the Breaker
+		[137162] = Defaults(),	-- Static Burst
+		[138349] = Defaults(),	-- Static Wound
+		[137371] = Defaults(),	-- Thundering Throw
+		[138732] = Defaults(),	-- Ionization
+		[137422] = Defaults(),	-- Focused Lightning
 		-- Horridon
 		[136767] = Defaults(),	-- Triple Puncture
+		[136708] = Defaults(),	-- Stone Gaze
+		[136654] = Defaults(),	-- Rending Charge
+		[136719] = Defaults(),	-- Blazing Sunlight
+		[136587] = Defaults(),	-- Venom Bolt Volley
+		[136710] = Defaults(),	-- Deadly Plague
+		[136512] = Defaults(),	-- Hex of Confusion
 		-- Council of Elders
 		[137641] = Defaults(),	-- Soul Fragment
 		[137359] = Defaults(),	-- Shadowed Loa Spirit Fixate
 		[137972] = Defaults(),	-- Twisted Fate
 		[136903] = Defaults(),	-- Frigid Assault
+		[136922] = Defaults(),	-- Frostbite
+		[136992] = Defaults(),	-- Biting Cold
+		[136857] = Defaults(),	-- Entrapped
 		-- Tortos
 		[136753] = Defaults(),	-- Slashing Talons
 		[137633] = Defaults(),	-- Crystal Shell
+		[140701] = Defaults(),	-- Crystal Shell: Full Capacity! (Heroic)
 		-- Megaera
 		[137731] = Defaults(),	-- Ignite Flesh
+		[139843] = Defaults(),	-- Arctic Freeze
+		[139840] = Defaults(),	-- Rot Armor
+		[134391] = Defaults(),	-- Cinder
+		[139857] = Defaults(),	-- Torrent of Ice
+		[140179] = Defaults(),	-- Suppression (Heroic)
+		-- Ji-Kun
+		[134366] = Defaults(),	-- Talon Rake
+		[140092] = Defaults(),	-- Infected Talons
+		[134256] = Defaults(),	-- Slimed
 		-- Durumu the Forgotten
 		[133767] = Defaults(),	-- Serious Wound
 		[133768] = Defaults(),	-- Arterial Cut
+		[133798] = Defaults(),	-- Life Drain
+		[133597] = Defaults(),	-- Dark Parasite (Heroic)
 		-- Primordius
 		[136050] = Defaults(),	-- Malformed Blood
+		[136228] = Defaults(),	-- Volatile Pathogen
 		-- Dark Animus
 		[138569] = Defaults(),	-- Explosive Slam
+		[138609] = Defaults(),	-- Matter Swap
+		[138659] = Defaults(),	-- Touch of the Animus
 		-- Iron Qon
 		[134691] = Defaults(),	-- Impale
+		[136192] = Defaults(),	-- Lightning Storm
+		[136193] = Defaults(),	-- Arcing Lightning
 		-- Twin Consorts
 		[137440] = Defaults(),	-- Icy Shadows
 		[137408] = Defaults(),	-- Fan of Flames
 		[137360] = Defaults(),	-- Corrupted Healing
+		[136722] = Defaults(),	-- Slumber Spores
+		[137341] = Defaults(),	-- Beast of Nightmares
 		-- Lei Shen
 		[135000] = Defaults(),	-- Decapitate
+		[136478] = Defaults(),	-- Fusion Slash
+		[136914] = Defaults(),	-- Electrical Shock
+		[135695] = Defaults(),	-- Static Shock
+		[136295] = Defaults(),	-- Overcharged
+		[139011] = Defaults(),	-- Helm of Command (Heroic)
+		-- Ra-den
+		[138297] = Defaults(),	-- Unstable Vita
+		[138329] = Defaults(),	-- Unleashed Anima
+		[138372] = Defaults(),	-- Vita Sensitivity
 	-- Siege of Orgrimmar
 		-- Immerseus
 		[143436] = Defaults(),	-- Corrosive Blast
 		[143579] = Defaults(),	-- Sha Corruption(Heroic)
 		-- Fallen Protectors
+		[143434] = Defaults(),	-- Shadow Word: Bane
+		[143198] = Defaults(),	-- Garrote
+		[143842] = Defaults(),	-- Mark of Anguish
 		[147383] = Defaults(),	-- Debilitation
 		-- Norushen
 		[146124] = Defaults(),	-- Self Doubt
 		[144851] = Defaults(),	-- Test of Confidence
+		[144514] = Defaults(),	-- Lingering Corruption
 		-- Sha of Pride
 		[144358] = Defaults(),	-- Wounded Pride
 		[144774] = Defaults(),	-- Reaching Attacks
 		[147207] = Defaults(),	-- Weakened Resolve(Heroic)
+		[144351] = Defaults(),	-- Mark of Arrogance
+		[146594] = Defaults(),	-- Gift of the Titans
+		-- Galakras
+		[147029] = Defaults(),	-- Flames of Galakrond
+		[146902] = Defaults(),	-- Poison-Tipped Blades
+		-- Iron Juggernaut
+		[144467] = Defaults(),	-- Ignite Armor
+		[144459] = Defaults(),	-- Laser Burn
 		-- Kor'kron Dark Shaman
 		[144215] = Defaults(),	-- Froststorm Strike
 		[143990] = Defaults(),	-- Foul Geyser
 		[144330] = Defaults(),	-- Iron Prison(Heroic)
+		[144089] = Defaults(),	-- Toxic Mist
 		-- General Nazgrim
 		[143494] = Defaults(),	-- Sundering Blow
+		[143638] = Defaults(),	-- Bonecracker
+		[143431] = Defaults(),	-- Magistrike
+		[143480] = Defaults(),	-- Assassin's Mark
 		-- Malkorok
 		[142990] = Defaults(),	-- Fatal Strike
 		[143919] = Defaults(),	-- Languish(Heroic)
+		[142864] = Defaults(),	-- Ancient Barrier
+		[142865] = Defaults(),	-- Strong Ancient Barrier
+		[142913] = Defaults(),	-- Displaced Energy
+		-- Spoils of Pandaria
+		[145218] = Defaults(),	-- Harden Flesh
+		[146235] = Defaults(),	-- Breath of Fire
 		-- Thok the Bloodthirsty
 		[143766] = Defaults(),	-- Panic
 		[143773] = Defaults(),	-- Freezing Breath
 		[146589] = Defaults(),	-- Skeleton Key
 		[143777] = Defaults(),	-- Frozen Solid
+		[143780] = Defaults(),	-- Acid Breath
+		[143800] = Defaults(),	-- Icy Blood
+		[143767] = Defaults(),	-- Scorching Breath
+		[143791] = Defaults(),	-- Corrosive Blood
 		-- Siegecrafter Blackfuse
 		[143385] = Defaults(),	-- Electrostatic Charge
+		[144236] = Defaults(),	-- Pattern Recognition
 		-- Paragons of the Klaxxi
 		[143974] = Defaults(),	-- Shield Bash
+		[142315] = Defaults(),	-- Caustic Blood
+		[143701] = Defaults(),	-- Whirling
+		[142948] = Defaults(),	-- Aim
 		-- Garrosh Hellscream
-		[145183] = Defaults()	-- Gripping Despair
+		[145183] = Defaults(),	-- Gripping Despair
+		[145195] = Defaults(),	-- Empowered Gripping Despair
+		[145065] = Defaults(),	-- Touch of Y'Shaarj
+		[145171] = Defaults(),	-- Empowered Touch of Y'Shaarj
 	}
 }
 
@@ -557,129 +663,120 @@ E.ReverseTimer = {
 
 }
 
---BuffWatch
---List of personal spells to show on unitframes as icon
-local function ClassBuff(id, point, color, anyUnit, onlyShowMissing, style, displayText, decimalThreshold, textColor, textThreshold, xOffset, yOffset, sizeOverride)
-	local r, g, b = unpack(color)
-
-	local r2, g2, b2 = 1, 1, 1
-	if textColor then
-		r2, g2, b2 = unpack(textColor)
-	end
+-- BuffWatch: List of personal spells to show on unitframes as icon
+function UF:AuraWatch_AddSpell(id, point, color, anyUnit, onlyShowMissing, displayText, textThreshold, xOffset, yOffset)
+	local r, g, b = 1, 1, 1
+	if color then r, g, b = unpack(color) end
 
 	return {
-		["enabled"] = true,
-		["id"] = id,
-		["point"] = point,
-		["color"] = {
-			["r"] = r,
-			["g"] = g,
-			["b"] = b
-		},
-		["anyUnit"] = anyUnit,
-		["onlyShowMissing"] = onlyShowMissing,
-		["style"] = style or "coloredIcon",
-		["displayText"] = displayText or false,
-		["decimalThreshold"] = decimalThreshold or 5,
-		["textColor"] = {
-			["r"] = r2,
-			["g"] = g2,
-			["b"] = b2
-		},
-		["textThreshold"] = textThreshold or -1,
-		["xOffset"] = xOffset or 0,
-		["yOffset"] = yOffset or 0,
-		["sizeOverride"] = sizeOverride or 0
+		enabled = true,
+		id = id,
+		point = point or "TOPLEFT",
+		color = {r = r, g = g, b = b},
+		anyUnit = anyUnit or false,
+		onlyShowMissing = onlyShowMissing or false,
+		displayText = displayText or false,
+		textThreshold = textThreshold or -1,
+		xOffset = xOffset or 0,
+		yOffset = yOffset or 0,
+		style = "coloredIcon",
+		sizeOffset = 0
 	}
 end
 
 G.unitframe.buffwatch = {
 	PRIEST = {
-		[6788] = ClassBuff(6788, "TOPRIGHT", {1, 0, 0}, true),				-- Weakened Soul
-		[41635] = ClassBuff(41635, "BOTTOMRIGHT", {0.2, 0.7, 0.2}),			-- Prayer of Mending
-		[139] = ClassBuff(139, "BOTTOMLEFT", {0.4, 0.7, 0.2}),				-- Renew
-		[17] = ClassBuff(17, "TOPLEFT", {0.81, 0.85, 0.1}, true),			-- Power Word: Shield
-		[123258] = ClassBuff(123258, "TOPLEFT", {0.81, 0.85, 0.1}, true),	-- Power Word: Shield Power Insight
-		[10060] = ClassBuff(10060 , "RIGHT", {0.89, 0.09, 0.05}),			-- Power Infusion
-		[47788] = ClassBuff(47788, "LEFT", {0.86, 0.45, 0}, true),			-- Guardian Spirit
-		[33206] = ClassBuff(33206, "LEFT", {0.89, 0.09, 0.05}, true),		-- Pain Suppression
+		[17]		= UF:AuraWatch_AddSpell(17, "TOPLEFT", {0.81, 0.85, 0.1}, true),		-- Power Word: Shield
+		[139]		= UF:AuraWatch_AddSpell(139, "BOTTOMLEFT", {0.4, 0.7, 0.2}),			-- Renew
+		[6788]		= UF:AuraWatch_AddSpell(6788, "TOPRIGHT", {1, 0, 0}, true),				-- Weakened Soul
+		[10060]		= UF:AuraWatch_AddSpell(10060 , "RIGHT", {0.89, 0.09, 0.05}),			-- Power Infusion
+		[33206]		= UF:AuraWatch_AddSpell(33206, "LEFT", {0.89, 0.09, 0.05}, true),		-- Pain Suppression
+		[41635]		= UF:AuraWatch_AddSpell(41635, "BOTTOMRIGHT", {0.2, 0.7, 0.2}),			-- Prayer of Mending
+		[47788]		= UF:AuraWatch_AddSpell(47788, "LEFT", {0.86, 0.45, 0}, true),			-- Guardian Spirit
+		[123258]	= UF:AuraWatch_AddSpell(123258, "TOPLEFT", {0.81, 0.85, 0.1}, true),	-- Power Word: Shield Power Insight
 	},
 	DRUID = {
-		[774] = ClassBuff(774, "TOPRIGHT", {0.8, 0.4, 0.8}),				-- Rejuvenation
-		[8936] = ClassBuff(8936, "BOTTOMLEFT", {0.2, 0.8, 0.2}),			-- Regrowth
-		[33763] = ClassBuff(33763, "TOPLEFT", {0.4, 0.8, 0.2}),				-- Lifebloom
-		[48438] = ClassBuff(48438, "BOTTOMRIGHT", {0.8, 0.4, 0}),			-- Wild Growth
+		[774]		= UF:AuraWatch_AddSpell(774, "TOPRIGHT", {0.8, 0.4, 0.8}),				-- Rejuvenation
+		[8936]		= UF:AuraWatch_AddSpell(8936, "BOTTOMLEFT", {0.2, 0.8, 0.2}),			-- Regrowth
+		[94447]		= UF:AuraWatch_AddSpell(94447, "TOPLEFT", {0.4, 0.8, 0.2}),				-- Lifebloom
+		[48438]		= UF:AuraWatch_AddSpell(48438, "BOTTOMRIGHT", {0.8, 0.4, 0}),			-- Wild Growth
+		[102342]	= UF:AuraWatch_AddSpell(102342, "LEFT", {0.45, 0.3, 0.2}, true),		-- Ironbark
+		[102351]	= UF:AuraWatch_AddSpell(102351, "RIGHT", {0.4, 0.9, 0.4}),				-- Cenarion Ward
 	},
 	PALADIN = {
-		[53563] = ClassBuff(53563, "TOPRIGHT", {0.7, 0.3, 0.7}),			-- Beacon of Light
-		[1022] = ClassBuff(1022, "BOTTOMRIGHT", {0.2, 0.2, 1}, true),		-- Hand of Protection
-		[1044] = ClassBuff(1044, "BOTTOMRIGHT", {0.89, 0.45, 0}, true),		-- Hand of Freedom
-		[1038] = ClassBuff(1038, "BOTTOMRIGHT", {0.93, 0.75, 0}, true),		-- Hand of Salvation
-		[6940] = ClassBuff(6940, "BOTTOMRIGHT", {0.89, 0.1, 0.1}, true),	-- Hand of Sacrifice
-		[114039] = ClassBuff(114039, "BOTTOMRIGHT", {0.64, 0.41, 0.71}),	-- Hand of Purity
-		[20925] = ClassBuff(20925, 'TOPLEFT', {0.93, 0.75, 0}),				-- Sacred Shield
-		[114163] = ClassBuff(114163, 'BOTTOMLEFT', {0.87, 0.7, 0.03}),		-- Eternal Flame
+		[1022]		= UF:AuraWatch_AddSpell(1022, "BOTTOMRIGHT", {0.2, 0.2, 1}, true),		-- Hand of Protection
+		[1038]		= UF:AuraWatch_AddSpell(1038, "BOTTOMRIGHT", {0.93, 0.75, 0}, true),	-- Hand of Salvation
+		[1044]		= UF:AuraWatch_AddSpell(1044, "BOTTOMRIGHT", {0.89, 0.45, 0}, true),	-- Hand of Freedom
+		[6940]		= UF:AuraWatch_AddSpell(6940, "BOTTOMRIGHT", {0.89, 0.1, 0.1}, true),	-- Hand of Sacrifice
+		[20925]		= UF:AuraWatch_AddSpell(20925, 'TOPLEFT', {0.93, 0.75, 0}),				-- Sacred Shield
+		[53563]		= UF:AuraWatch_AddSpell(53563, "TOPRIGHT", {0.7, 0.3, 0.7}),			-- Beacon of Light
+		[114039]	= UF:AuraWatch_AddSpell(114039, "BOTTOMRIGHT", {0.64, 0.41, 0.71}),		-- Hand of Purity
+		[114163]	= UF:AuraWatch_AddSpell(114163, 'BOTTOMLEFT', {0.87, 0.7, 0.03})		-- Eternal Flame
 	},
 	SHAMAN = {
-		[61295] = ClassBuff(61295, "TOPRIGHT", {0.7, 0.3, 0.7}),			-- Riptide
-		[974] = ClassBuff(974, "BOTTOMLEFT", {0.2, 0.7, 0.2}, true),		-- Earth Shield
-		[51945] = ClassBuff(51945, "BOTTOMRIGHT", {0.7, 0.4, 0}),			-- Earthliving
+		[974]		= UF:AuraWatch_AddSpell(974, "BOTTOMLEFT", {0.2, 0.7, 0.2}, true),		-- Earth Shield
+		[51945]		= UF:AuraWatch_AddSpell(51945, "BOTTOMRIGHT", {0.7, 0.4, 0}),			-- Earthliving
+		[61295]		= UF:AuraWatch_AddSpell(61295, "TOPRIGHT", {0.7, 0.3, 0.7})				-- Riptide
 	},
 	MONK = {
-		[119611] = ClassBuff(119611, "TOPLEFT", {0.8, 0.4, 0.8}),			-- Renewing Mist
-		[116849] = ClassBuff(116849, "TOPRIGHT", {0.2, 0.8, 0.2}),			-- Life Cocoon
-		[132120] = ClassBuff(132120, "BOTTOMLEFT", {0.4, 0.8, 0.2}),		-- Enveloping Mist
-		[124081] = ClassBuff(124081, "BOTTOMRIGHT", {0.7, 0.4, 0}),			-- Zen Sphere
+		[119611]	= UF:AuraWatch_AddSpell(119611, "TOPLEFT", {0.8, 0.4, 0.8}),			-- Renewing Mist
+		[116849]	= UF:AuraWatch_AddSpell(116849, "TOPRIGHT", {0.2, 0.8, 0.2}),			-- Life Cocoon
+		[124081]	= UF:AuraWatch_AddSpell(124081, "BOTTOMRIGHT", {0.7, 0.4, 0}),			-- Zen Sphere
+		[132120]	= UF:AuraWatch_AddSpell(132120, "BOTTOMLEFT", {0.4, 0.8, 0.2})			-- Enveloping Mist
 	},
 	ROGUE = {
-		[57934] = ClassBuff(57934, "TOPRIGHT", {0.89, 0.09, 0.05}),			-- Tricks of the Trade
+		[57934]		= UF:AuraWatch_AddSpell(57934, "TOPRIGHT", {0.89, 0.09, 0.05})			-- Tricks of the Trade
 	},
 	MAGE = {
-		[111264] = ClassBuff(111264, "TOPLEFT", {0.2, 0.2, 1}),				-- Ice Ward
+		[111264]	= UF:AuraWatch_AddSpell(111264, "TOPLEFT", {0.2, 0.2, 1})				-- Ice Ward
 	},
 	WARRIOR = {
-		[114030] = ClassBuff(114030, "TOPLEFT", {0.2, 0.2, 1}),				-- Vigilance
-		[3411] = ClassBuff(3411, "TOPRIGHT", {0.89, 0.09, 0.05}),			-- Intervene
-		[114029] = ClassBuff(114029, "TOPRIGHT", {0.89, 0.09, 0.05}),		-- Safe Guard
+		[3411]		= UF:AuraWatch_AddSpell(3411, "TOPRIGHT", {0.89, 0.09, 0.05}),			-- Intervene
+		[114029]	= UF:AuraWatch_AddSpell(114029, "TOPRIGHT", {0.89, 0.09, 0.05}),		-- Safe Guard
+		[114030]	= UF:AuraWatch_AddSpell(114030, "TOPLEFT", {0.2, 0.2, 1})				-- Vigilance
 	},
 	DEATHKNIGHT = {
-		[49016] = ClassBuff(49016, "TOPRIGHT", {0.89, 0.09, 0.05}),			-- Unholy Frenzy
+		[49016]		= UF:AuraWatch_AddSpell(49016, "TOPRIGHT", {0.89, 0.09, 0.05})			-- Unholy Frenzy
 	},
 	PET = {
-		[19615] = ClassBuff(19615, 'TOPLEFT', {0.89, 0.09, 0.05}, true),	-- Frenzy
-		[136] = ClassBuff(136, 'TOPRIGHT', {0.2, 0.8, 0.2}, true)			-- Mend Pet
+		[136]		= UF:AuraWatch_AddSpell(136, 'TOPRIGHT', {0.2, 0.8, 0.2}, true),		-- Mend Pet
+		[19615]		= UF:AuraWatch_AddSpell(19615, 'TOPLEFT', {0.89, 0.09, 0.05}, true)		-- Frenzy
 	}
 }
 
-P["unitframe"]["filters"] = {
-	["buffwatch"] = {}
+-- Profile specific BuffIndicator
+P.unitframe.filters = {
+	buffwatch = {}
 }
 
 -- Ticks
 G.unitframe.ChannelTicks = {
 	-- Warlock
-	[SpellName(1120)] = 6,		-- Drain Soul
 	[SpellName(689)] = 6,		-- Drain Life
-	[SpellName(108371)] = 6,	-- Harvest Life
-	[SpellName(5740)] = 4,		-- Rain of Fire
 	[SpellName(755)] = 6,		-- Health Funnel
+	[SpellName(1120)] = 6,		-- Drain Soul
+	[SpellName(5740)] = 4,		-- Rain of Fire
 	[SpellName(103103)] = 4,	-- Malefic Grasp
+	[SpellName(108371)] = 6,	-- Harvest Life
 	-- Druid
-	[SpellName(44203)] = 4,		-- Tranquility
 	[SpellName(16914)] = 10,	-- Hurricane
+	[SpellName(44203)] = 4,		-- Tranquility
+	[SpellName(106996)] = 10,	-- Astral Storm
 	-- Priest
 	[SpellName(15407)] = 3,		-- Mind Flay
-	[SpellName(129197)] = 3,	-- Mind Flay (Insanity)
-	[SpellName(48045)] = 5,		-- Mind Sear
 	[SpellName(47540)] = 2,		-- Penance
+	[SpellName(48045)] = 5,		-- Mind Sear
 	[SpellName(64901)] = 4,		-- Hymn of Hope
 	[SpellName(64843)] = 4,		-- Divine Hymn
+	[SpellName(129197)] = 3,	-- Mind Flay (Insanity)
 	-- Mage
-	[SpellName(5143)] = 5,		-- Arcane Missiles
 	[SpellName(10)] = 8,		-- Blizzard
+	[SpellName(5143)] = 5,		-- Arcane Missiles
 	[SpellName(12051)] = 4,		-- Evocation
-	--Monk
+	-- Monk
+	[SpellName(113656)] = 4,	-- Fists of Fury
 	[SpellName(115175)] = 9,	-- Smoothing Mist
+	[SpellName(117952)] = 6,	-- Crackling Jade Lightning
 }
 
 G.unitframe.ChannelTicksSize = {
@@ -696,28 +793,31 @@ G.unitframe.HastedChannelTicks = {
 	[SpellName(64843)] = true, -- Divine Hymn
 }
 
+-- This should probably be the same as the whitelist filter + any personal class ones that may be important to watch
 G.unitframe.AuraBarColors = {
-	[2825] = {r = 0.98, g = 0.57, b = 0.10},	-- Bloodlust
-	[32182] = {r = 0.98, g = 0.57, b = 0.10},	-- Heroism
-	[80353] = {r = 0.98, g = 0.57, b = 0.10},	-- Time Warp
-	[90355] = {r = 0.98, g = 0.57, b = 0.10},	-- Ancient Hysteria
-	[84963] = {r = 0.98, g = 0.57, b = 0.10},	-- Inquisition
-}
-
-G.unitframe.InvalidSpells = {
-	[65148] = true,	--Sacred Shield
+	[2825]	= {enable = true, color = {r = 0.98, g = 0.57, b = 0.10}},	-- Bloodlust
+	[32182] = {enable = true, color = {r = 0.98, g = 0.57, b = 0.10}},	-- Heroism
+	[80353] = {enable = true, color = {r = 0.98, g = 0.57, b = 0.10}},	-- Time Warp
+	[84963] = {enable = true, color = {r = 0.98, g = 0.57, b = 0.10}},	-- Inquisition
+	[90355] = {enable = true, color = {r = 0.98, g = 0.57, b = 0.10}},	-- Ancient Hysteria
 }
 
 G.unitframe.DebuffHighlightColors = {
-	[25771] = {enable = false, style = "FILL", color = {r = 0.85, g = 0, b = 0, a = 0.85}}, -- Forbearance
+	[25771] = {enable = false, style = "FILL", color = {r = 0.85, g = 0, b = 0, a = 0.85}} -- Forbearance
 }
 
 G.unitframe.specialFilters = {
-	["Personal"] = true,
-	["nonPersonal"] = true,
-	["blockNonPersonal"] = true,
-	["CastByUnit"] = true,
-	["notCastByUnit"] = true,
-	["blockNoDuration"] = true,
-	["Dispellable"] = true,
+	-- Whitelists
+	Personal = true,
+	nonPersonal = true,
+	CastByUnit = true,
+	notCastByUnit = true,
+	Dispellable = true,
+	notDispellable = true,
+
+	-- Blacklists
+	blockNonPersonal = true,
+	blockNoDuration = true,
+	blockDispellable = true,
+	blockNotDispellable = true,
 }

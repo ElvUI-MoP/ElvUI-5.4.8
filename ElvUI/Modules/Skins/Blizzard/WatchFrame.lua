@@ -11,60 +11,65 @@ local GetQuestDifficultyColor = GetQuestDifficultyColor
 local GetNumAutoQuestPopUps = GetNumAutoQuestPopUps
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.watchframe ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.watchframe then return end
 
 	-- WatchFrame Expand/Collapse Button
 	WatchFrameCollapseExpandButton:StripTextures()
-	S:HandleCloseButton(WatchFrameCollapseExpandButton)
-	WatchFrameCollapseExpandButton:Size(32)
-	WatchFrameCollapseExpandButton.text:SetText("-")
-	WatchFrameCollapseExpandButton.text:Point("CENTER")
+	WatchFrameCollapseExpandButton:Size(18)
 	WatchFrameCollapseExpandButton:SetFrameStrata("MEDIUM")
-	WatchFrameCollapseExpandButton:Point("TOPRIGHT", -20, 5)
+	WatchFrameCollapseExpandButton:Point("TOPRIGHT", -20, 0)
+	WatchFrameCollapseExpandButton.tex = WatchFrameCollapseExpandButton:CreateTexture(nil, "OVERLAY")
+	WatchFrameCollapseExpandButton.tex:SetTexture(E.Media.Textures.MinusButton)
+	WatchFrameCollapseExpandButton.tex:SetInside()
+	WatchFrameCollapseExpandButton:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight", "ADD")
 
 	WatchFrameHeader:Point("TOPLEFT", 0, -3)
 
 	WatchFrameLines:StripTextures()
 
 	hooksecurefunc("WatchFrame_Expand", function()
-		WatchFrameCollapseExpandButton.text:SetText("-")
+		WatchFrameCollapseExpandButton.tex:SetTexture(E.Media.Textures.MinusButton)
 
 		WatchFrame:Width(WATCHFRAME_EXPANDEDWIDTH)
 	end)
 
 	hooksecurefunc("WatchFrame_Collapse", function()
-		WatchFrameCollapseExpandButton.text:SetText("+")
+		WatchFrameCollapseExpandButton.tex:SetTexture(E.Media.Textures.PlusButton)
 
 		WatchFrame:Width(WATCHFRAME_EXPANDEDWIDTH)
 	end)
+--[[
+	-- WatchFrame Box Header
+	WatchFrameScenarioFrame.ScrollChild.BlockHeader:StripTextures()
+	WatchFrameScenarioFrame.ScrollChild.BlockHeader:CreateBackdrop("Transparent")
+	WatchFrameScenarioFrame.ScrollChild.BlockHeader.backdrop:Point("TOPLEFT", 0, -4)
+	WatchFrameScenarioFrame.ScrollChild.BlockHeader.backdrop:Point("BOTTOMRIGHT", 0, 4)
 
+	WatchFrameScenarioFrame.ScrollChild.BlockHeader.stageComplete:SetTextColor(1, 1, 1)
+	WatchFrameScenarioFrame.ScrollChild.BlockHeader.stageLevel:SetTextColor(1, 1, 1)
+	WatchFrameScenarioFrame.ScrollChild.BlockHeader.stageName:SetTextColor(1, 1, 1)
+]]
 	-- WatchFrame Text
 	hooksecurefunc("WatchFrame_Update", function()
-		local questIndex
-		local numQuestWatches = GetNumQuestWatches()
-
-		for i = 1, numQuestWatches do
-			questIndex = GetQuestIndexForWatch(i)
+		local title, level, color
+		for i = 1, GetNumQuestWatches() do
+			local questIndex = GetQuestIndexForWatch(i)
 			if questIndex then
-				local title, level = GetQuestLogTitle(questIndex)
-				local color = GetQuestDifficultyColor(level)
-				--local hex = E:RGBToHex(color.r, color.g, color.b)
-				--local text = hex.."["..level.."]|r "..title
+				title, level = GetQuestLogTitle(questIndex)
+				color = GetQuestDifficultyColor(level)
 
 				for j = 1, #WATCHFRAME_QUESTLINES do
 					if WATCHFRAME_QUESTLINES[j].text:GetText() == title then
-						--WATCHFRAME_QUESTLINES[j].text:SetText(text)
 						WATCHFRAME_QUESTLINES[j].text:SetTextColor(color.r, color.g, color.b)
 						WATCHFRAME_QUESTLINES[j].color = color
 					end
 				end
-				
-				for k = 1, #WATCHFRAME_ACHIEVEMENTLINES do
-					WATCHFRAME_ACHIEVEMENTLINES[k].color = nil
-				end
 			end
 		end
 
+		for i = 1, #WATCHFRAME_ACHIEVEMENTLINES do
+			WATCHFRAME_ACHIEVEMENTLINES[i].color = nil
+		end
 		-- WatchFrame Items
 		for i = 1, WATCHFRAME_NUM_ITEMS do
 			local button = _G["WatchFrameItem"..i]
@@ -89,40 +94,41 @@ local function LoadSkin()
 			end
 		end
 
-		for i = 1, WATCHFRAME_NUM_POPUPS do
+		-- WatchFrame Quest PopUp
+		for i = 1, GetNumAutoQuestPopUps() do
 			local frame = _G["WatchFrameAutoQuestPopUp"..i]
 			local child = _G["WatchFrameAutoQuestPopUp"..i.."ScrollChild"]
 
-			if frame and frame.isSkinned ~= true then
+			if frame and not frame.isSkinned then
 				local name = child:GetName()
 
-				frame:CreateBackdrop("Transparent", nil, true)
+				frame:CreateBackdrop("Transparent")
 				frame.backdrop:Point("TOPLEFT", 0, -2)
 				frame.backdrop:Point("BOTTOMRIGHT", 0, 2)
 
 				frame:SetHitRectInsets(2, 2, 2, 2)
-
-				child.QuestionMark:ClearAllPoints()
-				child.QuestionMark:Point("CENTER", frame.backdrop, "LEFT", 12, 0)
-				child.QuestionMark:SetParent(frame.backdrop)
-				child.QuestionMark:SetDrawLayer("OVERLAY", 7)
-
-				child.Exclamation:ClearAllPoints()
-				child.Exclamation:Point("CENTER", frame.backdrop, "LEFT", 12, 0)
-				child.Exclamation:SetParent(frame.backdrop)
-				child.Exclamation:SetDrawLayer("OVERLAY", 7)
 
 				child.TopText:ClearAllPoints()
 				child.TopText:Point("TOP", frame.backdrop, "TOP", 0, -10)
 				child.TopText.SetPoint = E.noop
 
 				child.QuestName:ClearAllPoints()
-				child.QuestName:Point("LEFT", child.Exclamation, "RIGHT", 2, 0)
+				child.QuestName:Point("CENTER", frame.backdrop, "CENTER", 0, 0)
 				child.QuestName.SetPoint = E.noop
 
 				child.BottomText:ClearAllPoints()
 				child.BottomText:Point("BOTTOM", frame.backdrop, "BOTTOM", 0, 10)
 				child.BottomText.SetPoint = E.noop
+
+				child.QuestionMark:ClearAllPoints()
+				child.QuestionMark:Point("RIGHT", child.QuestName, "LEFT", -2, 0)
+				child.QuestionMark:SetParent(frame.backdrop)
+				child.QuestionMark:SetDrawLayer("OVERLAY", 7)
+
+				child.Exclamation:ClearAllPoints()
+				child.Exclamation:Point("RIGHT", child.QuestName, "LEFT", -2, 0)
+				child.Exclamation:SetParent(frame.backdrop)
+				child.Exclamation:SetDrawLayer("OVERLAY", 7)
 
 				_G[name.."Bg"]:Kill()
 				_G[name.."QuestIconBg"]:Kill()
@@ -139,8 +145,12 @@ local function LoadSkin()
 				_G[name.."BorderTopLeft"]:Kill()
 				_G[name.."BorderTopRight"]:Kill()
 
-				frame:HookScript("OnEnter", S.SetModifiedBackdrop)
-				frame:HookScript("OnLeave", S.SetOriginalBackdrop)
+				frame:HookScript("OnEnter", function(self)
+					self.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+				end)
+				frame:HookScript("OnLeave", function(self)
+					self.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				end)
 
 				frame.isSkinned = true
 			end
@@ -170,8 +180,7 @@ local function LoadSkin()
 
 	-- WatchFrame POI Buttons
 	hooksecurefunc("QuestPOI_DisplayButton", function(parentName, buttonType, buttonIndex)
-		local buttonName = "poi"..parentName..buttonType.."_"..buttonIndex
-		local poiButton = _G[buttonName]
+		local poiButton = _G[format("poi%s%s_%d", parentName, buttonType, buttonIndex)]
 
 		if poiButton and parentName == "WatchFrameLines" then
 			if not poiButton.isSkinned then

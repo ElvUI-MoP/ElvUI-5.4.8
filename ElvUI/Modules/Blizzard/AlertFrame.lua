@@ -1,16 +1,12 @@
-local E, L, DF = unpack(select(2, ...))
+local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Blizzard")
+local Misc = E:GetModule("Misc")
 
 local _G = _G
 local pairs = pairs
 
 local AlertFrame_FixAnchors = AlertFrame_FixAnchors
 local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES
-
-local AlertFrameHolder = CreateFrame("Frame", "AlertFrameHolder", E.UIParent)
-AlertFrameHolder:SetWidth(250)
-AlertFrameHolder:SetHeight(20)
-AlertFrameHolder:SetPoint("TOP", E.UIParent, "TOP", 0, -18)
 
 local POSITION, ANCHOR_POINT, YOFFSET = "TOP", "BOTTOM", -10
 
@@ -30,7 +26,7 @@ function E:PostAlertMove(screenQuadrant)
 		AlertFrameMover:SetText(AlertFrameMover.textString.." [Grow Up]")
 	end
 
-	local rollBars = E:GetModule("Misc").RollBars
+	local rollBars = Misc.RollBars
 	if E.private.general.lootRoll then
 		local lastframe, lastShownFrame
 		for i, frame in pairs(rollBars) do
@@ -125,9 +121,9 @@ function B:AlertFrame_SetAchievementAnchors()
 		if frame then
 			frame:ClearAllPoints()
 			if alertAnchor and alertAnchor:IsShown() then
-				frame:SetPoint(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+				frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
 			else
-				frame:SetPoint(POSITION, AlertFrame, ANCHOR_POINT)
+				frame:Point(POSITION, AlertFrame, ANCHOR_POINT)
 			end
 
 			alertAnchor = frame
@@ -211,6 +207,11 @@ function B:AlertFrame_SetGuildChallengeAnchors(alertAnchor)
 end
 
 function B:AlertMovers()
+	local AlertFrameHolder = CreateFrame("Frame", "AlertFrameHolder", E.UIParent)
+	AlertFrameHolder:Width(180)
+	AlertFrameHolder:Height(20)
+	AlertFrameHolder:Point("TOP", E.UIParent, "TOP", 0, -18)
+
 	self:SecureHook("AlertFrame_FixAnchors", E.PostAlertMove)
 	self:SecureHook("AlertFrame_SetLootAnchors")
 	self:SecureHook("AlertFrame_SetLootWonAnchors")

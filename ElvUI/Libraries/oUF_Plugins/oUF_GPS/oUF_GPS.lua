@@ -1,11 +1,14 @@
-local _, ns = ...;
-local oUF = ns.oUF or oUF;
-assert(oUF, "oUF not loaded");
+local _, ns = ...
+local oUF = oUF or ns.oUF
+assert(oUF, "oUF_GPS was unable to locate oUF install")
 
-local cos, sin, sqrt2, max, atan2 = math.cos, math.sin, math.sqrt(2), math.max, math.atan2;
-local tinsert, tremove = table.insert, table.remove;
-local pi2 = 3.141592653589793 / 2;
+local atan2, cos, sin = math.atan2, math.cos, math.sin
+local tremove = table.remove
 
+local sqrt2 = math.sqrt(2)
+local pi2 = math.pi / 2
+
+local GetPlayerFacing = GetPlayerFacing
 local GetPlayerMapPosition = GetPlayerMapPosition
 local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
@@ -13,96 +16,166 @@ local UnitInRange = UnitInRange
 local UnitIsConnected = UnitIsConnected
 local UnitIsUnit = UnitIsUnit
 
-local _FRAMES, OnUpdateFrame = {};
+local function CalculateCorner(r)
+	return 0.5 + cos(r) / sqrt2, 0.5 + sin(r) / sqrt2
+end
 
-local function CalculateCorner(r) return .5 + cos(r) / sqrt2, .5 + sin(r) / sqrt2; end
 local function RotateTexture(texture, angle)
-	local LRx, LRy = CalculateCorner(angle + 0.785398163);
-	local LLx, LLy = CalculateCorner(angle + 2.35619449);
-	local ULx, ULy = CalculateCorner(angle + 3.92699082);
-	local URx, URy = CalculateCorner(angle - 0.785398163);
+	local LRx, LRy = CalculateCorner(angle + 0.785398163)
+	local LLx, LLy = CalculateCorner(angle + 2.35619449)
+	local ULx, ULy = CalculateCorner(angle + 3.92699082)
+	local URx, URy = CalculateCorner(angle - 0.785398163)
 
-	texture:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+	texture:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
 end
 
-local GetAngle = function(unit1, unit2)
-	local x1, y1 = GetPlayerMapPosition(unit1);
-	if(x1 <= 0 and y1 <= 0) then return nil; end
+local function GetAngle(unit1, unit2)
+	local x1, y1 = GetPlayerMapPosition(unit1)
+	if x1 <= 0 and y1 <= 0 then return end
+
 	local x2, y2 = GetPlayerMapPosition(unit2)
-	if(x2 <= 0 and y2 <= 0) then return nil; end
-	return -pi2 - GetPlayerFacing() - atan2(y2 - y1, x2 - x1);
+	if x2 <= 0 and y2 <= 0 then return end
+
+	return -pi2 - GetPlayerFacing() - atan2(y2 - y1, x2 - x1)
 end
 
-local minThrottle = 0.02
-local numArrows, inRange, unit, GPS
-local Update = function(self, elapsed)
-	if(self.elapsed and self.elapsed > (self.throttle or minThrottle)) then
-		numArrows = 0;
-		for _, object in next, _FRAMES do
-			if(object:IsShown()) then
-				GPS = object.GPS;
-				unit = object.unit;
-				if(unit) then
-					if(unit and GPS.outOfRange) then
-						inRange = UnitInRange(unit);
-					end
-
-					if(not unit or not (UnitInParty(unit) or UnitInRaid(unit)) or UnitIsUnit(unit, "player") or not UnitIsConnected(unit) or (GPS.onMouseOver and (GetMouseFocus() ~= object)) or (GPS.outOfRange and inRange)) then
-						GPS:Hide()
-					else
-						local angle = GetAngle("player", unit);
-						if(angle == nil) then
-							GPS:Hide();
-						else
-							GPS:Show();
-							RotateTexture(GPS.Texture, angle);
-
-							numArrows = numArrows + 1;
-						end
-					end
-				else
-					GPS:Hide();
-				end
-			end
-		end
-
-		self.elapsed = 0;
-		self.throttle = max(minThrottle, 0.005 * numArrows);
+local function UpdateElement(element, unit)
+	if not unit or UnitIsUnit(unit, "player") or not UnitIsConnected(unit) or not (UnitInParty(unit) or UnitInRaid(unit)) or (element.outOfRange and UnitInRange(unit)) then
+		element:Hide()
 	else
-		self.elapsed = (self.elapsed or 0) + elapsed;
-	end
-end
+		local angle = GetAngle("player", unit)
 
-local Enable = function(self)
-	local GPS = self.GPS;
-	if(GPS) then
-		tinsert(_FRAMES, self);
-
-		if(not OnUpdateFrame) then
-			OnUpdateFrame = CreateFrame("Frame");
-			OnUpdateFrame:SetScript("OnUpdate", Update);
+		if angle then
+			RotateTexture(element.Texture, angle)
+			element:Show()
+		else
+			element:Hide()
 		end
-
-		OnUpdateFrame:Show();
-		return true;
 	end
 end
 
-local Disable = function(self)
-	local GPS = self.GPS;
-	if(GPS) then
-		for k, frame in next, _FRAMES do
-			if(frame == self) then
-				tremove(_FRAMES, k);
-				GPS:Hide();
-				break
+local _FRAMES = {}
+local ListUpdateFrame
+
+local function OnUpdateList(self, elapsed)
+	self.elapsed = self.elapsed + elapsed
+
+	if self.elapsed < 0.0333 then return end
+
+	self.elapsed = 0
+
+	for i = 1, #_FRAMES do
+		local object = _FRAMES[i]
+
+		if object:IsShown() then
+			UpdateElement(object.GPS, object.unit)
+		end
+	end
+end
+
+local function OnUpdateFrame(self, elapsed)
+	self.__elapsed = self.__elapsed + elapsed
+
+	if self.__elapsed < 0.0333 then return end
+
+	self.__elapsed = 0
+	UpdateElement(self.GPS, self.unit)
+end
+
+local function OnEnter(self)
+	if not self.__enabled then return end
+
+	self.__elapsed = 0
+	self:SetScript("OnUpdate", OnUpdateFrame)
+end
+
+local function OnLeave(self)
+	if not self.__enabled then return end
+
+	self:SetScript("OnUpdate", nil)
+	self.GPS:Hide()
+end
+
+local function disableHook(self, element)
+	if not element.__hooked then return end
+
+	self.__enabled = false
+	self:SetScript("OnUpdate", nil)
+end
+
+local function disableGlobal(self, element)
+	if not element.__global then return end
+
+	for i = 1, #_FRAMES do
+		if _FRAMES[i] == self then
+			tremove(_FRAMES, i)
+			element:Hide()
+			break
+		end
+	end
+
+	element.__global = nil
+
+	if #_FRAMES == 0 and ListUpdateFrame then
+		ListUpdateFrame:Hide()
+	end
+end
+
+local function UpdateState(self, disable)
+	local element = self.GPS
+
+	if not disable then
+		if element.onMouseOver then
+			disableGlobal(self, element)
+
+			if not element.__hooked then
+				self:HookScript("OnEnter", OnEnter)
+				self:HookScript("OnLeave", OnLeave)
+
+				element.__hooked = true
+			end
+
+			self.__enabled = true
+		else
+			disableHook(self, element)
+
+			if not element.__global then
+				_FRAMES[#_FRAMES + 1] = self
+				element.__global = true
+
+				if not ListUpdateFrame then
+					ListUpdateFrame = CreateFrame("Frame")
+					ListUpdateFrame:SetScript("OnUpdate", OnUpdateList)
+					ListUpdateFrame.elapsed = 0
+				end
+
+				ListUpdateFrame:Show()
 			end
 		end
-
-		if(#_FRAMES == 0 and OnUpdateFrame) then
-			OnUpdateFrame:Hide();
-		end
+	else
+		disableGlobal(self, element)
+		disableHook(self, element)
 	end
 end
 
-oUF:AddElement("GPS", nil, Enable, Disable);
+local function Enable(self)
+	local element = self.GPS
+
+	if element then
+		element.UpdateState = UpdateState
+
+		UpdateState(self)
+
+		return true
+	end
+end
+
+local function Disable(self)
+	local element = self.GPS
+
+	if element then
+		UpdateState(self, true)
+	end
+end
+
+oUF:AddElement("GPS", nil, Enable, Disable)

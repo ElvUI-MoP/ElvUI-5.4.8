@@ -3,16 +3,16 @@ Copyright (c) 2010-2015, Hendrik "nevcairiel" Leppkes <h.leppkes@gmail.com>
 
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice, 
-      this list of conditions and the following disclaimer in the documentation 
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name of the developer nor the names of its contributors 
-      may be used to endorse or promote products derived from this software without 
+    * Neither the name of the developer nor the names of its contributors
+      may be used to endorse or promote products derived from this software without
       specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -28,8 +28,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
-local MAJOR_VERSION = "LibActionButton-1.0"
-local MINOR_VERSION = 66
+local MAJOR_VERSION = "LibActionButton-1.0-ElvUI"
+local MINOR_VERSION = 19
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -176,6 +176,9 @@ function lib:CreateButton(id, name, header, config)
 	-- adjust hotkey style for better readability
 	button.hotkey:SetFont(button.hotkey:GetFont(), 13, "OUTLINE")
 	button.hotkey:SetVertexColor(0.75, 0.75, 0.75)
+
+	-- adjust count/stack size
+	button.count:SetFont(button.count:GetFont(), 16, "OUTLINE")
 
 	-- Store the button in the registry, needed for event and OnUpdate handling
 	if not next(ButtonRegistry) then
@@ -1008,7 +1011,7 @@ function Update(self, fromUpdateConfig)
 			self:SetAlpha(0.0)
 		end
 		self.cooldown:Hide()
-		self:SetChecked(0)
+		self:SetChecked(false)
 	end
 
 	-- Add a green border if button is an equipped item
@@ -1085,9 +1088,9 @@ end
 
 function UpdateButtonState(self)
 	if self:IsCurrentlyActive() or self:IsAutoRepeat() then
-		self:SetChecked(1)
+		self:SetChecked(true)
 	else
-		self:SetChecked(0)
+		self:SetChecked(false)
 	end
 	lib.callbacks:Fire("OnButtonState", self)
 end
@@ -1111,30 +1114,35 @@ function UpdateUsable(self)
 		end
 	else
 		self.icon:SetVertexColor(unpack(self.config.colors.usable))
- 	end
+	end
 	lib.callbacks:Fire("OnButtonUsable", self)
 end
 
 function UpdateCount(self)
-	local count, charges, maxCharges = 0, 0, 0
-	local isItemAction = false
-
-	if self._state_action and type(self._state_action) == "number" then
-		charges, maxCharges = GetActionCharges(self._state_action)
-		count = self:GetCount()
-		isItemAction = IsItemAction(self._state_action)
+	if not self:HasAction() then
+		self.count:SetText("")
+		return
 	end
 
-	if self:IsConsumableOrStackable() or (not isItemAction and count > 0) then
+	if self:IsConsumableOrStackable() then
+		local count = self:GetCount()
+
 		if count > (self.maxDisplayCount or 9999) then
 			self.count:SetText("*")
 		else
 			self.count:SetText(count)
 		end
-	elseif charges and maxCharges and maxCharges > 1 then
-		self.count:SetText(charges)
 	else
-		self.count:SetText("")
+		local charges, maxCharges = 0, 0
+		if self._state_action and type(self._state_action) == "number" then
+			charges, maxCharges = GetActionCharges(self._state_action)
+		end
+
+		if charges and maxCharges and maxCharges > 1 then
+			self.count:SetText(charges)
+		else
+			self.count:SetText("")
+		end
 	end
 end
 
@@ -1167,9 +1175,10 @@ end
 
 function UpdateTooltip(self)
 	if (GetCVar("UberTooltips") == "1") then
-		GameTooltip_SetDefaultAnchor(GameTooltip, self);
+		GameTooltip:ClearAllPoints()
+		GameTooltip_SetDefaultAnchor(GameTooltip, self)
 	else
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	end
 	if self:SetTooltip() then
 		self.UpdateTooltip = UpdateTooltip
@@ -1182,11 +1191,11 @@ function UpdateHotkeys(self)
 	local key = self:GetHotkey()
 	if not key or key == "" or self.config.hideElements.hotkey then
 		self.hotkey:SetText(RANGE_INDICATOR)
-		self.hotkey:SetPoint("TOPRIGHT", 0, -3);
+		self.hotkey:SetPoint("TOPRIGHT", 0, -3)
 		self.hotkey:Hide()
 	else
 		self.hotkey:SetText(key)
-		self.hotkey:SetPoint("TOPRIGHT", 0, -3);
+		self.hotkey:SetPoint("TOPRIGHT", 0, -3)
 		self.hotkey:Show()
 	end
 
@@ -1203,7 +1212,7 @@ local function OverlayGlow_OnHide(self)
 end
 
 function GetOverlayGlow()
-	local overlay = tremove(lib.unusedOverlayGlows);
+	local overlay = tremove(lib.unusedOverlayGlows)
 	if not overlay then
 		lib.numOverlays = lib.numOverlays + 1
 		overlay = CreateFrame("Frame", "LAB10ActionButtonOverlay"..lib.numOverlays, UIParent, "ActionBarButtonSpellActivationAlert")
@@ -1288,7 +1297,7 @@ function UpdateFlyout(self)
 			-- Update arrow
 			self.FlyoutArrow:Show()
 			self.FlyoutArrow:ClearAllPoints()
-			local direction = self:GetAttribute("flyoutDirection");
+			local direction = self:GetAttribute("flyoutDirection")
 			if direction == "LEFT" then
 				self.FlyoutArrow:SetPoint("LEFT", self, "LEFT", -arrowDistance, 0)
 				SetClampedTextureRotation(self.FlyoutArrow, 270)
@@ -1360,7 +1369,7 @@ Action.IsEquipped              = function(self) return IsEquippedAction(self._st
 Action.IsCurrentlyActive       = function(self) return IsCurrentAction(self._state_action) end
 Action.IsAutoRepeat            = function(self) return IsAutoRepeatAction(self._state_action) end
 Action.IsUsable                = function(self) return IsUsableAction(self._state_action) end
-Action.IsConsumableOrStackable = function(self) return IsConsumableAction(self._state_action) or IsStackableAction(self._state_action) end
+Action.IsConsumableOrStackable = function(self) return IsConsumableAction(self._state_action) or IsStackableAction(self._state_action) or (not IsItemAction(self._state_action) and GetActionCount(self._state_action) > 0) end
 Action.IsUnitInRange           = function(self, unit) return IsActionInRange(self._state_action, unit) end
 Action.SetTooltip              = function(self) return GameTooltip:SetAction(self._state_action) end
 Action.GetSpellId              = function(self)

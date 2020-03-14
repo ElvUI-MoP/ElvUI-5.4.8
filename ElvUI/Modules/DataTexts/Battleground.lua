@@ -41,7 +41,8 @@ function DT:UPDATE_BATTLEFIELD_SCORE()
 	for i = 1, GetNumBattlefieldScores() do
 		local name = GetBattlefieldScore(i)
 		if name == E.myname then
-			self.text:SetFormattedText(displayString, dataStrings[pointIndex], E:ShortValue(select(pointIndex, GetBattlefieldScore(i))))
+			local val = select(pointIndex, GetBattlefieldScore(i))
+			self.text:SetFormattedText(displayString, dataStrings[pointIndex], E:ShortValue(val))
 			break
 		end
 	end
@@ -50,7 +51,7 @@ end
 function DT:BattlegroundStats()
 	DT:SetupTooltip(self)
 
-	local classColor = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass]) or RAID_CLASS_COLORS[E.myclass]
+	local classColor = E:ClassColor(E.myclass)
 	local numStatInfo = GetNumBattlefieldStats()
 	if numStatInfo then
 		for index = 1, GetNumBattlefieldScores() do

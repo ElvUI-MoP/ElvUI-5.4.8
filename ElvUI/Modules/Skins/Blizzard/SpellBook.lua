@@ -8,9 +8,8 @@ local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.spellbook ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.spellbook then return end
 
-	local SpellBookFrame = _G["SpellBookFrame"]
 	SpellBookFrame:StripTextures(true)
 	SpellBookFrame:SetTemplate("Transparent")
 	SpellBookFrame:Width(460)
@@ -25,9 +24,11 @@ local function LoadSkin()
 
 	S:HandleNextPrevButton(SpellBookPrevPageButton)
 	SpellBookPrevPageButton:Point("BOTTOMRIGHT", SpellBookFrame, "BOTTOMRIGHT", -45, 10)
+	SpellBookPrevPageButton:Size(24)
 
 	S:HandleNextPrevButton(SpellBookNextPageButton)
 	SpellBookNextPageButton:Point("BOTTOMRIGHT", SpellBookPageNavigationFrame, "BOTTOMRIGHT", -10, 10)
+	SpellBookNextPageButton:Size(24)
 
 	SpellBookFrameTutorialButton:Hide()
 
@@ -38,11 +39,12 @@ local function LoadSkin()
 		local button = _G["SpellButton"..i]
 		local icon = _G["SpellButton"..i.."IconTexture"]
 		local cooldown = _G["SpellButton"..i.."Cooldown"]
+		local highlight = _G["SpellButton"..i.."Highlight"]
 
-		for i = 1, button:GetNumRegions() do
-			local region = select(i, button:GetRegions())
+		for j = 1, button:GetNumRegions() do
+			local region = select(j, button:GetRegions())
 			if region:GetObjectType() == "Texture" then
-				if region ~= button.FlyoutArrow then
+				if region:GetTexture() ~= "Interface\\Buttons\\ActionBarFlyoutButton" then
 					region:SetTexture(nil)
 				end
 			end
@@ -51,42 +53,39 @@ local function LoadSkin()
 		button:CreateBackdrop("Default", true)
 		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() - 1)
 
-		icon:SetTexCoord(unpack(E.TexCoords))
-
 		button.bg = CreateFrame("Frame", nil, button)
 		button.bg:CreateBackdrop("Transparent", true)
-		button.bg:Point("TOPLEFT", -7, 8)
-		button.bg:Point("BOTTOMRIGHT", 170, -12)
+		button.bg:Point("TOPLEFT", -7, 9)
+		button.bg:Point("BOTTOMRIGHT", 170, -10)
 		button.bg:SetFrameLevel(button.bg:GetFrameLevel() - 2)
 
-		E:RegisterCooldown(cooldown)
-	end
+		icon:SetTexCoord(unpack(E.TexCoords))
 
-	SpellButton1:Point("TOPLEFT", SpellBookSpellIconsFrame, "TOPLEFT", 15, -75)
-	SpellButton2:Point("TOPLEFT", SpellButton1, "TOPLEFT", 225, 0)
-	SpellButton3:Point("TOPLEFT", SpellButton1, "BOTTOMLEFT", 0, -27)
-	SpellButton4:Point("TOPLEFT", SpellButton3, "TOPLEFT", 225, 0)
-	SpellButton5:Point("TOPLEFT", SpellButton3, "BOTTOMLEFT", 0, -27)
-	SpellButton6:Point("TOPLEFT", SpellButton5, "TOPLEFT", 225, 0)
-	SpellButton7:Point("TOPLEFT", SpellButton5, "BOTTOMLEFT", 0, -27)
-	SpellButton8:Point("TOPLEFT", SpellButton7, "TOPLEFT", 225, 0)
-	SpellButton9:Point("TOPLEFT", SpellButton7, "BOTTOMLEFT", 0, -27)
-	SpellButton10:Point("TOPLEFT", SpellButton9, "TOPLEFT", 225, 0)
-	SpellButton11:Point("TOPLEFT", SpellButton9, "BOTTOMLEFT", 0, -27)
-	SpellButton12:Point("TOPLEFT", SpellButton11, "TOPLEFT", 225, 0)
+		highlight:SetAllPoints()
+		hooksecurefunc(highlight, "SetTexture", function(self, texture)
+			if texture == "Interface\\Buttons\\ButtonHilight-Square" or texture == "Interface\\Buttons\\UI-PassiveHighlight" then
+				self:SetTexture(1, 1, 1, 0.3)
+			end
+		end)
+
+		E:RegisterCooldown(cooldown)
+
+		if i == 1 then
+			button:Point("TOPLEFT", SpellBookSpellIconsFrame, "TOPLEFT", 15, -75)
+		elseif i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 then
+			button:Point("TOPLEFT", _G["SpellButton"..i - 1], "TOPLEFT", 225, 0)
+		elseif i == 3 or i == 5 or i == 7 or i == 9 or i == 11 then
+			button:Point("TOPLEFT", _G["SpellButton"..i - 2], "BOTTOMLEFT", 0, -27)
+		end
+
+	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function(self)
 		local name = self:GetName()
-		local spellName = _G[name .. "SpellName"]
-		local spellSubName = _G[name .. "SubSpellName"]
-		local spellLevel = _G[name .. "RequiredLevelString"]
-		local highlight = _G[name .. "Highlight"]
-
-		if highlight then
-			highlight:SetTexture(1, 1, 1, 0.3)
-		end
-
-		local r, g, b = spellName:GetTextColor()
+		local spellName = _G[name.."SpellName"]
+		local spellSubName = _G[name.."SubSpellName"]
+		local spellLevel = _G[name.."RequiredLevelString"]
+		local r = spellName:GetTextColor()
 
 		if r < 0.8 then
 			spellName:SetTextColor(0.6, 0.6, 0.6)
@@ -189,7 +188,7 @@ local function LoadSkin()
 		for i = 1, #SpellBookCoreAbilitiesFrame.SpecTabs do
 			local tab = SpellBookCoreAbilitiesFrame.SpecTabs[i]
 
-			if tab and tab.isSkinned ~= true then
+			if tab and not tab.isSkinned then
 				tab:GetRegions():Hide()
 				tab:SetTemplate()
 
@@ -225,15 +224,11 @@ local function LoadSkin()
 		end
 
 		hooksecurefunc(tab:GetHighlightTexture(), "SetTexture", function(self, texPath)
-			if texPath ~= nil then
-				self:SetPushedTexture(nil)
-			end
+			if texPath ~= nil then self:SetPushedTexture(nil) end
 		end)
 
 		hooksecurefunc(tab:GetCheckedTexture(), "SetTexture", function(self, texPath)
-			if texPath ~= nil then
-				self:SetHighlightTexture(nil)
-			end
+			if texPath ~= nil then self:SetHighlightTexture(nil) end
 		end)
 
 		flash:Kill()
@@ -251,132 +246,96 @@ local function LoadSkin()
 		end
 	end
 
-	-- Primary Professions
-	for i = 1, 2 do
-		local primary = _G["PrimaryProfession"..i]
+	-- Professions
+	for frame, numItems in pairs({["PrimaryProfession"] = 2, ["SecondaryProfession"] = 4}) do
+		for i = 1, numItems do
+			local item = _G[frame..i]
 
-		primary:StripTextures()
-		primary:CreateBackdrop("Transparent")
-		primary:Height(90)
+			item:StripTextures()
+			item:CreateBackdrop("Transparent")
+			item:Height(numItems == 2 and 90 or 60)
 
-		if i == 1 then
-			primary:Point("TOPLEFT", 10, -30)
-		elseif i == 2 then
-			primary:Point("TOPLEFT", 10, -130)
+			item.missingHeader:SetTextColor(1, 0.80, 0.10)
+			item.missingText:SetTextColor(1, 1, 1)
+			item.missingText:FontTemplate(nil, 12, "OUTLINE")
+
+			item.statusBar:StripTextures()
+			item.statusBar:CreateBackdrop()
+			item.statusBar:SetStatusBarTexture(E.media.normTex)
+			item.statusBar:SetStatusBarColor(0.22, 0.39, 0.84)
+			item.statusBar:Size(numItems == 2 and 180 or 120, numItems == 2 and 20 or 18)
+			item.statusBar:Point("TOPLEFT", numItems == 2 and 250 or 5, numItems == 2 and -10 or -35)
+			item.statusBar.rankText:Point("CENTER")
+			item.statusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
+
+			if item.unlearn then
+				S:HandleCloseButton(item.unlearn)
+				item.unlearn:Size(26)
+				item.unlearn:Point("RIGHT", item.statusBar, "LEFT", -128, -9)
+				item.unlearn.Texture:SetVertexColor(1, 0, 0)
+
+				item.unlearn:HookScript("OnEnter", function(btn) btn.Texture:SetVertexColor(1, 1, 1) end)
+				item.unlearn:HookScript("OnLeave", function(btn) btn.Texture:SetVertexColor(1, 0, 0) end)
+			end
+
+			if item.icon then
+				item.icon:SetTexCoord(unpack(E.TexCoords))
+				item.icon:SetDesaturated(false)
+				item.icon:SetAlpha(1)
+			end
+
+			if numItems == 2 then
+				item:Point("TOPLEFT", 10, -(i == 1 and 30 or 130))
+				item.rank:Point("TOPLEFT", 120, -23)
+			end
+
+			for j = 1, 2 do
+				local button = item["button"..j]
+
+				button:StripTextures()
+				button:CreateBackdrop()
+				button:SetFrameLevel(button:GetFrameLevel() + 2)
+
+				if numItems == 2 then
+					button:Point(j == 1 and "TOPLEFT" or "TOPRIGHT", j == 1 and item.button2 or item, j == 1 and "BOTTOMLEFT" or "TOPRIGHT", j == 1 and 135 or -235, j == 1 and 40 or -45)
+				elseif numItems == 4 then
+					button:Point("TOPRIGHT", j == 1 and item or item.button1, j == 1 and "TOPRIGHT" or "TOPLEFT", j == 1 and -100 or -95, j == 1 and -10 or 0)
+				end
+
+				button:StyleButton(true)
+				button.pushed:SetAllPoints()
+				button.checked:SetAllPoints()
+				button.highlightTexture:SetAllPoints()
+				hooksecurefunc(button.highlightTexture, "SetTexture", function(self, texture)
+					if texture == "Interface\\Buttons\\ButtonHilight-Square" or texture == "Interface\\Buttons\\UI-PassiveHighlight" then
+						self:SetTexture(1, 1, 1, 0.3)
+					end
+				end)
+
+				button.iconTexture:SetTexCoord(unpack(E.TexCoords))
+				button.iconTexture:SetAllPoints()
+
+				if button.unlearn then
+					S:HandleCloseButton(button.unlearn)
+					button.unlearn:Size(26)
+					button.unlearn:Point("RIGHT", button, "LEFT", 0, 0)
+					button.unlearn.Texture:SetVertexColor(1, 0, 0)
+
+					button.unlearn:HookScript("OnEnter", function(btn) btn.Texture:SetVertexColor(1, 1, 1) end)
+					button.unlearn:HookScript("OnLeave", function(btn) btn.Texture:SetVertexColor(1, 0, 0) end)
+				end
+
+				button.subSpellString:SetTextColor(1, 1, 1)
+
+				button.cooldown:SetAllPoints()
+				E:RegisterCooldown(button.cooldown)
+			end
 		end
-
-		primary.icon:SetTexCoord(unpack(E.TexCoords))
-
-		primary.missingHeader:SetTextColor(1, 0.80, 0.10)
-
-		primary.missingText:SetTextColor(1, 1, 1)
-		primary.missingText:FontTemplate(nil, 12, "OUTLINE")
-
-		primary.statusBar:StripTextures()
-		primary.statusBar:CreateBackdrop("Default")
-		primary.statusBar:SetStatusBarTexture(E.media.normTex)
-		primary.statusBar:SetStatusBarColor(0.22, 0.39, 0.84)
-		primary.statusBar:Size(180, 20)
-		primary.statusBar:Point("TOPLEFT", 250, -10)
-
-		primary.statusBar.rankText:Point("CENTER")
-		primary.statusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
-
-		primary.rank:Point("TOPLEFT", 120, -23)
-		primary.unlearn:Point("RIGHT", primary.statusBar, "LEFT", -135, -10)
-
-		primary.button1:StripTextures()
-		primary.button1:CreateBackdrop("Default")
-		primary.button1:Point("TOPLEFT", primary.button2, "BOTTOMLEFT", 135, 40)
-		primary.button1:GetHighlightTexture():Hide()
-		primary.button1:StyleButton(true)
-		primary.button1.pushed:SetAllPoints()
-		primary.button1.checked:SetAllPoints()
-		primary.button1:SetFrameLevel(primary.button1:GetFrameLevel() + 2)
-
-		primary.button1.iconTexture:SetTexCoord(unpack(E.TexCoords))
-		primary.button1.iconTexture:SetAllPoints()
-
-		primary.button1.subSpellString:SetTextColor(1, 1, 1)
-
-		primary.button1.cooldown:SetAllPoints()
-		E:RegisterCooldown(primary.button1.cooldown)
-
-		primary.button2:StripTextures()
-		primary.button2:CreateBackdrop("Default")
-		primary.button2:Point("TOPRIGHT", primary, "TOPRIGHT", -235, -45)
-		primary.button2:GetHighlightTexture():Hide()
-		primary.button2:StyleButton(true)
-		primary.button2.pushed:SetAllPoints()
-		primary.button2.checked:SetAllPoints()
-		primary.button2:SetFrameLevel(primary.button2:GetFrameLevel() + 2)
-
-		primary.button2.iconTexture:SetTexCoord(unpack(E.TexCoords))
-		primary.button2.iconTexture:SetAllPoints()
-
-		primary.button2.subSpellString:SetTextColor(1, 1, 1)
-
-		primary.button2.cooldown:SetAllPoints()
-		E:RegisterCooldown(primary.button2.cooldown)
 	end
 
-	-- Secondary Professions
-	for i = 1, 4 do
-		local secondary = _G["SecondaryProfession"..i]
-
-		secondary:CreateBackdrop("Transparent")
-		secondary:Height(60)
-
-		secondary.statusBar:StripTextures()
-		secondary.statusBar:CreateBackdrop("Default")
-		secondary.statusBar:SetStatusBarTexture(E.media.normTex)
-		secondary.statusBar:SetStatusBarColor(0.22, 0.39, 0.84)
-		secondary.statusBar:Size(120, 18)
-		secondary.statusBar:Point("TOPLEFT", 5, -35)
-
-		secondary.statusBar.rankText:Point("CENTER")
-		secondary.statusBar.rankText:FontTemplate(nil, 12, "OUTLINE")
-
-		secondary.missingHeader:SetTextColor(1, 0.80, 0.10)
-
-		secondary.missingText:SetTextColor(1, 1, 1)
-		secondary.missingText:FontTemplate(nil, 12, "OUTLINE")
-
-		secondary.button1:StripTextures()
-		secondary.button1:CreateBackdrop("Default", true)
-		secondary.button1:Point("TOPRIGHT", -90, -10)
-		secondary.button1:GetHighlightTexture():Hide()
-		secondary.button1:StyleButton(true)
-		secondary.button1.pushed:SetAllPoints()
-		secondary.button1.checked:SetAllPoints()
-		secondary.button1:SetFrameLevel(secondary.button1:GetFrameLevel() + 2)
-		secondary.button1:Point("TOPRIGHT", secondary, "TOPRIGHT", -100, -10)
-
-		secondary.button1.iconTexture:SetTexCoord(unpack(E.TexCoords))
-		secondary.button1.iconTexture:SetAllPoints()
-
-		secondary.button1.subSpellString:SetTextColor(1, 1, 1)
-
-		secondary.button1.cooldown:SetAllPoints()
-		E:RegisterCooldown(secondary.button1.cooldown)
-
-		secondary.button2:StripTextures()
-		secondary.button2:CreateBackdrop("Default", true)
-		secondary.button2:GetHighlightTexture():Hide()
-		secondary.button2:StyleButton(true)
-		secondary.button2.pushed:SetAllPoints()
-		secondary.button2.checked:SetAllPoints()
-		secondary.button2:SetFrameLevel(secondary.button2:GetFrameLevel() + 2)
-		secondary.button2:Point("TOPRIGHT", secondary.button1, "TOPLEFT", -95, 0)
-
-		secondary.button2.iconTexture:SetTexCoord(unpack(E.TexCoords))
-		secondary.button2.iconTexture:SetAllPoints()
-
-		secondary.button2.subSpellString:SetTextColor(1, 1, 1)
-
-		secondary.button2.cooldown:SetAllPoints()
-		E:RegisterCooldown(secondary.button2.cooldown)
-	end
+	hooksecurefunc("UpdateProfessionButton", function(self)
+		self.spellString:SetTextColor(1, 0.80, 0.10)
+	end)
 end
 
 S:AddCallback("Spellbook", LoadSkin)
