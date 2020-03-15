@@ -1,6 +1,6 @@
 ﻿## Interface: 50400
 ## Author: Elv, Bunny, Apollyon
-## Version: 2.0
+## Version: 2.1
 ## Title: |cff00fcceE|r|cffe5e3e3lvUI|r
 ## Notes: User Interface replacement AddOn for World of Warcraft.
 ## SavedVariables: ElvDB, ElvPrivateDB
