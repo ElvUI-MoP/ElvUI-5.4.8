@@ -39,10 +39,6 @@ This UI will arrange your interface to be more flexible and practical.
 [ElvUI_EnhancedFriendsList](https://github.com/ElvUI-MoP/ElvUI_EnhancedFriendsList-5.4.8)
 <br />
 [ElvUI_MicrobarEnhancement](https://github.com/ElvUI-MoP/ElvUI_MicrobarEnhancement-5.4.8)
-<br />
-[ElvUI_MinimapButtons](https://github.com/ElvUI-MoP/ElvUI_MinimapButtons-5.4.8)
-<br />
-[ElvUI_CustomTweaks](https://github.com/ElvUI-MoP/ElvUI_CustomTweaks-5.4.8)
 
 -- Please Note: These plugins will not function without ElvUI installed.
 
