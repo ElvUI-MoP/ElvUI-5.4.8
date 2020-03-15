@@ -595,7 +595,6 @@ function NP:StyleFilterConfigure()
 					if next(t.casting.spells) then
 						for _, value in pairs(t.casting.spells) do
 							if value then
---								NP.StyleFilterEvents.UpdateElement_Cast = 1
 								NP.StyleFilterTriggerEvents.FAKE_Casting = 0
 								break
 							end

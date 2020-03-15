@@ -116,7 +116,7 @@ local function UnitName(unit)
 end
 
 E.TagFunctions.UnitName = UnitName
-local function abbrev(name)
+local function Abbrev(name)
 	local letters, lastWord = "", strmatch(name, ".+%s(.+)$")
 
 	if lastWord then
@@ -241,7 +241,7 @@ ElvUF.Tags.Methods["name:abbrev"] = function(unit)
 	local name = UnitName(unit)
 
 	if name and strfind(name, "%s") then
-		name = abbrev(name)
+		name = Abbrev(name)
 	end
 
 	return name ~= nil and name or ""
@@ -372,7 +372,7 @@ for textFormat, length in pairs({veryshort = 5, short = 10, medium = 15, long = 
 		local name = UnitName(unit)
 
 		if name and strfind(name, "%s") then
-			name = abbrev(name)
+			name = Abbrev(name)
 		end
 
 		return name ~= nil and E:ShortenString(name, length) or ""

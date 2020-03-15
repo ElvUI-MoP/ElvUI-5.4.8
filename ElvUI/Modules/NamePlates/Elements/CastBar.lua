@@ -20,7 +20,7 @@ function NP:Update_CastBarOnValueChanged(value)
 
 	castBar:SetMinMaxValues(min, max)
 	castBar:SetValue(value)
-	
+
 	if isChannel then
 		if castBar.channelTimeFormat == "CURRENT" then
 			castBar.Time:SetFormattedText("%.1f", abs(value - max))

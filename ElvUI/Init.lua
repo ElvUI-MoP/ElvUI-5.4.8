@@ -129,8 +129,8 @@ do
 	DisableAddOn("ElvUI_EverySecondCounts")
 	DisableAddOn("ElvUI_AuraBarsMovers")
 	DisableAddOn("ElvUI_CustomTweaks")
---	DisableAddOn("ElvUI_MinimapButtons")
---	DisableAddOn("ElvUI_DataTextColors")
+	DisableAddOn("ElvUI_MinimapButtons")
+	DisableAddOn("ElvUI_DataTextColors")
 end
 
 function E:OnInitialize()

@@ -814,13 +814,6 @@ function NP:OnUpdate()
             NP:UpdateAllFrame(frame, nil, true)
         end
 
-		if NP.db.trivial then
-			local trivial = frame:GetParent():GetChildren():GetScale() < 1
-			if frame.UnitTrivial ~= trivial then
-				frame.UnitTrivial = trivial
-			end
-		end
-
 		local status = NP:UnitDetailedThreatSituation(frame)
 		if frame.ThreatStatus ~= status then
 			frame.ThreatStatus = status
