@@ -7,74 +7,74 @@ local twipe, tinsert, tconcat = table.wipe, table.insert, table.concat
 local floor = math.floor
 local find, format, sub, match = string.find, string.format, string.sub, string.match
 
+local CanInspect = CanInspect
 local CreateFrame = CreateFrame
-local GetTime = GetTime
-local UnitGUID = UnitGUID
-local InCombatLockdown = InCombatLockdown
-local IsShiftKeyDown = IsShiftKeyDown
-local IsControlKeyDown = IsControlKeyDown
-local IsAltKeyDown = IsAltKeyDown
+local GameTooltip_ClearMoney = GameTooltip_ClearMoney
+local GetAverageItemLevel = GetAverageItemLevel
+local GetGuildInfo = GetGuildInfo
+local GetInspectSpecialization = GetInspectSpecialization
 local GetInventoryItemLink = GetInventoryItemLink
 local GetInventorySlotInfo = GetInventorySlotInfo
-local GetSpecialization = GetSpecialization
-local GetInspectSpecialization = GetInspectSpecialization
-local GetSpecializationRoleByID = GetSpecializationRoleByID
-local GetSpecializationInfo = GetSpecializationInfo
-local UnitExists = UnitExists
-local CanInspect = CanInspect
-local GetAverageItemLevel = GetAverageItemLevel
-local NotifyInspect = NotifyInspect
+local GetItemCount = GetItemCount
 local GetMouseFocus = GetMouseFocus
-local GetSpecializationInfoByID = GetSpecializationInfoByID
-local UnitLevel = UnitLevel
-local UnitIsPlayer = UnitIsPlayer
-local UnitClass = UnitClass
-local UnitName = UnitName
-local GetGuildInfo = GetGuildInfo
-local UnitPVPName = UnitPVPName
-local UnitRealmRelationship = UnitRealmRelationship
-local UnitIsAFK = UnitIsAFK
-local UnitIsDND = UnitIsDND
+local GetNumGroupMembers = GetNumGroupMembers
 local GetQuestDifficultyColor = GetQuestDifficultyColor
-local UnitRace = UnitRace
-local UnitFactionGroup = UnitFactionGroup
-local UnitIsTapped = UnitIsTapped
-local UnitIsTappedByPlayer = UnitIsTappedByPlayer
-local UnitReaction = UnitReaction
-local UnitIsWildBattlePet = UnitIsWildBattlePet
-local UnitIsBattlePetCompanion = UnitIsBattlePetCompanion
-local UnitClassification = UnitClassification
-local UnitCreatureType = UnitCreatureType
-local UnitBattlePetLevel = UnitBattlePetLevel
-local UnitBattlePetType = UnitBattlePetType
 local GetRelativeDifficultyColor = GetRelativeDifficultyColor
-local UnitIsPVP = UnitIsPVP
-local UnitHasVehicleUI = UnitHasVehicleUI
+local GetSpecialization = GetSpecialization
+local GetSpecializationInfo = GetSpecializationInfo
+local GetSpecializationInfoByID = GetSpecializationInfoByID
+local GetSpecializationRoleByID = GetSpecializationRoleByID
+local GetTime = GetTime
+local InCombatLockdown = InCombatLockdown
+local IsAltKeyDown = IsAltKeyDown
+local IsControlKeyDown = IsControlKeyDown
 local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
-local GetNumGroupMembers = GetNumGroupMembers
-local UnitIsUnit = UnitIsUnit
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local GetItemCount = GetItemCount
-local UnitAura = UnitAura
+local IsShiftKeyDown = IsShiftKeyDown
+local NotifyInspect = NotifyInspect
 local SetTooltipMoney = SetTooltipMoney
-local GameTooltip_ClearMoney = GameTooltip_ClearMoney
-local LE_REALM_RELATION_COALESCED = LE_REALM_RELATION_COALESCED
-local LE_REALM_RELATION_VIRTUAL = LE_REALM_RELATION_VIRTUAL
-local PET_TYPE_SUFFIX = PET_TYPE_SUFFIX
-local FACTION_BAR_COLORS = FACTION_BAR_COLORS
+local UnitAura = UnitAura
+local UnitBattlePetLevel = UnitBattlePetLevel
+local UnitBattlePetType = UnitBattlePetType
+local UnitClass = UnitClass
+local UnitClassification = UnitClassification
+local UnitCreatureType = UnitCreatureType
+local UnitExists = UnitExists
+local UnitFactionGroup = UnitFactionGroup
+local UnitGUID = UnitGUID
+local UnitHasVehicleUI = UnitHasVehicleUI
+local UnitIsAFK = UnitIsAFK
+local UnitIsBattlePetCompanion = UnitIsBattlePetCompanion
+local UnitIsDND = UnitIsDND
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsPVP = UnitIsPVP
+local UnitIsPlayer = UnitIsPlayer
+local UnitIsTapped = UnitIsTapped
+local UnitIsTappedByPlayer = UnitIsTappedByPlayer
+local UnitIsUnit = UnitIsUnit
+local UnitIsWildBattlePet = UnitIsWildBattlePet
+local UnitLevel = UnitLevel
+local UnitName = UnitName
+local UnitPVPName = UnitPVPName
+local UnitRace = UnitRace
+local UnitReaction = UnitReaction
+local UnitRealmRelationship = UnitRealmRelationship
 
 local C_PetBattles_IsInBattle = C_PetBattles.IsInBattle
 local C_PetJournalGetPetTeamAverageLevel = C_PetJournal.GetPetTeamAverageLevel
 
-local AFK, BOSS, DEAD, DND = AFK, BOSS, DEAD, DND
+local AFK, BOSS, DEAD, DND, ID, PVP = AFK, BOSS, DEAD, DND, ID, PVP
+local ROLE, TANK, HEALER = ROLE, TANK, HEALER
 local FACTION_ALLIANCE, FACTION_HORDE, FACTION_BAR_COLORS = FACTION_ALLIANCE, FACTION_HORDE, FACTION_BAR_COLORS
 local FOREIGN_SERVER_LABEL = FOREIGN_SERVER_LABEL
-local ID, PVP = ID, PVP
-local ROLE, TANK, HEALER = ROLE, TANK, HEALER
 local ITEM_QUALITY3_DESC = ITEM_QUALITY3_DESC
-local PRIEST_COLOR = RAID_CLASS_COLORS.PRIEST
+local LE_REALM_RELATION_COALESCED = LE_REALM_RELATION_COALESCED
+local LE_REALM_RELATION_VIRTUAL = LE_REALM_RELATION_VIRTUAL
+local PET_TYPE_SUFFIX = PET_TYPE_SUFFIX
+local SPECIALIZATION = SPECIALIZATION
 local UNKNOWN = UNKNOWN
+
+local PRIEST_COLOR = RAID_CLASS_COLORS.PRIEST
 
 -- Custom to find LEVEL string on tooltip
 local LEVEL1 = strlower(TOOLTIP_UNIT_LEVEL:gsub("%s?%%s%s?%-?", ""))
@@ -378,32 +378,31 @@ function TT:GetItemLvL(unit)
 	return floor(total / item)
 end
 
-function TT:GetTalentSpec(unit, isPlayer)
-	local spec
-	if isPlayer then
-		spec = GetSpecialization()
-	else
-		spec = GetInspectSpecialization(unit)
-	end
-	if spec ~= nil and spec > 0 then
-		if not isPlayer then
+function TT:GetSpecializationInfo(unit, isPlayer)
+	local spec = (isPlayer and GetSpecialization()) or (unit and GetInspectSpecialization(unit))
+
+	if spec and spec > 0 then
+		if isPlayer then
+			local _, name, _, icon = GetSpecializationInfo(spec)
+			icon = icon and "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t " or ""
+
+			return name and icon..name
+		else
 			local role = GetSpecializationRoleByID(spec)
 			if role ~= nil then
 				local _, name, _, icon = GetSpecializationInfoByID(spec)
 				icon = icon and "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t " or ""
+
 				return name and icon..name
 			end
-		else
-			local _, name, _, icon = GetSpecializationInfo(spec)
-			icon = icon and "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t " or ""
-			return name and icon..name
 		end
 	end
 end
 
 local inspectGUIDCache = {}
 local inspectColorFallback = {1, 1, 1}
-function TT:PopulateInspectGUIDCache(unitGUID, itemLevel, specName)
+function TT:PopulateInspectGUIDCache(unitGUID, itemLevel)
+	local specName = self:GetSpecializationInfo("mouseover")
 	if specName and itemLevel then
 		local inspectCache = inspectGUIDCache[unitGUID]
 		if inspectCache then
@@ -412,7 +411,7 @@ function TT:PopulateInspectGUIDCache(unitGUID, itemLevel, specName)
 			inspectCache.specName = specName
 		end
 
-		GameTooltip:AddDoubleLine(L["Talent Specialization"]..":", specName, nil, nil, nil, unpack((inspectCache and inspectCache.unitColor) or inspectColorFallback))
+		GameTooltip:AddDoubleLine(SPECIALIZATION..":", specName, nil, nil, nil, unpack((inspectCache and inspectCache.unitColor) or inspectColorFallback))
 		GameTooltip:AddDoubleLine(L["Item Level:"], itemLevel, nil, nil, nil, 1, 1, 1)
 		GameTooltip:Show()
 	end
@@ -421,9 +420,8 @@ end
 function TT:INSPECT_READY(event, unitGUID)
 	if UnitExists("mouseover") and UnitGUID("mouseover") == unitGUID then
 		local itemLevel = TT:GetItemLvL("mouseover")
-		local specName = TT:GetTalentSpec("mouseover", 1)
 
-		TT:PopulateInspectGUIDCache(unitGUID, itemLevel, specName)
+		TT:PopulateInspectGUIDCache(unitGUID, itemLevel)
 	end
 
 	if event then
@@ -439,17 +437,19 @@ function TT:AddInspectInfo(tooltip, unit, numTries, r, g, b)
 	if not unitGUID then return end
 
 	if unitGUID == E.myguid then
-		tooltip:AddDoubleLine(L["Talent Specialization"]..":", TT:GetTalentSpec(unit, true), nil, nil, nil, r, g, b)
+		tooltip:AddDoubleLine(SPECIALIZATION..":", TT:GetSpecializationInfo(unit, true), nil, nil, nil, r, g, b)
 		tooltip:AddDoubleLine(L["Item Level:"], floor(select(2, GetAverageItemLevel())), nil, nil, nil, 1, 1, 1)
 	elseif inspectGUIDCache[unitGUID] and inspectGUIDCache[unitGUID].time then
 		local specName = inspectGUIDCache[unitGUID].specName
 		local itemLevel = inspectGUIDCache[unitGUID].itemLevel
 		if not (specName and itemLevel) or (GetTime() - inspectGUIDCache[unitGUID].time > 120) then
-
+			inspectGUIDCache[unitGUID].time = nil
+			inspectGUIDCache[unitGUID].specName = nil
+			inspectGUIDCache[unitGUID].itemLevel = nil
 			return TT:AddInspectInfo(tooltip, unit, numTries + 1, r, g, b)
 		end
 
-		tooltip:AddDoubleLine(L["Talent Specialization"]..":", specName, nil, nil, nil, r, g, b)
+		tooltip:AddDoubleLine(SPECIALIZATION..":", specName, nil, nil, nil, r, g, b)
 		tooltip:AddDoubleLine(L["Item Level:"], itemLevel, nil, nil, nil, 1, 1, 1)
 	elseif unitGUID then
 		if not inspectGUIDCache[unitGUID] then
@@ -760,12 +760,14 @@ function TT:SetTooltipFonts()
 		DatatextTooltipTextRight1:FontTemplate(font, textSize, fontOutline)
 	end
 
-	--These show when you compare items ("Currently Equipped", name of item, item level)
-	--Since they appear at the top of the tooltip, we set it to use the header font size.
-	for i = 1, 2 do
-		for j = 1, 4 do
-			_G["ShoppingTooltip"..i.."TextLeft"..j]:FontTemplate(font, headerSize, fontOutline)
-			_G["ShoppingTooltip"..i.."TextRight"..j]:FontTemplate(font, headerSize, fontOutline)
+	-- Comparison Tooltips should use smallTextSize
+	for _, tt in ipairs(GameTooltip.shoppingTooltips) do
+		for i = 1, tt:GetNumRegions() do
+			local region = select(i, tt:GetRegions())
+
+			if region:IsObjectType("FontString") then
+				region:FontTemplate(font, smallTextSize, fontOutline)
+			end
 		end
 	end
 end
