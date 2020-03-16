@@ -3501,13 +3501,8 @@ E.Options.args.nameplate = {
 							desc = L["Use the Name Color of the unit for the Name Glow."],
 							disabled = function() return not E.db.nameplates.highlight end
 						},
-						trivial = {
-							order = 11,
-							type = "toggle",
-							name = L["Trivial"]
-						},
 						targetGroup = {
-							order = 12,
+							order = 11,
 							type = "group",
 							name = L["TARGET"],
 							guiInline = true,
@@ -3589,6 +3584,41 @@ E.Options.args.nameplate = {
 										NP:ConfigureAll()
 									end,
 									customWidth = 200
+								}
+							}
+						},
+						trivialGroup = {
+							order = 12,
+							type = "group",
+							name = L["Trivial"],
+							guiInline = true,
+							get = function(info)
+								return E.db.nameplates[info[#info]]
+							end,
+							set = function(info, value)
+								E.db.nameplates[info[#info]] = value
+								NP:ConfigureAll()
+							end,
+							disabled = function() return not E.NamePlates.Initialized end,
+							args = {
+								trivial = {
+									order = 1,
+									type = "toggle",
+									name = L["ENABLE"]
+								},
+								trivialWidth = {
+									order = 2,
+									type = "range",
+									name = L["Width"],
+									min = 30, max = 100, step = 1,
+									disabled = function() return not E.db.nameplates.trivial end
+								},
+								trivialHeight = {
+									order = 3,
+									type = "range",
+									name = L["Height"],
+									min = 5, max = 20, step = 1,
+									disabled = function() return not E.db.nameplates.trivial end
 								}
 							}
 						}

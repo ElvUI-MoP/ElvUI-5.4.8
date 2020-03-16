@@ -147,8 +147,8 @@ function NP:Configure_HealthBarScale(frame, scale, noPlayAnimation)
 	local db = NP.db.units[frame.UnitType].health
 
 	local trivial = frame.UnitTrivial and NP.db.trivial
-	local width = trivial and 60 or db.width
-	local height = trivial and 10 or db.height
+	local width = trivial and NP.db.trivialWidth or db.width
+	local height = trivial and NP.db.trivialHeight or db.height
 
 	if noPlayAnimation then
 		frame.Health:SetWidth(width * scale)
