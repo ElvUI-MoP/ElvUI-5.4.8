@@ -196,6 +196,9 @@ local function LoadSkin()
 		button.dragButton.levelBG:SetAlpha(0)
 		button.dragButton.favorite:SetParent(button.backdrop)
 
+		button.isDead:SetTexture("Interface\\PetBattles\\DeadPetIcon")
+		button.isDead:SetParent(button.backdrop)
+
 		button.dragButton.level:SetTextColor(1, 1, 1)
 		button.dragButton.level:SetParent(button.backdrop)
 		button.dragButton.level:FontTemplate(nil, 12, "OUTLINE")
