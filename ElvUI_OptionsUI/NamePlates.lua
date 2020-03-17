@@ -3787,6 +3787,12 @@ E.Options.args.nameplate = {
 									type = "color",
 									name = L["FRIENDLY_NPC"],
 									hasAlpha = false
+								},
+								tapped = {
+									order = 5,
+									type = "color",
+									name = L["Tapped"],
+									hasAlpha = false
 								}
 							}
 						},
