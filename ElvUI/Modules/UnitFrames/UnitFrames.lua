@@ -1169,6 +1169,12 @@ do
 		if not hasEnteredWorld then
 			--We only want to run Update_AllFrames once when we first log in or /reload
 			UF:Update_AllFrames()
+
+			if ElvUF_Player and ElvUF_Player.ClassBar then
+				ElvUF_Player:UpdateElement(ElvUF_Player.ClassBar)
+				UF.ToggleResourceBar(ElvUF_Player[ElvUF_Player.ClassBar])
+			end
+
 			hasEnteredWorld = true
 		end
 	end
