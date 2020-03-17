@@ -7,6 +7,13 @@ local abs = math.abs
 
 local CreateFrame = CreateFrame
 
+local function resetAttributes(frame)
+	frame.casting = nil
+	frame.channeling = nil
+	frame.notInterruptible = nil
+	frame.spellName = nil
+end
+
 function NP:Update_CastBarOnValueChanged(value)
 	local frame = self:GetParent():GetParent().UnitFrame
 	if not frame.UnitType then return end
@@ -16,12 +23,17 @@ function NP:Update_CastBarOnValueChanged(value)
 	local castBar = frame.CastBar
 
 	local min, max = self:GetMinMaxValues()
-	local isChannel = value < castBar:GetValue()
+	local cur = castBar:GetValue()
+
+	castBar.spellName = self.Name:GetText()
+	castBar.casting = value > cur
+	castBar.channeling = value < cur
+	castBar.notInterruptible = frame.oldCastBar.Shield:IsShown()
 
 	castBar:SetMinMaxValues(min, max)
 	castBar:SetValue(value)
 
-	if isChannel then
+	if castBar.channeling then
 		if castBar.channelTimeFormat == "CURRENT" then
 			castBar.Time:SetFormattedText("%.1f", abs(value - max))
 		elseif castBar.channelTimeFormat == "CURRENTMAX" then
@@ -49,7 +61,7 @@ function NP:Update_CastBarOnValueChanged(value)
 		castBar.Spark:SetPoint("CENTER", castBar, "LEFT", sparkPosition, 0)
 	end
 
-	if frame.oldCastBar.Shield:IsShown() then
+	if castBar.notInterruptible then
 		castBar:SetStatusBarColor(NP.db.colors.castNoInterruptColor.r, NP.db.colors.castNoInterruptColor.g, NP.db.colors.castNoInterruptColor.b)
 
 		if NP.db.colors.castbarDesaturate then
@@ -60,8 +72,10 @@ function NP:Update_CastBarOnValueChanged(value)
 		castBar.Icon.texture:SetDesaturated(false)
 	end
 
-	castBar.Name:SetText(self.Name:GetText())
+	castBar.Name:SetText(castBar.spellName)
 	castBar.Icon.texture:SetTexture(self.Icon:GetTexture())
+
+	NP:StyleFilterUpdate(frame, "FAKE_Casting")
 end
 
 function NP:Update_CastBarOnShow()
@@ -69,17 +83,19 @@ function NP:Update_CastBarOnShow()
 	local db = NP.db.units[frame.UnitType]
 
 	if db.castbar.enable and (db.health.enable or (frame.isTarget and NP.db.alwaysShowTargetHealth)) and (frame.NameOnlyChanged == nil and frame.IconOnlyChanged == nil) and not (frame.UnitTrivial and NP.db.trivial) then
+		resetAttributes(frame.CastBar)
 		frame.CastBar:Show()
+
+		NP:StyleFilterUpdate(frame, "FAKE_Casting")
 	end
 end
 
 function NP:Update_CastBarOnHide()
 	local frame = self:GetParent():GetParent().UnitFrame
-	local db = NP.db.units[frame.UnitType]
+	resetAttributes(frame.CastBar)
+	frame.CastBar:Hide()
 
-	if db.castbar.enable and (db.health.enable or (frame.isTarget and NP.db.alwaysShowTargetHealth)) then
-		frame.CastBar:Hide()
-	end
+	NP:StyleFilterUpdate(frame, "FAKE_Casting")
 end
 
 function NP:Configure_CastBarScale(frame, scale, noPlayAnimation)

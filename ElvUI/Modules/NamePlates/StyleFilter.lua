@@ -455,7 +455,7 @@ function NP:StyleFilterConditionCheck(frame, filter, trigger)
 		local reaction = frame.UnitReaction
 		if ((reaction == 1 or reaction == 2 or reaction == 3) and trigger.reactionType.hostile) or (reaction == 4 and trigger.reactionType.neutral) or (reaction == 5 and trigger.reactionType.friendly) then passed = true else return end
 	end
---[[
+
 	-- Casting
 	if trigger.casting then
 		local b, c = frame.CastBar, trigger.casting
@@ -465,8 +465,7 @@ function NP:StyleFilterConditionCheck(frame, filter, trigger)
 			if c.spells and next(c.spells) then
 				for _, value in pairs(c.spells) do
 					if value then -- only run if at least one is selected
-						local _, _, _, _, _, _, spellID = GetSpellInfo(b.spellName)
-						local castingSpell = (spellID and c.spells[tostring(spellID)]) or c.spells[b.spellName]
+						local castingSpell = c.spells[b.spellName]
 						if (c.notSpell and not castingSpell) or (castingSpell and not c.notSpell) then passed = true else return end
 						break -- we can execute this once on the first enabled option then kill the loop
 					end
@@ -482,11 +481,14 @@ function NP:StyleFilterConditionCheck(frame, filter, trigger)
 
 		-- Interruptible
 		if c.interruptible or c.notInterruptible then
-			if (b.casting or b.channeling) and ((c.interruptible and not b.notInterruptible)
-			or (c.notInterruptible and b.notInterruptible)) then passed = true else return end
+			if (b.casting or b.channeling) and ((c.interruptible and not b.notInterruptible) or (c.notInterruptible and b.notInterruptible)) then
+				passed = true
+			else
+				return
+			end
 		end
 	end
-]]
+
 	-- Cooldown
 	if trigger.cooldowns and trigger.cooldowns.names and next(trigger.cooldowns.names) then
 		local cooldown = NP:StyleFilterCooldownCheck(trigger.cooldowns.names, trigger.cooldowns.mustHaveAll)

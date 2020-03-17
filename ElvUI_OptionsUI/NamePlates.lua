@@ -562,7 +562,6 @@ local function UpdateFilterGroup()
 							E.db.nameplates.filters[selectedNameplateFilter].triggers and
 							E.db.nameplates.filters[selectedNameplateFilter].triggers.enable)
 					end,
-					hidden = true,
 					args = {
 						types = {
 							order = 1,
@@ -619,7 +618,7 @@ local function UpdateFilterGroup()
 						addSpell = {
 							order = 9,
 							type = "input",
-							name = L["Add Spell ID or Name"],
+							name = L["Add Name"],
 							get = function(info)
 								return ""
 							end,
@@ -634,8 +633,7 @@ local function UpdateFilterGroup()
 						removeSpell = {
 							order = 5,
 							type = "input",
-							name = L["Remove Spell ID or Name"],
-							desc = L["If the aura is listed with a number then you need to use that to remove it from the list."],
+							name = L["Remove Name"],
 							get = function(info)
 								return ""
 							end,
