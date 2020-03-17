@@ -222,22 +222,18 @@ function E:SetupLayout(layout, noDataReset, noDisplayMsg)
 		E.db.actionbar.bar2.buttonsize = 38
 		E.db.actionbar.bar2.buttonspacing = 1
 		E.db.actionbar.bar2.enabled = true
-		--E.db.actionbar.bar2.visibility = "[vehicleui] hide; [petbattle] hide; show"
 		E.db.actionbar.bar3.buttons = 8
 		E.db.actionbar.bar3.buttonsize = 50
 		E.db.actionbar.bar3.buttonspacing = 1
 		E.db.actionbar.bar3.buttonsPerRow = 10
-		--E.db.actionbar.bar3.visibility = "[vehicleui] hide; [petbattle] hide; show"
 		E.db.actionbar.bar4.enabled = false
-		--E.db.actionbar.bar4.visibility = "[vehicleui] hide; [petbattle] hide; show"
 		E.db.actionbar.bar5.enabled = false
-		--E.db.actionbar.bar5.visibility = "[vehicleui] hide; [petbattle] hide; show"
-		--E.db.actionbar.bar6.visibility = "[vehicleui] hide; [petbattle] hide; show"
 	--Auras
 		E.db.auras.buffs.countFontSize = 10
 		E.db.auras.buffs.size = 40
 		E.db.auras.debuffs.countFontSize = 10
 		E.db.auras.debuffs.size = 40
+		E.db.auras.consolidatedBuffs.enable = true
 	--Bags
 		E.db.bags.bagSize = 42
 		E.db.bags.bagWidth = 472
@@ -256,7 +252,7 @@ function E:SetupLayout(layout, noDataReset, noDisplayMsg)
 		E.db.databars.reputation.enable = true
 		E.db.databars.reputation.height = 10
 		E.db.databars.reputation.orientation = "HORIZONTAL"
-		E.db.databars.reputation.width = 222
+		E.db.databars.reputation.width = 259
 	--General
 		E.db.general.minimap.size = 220
 		E.db.general.watchFrameHeight = 400

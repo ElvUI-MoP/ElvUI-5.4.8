@@ -958,7 +958,7 @@ P.auras = {
 		durationFontSize = 10
 	},
 	consolidatedBuffs = {
-		enable = false,
+		enable = true,
 		filter = true,
 		durations = true,
 		position = "RIGHT",
