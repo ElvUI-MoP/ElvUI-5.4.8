@@ -9,90 +9,9 @@ local C_PetBattles_GetLevel = C_PetBattles.GetLevel
 local C_PetBattles_GetAbilityInfoByID = C_PetBattles.GetAbilityInfoByID
 local C_PetBattles_GetAttackModifier = C_PetBattles.GetAttackModifier
 local C_PetJournal_GetNumPetTypes = C_PetJournal.GetNumPetTypes
+local C_PetBattles_GetPetType = C_PetBattles.GetPetType
 
 local PET_TYPE_SUFFIX = PET_TYPE_SUFFIX
-
-local function SkinPetTooltip(tooltip, info)
-	tooltip.Background:SetTexture()
-	tooltip.BorderTop:SetTexture()
-	tooltip.BorderTopLeft:SetTexture()
-	tooltip.BorderTopRight:SetTexture()
-	tooltip.BorderLeft:SetTexture()
-	tooltip.BorderRight:SetTexture()
-	tooltip.BorderBottom:SetTexture()
-	tooltip.BorderBottomRight:SetTexture()
-	tooltip.BorderBottomLeft:SetTexture()
-
-	tooltip:SetTemplate("Transparent")
-
-	if tooltip.Delimiter1 then
-		tooltip.Delimiter1:SetTexture()
-		tooltip.Delimiter2:SetTexture()
-	end
-
-	if not info then return end
-
-	if tooltip.ActualHealthBar then
-		tooltip.HealthBorder:SetTexture()
-		tooltip.HealthBG:SetTexture()
-	
-		tooltip.healthBG = CreateFrame("Frame", nil, tooltip)
-		tooltip.healthBG:SetTemplate()
-		tooltip.healthBG:Point("TOPLEFT", tooltip.HealthBG, -1, 1)
-		tooltip.healthBG:Point("BOTTOMRIGHT", tooltip.HealthBG, 1, -2)
-
-		tooltip.ActualHealthBar:SetTexture(E.media.normTex)
-		tooltip.ActualHealthBar:SetParent(tooltip.healthBG)
-
-		tooltip.HealthText:SetParent(tooltip.healthBG)
-	end
-
-	if tooltip.XPBar then
-		tooltip.XPBG:SetTexture()
-		tooltip.XPBorder:SetTexture()
-
-		tooltip.xpBG = CreateFrame("Frame", nil, tooltip)
-		tooltip.xpBG:SetTemplate()
-		tooltip.xpBG:Point("TOPLEFT", tooltip.XPBG, -1, 1)
-		tooltip.xpBG:Point("BOTTOMRIGHT", tooltip.XPBG, 1, -2)
-
-		hooksecurefunc("PetBattleUnitTooltip_UpdateForUnit", function(self, petOwner, petIndex)
-			local level = C_PetBattles_GetLevel(petOwner, petIndex)
-
-			self.xpBG:SetShown(petOwner == LE_BATTLE_PET_ALLY and level < 25)
-		end)
-
-		tooltip.XPBar:SetTexture(E.media.normTex)
-		tooltip.XPBar:SetParent(tooltip.xpBG)
-
-		tooltip.XPText:SetParent(tooltip.xpBG)
-	end
-
-	if tooltip.Icon then
-		tooltip.Border:SetTexture()
-
-		tooltip.iconBG = CreateFrame("Frame", nil, tooltip)
-		tooltip.iconBG:SetTemplate()
-		tooltip.iconBG:SetOutside(tooltip.Icon)
-
-		hooksecurefunc(tooltip.Border, "SetVertexColor", function(_, r, g, b)
-			tooltip.iconBG:SetBackdropBorderColor(r, g, b)
-		end)
-
-		tooltip.Icon:SetTexCoord(unpack(E.TexCoords))
-		tooltip.Icon.SetTexCoord = E.noop
-		tooltip.Icon:SetParent(tooltip.iconBG)
-
-		if tooltip.Level then
-			tooltip.Level:SetTextColor(1, 1, 1)
-			tooltip.Level:SetParent(tooltip.iconBG)
-		end
-	end
-
-	if tooltip.PetType and tooltip.PetType.Icon then
-		tooltip.PetType.Icon:SetTexCoord(0.200, 0.710, 0.746, 0.917)
-	end
-end
 
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.tooltip then return end
@@ -134,24 +53,100 @@ local function LoadSkin()
 	-- [Backdrop coloring] There has to be a more elegant way of doing this.
 	TT:SecureHookScript(GameTooltip, "OnSizeChanged", "CheckBackdropColor")
 	TT:SecureHookScript(GameTooltip, "OnUpdate", "CheckBackdropColor")
+end
 
-	-- Battle Pet Tooltips
-	SkinPetTooltip(PetJournalPrimaryAbilityTooltip)
+local function LoadSkin2()
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.tooltip then return end
 
-	SkinPetTooltip(FloatingBattlePetTooltip, true)
-	S:HandleCloseButton(FloatingBattlePetTooltip.CloseButton)
+	-- Skin Battle Pet Tooltips
+	local petTooltips = {
+		PetJournalPrimaryAbilityTooltip,
+		FloatingBattlePetTooltip,
+		FloatingPetBattleAbilityTooltip,
+		PetBattlePrimaryAbilityTooltip,
+		PetBattlePrimaryUnitTooltip,
+		BattlePetTooltip
+	}
+	for _, frame in pairs(petTooltips) do
+		frame.Background:SetTexture()
+		frame.BorderTop:SetTexture()
+		frame.BorderTopLeft:SetTexture()
+		frame.BorderTopRight:SetTexture()
+		frame.BorderLeft:SetTexture()
+		frame.BorderRight:SetTexture()
+		frame.BorderBottom:SetTexture()
+		frame.BorderBottomRight:SetTexture()
+		frame.BorderBottomLeft:SetTexture()
 
-	SkinPetTooltip(FloatingPetBattleAbilityTooltip, true)
-	S:HandleCloseButton(FloatingPetBattleAbilityTooltip.CloseButton)
+		frame:SetTemplate("Transparent")
 
-	SkinPetTooltip(PetBattlePrimaryAbilityTooltip, true)
-	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
-		PetBattlePrimaryAbilityTooltip:ClearAllPoints()
-		PetBattlePrimaryAbilityTooltip:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -4, -4)
-	end)
+		if frame.Delimiter1 then
+			frame.Delimiter1:SetTexture()
+			frame.Delimiter2:SetTexture()
+		end
 
-	SkinPetTooltip(PetBattlePrimaryUnitTooltip, true)
-	SkinPetTooltip(BattlePetTooltip, true)
+		if frame == FloatingBattlePetTooltip or frame == FloatingPetBattleAbilityTooltip then
+			S:HandleCloseButton(frame.CloseButton)
+		end
+
+		if frame == PetBattlePrimaryUnitTooltip then
+			-- Health
+			frame.HealthBorder:SetTexture()
+			frame.HealthBG:SetTexture()
+
+			frame.healthBG = CreateFrame("Frame", nil, frame)
+			frame.healthBG:SetTemplate()
+			frame.healthBG:Point("TOPLEFT", frame.HealthBG, -1, 1)
+			frame.healthBG:Point("BOTTOMRIGHT", frame.HealthBG, 1, -2)
+
+			frame.ActualHealthBar:SetTexture(E.media.normTex)
+			frame.ActualHealthBar:SetParent(frame.healthBG)
+
+			frame.HealthText:SetParent(frame.healthBG)
+
+			-- XP
+			frame.XPBG:SetTexture()
+			frame.XPBorder:SetTexture()
+
+			frame.xpBG = CreateFrame("Frame", nil, frame)
+			frame.xpBG:SetTemplate()
+			frame.xpBG:Point("TOPLEFT", frame.XPBG, -1, 1)
+			frame.xpBG:Point("BOTTOMRIGHT", frame.XPBG, 1, -2)
+
+			hooksecurefunc("PetBattleUnitTooltip_UpdateForUnit", function(self, petOwner, petIndex)
+				local level = C_PetBattles_GetLevel(petOwner, petIndex)
+
+				self.xpBG:SetShown(petOwner == LE_BATTLE_PET_ALLY and level < 25)
+			end)
+
+			frame.XPBar:SetTexture(E.media.normTex)
+			frame.XPBar:SetParent(frame.xpBG)
+
+			frame.XPText:SetParent(frame.xpBG)
+
+			-- Icon
+			frame.iconBG = CreateFrame("Frame", nil, frame)
+			frame.iconBG:SetTemplate()
+			frame.iconBG:SetOutside(frame.Icon)
+
+			frame.Border:SetTexture()
+
+			hooksecurefunc(frame.Border, "SetVertexColor", function(_, r, g, b)
+				frame.iconBG:SetBackdropBorderColor(r, g, b)
+			end)
+
+			frame.Icon:SetTexCoord(unpack(E.TexCoords))
+			frame.Icon.SetTexCoord = E.noop
+			frame.Icon:SetParent(frame.iconBG)
+
+			-- Level
+			frame.Level:SetTextColor(1, 1, 1)
+			frame.Level:SetParent(frame.iconBG)
+
+			-- Type
+			frame.PetType.Icon:SetTexCoord(0, 1, 0, 1)
+		end
+	end
 
 	hooksecurefunc("SharedPetBattleAbilityTooltip_SetAbility", function(self, abilityInfo)
 		local abilityID = abilityInfo:GetAbilityID()
@@ -188,6 +183,48 @@ local function LoadSkin()
 			end
 		end
 	end)
+
+	hooksecurefunc("BattlePetTooltipTemplate_SetBattlePet", function(tooltipFrame, data)
+		tooltipFrame.PetTypeTexture:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[data.petType]])
+		tooltipFrame.PetTypeTexture:SetTexCoord(0, 1, 0, 1)
+	end)
+
+	hooksecurefunc("PetBattleUnitFrame_UpdatePetType", function(self)
+		if not self.PetType then return end
+
+		local petType = C_PetBattles_GetPetType(self.petOwner, self.petIndex)
+		self.PetType.Icon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
+	end)
+
+	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
+		if anchor == nil or (ElvUI_ContainerFrame and anchor == ElvUI_ContainerFrame) or anchor == RightChatPanel or anchor == TooltipMover or anchor == UIParent or anchor == E.UIParent then
+			GameTooltip_Hide()
+
+			PetBattlePrimaryAbilityTooltip:ClearAllPoints()
+
+			if not E:HasMoverBeenMoved("TooltipMover") then
+				if ElvUI_ContainerFrame and ElvUI_ContainerFrame:IsShown() then
+					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", ElvUI_ContainerFrame, "TOPRIGHT", 0, 18)
+				elseif RightChatPanel:GetAlpha() == 1 and RightChatPanel:IsShown() then
+					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", RightChatPanel, "TOPRIGHT", 0, 18)
+				else
+					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 18)
+				end
+			else
+				local point = E:GetScreenQuadrant(TooltipMover)
+				if point == "TOPLEFT" then
+					PetBattlePrimaryAbilityTooltip:Point("TOPLEFT", TooltipMover, "BOTTOMLEFT", 1, -4)
+				elseif point == "TOPRIGHT" then
+					PetBattlePrimaryAbilityTooltip:Point("TOPRIGHT", TooltipMover, "BOTTOMRIGHT", -1, -4)
+				elseif point == "BOTTOMLEFT" or point == "LEFT" then
+					PetBattlePrimaryAbilityTooltip:Point("BOTTOMLEFT", TooltipMover, "TOPLEFT", 1, 18)
+				else
+					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", TooltipMover, "TOPRIGHT", -1, 18)
+				end
+			end
+		end
+	end)
 end
 
 S:AddCallback("SkinTooltip", LoadSkin)
+S:AddCallback("SkinBattlePetTooltip", LoadSkin2)

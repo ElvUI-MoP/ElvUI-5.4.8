@@ -107,22 +107,20 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("MountJournal_UpdateMountList", function()
-		local scrollFrame = MountJournal.ListScrollFrame
-		local offset = HybridScrollFrame_GetOffset(scrollFrame)
-		local buttons = scrollFrame.buttons
-		local showMounts = true
+		local offset = HybridScrollFrame_GetOffset(MountJournal.ListScrollFrame)
+		local buttons = MountJournal.ListScrollFrame.buttons
 
 		for i = 1, #buttons do
 			local button = buttons[i]
 			local displayIndex = i + offset
 
-			if displayIndex <= #MountJournal.cachedMounts and showMounts then
+			if displayIndex <= #MountJournal.cachedMounts then
 				local index = MountJournal.cachedMounts[displayIndex]
 				local _, _, _, icon = GetCompanionInfo("MOUNT", index)
 
 				button.icon:SetTexture(icon)
 			else
-				button.icon:SetTexture(nil)
+				button.icon:SetTexture()
 			end
 		end
 	end)
@@ -275,7 +273,7 @@ local function LoadSkin()
 		frame:Width(405)
 		frame:StripTextures()
 		frame:SetTemplate("Transparent")
-		frame:CreateBackdrop()
+		frame:CreateBackdrop(nil, true)
 		frame.backdrop:SetOutside(frame.icon)
 		frame.backdrop:SetFrameLevel(frame.backdrop:GetFrameLevel() + 1)
 
@@ -324,6 +322,7 @@ local function LoadSkin()
 			S:HandleItemButton(button)
 
 			button.icon:SetInside(button)
+			button.LevelRequirement:FontTemplate(nil, 18)
 
 			button.FlyoutArrow:SetTexture([[Interface\Buttons\ActionBarFlyoutButton]])
 		end
@@ -347,7 +346,7 @@ local function LoadSkin()
 					frame.name:SetTextColor(color.r, color.g, color.b)
 					frame.subName:SetTextColor(color.r, color.g, color.b)
 				else
-					frame.backdrop:SetBackdropBorderColor(0, 0, 0)
+					frame.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					frame.name:SetTextColor(1, 1, 1)
 					frame.subName:SetTextColor(1, 1, 1)
 				end
@@ -364,6 +363,8 @@ local function LoadSkin()
 
 		icon:SetInside(button)
 		icon:SetDrawLayer("BORDER")
+
+		button.LevelRequirement:FontTemplate(nil, 18)
 	end
 
 	PetJournalSpellSelect:StripTextures()
@@ -374,7 +375,7 @@ local function LoadSkin()
 
 	PetJournalPetCardInset:StripTextures()
 
-	PetJournalPetCardPetInfo:CreateBackdrop()
+	PetJournalPetCardPetInfo:CreateBackdrop(nil, true)
 	PetJournalPetCardPetInfo.backdrop:SetOutside(PetJournalPetCardPetInfo.icon)
 	PetJournalPetCardPetInfo:StyleButton()
 	PetJournalPetCardPetInfo:Size(40)
@@ -407,20 +408,33 @@ local function LoadSkin()
 	PetJournalPetCardTypeInfoTypeIcon:SetAlpha(0.8)
 
 	hooksecurefunc("PetJournal_UpdatePetCard", function(self)
-		local petType
+		local _, petType, canBattle
 
 		if PetJournalPetCard.petID then
-			petType = select(10, C_PetJournal_GetPetInfoByPetID(PetJournalPetCard.petID))
+			_, _, _, _, _, _, _, _, _, petType, _, _, _, _, canBattle = C_PetJournal_GetPetInfoByPetID(PetJournalPetCard.petID)
+
+			if canBattle then
+				local quality = select(5, C_PetJournal_GetPetStats(PetJournalPetCard.petID))
+				local color = ITEM_QUALITY_COLORS[quality - 1]
+
+				self.PetInfo.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+				self.PetInfo.name:SetTextColor(color.r, color.g, color.b)
+			else
+				self.PetInfo.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				self.PetInfo.name:SetTextColor(1, 1, 1)
+			end
 		else
-			petType = select(3, C_PetJournal_GetPetInfoBySpeciesID(PetJournalPetCard.speciesID))
+			self.PetInfo.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			self.PetInfo.name:SetTextColor(1, 1, 1)
+
+			if PetJournalPetCard.speciesID then
+				petType = select(3, C_PetJournal_GetPetInfoBySpeciesID(PetJournalPetCard.speciesID))
+			else
+				return
+			end
 		end
 
 		self.TypeInfo.typeIcon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
-	end)
-
-	hooksecurefunc(PetJournalPetCardPetInfoQualityBorder, "SetVertexColor", function(_, r, g, b)
-		PetJournalPetCardPetInfo.backdrop:SetBackdropBorderColor(r, g, b)
-		PetJournalPetCardPetInfo.name:SetTextColor(r, g, b)
 	end)
 
 	for i = 1, 6 do
@@ -436,6 +450,8 @@ local function LoadSkin()
 
 		frame.icon:SetTexCoord(unpack(E.TexCoords))
 		frame.icon:SetInside(frame.backdrop)
+
+		frame.LevelRequirement:FontTemplate(nil, 18)
 	end
 end
 

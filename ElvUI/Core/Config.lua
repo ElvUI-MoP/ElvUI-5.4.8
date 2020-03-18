@@ -530,7 +530,7 @@ function E:Config_UpdateSize(reset)
 	if not frame then return end
 
 	local maxWidth, maxHeight = self.UIParent:GetSize()
-	frame:SetMinResize(850, 600)
+	frame:SetMinResize(850, 653)
 	frame:SetMaxResize(maxWidth - 50, maxHeight - 50)
 
 	self.Libs.AceConfigDialog:SetDefaultSize(E.name, E:Config_GetDefaultSize())

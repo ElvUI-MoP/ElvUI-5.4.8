@@ -13,7 +13,6 @@ local function LoadSkin()
 
 	ReforgingFrame.FinishedGlow:Kill()
 
-
 	ReforgingFrame.ButtonFrame:StripTextures()
 
 	ReforgingFrame.RestoreMessage:SetTextColor(1, 1, 1)

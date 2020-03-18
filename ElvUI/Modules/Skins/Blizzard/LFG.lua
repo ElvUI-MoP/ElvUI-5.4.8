@@ -400,27 +400,20 @@ local function LoadSkin()
 	RaidFinderFrameFindRaidButton:StripTextures()
 	S:HandleButton(RaidFinderFrameFindRaidButton)
 
-	for i = 1, LFD_MAX_REWARDS do
-		local button = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i]
+	RaidFinderQueueFrameScrollFrameChildFrameItem1:StripTextures()
+	RaidFinderQueueFrameScrollFrameChildFrameItem1:SetTemplate("Transparent")
+	RaidFinderQueueFrameScrollFrameChildFrameItem1:StyleButton(nil, true)
+	RaidFinderQueueFrameScrollFrameChildFrameItem1:CreateBackdrop()
+	RaidFinderQueueFrameScrollFrameChildFrameItem1.backdrop:SetOutside(RaidFinderQueueFrameScrollFrameChildFrameItem1IconTexture)
 
-		if button and not button.isSkinned then
-			local icon = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."IconTexture"]
-			local count = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i.."Count"]
+	RaidFinderQueueFrameScrollFrameChildFrameItem1IconTexture:Point("TOPLEFT", 1, -1)
+	RaidFinderQueueFrameScrollFrameChildFrameItem1IconTexture:SetTexture(RaidFinderQueueFrameScrollFrameChildFrameItem1IconTexture:GetTexture())
+	RaidFinderQueueFrameScrollFrameChildFrameItem1IconTexture:SetTexCoord(unpack(E.TexCoords))
+	RaidFinderQueueFrameScrollFrameChildFrameItem1IconTexture:SetParent(RaidFinderQueueFrameScrollFrameChildFrameItem1.backdrop)
+	RaidFinderQueueFrameScrollFrameChildFrameItem1IconTexture:SetDrawLayer("OVERLAY")
 
-			button:StripTextures()
-			button:CreateBackdrop()
-			button.backdrop:SetOutside(icon)
-
-			icon:SetTexCoord(unpack(E.TexCoords))
-			icon:SetDrawLayer("OVERLAY")
-			icon:SetParent(button.backdrop)
-
-			count:SetDrawLayer("OVERLAY")
-			count:SetParent(button.backdrop)
-
-			button.isSkinned = true
-		end
-	end
+	RaidFinderQueueFrameScrollFrameChildFrameItem1Count:SetParent(RaidFinderQueueFrameScrollFrameChildFrameItem1.backdrop)
+	RaidFinderQueueFrameScrollFrameChildFrameItem1Count:SetDrawLayer("OVERLAY")
 
 	-- LFR Queue/Browse Tabs
 	for i = 1, 2 do
@@ -566,12 +559,11 @@ local function LoadSkin()
 	FlexRaidFrameScrollFrame:StripTextures()
 	FlexRaidFrameBottomInset:StripTextures()
 
-	hooksecurefunc("FlexRaidFrame_Update", function()
-		FlexRaidFrame.ScrollFrame.Background:SetTexture(nil)
-	end)
+	FlexRaidFrame.ScrollFrame.Background:SetTexture()
+	FlexRaidFrame.ScrollFrame.Background.SetTexture = E.noop
 
 	S:HandleDropDownBox(FlexRaidFrameSelectionDropDown)
-	S:HandleButton(FlexRaidFrameStartRaidButton, true)
+	S:HandleButton(FlexRaidFrameStartRaidButton)
 
 	-- LFG Ready Dialog
 	LFGDungeonReadyDialog:StripTextures()
@@ -718,7 +710,7 @@ local function LoadSkin()
 	QueueStatusFrame:StripTextures()
 	QueueStatusFrame:SetTemplate("Transparent")
 
-	hooksecurefunc("QueueStatusEntry_SetFullDisplay", function(entry, _, _, _, isTank, isHealer, isDPS, totalTanks, totalHealers, totalDPS, tankNeeds, healerNeeds, dpsNeeds)
+	hooksecurefunc("QueueStatusEntry_SetFullDisplay", function(entry, _, _, _, isTank, isHealer, isDPS, totalTanks, totalHealers, totalDPS)
 		local nextRoleIcon = 1
 		local icon
 
@@ -782,7 +774,7 @@ local function LoadSecondarySkin()
 
 	ChallengesFrameDungeonButton1:Point("TOPLEFT", ChallengesFrame, 8, -83)
 
-	S:HandleButton(ChallengesFrameLeaderboard, true)
+	S:HandleButton(ChallengesFrameLeaderboard)
 
 	for i = 1, 9 do
 		local button = ChallengesFrame["button"..i]
