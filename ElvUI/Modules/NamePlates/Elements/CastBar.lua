@@ -82,7 +82,11 @@ function NP:Update_CastBarOnShow()
 	local frame = self:GetParent():GetParent().UnitFrame
 	local db = NP.db.units[frame.UnitType]
 
-	if db.castbar.enable and (db.health.enable or (frame.isTarget and NP.db.alwaysShowTargetHealth)) and (frame.NameOnlyChanged == nil and frame.IconOnlyChanged == nil) and not (frame.UnitTrivial and NP.db.trivial) then
+	local healthShown = db.health.enable or (frame.isTarget and NP.db.alwaysShowTargetHealth)
+	local noFilter = frame.NameOnlyChanged == nil and frame.IconOnlyChanged == nil
+	local noTrivial = not (frame.UnitTrivial and NP.db.trivial)
+
+	if db.castbar.enable and healthShown and noFilter and noTrivial then
 		resetAttributes(frame.CastBar)
 		frame.CastBar:Show()
 
@@ -92,6 +96,7 @@ end
 
 function NP:Update_CastBarOnHide()
 	local frame = self:GetParent():GetParent().UnitFrame
+
 	resetAttributes(frame.CastBar)
 	frame.CastBar:Hide()
 

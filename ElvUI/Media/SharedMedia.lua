@@ -6,8 +6,6 @@ function E:TextureString(texString, dataString)
 	return "|T"..texString..(dataString or "").."|t"
 end
 
-
-
 E.Media = {
 	Fonts = {
 		ActionMan = M..[[Fonts\ActionMan.ttf]],
@@ -134,6 +132,18 @@ E.Media = {
 		Spark = M..[[Textures\Spark.tga]],
 		Tank = M..[[Textures\Tank.tga]],
 		ExitVehicle = M..[[Textures\ExitVehicle.tga]]
+	},
+	BattlePetTypes = {
+		Beast = M..[[BattlePetTypes\Beast.blp]],
+		Critter = M..[[BattlePetTypes\Critter.blp]],
+		Dragon = M..[[BattlePetTypes\Dragon.blp]],
+		Elemental = M..[[BattlePetTypes\Elemental.blp]],
+		Flying = M..[[BattlePetTypes\Flying.blp]],
+		Humanoid = M..[[BattlePetTypes\Humanoid.blp]],
+		Magical = M..[[BattlePetTypes\Magical.blp]],
+		Mechanical = M..[[BattlePetTypes\Mechanical.blp]],
+		Undead = M..[[BattlePetTypes\Undead.blp]],
+		Water = M..[[BattlePetTypes\Water.blp]]
 	}
 }
 

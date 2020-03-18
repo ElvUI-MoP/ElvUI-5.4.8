@@ -6,7 +6,12 @@ local unpack = unpack
 
 local C_PetJournal_GetPetStats = C_PetJournal.GetPetStats
 local C_PetJournal_GetPetInfoByIndex = C_PetJournal.GetPetInfoByIndex
+local C_PetJournal_GetPetInfoByPetID = C_PetJournal.GetPetInfoByPetID
+local C_PetJournal_GetPetLoadOutInfo = C_PetJournal.GetPetLoadOutInfo
+local C_PetJournal_GetPetInfoBySpeciesID = C_PetJournal.GetPetInfoBySpeciesID
+
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
+local PET_TYPE_SUFFIX = PET_TYPE_SUFFIX
 
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.mounts then return end
@@ -29,10 +34,11 @@ local function LoadSkin()
 
 	MountJournal.MountCount:StripTextures()
 	MountJournal.MountCount:SetTemplate("Transparent")
+	MountJournal.MountCount:Point("TOPLEFT", 4, -25)
 
     MountJournal.MountDisplay:CreateBackdrop()
-    MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 2, -40)
-    MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 1, 30)
+	MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 0, -32)
+	MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 0, 0)
 
 	MountJournal.MountDisplay.ShadowOverlay:SetInside(MountJournal.MountDisplay.backdrop)
 
@@ -50,16 +56,11 @@ local function LoadSkin()
 
 	S:HandleButton(MountJournalMountButton)
 	MountJournalMountButton:ClearAllPoints()
-	MountJournalMountButton:Point("BOTTOM", MountJournal.MountDisplay.backdrop, 0, -30)
-	MountJournalMountButton:Size(160, 25)
-
-	MountJournal.bg = CreateFrame("Frame", nil, MountJournal)
-	MountJournal.bg:CreateBackdrop("Default", true)
-	MountJournal.bg:Point("TOPLEFT", MountJournal.MountDisplay.ModelFrame, E.PixelMode and -1 or 0, E.PixelMode and 43 or 42)
-	MountJournal.bg:Point("BOTTOMRIGHT", MountJournal.MountDisplay.ModelFrame, E.PixelMode and 2 or 1, 445)
+	MountJournalMountButton:Point("BOTTOM", MountJournal.MountDisplay.backdrop, 0, -25)
+	MountJournalMountButton:Size(160, 22)
 
 	MountJournal.MountDisplay.Name:ClearAllPoints()
-	MountJournal.MountDisplay.Name:Point("CENTER",  MountJournal.bg)
+	MountJournal.MountDisplay.Name:Point("TOP", MountJournal.MountDisplay.backdrop, 0, 22)
 
 	MountJournal.MountDisplay.NoMounts:ClearAllPoints()
 	MountJournal.MountDisplay.NoMounts:Point("CENTER",  MountJournal.bg)
@@ -154,29 +155,36 @@ local function LoadSkin()
 	MountJournalListScrollFrame:HookScript("OnMouseWheel", ColorSelectedMount)
 
 	-- Pet Journal
-	PetJournalSummonButton:StripTextures()
-	PetJournalFindBattle:StripTextures()
 	PetJournalRightInset:StripTextures()
 	PetJournalLeftInset:StripTextures()
-	PetJournalFilterButton:StripTextures(true)
-	PetJournalTutorialButton:Kill()
 
 	PetJournal.PetCount:StripTextures()
 	PetJournal.PetCount:SetTemplate("Transparent")
+	PetJournal.PetCount:Point("TOPLEFT", 4, -25)
 
 	S:HandleButton(PetJournalSummonButton)
 	S:HandleButton(PetJournalFindBattle)
+
+	PetJournalTutorialButton:Kill()
 
 	S:HandleEditBox(PetJournalSearchBox)
 	PetJournalSearchBox:Width(160)
 	PetJournalSearchBox:Point("TOPLEFT", PetJournalLeftInset, 1, -9)
 
-	S:HandleButton(PetJournalFilterButton)
+	S:HandleButton(PetJournalFilterButton, true)
 	PetJournalFilterButton:ClearAllPoints()
 	PetJournalFilterButton:Point("RIGHT", PetJournalSearchBox, 97, 0)
 
 	PetJournalFilterButtonText:Point("CENTER")
 
+	PetJournalAchievementStatus:DisableDrawLayer("BACKGROUND")
+
+	S:HandleItemButton(PetJournalHealPetButton, true)
+	PetJournalHealPetButton.texture:SetTexture([[Interface\Icons\spell_magic_polymorphrabbit]])
+
+	E:RegisterCooldown(PetJournalHealPetButtonCooldown)
+
+	-- Scroll Frame
 	PetJournalListScrollFrame:StripTextures()
 	PetJournalListScrollFrame:CreateBackdrop("Transparent")
 	PetJournalListScrollFrame.backdrop:Point("TOPLEFT", -3, 1)
@@ -223,30 +231,30 @@ local function LoadSkin()
 			local index = petButtons[i].index
 			if not index then break end
 
-			local button = _G["PetJournalListScrollFrameButton"..i]
-			local name = _G["PetJournalListScrollFrameButton"..i.."Name"]
+			local button = petButtons[i]
 			local petID = C_PetJournal_GetPetInfoByIndex(index, isWild)
 
 			if petID ~= nil then
-				local _, _, _, _, rarity = C_PetJournal_GetPetStats(petID)
-				if rarity then
-					local color = ITEM_QUALITY_COLORS[rarity - 1]
+				local quality = select(5, C_PetJournal_GetPetStats(petID))
+
+				if quality then
+					local color = ITEM_QUALITY_COLORS[quality - 1]
 
 					button.selectedTexture:SetVertexColor(color.r, color.g, color.b)
 					button.handledHighlight:SetVertexColor(color.r, color.g, color.b)
 					button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-					name:SetTextColor(color.r, color.g, color.b)
+					button.name:SetTextColor(color.r, color.g, color.b)
 				else
 					button.selectedTexture:SetVertexColor(1, 1, 1)
 					button.handledHighlight:SetVertexColor(1, 1, 1)
 					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-					name:SetTextColor(1, 1, 1)
+					button.name:SetTextColor(1, 1, 1)
 				end
 			else
 				button.selectedTexture:SetVertexColor(1, 1, 1)
 				button.handledHighlight:SetVertexColor(1, 1, 1)
 				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				name:SetTextColor(0.6, 0.6, 0.6)
+				button.name:SetTextColor(0.6, 0.6, 0.6)
 			end
 		end
 	end
@@ -255,98 +263,99 @@ local function LoadSkin()
 	PetJournalListScrollFrame:HookScript("OnVerticalScroll", ColorSelectedPet)
 	PetJournalListScrollFrame:HookScript("OnMouseWheel", ColorSelectedPet)
 
-	PetJournalAchievementStatus:DisableDrawLayer("BACKGROUND")
-
-	S:HandleItemButton(PetJournalHealPetButton, true)
-	PetJournalHealPetButton.texture:SetTexture([[Interface\Icons\spell_magic_polymorphrabbit]])
-	E:RegisterCooldown(PetJournalHealPetButtonCooldown)
-
+	-- Loadout Pets
 	PetJournalLoadoutBorder:StripTextures()
 
 	PetJournalLoadoutBorderSlotHeaderText:Point("CENTER", PetJournalLoadoutBorderTop, "TOP", 0, 11)
 
-	PetJournalLoadoutPet1:Point("TOP", 1, 3)
-	PetJournalLoadoutPet2:Point("TOP", 1, -108)
-	PetJournalLoadoutPet3:Point("TOP", 1, -219)
-
 	for i = 1, 3 do
-		local loadoutPet = _G["PetJournalLoadoutPet"..i]
-		local loadoutPetIcon = _G["PetJournalLoadoutPet"..i.."Icon"]
-		local loadoutPetHealth = _G["PetJournalLoadoutPet"..i.."HealthFrame"]
-		local loadoutPetXP = _G["PetJournalLoadoutPet"..i.."XPBar"]
-		local loadoutPetLevel = _G["PetJournalLoadoutPet"..i.."Level"]
+		local frame = PetJournal.Loadout["Pet"..i]
+		local model = _G["PetJournalLoadoutPet"..i.."ModelFrame"]
 
-		_G["PetJournalLoadoutPet"..i.."HelpFrame"]:StripTextures()
+		frame:Width(405)
+		frame:StripTextures()
+		frame:SetTemplate("Transparent")
+		frame:CreateBackdrop()
+		frame.backdrop:SetOutside(frame.icon)
+		frame.backdrop:SetFrameLevel(frame.backdrop:GetFrameLevel() + 1)
 
-		loadoutPet:StripTextures()
-		loadoutPet:SetTemplate("Transparent")
-		loadoutPet:Width(405)
+		if i == 1 then
+			frame:Point("TOP", 1, 3)
+		elseif i == 2 then
+			frame:Point("TOP", 1, -108)
+		else
+			frame:Point("TOP", 1, -219)
+		end
 
-		loadoutPet.hover = true
-		loadoutPet.pushed = true
-		loadoutPet.checked = true
+		frame.petTypeIcon:Point("BOTTOMLEFT", 6, 10)
+		frame.petTypeIcon:SetTexCoord(0, 1, 0, 1)
+		frame.petTypeIcon:Size(36)
+		frame.petTypeIcon:SetAlpha(0.8)
 
-		S:HandleItemButton(loadoutPet)
-		loadoutPet.backdrop:SetFrameLevel(loadoutPet.backdrop:GetFrameLevel() + 1)
+		frame.icon:SetTexCoord(unpack(E.TexCoords))
 
-		loadoutPet.setButton:StripTextures()
-		loadoutPet.petTypeIcon:Point("BOTTOMLEFT", 5, 5)
+		frame.helpFrame:StripTextures()
+		frame.setButton:StripTextures()
 
-		loadoutPet.dragButton:SetOutside(loadoutPetIcon)
-		loadoutPet.dragButton:SetFrameLevel(loadoutPet.dragButton:GetFrameLevel() + 1)
-		loadoutPet.dragButton:StyleButton()
+		frame.dragButton:SetOutside(frame.icon)
+		frame.dragButton:SetFrameLevel(frame.dragButton:GetFrameLevel() + 1)
+		frame.dragButton:StyleButton()
 
-		loadoutPetLevel:FontTemplate(nil, 12, "OUTLINE")
-		loadoutPetLevel:SetTextColor(1, 1, 1)
-		_G["PetJournalLoadoutPet"..i.."LevelBG"]:Point("BOTTOMRIGHT", loadoutPetIcon, "BOTTOMRIGHT", 4, -4)
+		frame.level:FontTemplate(nil, 12, "OUTLINE")
+		frame.level:SetTextColor(1, 1, 1)
+		frame.levelBG:Point("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", 4, -4)
 
-		loadoutPetHealth.healthBar:StripTextures()
-		loadoutPetHealth.healthBar:CreateBackdrop()
-		loadoutPetHealth.healthBar:SetStatusBarTexture(E.media.normTex)
-		E:RegisterStatusBar(loadoutPetHealth.healthBar)
+		frame.healthFrame.healthBar:StripTextures()
+		frame.healthFrame.healthBar:CreateBackdrop()
+		frame.healthFrame.healthBar:SetStatusBarTexture(E.media.normTex)
+		E:RegisterStatusBar(frame.healthFrame.healthBar)
 
-		loadoutPetXP:StripTextures()
-		loadoutPetXP:CreateBackdrop()	
-		loadoutPetXP:SetStatusBarTexture(E.media.normTex)
-		loadoutPetXP:SetFrameLevel(loadoutPetXP:GetFrameLevel() + 2)
-		E:RegisterStatusBar(loadoutPetXP)
+		frame.xpBar:StripTextures()
+		frame.xpBar:CreateBackdrop()
+		frame.xpBar:SetStatusBarTexture(E.media.normTex)
+		frame.xpBar:SetFrameLevel(frame.xpBar:GetFrameLevel() + 2)
+		E:RegisterStatusBar(frame.xpBar)
 
-		_G["PetJournalLoadoutPet"..i.."ModelFrame"]:Point("TOPRIGHT", -3, -3)
+		model:Point("TOPRIGHT", -3, 8)
 
-		for index = 1, 3 do
-			local frame = _G["PetJournalLoadoutPet"..i.."Spell"..index]
-			S:HandleItemButton(frame)
-			frame.FlyoutArrow:SetTexture([[Interface\Buttons\ActionBarFlyoutButton]])
-			_G["PetJournalLoadoutPet"..i.."Spell"..index.."Icon"]:SetInside(frame)
+		for j = 1, 3 do
+			local button = frame["spell"..j]
+
+			S:HandleItemButton(button)
+
+			button.icon:SetInside(button)
+
+			button.FlyoutArrow:SetTexture([[Interface\Buttons\ActionBarFlyoutButton]])
 		end
 	end
 
-	local function ColorLoadoutPets()
+	hooksecurefunc("PetJournal_UpdatePetLoadOut", function()
 		for i = 1, 3 do
-			local pet = _G["PetJournalLoadoutPet"..i]
-			local petName = _G["PetJournalLoadoutPet"..i.."Name"]
-			local subName = _G["PetJournalLoadoutPet"..i.."SubName"]
-			local petID = C_PetJournal.GetPetLoadOutInfo(i)
+			local petID = C_PetJournal_GetPetLoadOutInfo(i)
 
 			if petID then
-				local _, _, _, _, rarity = C_PetJournal.GetPetStats(petID)
+				local frame = PetJournal.Loadout["Pet"..i]
+				local petType = select(10, C_PetJournal_GetPetInfoByPetID(petID))
+				local quality = select(5, C_PetJournal_GetPetStats(petID))
 
-				if rarity then
-					local color = ITEM_QUALITY_COLORS[rarity - 1]
+				frame.petTypeIcon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
 
-					pet.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-					petName:SetTextColor(color.r, color.g, color.b)
-					subName:SetTextColor(color.r, color.g, color.b)
+				if quality then
+					local color = ITEM_QUALITY_COLORS[quality - 1]
+
+					frame.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+					frame.name:SetTextColor(color.r, color.g, color.b)
+					frame.subName:SetTextColor(color.r, color.g, color.b)
 				else
-					pet.backdrop:SetBackdropBorderColor(0, 0, 0)
-					petName:SetTextColor(1, 1, 1)
-					subName:SetTextColor(1, 1, 1)
+					frame.backdrop:SetBackdropBorderColor(0, 0, 0)
+					frame.name:SetTextColor(1, 1, 1)
+					frame.subName:SetTextColor(1, 1, 1)
 				end
 			end
 		end
-	end
-	hooksecurefunc("PetJournal_UpdatePetLoadOut", ColorLoadoutPets)
+	end)
 
+	-- Flyout Buttons
 	for i = 1, 2 do
 		local button = _G["PetJournalSpellSelectSpell"..i]
 		local icon = _G["PetJournalSpellSelectSpell"..i.."Icon"]
@@ -359,22 +368,21 @@ local function LoadSkin()
 
 	PetJournalSpellSelect:StripTextures()
 
+	-- Pet Card
 	PetJournalPetCard:StripTextures()
 	PetJournalPetCard:SetTemplate("Transparent")
 
 	PetJournalPetCardInset:StripTextures()
 
 	PetJournalPetCardPetInfo:CreateBackdrop()
-	PetJournalPetCardPetInfo.backdrop:SetOutside(PetJournalPetCardPetInfoIcon)
+	PetJournalPetCardPetInfo.backdrop:SetOutside(PetJournalPetCardPetInfo.icon)
 	PetJournalPetCardPetInfo:StyleButton()
 	PetJournalPetCardPetInfo:Size(40)
 	PetJournalPetCardPetInfo:Point("TOPLEFT", 2, -2)
 
-	PetJournalPetCardModelFrame:Point("TOPLEFT", 60, -10)
-
-	PetJournalPetCardPetInfoIcon:SetTexCoord(unpack(E.TexCoords))
-	PetJournalPetCardPetInfoIcon:SetInside(PetJournalPetCardPetInfo)
-	PetJournalPetCardPetInfoIcon:SetParent(PetJournalPetCardPetInfo.backdrop)
+	PetJournalPetCardPetInfo.icon:SetTexCoord(unpack(E.TexCoords))
+	PetJournalPetCardPetInfo.icon:SetInside(PetJournalPetCardPetInfo)
+	PetJournalPetCardPetInfo.icon:SetParent(PetJournalPetCardPetInfo.backdrop)
 
 	PetJournalPetCardPetInfo.level:FontTemplate(nil, 12, "OUTLINE")
 	PetJournalPetCardPetInfo.level:SetTextColor(1, 1, 1)
@@ -385,34 +393,35 @@ local function LoadSkin()
 	PetJournalPetCardPetInfo.levelBG:SetAlpha(0)
 	PetJournalPetCardPetInfo.qualityBorder:SetAlpha(0)
 
-	PetJournalPetCardTypeInfo:Size(65, 40)
+	PetJournalPetCardModelFrame:Point("TOPLEFT", 60, -10)
 
-	PetJournalPetCardTypeInfoTypeIcon:SetTexCoord(0.200, 0.710, 0.746, 0.917)
-	PetJournalPetCardTypeInfoTypeIcon:SetInside(PetJournalPetCardTypeInfo)
+	PetJournalPetCardHealthFrame.healthBar:StripTextures()
+	PetJournalPetCardHealthFrame.healthBar:CreateBackdrop()
+	PetJournalPetCardHealthFrame.healthBar:SetStatusBarTexture(E.media.normTex)
+
+	PetJournalPetCardXPBar:StripTextures()
+	PetJournalPetCardXPBar:CreateBackdrop()
+	PetJournalPetCardXPBar:SetStatusBarTexture(E.media.normTex)
+
+	PetJournalPetCardTypeInfoTypeIcon:SetTexCoord(0, 1, 0, 1)
+	PetJournalPetCardTypeInfoTypeIcon:SetAlpha(0.8)
+
+	hooksecurefunc("PetJournal_UpdatePetCard", function(self)
+		local petType
+
+		if PetJournalPetCard.petID then
+			petType = select(10, C_PetJournal_GetPetInfoByPetID(PetJournalPetCard.petID))
+		else
+			petType = select(3, C_PetJournal_GetPetInfoBySpeciesID(PetJournalPetCard.speciesID))
+		end
+
+		self.TypeInfo.typeIcon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
+	end)
 
 	hooksecurefunc(PetJournalPetCardPetInfoQualityBorder, "SetVertexColor", function(_, r, g, b)
 		PetJournalPetCardPetInfo.backdrop:SetBackdropBorderColor(r, g, b)
 		PetJournalPetCardPetInfo.name:SetTextColor(r, g, b)
 	end)
-
-	local tt = PetJournalPrimaryAbilityTooltip
-
-	tt.Background:SetTexture(nil)
-
-	if tt.Delimiter1 then
-		tt.Delimiter1:SetTexture(nil)
-		tt.Delimiter2:SetTexture(nil)
-	end
-
-	tt.BorderTop:SetTexture(nil)
-	tt.BorderTopLeft:SetTexture(nil)
-	tt.BorderTopRight:SetTexture(nil)
-	tt.BorderLeft:SetTexture(nil)
-	tt.BorderRight:SetTexture(nil)
-	tt.BorderBottom:SetTexture(nil)
-	tt.BorderBottomRight:SetTexture(nil)
-	tt.BorderBottomLeft:SetTexture(nil)
-	tt:SetTemplate("Transparent")
 
 	for i = 1, 6 do
 		local frame = _G["PetJournalPetCardSpell"..i]
@@ -428,14 +437,6 @@ local function LoadSkin()
 		frame.icon:SetTexCoord(unpack(E.TexCoords))
 		frame.icon:SetInside(frame.backdrop)
 	end
-
-	PetJournalPetCardHealthFrame.healthBar:StripTextures()
-	PetJournalPetCardHealthFrame.healthBar:CreateBackdrop()
-	PetJournalPetCardHealthFrame.healthBar:SetStatusBarTexture(E.media.normTex)
-
-	PetJournalPetCardXPBar:StripTextures()
-	PetJournalPetCardXPBar:CreateBackdrop()
-	PetJournalPetCardXPBar:SetStatusBarTexture(E.media.normTex)
 end
 
 S:AddCallbackForAddon("Blizzard_PetJournal", "PetJournal", LoadSkin)
