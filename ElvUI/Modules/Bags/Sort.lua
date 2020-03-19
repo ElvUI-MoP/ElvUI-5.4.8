@@ -32,6 +32,8 @@ local SplitContainerItem = SplitContainerItem
 local SplitGuildBankItem = SplitGuildBankItem
 local ARMOR, ENCHSLOT_WEAPON = ARMOR, ENCHSLOT_WEAPON
 
+local C_PetJournal_GetPetInfoBySpeciesID = C_PetJournal.GetPetInfoBySpeciesID
+
 local guildBags = {51, 52, 53, 54, 55, 56, 57, 58}
 local bankBags = {BANK_CONTAINER}
 local MAX_MOVE_TIME = 1.25
@@ -197,6 +199,19 @@ local function DefaultSort(a, b)
 
 	if (not aID) or (not bID) then return aID end
 
+	if bagPetIDs[a] and bagPetIDs[b] then
+		local aName, _, aType = C_PetJournal_GetPetInfoBySpeciesID(aID)
+		local bName, _, bType = C_PetJournal_GetPetInfoBySpeciesID(bID)
+
+		if aType ~= bType and aType and bType then
+			return aType > bType
+		end
+
+		if aName ~= bName and aName and bName then
+			return aName > bName
+		end
+	end
+
 	local aOrder, bOrder = initialOrder[a], initialOrder[b]
 
 	if aID == bID then
@@ -213,6 +228,14 @@ local function DefaultSort(a, b)
 	local _, _, _, _, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
 
 	local aRarity, bRarity = bagQualities[a], bagQualities[b]
+
+	if bagPetIDs[a] then
+		aRarity = 1.5
+	end
+
+	if bagPetIDs[b] then
+		bRarity = 1.5
+	end
 
 	if conjured_items[aID] then
 		aRarity = -99

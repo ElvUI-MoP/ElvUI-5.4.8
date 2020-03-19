@@ -78,7 +78,7 @@ local function LoadSkin2()
 		frame.BorderBottomRight:SetTexture()
 		frame.BorderBottomLeft:SetTexture()
 
-		frame:SetTemplate("Transparent")
+		frame:SetTemplate("Transparent", nil, true)
 
 		if frame.Delimiter1 then
 			frame.Delimiter1:SetTexture()
@@ -189,11 +189,11 @@ local function LoadSkin2()
 		tooltipFrame.PetTypeTexture:SetTexCoord(0, 1, 0, 1)
 	end)
 
-	hooksecurefunc("PetBattleUnitFrame_UpdatePetType", function(self)
-		if not self.PetType then return end
+	hooksecurefunc("PetBattleUnitFrame_UpdatePetType", function()
+		if not PetBattlePrimaryUnitTooltip.PetType then return end
 
-		local petType = C_PetBattles_GetPetType(self.petOwner, self.petIndex)
-		self.PetType.Icon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
+		local petType = C_PetBattles_GetPetType(PetBattlePrimaryUnitTooltip.petOwner, PetBattlePrimaryUnitTooltip.petIndex)
+		PetBattlePrimaryUnitTooltip.PetType.Icon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
 	end)
 
 	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
