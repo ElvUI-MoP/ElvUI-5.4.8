@@ -134,32 +134,39 @@ E.Options.args.bags = {
 					name = L["Show Battle Pet Icon"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
 				},
+				upgradeIcon = {
+					order = 14,
+					type = 'toggle',
+					name = L["Show Upgrade Icon"],
+					desc = L["Display the upgrade icon on items that WoW considers an upgrade for your character."],
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
+				},
 				clearSearchOnClose = {
- 					order = 14,
+ 					order = 15,
 					type = "toggle",
 					name = L["Clear Search On Close"],
 					set = function(info, value) E.db.bags[info[#info]] = value end
 				},
 				reverseSlots = {
-					order = 15,
+					order = 16,
 					type = "toggle",
 					name = L["Reverse Bag Slots"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAll() B:UpdateTokens() end
 				},
 				disableBagSort = {
- 					order = 16,
+ 					order = 17,
 					type = "toggle",
 					name = L["Disable Bag Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(false) end
 				},
 				disableBankSort = {
-					order = 17,
+					order = 18,
 					type = "toggle",
 					name = L["Disable Bank Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(true) end
 				},
 				countGroup = {
-					order = 18,
+					order = 19,
 					type = "group",
 					name = L["Item Count Font"],
 					guiInline = true,
@@ -204,7 +211,7 @@ E.Options.args.bags = {
 					}
 				},
 				itemLevelGroup = {
-					order = 19,
+					order = 20,
 					type = "group",
 					name = L["Item Level"],
 					guiInline = true,

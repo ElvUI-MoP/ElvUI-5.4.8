@@ -2033,44 +2033,36 @@ local function GetUnitSettings(unit, name)
 						type = "toggle",
 						name = L["ENABLE"]
 					},
-					timeToHold = {
-						order = 2,
-						type = "range",
-						name = L["Time To Hold"],
-						desc = L["How many seconds the castbar should stay visible after the cast failed or was interrupted."],
-						min = 0, max = 4, step = 0.1,
-						disabled = function() return not E.db.nameplates.units[unit].castbar.enable end
-					},
 					width = {
-						order = 3,
+						order = 2,
 						type = "range",
 						name = L["Width"],
 						min = 50, max = 250, step = 1,
 						disabled = function() return not E.db.nameplates.units[unit].castbar.enable end
 					},
 					height = {
-						order = 4,
+						order = 3,
 						type = "range",
 						name = L["Height"],
 						min = 4, max = 20, step = 1,
 						disabled = function() return not E.db.nameplates.units[unit].castbar.enable end
 					},
 					xOffset = {
-						order = 5,
+						order = 4,
 						type = "range",
 						name = L["X-Offset"],
 						min = -100, max = 100, step = 1,
 						disabled = function() return not E.db.nameplates.units[unit].castbar.enable end
 					},
 					yOffset = {
-						order = 6,
+						order = 5,
 						type = "range",
 						name = L["Y-Offset"],
 						min = -100, max = 100, step = 1,
 						disabled = function() return not E.db.nameplates.units[unit].castbar.enable end
 					},
 					textGroup = {
-						order = 7,
+						order = 6,
 						type = "group",
 						name = L["Text"],
 						guiInline = true,
@@ -2153,7 +2145,7 @@ local function GetUnitSettings(unit, name)
 						}
 					},
 					iconGroup = {
-						order = 9,
+						order = 7,
 						type = "group",
 						name = L["Icon"],
 						guiInline = true,

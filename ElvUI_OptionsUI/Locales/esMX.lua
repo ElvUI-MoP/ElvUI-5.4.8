@@ -368,6 +368,7 @@ L["Display the players talent spec and item level in the tooltip, this may not i
 L["Display the spell or item ID when mousing over a spell or item tooltip."] = "Despliega el ID de hechizo u objeto cuando pasas el ratón sobre un hechizo o un ojbeto."
 L["Display the target of your current cast. Useful for mouseover casts."] = "Muestra el objetivo de tu hechizo actual. Es útil para hechizos por ratón."
 L["Display the unit role in the tooltip."] = true
+L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = true
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "Muestra las marcas de cada tick en la barra de lanzamiento para los hechizos canalizados. Esto se ajustará automáticamente con base en el hechizo y la celeridad."
 L["Displayed Currency"] = true
 L["Displays a detailed report of every item sold when enabled."] = true
@@ -958,6 +959,7 @@ L["Show Over Absorbs"] = true
 L["Show Quality Color"] = true
 L["Show Quest Icon"] = true
 L["Show the castbar icon desaturated if a spell is not interruptible."] = true
+L["Show Upgrade Icon"] = true
 L["Show When Not Active"] = "Mostrar Cuando No Esté Activo"
 L["Side Arrows"] = true
 L["Size Override"] = "Sobrescribir Tamaño"

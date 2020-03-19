@@ -368,6 +368,7 @@ L["Display the players talent spec and item level in the tooltip, this may not i
 L["Display the spell or item ID when mousing over a spell or item tooltip."] = "아이템과 주문 툴팁에 각각의 ID를 표시합니다."
 L["Display the target of your current cast. Useful for mouseover casts."] = "현재 캐스팅중인 기술의 목표를 기술명에 표기합니다. 마우스오버로 기술을 시전할 때 대상을 파악하기 좋습니다."
 L["Display the unit role in the tooltip."] = true
+L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = "게임내에서 캐릭터를 강화할 수 있는 것으로 판단되는 아이템에 강화 아이콘을 표시합니다."
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "시전바에 시전되는 주문의 틱을 표시합니다. 영혼 흡수나 가속이 추가되는 주문에 따라 틱이 자동 조절됩니다."
 L["Displayed Currency"] = "표시된 화폐"
 L["Displays a detailed report of every item sold when enabled."] = "활성화하면 판매된 모든 아이템의 상세보고를 표시합니다."
@@ -957,6 +958,7 @@ L["Show Over Absorbs"] = true
 L["Show Quality Color"] = true
 L["Show Quest Icon"] = true
 L["Show the castbar icon desaturated if a spell is not interruptible."] = true
+L["Show Upgrade Icon"] = "강화 아이콘 표시"
 L["Show When Not Active"] = "효과가 없을 때 표시"
 L["Side Arrows"] = "양옆 화살표"
 L["Size Override"] = "아이콘 크기"

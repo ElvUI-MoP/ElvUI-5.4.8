@@ -368,6 +368,7 @@ L["Display the players talent spec and item level in the tooltip, this may not i
 L["Display the spell or item ID when mousing over a spell or item tooltip."] = "Affiche le sort ou l'ID de l'objet dans une infobulle quand vous passez votre souris sur le sort ou l'objet."
 L["Display the target of your current cast. Useful for mouseover casts."] = "Afficher la cible de votre incantation en cours. Utile pour les incantations en survol de souris."
 L["Display the unit role in the tooltip."] = true
+L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = true
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "Affichage des marques de graduation (ticks) sur la barre de lancement de sort. Cela s'ajustera automatiquement pour les sorts comme Drain d'âme qui est basé sur la Hâte."
 L["Displayed Currency"] = "Monnaie affichée"
 L["Displays a detailed report of every item sold when enabled."] = true
@@ -957,6 +958,7 @@ L["Show Over Absorbs"] = true
 L["Show Quality Color"] = true
 L["Show Quest Icon"] = true
 L["Show the castbar icon desaturated if a spell is not interruptible."] = true
+L["Show Upgrade Icon"] = "Afficher l'icône de mise à jour"
 L["Show When Not Active"] = "Afficher les manquants"
 L["Side Arrows"] = true
 L["Size Override"] = "Forcer la taille"

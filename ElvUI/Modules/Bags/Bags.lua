@@ -67,6 +67,7 @@ local NUM_CONTAINER_FRAMES = NUM_CONTAINER_FRAMES
 local SEARCH = SEARCH
 
 local SEARCH_STRING = ""
+local S_UPGRADE_LEVEL = "^"..gsub(ITEM_UPGRADE_TOOLTIP_FORMAT, "%%d", "(%%d+)")
 
 local UpgradeTable = {
 	[  0] = {                      ilevel = 0},
@@ -377,16 +378,18 @@ function B:UpdateSlot(frame, bagID, slotID)
 	local texture, count, locked, _, readable = GetContainerItemInfo(bagID, slotID)
 	local clink = GetContainerItemLink(bagID, slotID)
 
-	slot.name, slot.rarity, slot.locked, slot.readable, slot.isJunk, slot.junkDesaturate, slot.isBattlePet = nil, nil, locked, readable, nil, nil, nil
+	slot.name, slot.rarity, slot.isJunk, slot.junkDesaturate, slot.isBattlePet, slot.isUpgradable = nil, nil, nil, nil, nil, nil
+	slot.locked, slot.readable = locked, readable
 
 	slot:Show()
 	slot.questIcon:Hide()
 	slot.BattlePetIcon:Hide()
 	slot.JunkIcon:Hide()
+	slot.UpgradeIcon:Hide()
 	slot.itemLevel:SetText("")
 	slot.bindType:SetText("")
 
-	if B.db.showBindType then
+	if B.db.showBindType or B.db.upgradeIcon then
 		E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
 		if slot.GetInventorySlot then -- this fixes bank bagid -1
 			E.ScanTooltip:SetInventoryItem("player", slot:GetInventorySlot())
@@ -412,22 +415,42 @@ function B:UpdateSlot(frame, bagID, slotID)
 			r, g, b = GetItemQualityColor(slot.rarity)
 		end
 
-		if B.db.showBindType and (slot.rarity and slot.rarity > 1) then
+		if slot.rarity and slot.rarity > 1 and (B.db.showBindType or B.db.upgradeIcon) then
+			local awaitBind, awaitUpgrade = B.db.showBindType, B.db.upgradeIcon
 			local bindTypeLines = GetCVarBool("colorblindmode") and 8 or 7
-			local BoE, BoU
+			local BoE, BoU, curUpgrade, maxUpgrade
+
 			for i = 2, bindTypeLines do
 				local line = _G["ElvUI_ScanTooltipTextLeft"..i]:GetText()
-				if (not line or line == "") or (line == ITEM_SOULBOUND or line == ITEM_ACCOUNTBOUND or line == ITEM_BNETACCOUNTBOUND) then break end
+				if (not line or line == "") then break end
 
-				BoE, BoU = line == ITEM_BIND_ON_EQUIP, line == ITEM_BIND_ON_USE
+				if awaitUpgrade then
+					curUpgrade, maxUpgrade = strmatch(line, S_UPGRADE_LEVEL)
 
-				if not B.db.showBindType and (slot.rarity and slot.rarity > 1) or (BoE or BoU) then break end
+					if curUpgrade or maxUpgrade then
+						awaitUpgrade = nil
+					end
+				end
+
+				if awaitBind then
+					if line == ITEM_BIND_ON_EQUIP then
+						BoE = true
+						awaitBind = nil
+					elseif line == ITEM_BIND_ON_USE then
+						BoU = true
+						awaitBind = nil
+					end
+				end
+
+				if not awaitBind and not awaitUpgrade then break end
 			end
 
 			if BoE or BoU then
 				slot.bindType:SetText(BoE and L["BoE"] or L["BoU"])
 				slot.bindType:SetVertexColor(r, g, b)
 			end
+
+			slot.isUpgradable = curUpgrade and (curUpgrade ~= maxUpgrade)
 		end
 
 		-- Item Level
@@ -464,6 +487,11 @@ function B:UpdateSlot(frame, bagID, slotID)
 		-- Quest Icon
 		if B.db.questIcon and (questId and not isActiveQuest) then
 			slot.questIcon:Show()
+		end
+
+		-- Upgrade Icon
+		if B.db.upgradeIcon and slot.isUpgradable then
+			slot.UpgradeIcon:Show()
 		end
 
 		local color = E.db.bags.countFontColor
@@ -761,6 +789,15 @@ function B:Layout(isBank)
 						BattlePetIcon:Point("TOPLEFT", 1, 0)
 						BattlePetIcon:Hide()
 						f.Bags[bagID][slotID].BattlePetIcon = BattlePetIcon
+					end
+
+					if not f.Bags[bagID][slotID].UpgradeIcon then
+						local UpgradeIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
+						UpgradeIcon:SetTexture(E.Media.Textures.BagUpgradeIcon)
+						UpgradeIcon:SetTexCoord(0, 1, 0, 1)
+						UpgradeIcon:SetInside()
+						UpgradeIcon:Hide()
+						f.Bags[bagID][slotID].UpgradeIcon = UpgradeIcon
 					end
 
 					if not f.Bags[bagID][slotID].JunkIcon then

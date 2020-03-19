@@ -368,6 +368,7 @@ L["Display the players talent spec and item level in the tooltip, this may not i
 L["Display the spell or item ID when mousing over a spell or item tooltip."] = "Отображать ID заклинания или предмета в подсказке при наведении мыши."
 L["Display the target of your current cast. Useful for mouseover casts."] = "Отображать имя цели заклинания на полосе."
 L["Display the unit role in the tooltip."] = "отображать роль юнита в подсказке"
+L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = "Отображать иконку на предметах, которые игра считает апгрейдом для персонажа."
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "Отображать метки тиков на полосе заклинаний для поддерживаемых заклинаний. Они будут автоматически масштабироваться для заклинаний вроде Похищения души и добавлять новые тики, основываясь на показателе скорости."
 L["Displayed Currency"] = "Отображаемая валюта"
 L["Displays a detailed report of every item sold when enabled."] = "Показывать подробный отчет по каждому проданному серому предмету."
@@ -957,6 +958,7 @@ L["Show Over Absorbs"] = "Показывать \"лишнее\" поглощен
 L["Show Quality Color"] = "Показывать цвет качества"
 L["Show Quest Icon"] = true
 L["Show the castbar icon desaturated if a spell is not interruptible."] = "Показывать иконку полосы заклинания обесцвеченой, если заклинание нельзя прервать."
+L["Show Upgrade Icon"] = "Иконка апгрейда"
 L["Show When Not Active"] = "Показывать при отсутствии"
 L["Side Arrows"] = "Стрелки по сторонам"
 L["Size and Positions"] = "Размер и позиция"

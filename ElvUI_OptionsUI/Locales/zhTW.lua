@@ -368,6 +368,7 @@ L["Display the players talent spec and item level in the tooltip, this may not i
 L["Display the spell or item ID when mousing over a spell or item tooltip."] = "滑鼠提示中顯示技能或物品的ID."
 L["Display the target of your current cast. Useful for mouseover casts."] = "顯示你當前的施法目標. 可以轉換成鼠标滑過類型."
 L["Display the unit role in the tooltip."] = "在提示中顯示單位角色"
+L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = "為WoW認為可以為你角色提升的物品顯示升級圖標"
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "若為需引導的法術, 在施法條上顯示每跳週期傷害. 啟動此功能後, 針對吸取靈魂這類的法術, 將自動調整顯示每跳週期傷害, 並視加速等級增加額外的周期傷害."
 L["Displayed Currency"] = "顯示的金額"
 L["Displays a detailed report of every item sold when enabled."] = "當啟用時顯示一個有關於每個物品賣價的詳細報告"
@@ -957,6 +958,7 @@ L["Show Over Absorbs"] = true
 L["Show Quality Color"] = "顯示品質圖標"
 L["Show Quest Icon"] = true
 L["Show the castbar icon desaturated if a spell is not interruptible."] = true
+L["Show Upgrade Icon"] = "顯示升級圖標"
 L["Show When Not Active"] = "顯示當前無效的光環"
 L["Side Arrows"] = "側面箭頭"
 L["Size Override"] = "尺寸覆蓋"
