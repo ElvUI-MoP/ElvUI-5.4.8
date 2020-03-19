@@ -336,10 +336,13 @@ function A:UpdateHeader(header)
 
 	local auraType = "debuffs"
 	local db = A.db.debuffs
+
 	if header:GetAttribute("filter") == "HELPFUL" then
 		auraType = "buffs"
 		db = A.db.buffs
-		header:SetAttribute("consolidateTo", 0)
+
+		local showConsolidated = A.db.consolidatedBuffs.enable and E.private.general.minimap.enable
+		header:SetAttribute("consolidateTo", showConsolidated and 1 or 0)
 		header:SetAttribute("weaponTemplate", format("ElvUIAuraTemplate%d", db.size))
 	end
 
