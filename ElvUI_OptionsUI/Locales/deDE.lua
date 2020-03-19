@@ -941,6 +941,7 @@ L["Show an alert frame if you have unspend talent points."] = "Zeigt ein Alarmfe
 L["Show an incoming heal prediction bar on the unitframe. Also display a slightly different colored bar for incoming overheals."] = "Zeige eingehende Heilung im Einheitenfenster. Zeigt eine etwas anders farbige Leiste für eingehende Überheilung."
 L["Show Aura From Other Players"] = "Zeige Auren von anderen Spielern"
 L["Show Auras"] = "Zeige Auren"
+L["Show Battle Pet Icon"] = true
 L["Show Bind on Equip/Use Text"] = "Zeigt gebunden beim Aufheben/Anlegen Text"
 L["Show Both"] = "Zeige Beide"
 L["Show Coins"] = "Währungssymbole anzeigen"

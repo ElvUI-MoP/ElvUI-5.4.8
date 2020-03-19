@@ -165,6 +165,7 @@ P.bags = {
 	currencyFormat = "ICON_TEXT_ABBR",
 	moneyFormat = "SMART",
 	moneyCoins = true,
+	battlePetIcon = true,
 	junkIcon = false,
 	junkDesaturate = true,
 	newItemGlow = true,

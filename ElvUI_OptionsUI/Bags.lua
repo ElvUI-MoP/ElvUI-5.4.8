@@ -128,32 +128,38 @@ E.Options.args.bags = {
 					name = L["Show Bind on Equip/Use Text"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
 				},
+				battlePetIcon = {
+					order = 13,
+					type = "toggle",
+					name = L["Show Battle Pet Icon"],
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
+				},
 				clearSearchOnClose = {
- 					order = 13,
+ 					order = 14,
 					type = "toggle",
 					name = L["Clear Search On Close"],
 					set = function(info, value) E.db.bags[info[#info]] = value end
 				},
 				reverseSlots = {
-					order = 14,
+					order = 15,
 					type = "toggle",
 					name = L["Reverse Bag Slots"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAll() B:UpdateTokens() end
 				},
 				disableBagSort = {
- 					order = 15,
+ 					order = 16,
 					type = "toggle",
 					name = L["Disable Bag Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(false) end
 				},
 				disableBankSort = {
-					order = 16,
+					order = 17,
 					type = "toggle",
 					name = L["Disable Bank Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(true) end
 				},
 				countGroup = {
-					order = 17,
+					order = 18,
 					type = "group",
 					name = L["Item Count Font"],
 					guiInline = true,
@@ -198,7 +204,7 @@ E.Options.args.bags = {
 					}
 				},
 				itemLevelGroup = {
-					order = 18,
+					order = 19,
 					type = "group",
 					name = L["Item Level"],
 					guiInline = true,

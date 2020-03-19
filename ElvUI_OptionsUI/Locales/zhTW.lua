@@ -940,6 +940,7 @@ L["Show an alert frame if you have unspend talent points."] = "顯示未使用�
 L["Show an incoming heal prediction bar on the unitframe. Also display a slightly different colored bar for incoming overheals."] = "在單位框架中顯示即將回复的的預測治療量, 過量治療則以不同顏色顯示. "
 L["Show Aura From Other Players"] = "顯示其他玩家的光環"
 L["Show Auras"] = "顯示光環"
+L["Show Battle Pet Icon"] = true
 L["Show Bind on Equip/Use Text"] = "顯示裝綁文字"
 L["Show Both"] = "全部顯示"
 L["Show Coins"] = "顯示硬幣"

@@ -940,6 +940,7 @@ L["Show an alert frame if you have unspend talent points."] = "미사용 특성 
 L["Show an incoming heal prediction bar on the unitframe. Also display a slightly different colored bar for incoming overheals."] = "생명력바에 예상 치유량을 표시합니다."
 L["Show Aura From Other Players"] = "다른 유저가 건 주문효과도 표시"
 L["Show Auras"] = "오라아이콘 표시"
+L["Show Battle Pet Icon"] = true
 L["Show Bind on Equip/Use Text"] = true
 L["Show Both"] = "둘 다 배경 표시"
 L["Show Coins"] = "동전 이미지로 보기"

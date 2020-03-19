@@ -377,10 +377,11 @@ function B:UpdateSlot(frame, bagID, slotID)
 	local texture, count, locked, _, readable = GetContainerItemInfo(bagID, slotID)
 	local clink = GetContainerItemLink(bagID, slotID)
 
-	slot.name, slot.rarity, slot.locked, slot.readable, slot.isJunk, slot.junkDesaturate = nil, nil, locked, readable, nil, nil
+	slot.name, slot.rarity, slot.locked, slot.readable, slot.isJunk, slot.junkDesaturate, slot.isBattlePet = nil, nil, locked, readable, nil, nil, nil
 
 	slot:Show()
 	slot.questIcon:Hide()
+	slot.BattlePetIcon:Hide()
 	slot.JunkIcon:Hide()
 	slot.itemLevel:SetText("")
 	slot.bindType:SetText("")
@@ -448,6 +449,12 @@ function B:UpdateSlot(frame, bagID, slotID)
 
 		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
 		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
+		slot.isBattlePet = select(2, B:ConvertLinkToID(clink))
+
+		-- Battle Pet Icon
+		if E.db.bags.battlePetIcon and slot.isBattlePet then
+			slot.BattlePetIcon:Show()
+		end
 
 		-- Junk Icon
 		if E.db.bags.junkIcon and slot.isJunk then
@@ -748,6 +755,14 @@ function B:Layout(isBank)
 						f.Bags[bagID][slotID].questIcon:Hide()
 					end
 
+					if not f.Bags[bagID][slotID].BattlePetIcon then
+						local BattlePetIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
+						BattlePetIcon:SetTexture(E.Media.Textures.BagBattlePetIcon)
+						BattlePetIcon:Point("TOPLEFT", 1, 0)
+						BattlePetIcon:Hide()
+						f.Bags[bagID][slotID].BattlePetIcon = BattlePetIcon
+					end
+
 					if not f.Bags[bagID][slotID].JunkIcon then
 						local JunkIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
 						JunkIcon:SetTexture(E.Media.Textures.BagJunkIcon)
@@ -788,6 +803,10 @@ function B:Layout(isBank)
 
 				f.Bags[bagID][slotID]:SetID(slotID)
 				f.Bags[bagID][slotID]:Size(buttonSize)
+
+				if f.Bags[bagID][slotID].BattlePetIcon then
+					f.Bags[bagID][slotID].BattlePetIcon:Size(buttonSize / 2)
+				end
 
 				if f.Bags[bagID][slotID].JunkIcon then
 					f.Bags[bagID][slotID].JunkIcon:Size(buttonSize / 2)

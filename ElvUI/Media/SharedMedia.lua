@@ -88,6 +88,7 @@ E.Media = {
 		Arrow = M..[[Textures\Arrow.tga]],
 		ArrowRight = M..[[Textures\ArrowRight.tga]],
 		ArrowUp = M..[[Textures\ArrowUp.tga]],
+		BagBattlePetIcon = M..[[Textures\BagBattlePetIcon.blp]],
 		BagNewItemGlow = M..[[Textures\BagNewItemGlow.tga]],
 		BagJunkIcon = M..[[Textures\BagJunkIcon.blp]],
 		BagQuestIcon = M..[[Textures\BagQuestIcon.tga]],
