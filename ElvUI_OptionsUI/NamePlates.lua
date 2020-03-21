@@ -3093,29 +3093,42 @@ local function GetUnitSettings(unit, name)
 							["CENTER"] = L["Center"],
 							["BOTTOM"] = L["Bottom"]
 						}
-					},
+					}
 				}
 			}
 		}
 	}
 
 	if unit == "FRIENDLY_PLAYER" or unit == "ENEMY_PLAYER" then
-		if unit == "ENEMY_PLAYER" then
-			group.args.markHealers = {
-				order = 7,
-				type = "group",
-				name = L["Healer Icon"],
-				get = function(info) return E.db.nameplates.units.ENEMY_PLAYER[info[#info]] end,
-				set = function(info, value) E.db.nameplates.units.ENEMY_PLAYER[info[#info]] = value NP:PLAYER_ENTERING_WORLD() NP:ConfigureAll() end,
-				args = {
-					markHealers = {
-						order = 1,
-						type = "toggle",
-						name = L["ENABLE"],
-						desc = L["Display a healer icon over known healers inside battlegrounds or arenas."]
-					}
+		group.args.pvpRole = {
+			order = 7,
+			type = "group",
+			name = L["Role Icon"],
+			get = function(info) return E.db.nameplates.units[unit].pvpRole[info[#info]] end,
+			set = function(info, value) E.db.nameplates.units[unit].pvpRole[info[#info]] = value NP:PLAYER_ENTERING_WORLD() NP:ConfigureAll() end,
+			args = {
+				enable = {
+					order = 1,
+					type = "toggle",
+					name = L["ENABLE"]
+				},
+				markHealers = {
+					order = 2,
+					type = "toggle",
+					name = L["Healer Icon"],
+					desc = L["Display a healer icon over known healers inside battlegrounds or arenas."],
+					disabled = function() return not E.db.nameplates.units[unit].pvpRole.enable end
+				},
+				markTanks = {
+					order = 3,
+					type = "toggle",
+					name = L["Tank Icon"],
+					desc = L["Display a tank icon over known tanks inside battlegrounds or arenas."],
+					disabled = function() return not E.db.nameplates.units[unit].pvpRole.enable end
 				}
 			}
+		}
+		if unit == "ENEMY_PLAYER" then
 			group.args.comboPoints = {
 				order = 8,
 				type = "group",

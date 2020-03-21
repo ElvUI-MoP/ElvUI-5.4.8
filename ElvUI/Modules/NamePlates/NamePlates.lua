@@ -39,8 +39,6 @@ local RaidIconCoordinate = {
 
 NP.CreatedPlates = {}
 NP.VisiblePlates = {}
-NP.Healers = {}
-NP.HealerSpecs = {}
 NP.GUIDByName = {}
 
 NP.ENEMY_PLAYER = {}
@@ -51,13 +49,24 @@ NP.FRIENDLY_NPC = {}
 NP.Totems = {}
 NP.UniqueUnits = {}
 
+NP.Healers, NP.HealerSpecs = {}, {}
+NP.Tanks, NP.TankSpecs = {}, {}
+
 local healerSpecIDs = {
+	65,		-- Paladin Holy
 	105,	-- Druid Restoration
 	270,	-- Monk Mistweaver
-	65,		-- Paladin Holy
 	256,	-- Priest Discipline
 	257,	-- Priest Holy
-	264,	-- Shaman Restoration
+	264		-- Shaman Restoration
+}
+
+local tankSpecIDs = {
+	66,		-- Paladin Protection
+	73,		-- Warrior Protection
+	104,	-- Druid Guardian
+	250,	-- Death Knight Blood
+	268		-- Monk Brewmaster
 }
 
 --Get localized healing spec names
@@ -68,16 +77,33 @@ for _, specID in pairs(healerSpecIDs) do
 	end
 end
 
+--Get localized tank spec names
+for _, specID in pairs(tankSpecIDs) do
+	local _, name = GetSpecializationInfoByID(specID)
+	if name and not NP.TankSpecs[name] then
+		NP.TankSpecs[name] = true
+	end
+end
+
 function NP:CheckBGHealers()
-	local name, _, talentSpec
+	local _, name, talentSpec
+
 	for i = 1, GetNumBattlefieldScores() do
 		name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, talentSpec = GetBattlefieldScore(i)
+
 		if name then
 			name = match(name, "([^%-]+).*")
+
 			if name and self.HealerSpecs[talentSpec] then
 				self.Healers[name] = talentSpec
 			elseif name and self.Healers[name] then
 				self.Healers[name] = nil
+			end
+
+			if name and self.TankSpecs[talentSpec] then
+				self.Tanks[name] = talentSpec
+			elseif name and self.Tanks[name] then
+				self.Tanks[name] = nil
 			end
 		end
 	end
@@ -89,17 +115,26 @@ function NP:CheckArenaHealers()
 
 	for i = 1, 5 do
 		local name, realm = UnitName(format("arena%d", i))
+
 		if name and name ~= UNKNOWN then
 			realm = (realm and realm ~= "") and gsub(realm,"[%s%-]","")
 			if realm then name = name.."-"..realm end
+
 			local s = GetArenaOpponentSpec(i)
 			local _, talentSpec = nil, UNKNOWN
+
 			if s and s > 0 then
 				_, talentSpec = GetSpecializationInfoByID(s)
 			end
 
-			if talentSpec and talentSpec ~= UNKNOWN and self.HealerSpecs[talentSpec] then
-				self.Healers[name] = talentSpec
+			if talentSpec and talentSpec ~= UNKNOWN then
+				if self.HealerSpecs[talentSpec] then
+					self.Healers[name] = talentSpec
+				end
+
+				if self.TankSpecs[talentSpec] then
+					self.Tanks[name] = talentSpec
+				end
 			end
 		end
 	end
@@ -530,7 +565,7 @@ function NP:UpdateElement_All(frame, noTargetFrame, filterIgnore)
 	frame.Level:ClearAllPoints()
 
 	self:Update_RaidIcon(frame)
-	self:Update_HealerIcon(frame)
+	self:Update_PvPRole(frame)
 	self:Update_Level(frame)
 	self:Update_Name(frame)
 
@@ -575,7 +610,7 @@ function NP:OnCreated(frame)
 	unitFrame.Elite = self:Construct_Elite(unitFrame)
 	unitFrame.Buffs = self:Construct_Auras(unitFrame, "Buffs")
 	unitFrame.Debuffs = self:Construct_Auras(unitFrame, "Debuffs")
-	unitFrame.HealerIcon = self:Construct_HealerIcon(unitFrame)
+	unitFrame.PvPRole = self:Construct_PvPRole(unitFrame)
 	unitFrame.CPoints = self:Construct_CPoints(unitFrame)
 	unitFrame.IconFrame = self:Construct_IconFrame(unitFrame)
 	self:Construct_Glow(unitFrame)
@@ -871,6 +906,7 @@ end
 function NP:UpdateCVars()
 	SetCVar("ShowClassColorInNameplate", "1")
 	SetCVar("showVKeyCastbar", "1")
+	SetCVar("showVKeyCastbarSpellName", "1")
 
 	if self.db.motionType == "OVERLAP" then
 		SetCVar("nameplateMotion", "0")
@@ -905,13 +941,17 @@ end
 
 function NP:PLAYER_ENTERING_WORLD()
 	twipe(self.Healers)
+	twipe(self.Tanks)
 
 	hasTarget = UnitExists("target") == 1
 
 	local inInstance, instanceType = IsInInstance()
-	if inInstance and (instanceType == "pvp") and self.db.units.ENEMY_PLAYER.markHealers then
+	local showIcon = self.db.units.ENEMY_PLAYER.pvpRole.enable or self.db.units.FRIENDLY_PLAYER.pvpRole.enable
+
+	if inInstance and (instanceType == "pvp") and showIcon then
 		self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE", "CheckBGHealers")
-	elseif inInstance and (instanceType == "arena") and self.db.units.ENEMY_PLAYER.markHealers then
+		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 3)
+	elseif inInstance and (instanceType == "arena") and showIcon then
 		self:RegisterEvent("UNIT_NAME_UPDATE", "CheckArenaHealers")
 		self:RegisterEvent("ARENA_OPPONENT_UPDATE", "CheckArenaHealers")
 		self:CheckArenaHealers()

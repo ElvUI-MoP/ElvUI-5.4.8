@@ -484,10 +484,14 @@ P.nameplates = {
 				position = "LEFT",
 				xOffset = -4,
 				yOffset = 0
+			},
+			pvpRole = {
+				enable = false,
+				showHealer = false,
+				showTank = false
 			}
 		},
 		ENEMY_PLAYER = {
-			markHealers = true,
 			health = {
 				enable = true,
 				height = 10,
@@ -619,6 +623,11 @@ P.nameplates = {
 				position = "LEFT",
 				xOffset = -4,
 				yOffset = 0
+			},
+			pvpRole = {
+				enable = true,
+				markHealers = true,
+				markTanks = false
 			}
 		},
 		FRIENDLY_NPC = {
