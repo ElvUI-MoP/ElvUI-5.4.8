@@ -440,16 +440,13 @@ local function LoadSkin()
 
 	-- Currency
 	hooksecurefunc("TokenFrame_Update", function()
-		if not TokenFrameContainer.buttons then return end
+		local buttons = TokenFrameContainer.buttons
+		if not buttons then return end
 
-		local scrollFrame = TokenFrameContainer
-		local offset = HybridScrollFrame_GetOffset(scrollFrame)
-		local buttons = scrollFrame.buttons
-		local numButtons = #buttons
-		local name, isHeader, isExpanded
-		local button, index
+		local offset = HybridScrollFrame_GetOffset(TokenFrameContainer)
+		local index, name, button, isHeader, isExpanded
 
-		for i = 1, numButtons do
+		for i = 1, #buttons do
 			index = offset + i
 			name, isHeader, isExpanded = GetCurrencyListInfo(index)
 			button = buttons[i]
@@ -497,6 +494,9 @@ local function LoadSkin()
 
 	-- Pet
 	PetModelFrame:CreateBackdrop("Transparent")
+	PetModelFrame.backdrop:Point("BOTTOMRIGHT", 2, -4)
+
+	PetModelFrameShadowOverlay:SetInside(PetModelFrame.backdrop)
 
 	S:HandleRotateButton(PetModelFrameRotateLeftButton)
 	PetModelFrameRotateLeftButton:Point("TOPLEFT", 2, -2)
@@ -509,10 +509,9 @@ local function LoadSkin()
 	PetPaperDollPetInfo:Point("TOPRIGHT", -3, -3)
 	PetPaperDollPetInfo:Size(30)
 
-	PetPaperDollPetModelBg:SetDesaturated(true)
-
-	PetPaperDollPetInfo:GetRegions():SetTexture("Interface\\Icons\\Ability_Hunter_BeastTraining")
-	PetPaperDollPetInfo:GetRegions():SetTexCoord(unpack(E.TexCoords))
+	local petIcon = PetPaperDollPetInfo:GetRegions()
+	petIcon:SetTexture("Interface\\Icons\\Ability_Hunter_BeastTraining")
+	petIcon:SetTexCoord(unpack(E.TexCoords))
 end
 
 S:AddCallback("Character", LoadSkin)

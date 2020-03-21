@@ -202,7 +202,6 @@ local function LoadSkin()
 		S:HandleCheckBox(button.enableButton)
 
 		button.expandOrCollapseButton:SetNormalTexture(E.Media.Textures.Plus)
-		button.expandOrCollapseButton.SetNormalTexture = E.noop
 
 		button.expandOrCollapseButton:GetNormalTexture():Size(18)
 		button.expandOrCollapseButton:GetNormalTexture():Point("CENTER", 3, 4)
@@ -326,8 +325,7 @@ local function LoadSkin()
 			if button and not button.isSkinned then
 				S:HandleCheckBox(button.enableButton)
 
-				button.expandOrCollapseButton:SetNormalTexture(E.Media.Textures.Plus)
-				button.expandOrCollapseButton.SetNormalTexture = E.noop
+				button.expandOrCollapseButton:SetNormalTexture(E.Media.Textures.Minus)
 
 				button.expandOrCollapseButton:GetNormalTexture():Size(18)
 				button.expandOrCollapseButton:GetNormalTexture():Point("CENTER", 3, 4)
@@ -478,7 +476,6 @@ local function LoadSkin()
 		S:HandleCheckBox(button.enableButton)
 
 		button.expandOrCollapseButton:SetNormalTexture(E.Media.Textures.Plus)
-		button.expandOrCollapseButton.SetNormalTexture = E.noop
 
 		button.expandOrCollapseButton:GetNormalTexture():Size(18)
 		button.expandOrCollapseButton:GetNormalTexture():Point("CENTER", 3, 4)
@@ -792,7 +789,7 @@ local function LoadSecondarySkin()
 
 	for i = 10, 16 do
 		local button = ChallengesFrame["button"..i]
-	
+
 		if button then
 			button:Hide()
 		end

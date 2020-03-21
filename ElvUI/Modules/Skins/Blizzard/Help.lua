@@ -58,6 +58,7 @@ local function LoadSkin()
 
 	for i = 1, 6 do
 		local button = _G["HelpFrameButton"..i]
+
 		S:HandleButton(button, true)
 		button.text:ClearAllPoints()
 		button.text:SetPoint("CENTER")

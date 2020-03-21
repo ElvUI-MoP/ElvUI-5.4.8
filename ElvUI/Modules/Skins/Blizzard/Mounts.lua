@@ -83,14 +83,12 @@ local function LoadSkin()
 	MountJournalListScrollFrameScrollBar:Point("BOTTOMRIGHT", MountJournalListScrollFrame, 0, 14)
 
 	for i = 1, #MountJournal.ListScrollFrame.buttons do
-		local button = _G["MountJournalListScrollFrameButton"..i]
+		local button = MountJournal.ListScrollFrame.buttons[i]
 
 		S:HandleItemButton(button)
 		button.pushed:SetInside(button.backdrop)
-		button.pushed:SetParent(button.backdrop)
 
 		button.icon:Size(40)
-		button.icon:SetTexCoord(unpack(E.TexCoords))
 
 		S:HandleButtonHighlight(button)
 		button.handledHighlight:SetInside()
@@ -127,17 +125,17 @@ local function LoadSkin()
 
 	local function ColorSelectedMount()
 		local offset = HybridScrollFrame_GetOffset(MountJournal.ListScrollFrame)
+		local buttons = MountJournal.ListScrollFrame.buttons
 
-		for i = 1, #MountJournal.ListScrollFrame.buttons do
-			local button = _G["MountJournalListScrollFrameButton"..i]
-			local name = _G["MountJournalListScrollFrameButton"..i.."Name"]
+		for i = 1, #buttons do
+			local button = buttons[i]
 
 			if button.selectedTexture:IsShown() then
-				name:SetTextColor(unpack(E.media.rgbvaluecolor))
 				button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+				button.name:SetTextColor(unpack(E.media.rgbvaluecolor))
 			else
-				name:SetTextColor(1, 1, 1)
 				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				button.name:SetTextColor(1, 1, 1)
 			end
 
 			if (i + offset) % 2 == 1 then
@@ -161,7 +159,9 @@ local function LoadSkin()
 	PetJournal.PetCount:Point("TOPLEFT", 4, -25)
 
 	S:HandleButton(PetJournalSummonButton)
+
 	S:HandleButton(PetJournalFindBattle)
+	PetJournalFindBattle:Point("BOTTOMRIGHT", -9, 4)
 
 	PetJournalTutorialButton:Kill()
 
@@ -194,7 +194,7 @@ local function LoadSkin()
 	PetJournalListScrollFrameScrollBar:Point("BOTTOMRIGHT", PetJournalListScrollFrame, 0, 14)
 
 	for i = 1, #PetJournal.listScroll.buttons do
-		local button = _G["PetJournalListScrollFrameButton"..i]
+		local button = PetJournal.listScroll.buttons[i]
 
 		S:HandleItemButton(button)
 		button.pushed:SetInside(button.backdrop)
@@ -210,7 +210,6 @@ local function LoadSkin()
 		button.dragButton.level:FontTemplate(nil, 12, "OUTLINE")
 
 		button.icon:Size(40)
-		button.icon:SetTexCoord(unpack(E.TexCoords))
 
 		S:HandleButtonHighlight(button)
 		button.handledHighlight:SetInside()
@@ -226,11 +225,11 @@ local function LoadSkin()
 		local isWild = PetJournal.isWild
 
 		for i = 1, #petButtons do
-			local index = petButtons[i].index
+			local button = petButtons[i]
+			local index = button.index
 			if not index then break end
 
-			local button = petButtons[i]
-			local petID = C_PetJournal_GetPetInfoByIndex(index, isWild)
+			local petID, _, _, customName = C_PetJournal_GetPetInfoByIndex(index, isWild)
 
 			if petID ~= nil then
 				local quality = select(5, C_PetJournal_GetPetStats(petID))
@@ -241,18 +240,27 @@ local function LoadSkin()
 					button.selectedTexture:SetVertexColor(color.r, color.g, color.b)
 					button.handledHighlight:SetVertexColor(color.r, color.g, color.b)
 					button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-					button.name:SetTextColor(color.r, color.g, color.b)
+
+					if customName then
+						button.name:SetTextColor(1, 1, 1)
+						button.subName:SetTextColor(color.r, color.g, color.b)
+					else
+						button.name:SetTextColor(color.r, color.g, color.b)
+						button.subName:SetTextColor(1, 1, 1)
+					end
 				else
 					button.selectedTexture:SetVertexColor(1, 1, 1)
 					button.handledHighlight:SetVertexColor(1, 1, 1)
-					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					button.name:SetTextColor(1, 1, 1)
+					button.subName:SetTextColor(1, 1, 1)
+					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			else
 				button.selectedTexture:SetVertexColor(1, 1, 1)
 				button.handledHighlight:SetVertexColor(1, 1, 1)
-				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				button.name:SetTextColor(0.6, 0.6, 0.6)
+				button.subName:SetTextColor(0.6, 0.6, 0.6)
+				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 		end
 	end
@@ -285,12 +293,13 @@ local function LoadSkin()
 			frame:Point("TOP", 1, -219)
 		end
 
-		frame.petTypeIcon:Point("BOTTOMLEFT", 6, 10)
+		frame.petTypeIcon:Point("BOTTOMLEFT", 6, 12)
 		frame.petTypeIcon:SetTexCoord(0, 1, 0, 1)
 		frame.petTypeIcon:Size(36)
 		frame.petTypeIcon:SetAlpha(0.8)
 
 		frame.icon:SetTexCoord(unpack(E.TexCoords))
+		frame.icon:Point("TOPLEFT", 4, -4)
 
 		frame.helpFrame:StripTextures()
 		frame.setButton:StripTextures()
@@ -312,9 +321,12 @@ local function LoadSkin()
 		frame.xpBar:CreateBackdrop()
 		frame.xpBar:SetStatusBarTexture(E.media.normTex)
 		frame.xpBar:SetFrameLevel(frame.xpBar:GetFrameLevel() + 2)
+		frame.xpBar:Width(205)
 		E:RegisterStatusBar(frame.xpBar)
 
-		model:Point("TOPRIGHT", -3, 8)
+		frame.xpBar:Point("TOPLEFT", frame.healthFrame, "BOTTOMLEFT", 0, -8)
+
+		model:Point("TOPRIGHT", -5, -5)
 
 		for j = 1, 3 do
 			local button = frame["spell"..j]
@@ -334,7 +346,7 @@ local function LoadSkin()
 
 			if petID then
 				local frame = PetJournal.Loadout["Pet"..i]
-				local petType = select(10, C_PetJournal_GetPetInfoByPetID(petID))
+				local _, customName, _, _, _, _, _, _, _, petType = C_PetJournal_GetPetInfoByPetID(petID)
 				local quality = select(5, C_PetJournal_GetPetStats(petID))
 
 				frame.petTypeIcon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
@@ -342,13 +354,19 @@ local function LoadSkin()
 				if quality then
 					local color = ITEM_QUALITY_COLORS[quality - 1]
 
+					if customName then
+						frame.name:SetTextColor(1, 1, 1)
+						frame.subName:SetTextColor(color.r, color.g, color.b)
+					else
+						frame.name:SetTextColor(color.r, color.g, color.b)
+						frame.subName:SetTextColor(1, 1, 1)
+					end
+
 					frame.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-					frame.name:SetTextColor(color.r, color.g, color.b)
-					frame.subName:SetTextColor(color.r, color.g, color.b)
 				else
-					frame.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					frame.name:SetTextColor(1, 1, 1)
 					frame.subName:SetTextColor(1, 1, 1)
+					frame.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 		end
@@ -408,27 +426,35 @@ local function LoadSkin()
 	PetJournalPetCardTypeInfoTypeIcon:SetAlpha(0.8)
 
 	hooksecurefunc("PetJournal_UpdatePetCard", function(self)
-		local _, petType, canBattle
+		local _, customName, petType
 
-		if PetJournalPetCard.petID then
-			_, _, _, _, _, _, _, _, _, petType, _, _, _, _, canBattle = C_PetJournal_GetPetInfoByPetID(PetJournalPetCard.petID)
+		if self.petID then
+			_, customName, _, _, _, _, _, _, _, petType = C_PetJournal_GetPetInfoByPetID(self.petID)
+			local quality = select(5, C_PetJournal_GetPetStats(self.petID))
 
-			if canBattle then
-				local quality = select(5, C_PetJournal_GetPetStats(PetJournalPetCard.petID))
+			if quality then
 				local color = ITEM_QUALITY_COLORS[quality - 1]
 
+				if customName then
+					self.PetInfo.name:SetTextColor(1, 1, 1)
+					self.PetInfo.subName:SetTextColor(color.r, color.g, color.b)
+				else
+					self.PetInfo.name:SetTextColor(color.r, color.g, color.b)
+					self.PetInfo.subName:SetTextColor(1, 1, 1)
+				end
+
 				self.PetInfo.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-				self.PetInfo.name:SetTextColor(color.r, color.g, color.b)
 			else
-				self.PetInfo.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				self.PetInfo.name:SetTextColor(1, 1, 1)
+				self.PetInfo.subName:SetTextColor(1, 1, 1)
+				self.PetInfo.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 		else
 			self.PetInfo.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			self.PetInfo.name:SetTextColor(1, 1, 1)
 
-			if PetJournalPetCard.speciesID then
-				petType = select(3, C_PetJournal_GetPetInfoBySpeciesID(PetJournalPetCard.speciesID))
+			if self.speciesID then
+				petType = select(3, C_PetJournal_GetPetInfoBySpeciesID(self.speciesID))
 			else
 				return
 			end

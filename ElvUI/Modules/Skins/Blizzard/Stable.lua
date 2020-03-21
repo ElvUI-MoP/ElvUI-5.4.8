@@ -91,7 +91,7 @@ local function LoadSkin()
 		PetButtons("PetStableActivePet"..i)
 	end
 
-	for i = 11, 50 do 
+	for i = 11, 50 do
 		if not _G["PetStableStabledPet"..i] then
 			CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
 		end
