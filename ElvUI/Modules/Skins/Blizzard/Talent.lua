@@ -46,15 +46,6 @@ local function LoadSkin()
 		button:Point(point, anchor, anchorPoint, x, -28)
 	end
 
-	PlayerTalentFrameTalentsClearInfoFrame:CreateBackdrop()
-	PlayerTalentFrameTalentsClearInfoFrame:StyleButton()
-	PlayerTalentFrameTalentsClearInfoFrame:Size(20)
-	PlayerTalentFrameTalentsClearInfoFrame:Point("TOPLEFT", PlayerTalentFrameTalents, "BOTTOMLEFT", 28, -5)
-
-	PlayerTalentFrameTalentsClearInfoFrame.icon:SetTexCoord(unpack(E.TexCoords))
-	PlayerTalentFrameTalentsClearInfoFrame.count:FontTemplate(nil, 12, "OUTLINE")
-	PlayerTalentFrameTalentsClearInfoFrame.count:Point("BOTTOMRIGHT", -20, 4)
-
 	for i = 1, 4 do
 		local tab = _G["PlayerTalentFrameTab"..i]
 
@@ -77,24 +68,221 @@ local function LoadSkin()
 		end
 	end)
 
+	-- Spec Buttons
+	for _, frame in pairs({"PlayerTalentFrameSpecializationSpecButton", "PlayerTalentFramePetSpecializationSpecButton"}) do
+		for i = 1, 4 do
+			local button = _G[frame..i]
+			local highlight = button:GetHighlightTexture()
+
+			button:SetTemplate("Transparent")
+			button:CreateBackdrop()
+			button.backdrop:SetOutside(button.specIcon)
+			button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
+			button:StyleButton()
+
+			button.roleIcon:SetTexCoord(unpack(E.TexCoords))
+			button.roleName:SetTextColor(0.75, 0.75, 0.75)
+
+			button.specIcon:Size(58)
+			button.specIcon:SetTexCoord(unpack(E.TexCoords))
+			button.specIcon:Point("LEFT", button)
+			button.specIcon:SetParent(button.backdrop)
+
+			button.bg:SetAlpha(0)
+			button.learnedTex:SetAlpha(0)
+			button.selectedTex:SetAlpha(0)
+
+			button.ring:Hide()
+
+			_G[frame..i.."Glow"]:Kill()
+		end
+	end
+
+	-- Player Spec Frame
+	for i = 1, PlayerTalentFrameSpecialization:GetNumChildren() do
+		local child = select(i, PlayerTalentFrameSpecialization:GetChildren())
+
+		if child and not child:GetName() then
+			child:DisableDrawLayer("OVERLAY")
+		end
+	end
+
+	PlayerTalentFrameSpecialization:StripTextures()
+	PlayerTalentFrameSpecialization:CreateBackdrop("Transparent")
+	PlayerTalentFrameSpecialization.backdrop:Point("TOPLEFT", 235, -16)
+	PlayerTalentFrameSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
+
+	for i = 1, 5 do
+		select(i, PlayerTalentFrameSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
+	end
+
+	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild:CreateBackdrop()
+	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.backdrop:SetOutside(PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.specIcon)
+
+	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.specIcon:SetTexCoord(unpack(E.TexCoords))
+	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.specIcon:SetParent(PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.backdrop)
+
 	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.Seperator:SetTexture(1, 1, 1)
 	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.Seperator:SetAlpha(0.2)
 
+	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.ring:Hide()
+
+	for i = 1, GetNumSpecializations(false, nil) do
+		local button = PlayerTalentFrameSpecialization["specButton"..i]
+		local _, _, _, icon = GetSpecializationInfo(i, false, nil)
+		local role = GetSpecializationRole(i, false, nil)
+
+		button.specIcon:SetTexture(icon)
+
+		if role == "DAMAGER" then
+			button.roleIcon:SetTexture(E.Media.Textures.DPS)
+			button.roleIcon:Size(19)
+		elseif role == "TANK" then
+			button.roleIcon:SetTexture(E.Media.Textures.Tank)
+			button.roleIcon:Size(20)
+		elseif role == "HEALER" then
+			button.roleIcon:SetTexture(E.Media.Textures.Healer)
+			button.roleIcon:Size(20)
+		end
+	end
+
+	-- Pet Spec Frame
+	if E.myclass == "HUNTER" then
+		for i = 1, PlayerTalentFramePetSpecialization:GetNumChildren() do
+			local child = select(i, PlayerTalentFramePetSpecialization:GetChildren())
+			if child and not child:GetName() then
+				child:DisableDrawLayer("OVERLAY")
+			end
+		end
+
+		PlayerTalentFramePetSpecialization:StripTextures()
+		PlayerTalentFramePetSpecialization:CreateBackdrop("Transparent")
+		PlayerTalentFramePetSpecialization.backdrop:Point("TOPLEFT", 234, -16)
+		PlayerTalentFramePetSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
+
+		for i = 1, 5 do
+			select(i, PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
+		end
+
+		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild:CreateBackdrop()
+		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.backdrop:SetOutside(PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.specIcon)
+
+		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.specIcon:SetTexCoord(unpack(E.TexCoords))
+		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.specIcon:SetParent(PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.backdrop)
+
+		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.Seperator:SetTexture(1, 1, 1)
+		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.Seperator:SetAlpha(0.2)
+
+		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.ring:Hide()
+
+		for i = 1, GetNumSpecializations(false, true) do
+			local button = PlayerTalentFramePetSpecialization["specButton"..i]
+			local _, _, _, icon = GetSpecializationInfo(i, false, true)
+			local role = GetSpecializationRole(i, false, true)
+
+			button.specIcon:SetTexture(icon)
+
+			if role == "DAMAGER" then
+				button.roleIcon:SetTexture(E.Media.Textures.DPS)
+				button.roleIcon:Size(19)
+			else
+				button.roleIcon:SetTexture(E.Media.Textures.Tank)
+				button.roleIcon:Size(20)
+			end
+		end
+	end
+
+	hooksecurefunc("PlayerTalentFrame_UpdateSpecFrame", function(self, spec)
+		local button = self.spellsScroll.child
+		local playerTalentSpec = GetSpecialization(nil, self.isPet, PlayerSpecTab2:GetChecked() and 2 or 1)
+		local shownSpec = spec or playerTalentSpec or 1
+		local id, _, _, icon = GetSpecializationInfo(shownSpec, nil, self.isPet)
+		local role = GetSpecializationRole(shownSpec, nil, self.isPet)
+		local bonuses = self.isPet and {GetSpecializationSpells(shownSpec, nil, self.isPet)} or SPEC_SPELLS_DISPLAY[id]
+
+		if role == "DAMAGER" then
+			button.roleIcon:SetTexture(E.Media.Textures.DPS)
+			button.roleIcon:Size(20)
+		elseif role == "TANK" then
+			button.roleIcon:SetTexture(E.Media.Textures.Tank)
+			button.roleIcon:Size(23)
+		elseif role == "HEALER" then
+			button.roleIcon:SetTexture(E.Media.Textures.Healer)
+			button.roleIcon:Size(21)
+		end
+
+		button.roleIcon:SetTexCoord(unpack(E.TexCoords))
+		button.specIcon:SetTexture(icon)
+
+		if bonuses then
+			local index = 1
+
+			for i = 1, #bonuses, 2 do
+				local frame = button["abilityButton"..index]
+
+				if frame then
+					local _, spellTex = GetSpellTexture(bonuses[i])
+
+					if spellTex then
+						frame.icon:SetTexture(spellTex)
+					end
+
+					if mod(index, 2) == 0 then
+						frame:Point("LEFT", button["abilityButton"..(index - 1)], "RIGHT", 141, 0)
+					else
+						if (#bonuses / 2) > 4 then
+							frame:Point("TOP", button["abilityButton"..(index - 2)], "BOTTOM", 0, -5)
+						else
+							frame:Point("TOP", button["abilityButton"..(index - 2)], "BOTTOM", 0, -5)
+						end
+					end
+
+					if not frame.isSkinned then
+						frame:SetTemplate()
+						frame:StyleButton(nil, true)
+						frame:Size(45)
+
+						frame.bg = CreateFrame("Frame", nil, frame)
+						frame.bg:SetTemplate("Transparent")
+						frame.bg:Point("TOPLEFT", 44, 0)
+						frame.bg:Point("BOTTOMRIGHT", 137, 0)
+
+						frame.icon:SetTexCoord(unpack(E.TexCoords))
+						frame.icon:SetInside()
+
+						frame.name:SetTextColor(1, 0.80, 0.10)
+						frame.name:Point("LEFT", frame.icon, "RIGHT", 7, 2)
+						frame.name:SetParent(frame.bg)
+
+						frame.subText:SetTextColor(1, 1, 1)
+						frame.subText:SetParent(frame.bg)
+
+						frame.ring:Hide()
+
+						frame.isSkinned = true
+					end
+				end
+
+				index = index + 1
+			end
+		end
+	end)
+
+	-- Side Tabs
 	for i = 1, 2 do
 		local tab = _G["PlayerSpecTab"..i]
+		local icon = tab:GetNormalTexture()
 
-		_G["PlayerSpecTab"..i.."Background"]:Kill()
-
-		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		tab:GetNormalTexture():SetInside()
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside()
 
 		tab:CreateBackdrop()
 		tab.backdrop:SetAllPoints()
-		tab:StyleButton()
-		tab.pushed = true
+		tab:StyleButton(nil, true)
 
-		tab:SetHighlightTexture("")
-		tab.SetHighlightTexture = E.noop
+		tab:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
+
+		_G["PlayerSpecTab"..i.."Background"]:Kill()
 	end
 
 	hooksecurefunc("PlayerTalentFrame_UpdateSpecs", function()
@@ -102,6 +290,7 @@ local function LoadSkin()
 		PlayerSpecTab1:Point(point, relatedTo, point2, E.PixelMode and -1 or 1, y)
 	end)
 
+	-- Talents
 	for i = 1, MAX_NUM_TALENT_TIERS do
 		local row = _G["PlayerTalentFrameTalentsTalentRow"..i]
 
@@ -114,19 +303,18 @@ local function LoadSkin()
 
 		for j = 1, NUM_TALENT_COLUMNS do
 			local button = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j]
-			local icon = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j.."IconTexture"]
 			local level = _G["PlayerTalentFrameTalentsTalentRow"..i.."Level"]
 			local leftCap = _G["PlayerTalentFrameTalentsTalentRow"..i.."LeftCap"]
 
 			button:StripTextures()
 			button:SetFrameLevel(button:GetFrameLevel() + 5)
 			button:CreateBackdrop()
-			button.backdrop:SetOutside(icon)
+			button.backdrop:SetOutside(button.icon)
 
-			icon:SetDrawLayer("OVERLAY", 1)
-			icon:SetTexCoord(unpack(E.TexCoords))
-			icon:Size(48)
-			icon:Point("TOPLEFT", 15, -1)
+			button.icon:SetDrawLayer("OVERLAY", 1)
+			button.icon:SetTexCoord(unpack(E.TexCoords))
+			button.icon:Size(48)
+			button.icon:Point("TOPLEFT", 15, -1)
 
 			button.bg = CreateFrame("Frame", nil, button)
 			button.bg:CreateBackdrop("Default", true)
@@ -180,248 +368,16 @@ local function LoadSkin()
 		end
 	end)
 
-	for i = 1, 5 do
-		select(i, PlayerTalentFrameSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
-	end
+	-- Clear Info
+	PlayerTalentFrameTalentsClearInfoFrame:CreateBackdrop()
+	PlayerTalentFrameTalentsClearInfoFrame.backdrop:SetAllPoints()
+	PlayerTalentFrameTalentsClearInfoFrame:StyleButton()
+	PlayerTalentFrameTalentsClearInfoFrame:Size(26)
+	PlayerTalentFrameTalentsClearInfoFrame:Point("TOPLEFT", PlayerTalentFrameTalents, "BOTTOMLEFT", 2, -3)
 
-	local pspecspell = _G["PlayerTalentFrameSpecializationSpellScrollFrameScrollChild"]
-	local specspell2 = _G["PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild"]
-
-	pspecspell.ring:Hide()
-	pspecspell:CreateBackdrop()
-	pspecspell.backdrop:SetOutside(pspecspell.specIcon)
-	pspecspell.specIcon:SetTexCoord(unpack(E.TexCoords))
-	pspecspell.specIcon:SetParent(pspecspell.backdrop)
-
-	specspell2.ring:Hide()
-	specspell2:CreateBackdrop()
-	specspell2.backdrop:SetOutside(specspell2.specIcon)
-	specspell2.specIcon:SetTexCoord(unpack(E.TexCoords))
-	specspell2.specIcon:SetParent(specspell2.backdrop)
-
-	PlayerTalentFrameSpecialization:CreateBackdrop("Transparent")
-	PlayerTalentFrameSpecialization.backdrop:Point("TOPLEFT", 235, -16)
-	PlayerTalentFrameSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
-
-	PlayerTalentFrameSpecialization:DisableDrawLayer("ARTWORK")
-	PlayerTalentFrameSpecialization:DisableDrawLayer("BORDER")
-
-	for i = 1, PlayerTalentFrameSpecialization:GetNumChildren() do
-		local child = select(i, PlayerTalentFrameSpecialization:GetChildren())
-
-		if child and not child:GetName() then
-			child:DisableDrawLayer("OVERLAY")
-		end
-	end
-
-	hooksecurefunc("PlayerTalentFrame_UpdateSpecFrame", function(self, spec)
-		local playerTalentSpec = GetSpecialization(nil, self.isPet, PlayerSpecTab2:GetChecked() and 2 or 1)
-		local shownSpec = spec or playerTalentSpec or 1
-
-		local id, _, _, icon = GetSpecializationInfo(shownSpec, nil, self.isPet)
-		local scrollChild = self.spellsScroll.child
-
-		scrollChild.specIcon:SetTexture(icon)
-
-		local role1 = GetSpecializationRole(shownSpec, nil, self.isPet)
-
-		if role1 == "DAMAGER" then
-			scrollChild.roleIcon:SetTexture(E.Media.Textures.DPS)
-			scrollChild.roleIcon:Size(20)
-		elseif role1 == "TANK" then
-			scrollChild.roleIcon:SetTexture(E.Media.Textures.Tank)
-			scrollChild.roleIcon:Size(23)
-		elseif role1 == "HEALER" then
-			scrollChild.roleIcon:SetTexture(E.Media.Textures.Healer)
-			scrollChild.roleIcon:Size(21)
-		end
-
-		scrollChild.roleIcon:SetTexCoord(unpack(E.TexCoords))
-
-		local bonuses
-		if self.isPet then
-			bonuses = {GetSpecializationSpells(shownSpec, nil, self.isPet)}
-		else
-			bonuses = SPEC_SPELLS_DISPLAY[id]
-		end
-
-		if bonuses then
-			local index = 1
-
-			for i = 1, #bonuses, 2 do
-				local frame = scrollChild["abilityButton"..index]
-
-				if frame then
-					local _, spellTex = GetSpellTexture(bonuses[i])
-
-					if spellTex then
-						frame.icon:SetTexture(spellTex)
-					end
-
-					if mod(index, 2) == 0 then
-						frame:Point("LEFT", scrollChild["abilityButton"..(index - 1)], "RIGHT", 141, 0)
-					else
-						if (#bonuses / 2) > 4 then
-							frame:Point("TOP", scrollChild["abilityButton"..(index - 2)], "BOTTOM", 0, -5)
-						else
-							frame:Point("TOP", scrollChild["abilityButton"..(index - 2)], "BOTTOM", 0, -5)
-						end
-					end
-
-					if not frame.isSkinned then
-						frame:SetTemplate()
-						frame:StyleButton(nil, true)
-						frame:Size(45)
-
-						frame.bg = CreateFrame("Frame", nil, frame)
-						frame.bg:SetTemplate("Transparent")
-						frame.bg:Point("TOPLEFT", 44, 0)
-						frame.bg:Point("BOTTOMRIGHT", 137, 0)
-
-						frame.icon:SetTexCoord(unpack(E.TexCoords))
-						frame.icon:SetInside()
-
-						frame.name:SetTextColor(1, 0.80, 0.10)
-						frame.name:Point("LEFT", frame.icon, "RIGHT", 7, 2)
-						frame.name:SetParent(frame.bg)
-
-						frame.subText:SetTextColor(1, 1, 1)
-						frame.subText:SetParent(frame.bg)
-
-						frame.ring:Hide()
-
-						frame.isSkinned = true
-					end
-				end
-
-				index = index + 1
-			end
-		end
-
-		for i = 1, GetNumSpecializations(nil, self.isPet) do
-			local button = self["specButton"..i]
-
-			button.SelectedTexture:SetInside(button.backdrop)
-
-			if button.selected then
-				button.SelectedTexture:Show()
-			else
-				button.SelectedTexture:Hide()
-			end
-		end
-	end)
-
-	for i = 1, GetNumSpecializations(false, nil) do
-		local button = PlayerTalentFrameSpecialization["specButton"..i]
-		local _, _, _, icon = GetSpecializationInfo(i, false, nil)
-		local role = GetSpecializationRole(i, false, nil)
-
-		if role == "DAMAGER" then
-			button.roleIcon:SetTexture(E.Media.Textures.DPS)
-			button.roleIcon:Size(19)
-		elseif role == "TANK" then
-			button.roleIcon:SetTexture(E.Media.Textures.Tank)
-			button.roleIcon:Size(20)
-		elseif role == "HEALER" then
-			button.roleIcon:SetTexture(E.Media.Textures.Healer)
-			button.roleIcon:Size(20)
-		end
-
-		button.roleIcon:SetTexCoord(unpack(E.TexCoords))
-		button.roleName:SetTextColor(0.75, 0.75, 0.75)
-		button.ring:Hide()
-
-		button:CreateBackdrop()
-		button.backdrop:SetOutside(button.specIcon)
-		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
-
-		button.specIcon:SetTexture(icon)
-		button.specIcon:Size(60)
-		button.specIcon:SetTexCoord(unpack(E.TexCoords))
-		button.specIcon:Point("LEFT", button, 0, 0)
-		button.specIcon:SetParent(button.backdrop)
-
-		button.SelectedTexture = button:CreateTexture(nil, "ARTWORK")
-		button.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
-	end
-
-	for _, name in pairs({"PlayerTalentFrameSpecializationSpecButton", "PlayerTalentFramePetSpecializationSpecButton"}) do
-		for i = 1, 4 do
-			local button = _G[name..i]
-			_G["PlayerTalentFrameSpecializationSpecButton"..i.."Glow"]:Kill()
-
-			local texture = button:CreateTexture(nil, "ARTWORK")
-			texture:SetTexture(1, 1, 1, 0.1)
-			button:SetHighlightTexture(texture)
-
-			button.bg:SetAlpha(0)
-			button.learnedTex:SetAlpha(0)
-			button.selectedTex:SetAlpha(0)
-
-			button:CreateBackdrop()
-
-			button:GetHighlightTexture():SetInside(button.backdrop)
-		end
-	end
-
-	-- Hunter Pet Talents
-	if E.myclass == "HUNTER" then
-		for i = 1, 6 do
-			select(i, PlayerTalentFramePetSpecialization:GetRegions()):Hide()
-		end
-
-		for i = 1, PlayerTalentFramePetSpecialization:GetNumChildren() do
-			local child = select(i, PlayerTalentFramePetSpecialization:GetChildren())
-			if child and not child:GetName() then
-				child:DisableDrawLayer("OVERLAY")
-			end
-		end
-
-		for i = 1, 5 do
-			select(i, PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
-		end
-
-		PlayerTalentFramePetSpecialization:CreateBackdrop("Transparent")
-		PlayerTalentFramePetSpecialization.backdrop:Point("TOPLEFT", 234, -16)
-		PlayerTalentFramePetSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
-
-		for i = 1, GetNumSpecializations(false, true) do
-			local button = PlayerTalentFramePetSpecialization["specButton"..i]
-			local glow = _G["PlayerTalentFramePetSpecializationSpecButton"..i.."Glow"]
-			local _, _, _, icon = GetSpecializationInfo(i, false, true)
-			local role = GetSpecializationRole(i, false, true)
-
-			if role == "DAMAGER" then
-				button.roleIcon:SetTexture(E.Media.Textures.DPS)
-				button.roleIcon:Size(19)
-			else
-				button.roleIcon:SetTexture(E.Media.Textures.Tank)
-				button.roleIcon:Size(20)
-			end
-
-			button.roleIcon:SetTexCoord(unpack(E.TexCoords))
-			button.roleName:SetTextColor(0.75, 0.75, 0.75)
-			button.ring:Hide()
-
-			glow:Kill()
-
-			button:CreateBackdrop()
-			button.backdrop:SetOutside(button.specIcon)
-			button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
-
-			button.specIcon:SetTexture(icon)
-			button.specIcon:Size(58)
-			button.specIcon:SetTexCoord(unpack(E.TexCoords))
-			button.specIcon:Point("LEFT", button, 0, 0)
-			button.specIcon:SetParent(button.backdrop)
-
-			button.SelectedTexture = button:CreateTexture(nil, "ARTWORK")
-			button.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
-		end
-
-		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.Seperator:SetTexture(1, 1, 1)
-		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.Seperator:SetAlpha(0.2)
-	end
+	PlayerTalentFrameTalentsClearInfoFrame.icon:SetTexCoord(unpack(E.TexCoords))
+	PlayerTalentFrameTalentsClearInfoFrame.icon:ClearAllPoints()
+	PlayerTalentFrameTalentsClearInfoFrame.icon:SetInside()
 end
 
 S:AddCallbackForAddon("Blizzard_TalentUI", "Talent", LoadSkin)

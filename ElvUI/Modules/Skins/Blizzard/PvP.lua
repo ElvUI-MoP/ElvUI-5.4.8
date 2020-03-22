@@ -16,20 +16,19 @@ local function LoadSkin()
 	for i = 1, 3 do
 		local button = _G["PVPQueueFrameCategoryButton"..i]
 
-		button:SetTemplate()
-		button.Background:Kill()
-		button.Ring:Kill()
-
+		button:SetTemplate("Transparent")
 		button:CreateBackdrop()
 		button.backdrop:SetOutside(button.Icon)
 		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
-
-		button:StyleButton(nil, true)
+		button:StyleButton()
 
 		button.Icon:Size(58)
 		button.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 		button.Icon:Point("LEFT", button, 1, 0)
 		button.Icon:SetParent(button.backdrop)
+
+		button.Ring:Kill()
+		button.Background:Kill()
 	end
 
 	PVPQueueFrame.CategoryButton1.CurrencyIcon:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..E.myfaction)

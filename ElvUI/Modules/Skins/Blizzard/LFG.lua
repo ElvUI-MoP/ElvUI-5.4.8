@@ -9,19 +9,13 @@ local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfg then return end
 
 	-- PVE Frame
-	PVEFrame:StripTextures()
+	PVEFrame:StripTextures(true)
 	PVEFrame:SetTemplate("Transparent")
 
 	PVEFrame.shadows:Hide()
 
-	PVEFramePortrait:Hide()
-	PVEFramePortraitFrame:Hide()
-
+	-- Side Buttons
 	PVEFrameLeftInset:StripTextures()
-
-	GroupFinderFrameGroupButton1.icon:SetTexture("Interface\\Icons\\INV_Helmet_08")
-	GroupFinderFrameGroupButton2.icon:SetTexture("Interface\\Icons\\inv_helmet_06")
-	GroupFinderFrameGroupButton3.icon:SetTexture("Interface\\Icons\\Icon_Scenarios")
 
 	for i = 1, 4 do
 		local button = GroupFinderFrame["groupButton"..i]
@@ -29,7 +23,7 @@ local function LoadSkin()
 		button.ring:Hide()
 		button.bg:SetTexture("")
 
-		button:SetTemplate()
+		button:SetTemplate("Transparent")
 		button:StyleButton()
 
 		button:CreateBackdrop()
@@ -42,11 +36,20 @@ local function LoadSkin()
 		button.icon:SetParent(button.backdrop)
 	end
 
-	for i = 1, 2 do
-		S:HandleTab(_G["PVEFrameTab"..i])
-	end
+	GroupFinderFrameGroupButton1.icon:SetTexture("Interface\\Icons\\INV_Helmet_08")
+	GroupFinderFrameGroupButton2.icon:SetTexture("Interface\\Icons\\inv_helmet_06")
+	GroupFinderFrameGroupButton3.icon:SetTexture("Interface\\Icons\\Icon_Scenarios")
 
-	PVEFrameTab1:SetPoint("BOTTOMLEFT", PVEFrame, 19, -30)
+	-- Bottom Tabs
+	for i = 1, 2 do
+		local tab = _G["PVEFrameTab"..i]
+
+		S:HandleTab(tab)
+
+		if i == 1 then
+			tab:Point("BOTTOMLEFT", PVEFrame, 19, -30)
+		end
+	end
 
 	S:HandleCloseButton(PVEFrameCloseButton)
 
@@ -54,68 +57,30 @@ local function LoadSkin()
 	LFDParentFrame:StripTextures()
 	LFDParentFrameInset:StripTextures()
 
-	LFDQueueFrame:StripTextures()
-
 	LFDQueueFrameBackground:Kill()
-
-	LFDQueueFrameSpecificListScrollFrame:StripTextures()
-
-	-- LFD Role Icons
-	local lfdQueueRoleIcons = {
-		"LFDQueueFrameRoleButtonTank",
-		"LFDQueueFrameRoleButtonHealer",
-		"LFDQueueFrameRoleButtonDPS",
-		"LFDQueueFrameRoleButtonLeader"
-	}
-
-	for i = 1, #lfdQueueRoleIcons do
-		_G[lfdQueueRoleIcons[i]]:StripTextures()
-		_G[lfdQueueRoleIcons[i]]:CreateBackdrop()
-		_G[lfdQueueRoleIcons[i]].backdrop:Point("TOPLEFT", 5, -5)
-		_G[lfdQueueRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -5, 5)
-		_G[lfdQueueRoleIcons[i]]:Size(56)
-
-		_G[lfdQueueRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		_G[lfdQueueRoleIcons[i]]:GetNormalTexture():SetInside(_G[lfdQueueRoleIcons[i]].backdrop)
-
-		S:HandleCheckBox(_G[lfdQueueRoleIcons[i]].checkButton, true)
-	end
 
 	LFDQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 334)
 	LFDQueueFrameRoleButtonLeader:Point("LEFT", LFDQueueFrameRoleButtonDPS, "RIGHT", 34, 0)
 
-	LFDQueueFrameRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	LFDQueueFrameRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LFDQueueFrameRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-	LFDQueueFrameRoleButtonLeader:SetNormalTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer")
-
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:StripTextures()
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture = LFDQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY")
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexCoord(unpack(E.TexCoords))
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetInside(LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop)
-	LFDQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetParent(LFDQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop)
-
-	S:HandleButton(_G[LFDQueueFrame.PartyBackfill:GetName().."BackfillButton"])
-	S:HandleButton(_G[LFDQueueFrame.PartyBackfill:GetName().."NoBackfillButton"])
-
 	S:HandleButton(LFDQueueFramePartyBackfillBackfillButton)
 	S:HandleButton(LFDQueueFramePartyBackfillNoBackfillButton)
 	S:HandleButton(LFDQueueFrameRandomScrollFrameChildFrameBonusRepFrame.ChooseButton)
-
 	S:HandleButton(LFDQueueFrameFindGroupButton)
 
 	S:HandleDropDownBox(LFDQueueFrameTypeDropDown)
-	LFDQueueFrameTypeDropDown:Point("BOTTOMLEFT", 107, 285)
+	LFDQueueFrameTypeDropDown:Point("BOTTOMLEFT", 90, 283)
 
-	LFDQueueFrameRandomScrollFrameScrollBar:StripTextures()
 	S:HandleScrollBar(LFDQueueFrameRandomScrollFrameScrollBar)
+	LFDQueueFrameRandomScrollFrameScrollBar:ClearAllPoints()
+	LFDQueueFrameRandomScrollFrameScrollBar:Point("TOPRIGHT", LFDQueueFrameRandomScrollFrame, 20, -17)
+	LFDQueueFrameRandomScrollFrameScrollBar:Point("BOTTOMRIGHT", LFDQueueFrameRandomScrollFrame, 0, 12)
+
+	LFDQueueFrameSpecificListScrollFrame:StripTextures()
 
 	S:HandleScrollBar(LFDQueueFrameSpecificListScrollFrameScrollBar)
+	LFDQueueFrameSpecificListScrollFrameScrollBar:ClearAllPoints()
+	LFDQueueFrameSpecificListScrollFrameScrollBar:Point("TOPRIGHT", LFDQueueFrameSpecificListScrollFrame, 23, -22)
+	LFDQueueFrameSpecificListScrollFrameScrollBar:Point("BOTTOMRIGHT", LFDQueueFrameSpecificListScrollFrame, 0, 22)
 
 	local function getLFGDungeonRewardLinkFix(dungeonID, rewardIndex)
 		local _, link = GetLFGDungeonRewardLink(dungeonID, rewardIndex)
@@ -128,6 +93,50 @@ local function LoadSkin()
 		end
 
 		return link
+	end
+
+	local function LFGQualityColors(button, name, link)
+		if link then
+			local quality = select(3, GetItemInfo(link))
+
+			if quality then
+				local r, g, b = GetItemQualityColor(quality)
+				button:SetBackdropBorderColor(r, g, b)
+				button.backdrop:SetBackdropBorderColor(r, g, b)
+				name:SetTextColor(r, g, b)
+			else
+				button:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				name:SetTextColor(1, 1, 1)
+			end
+		else
+			button:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			name:SetTextColor(1, 1, 1)
+		end
+	end
+
+	local function SkinLFGRewards(button, dungeonID, index)
+		local buttonName = button:GetName()
+		local count = _G[buttonName.."Count"]
+		local icon = _G[buttonName.."IconTexture"]
+
+		button:StripTextures()
+		button:SetTemplate("Transparent")
+		button:StyleButton(nil, true)
+		button:CreateBackdrop()
+		button.backdrop:SetOutside(icon)
+
+		icon:Point("TOPLEFT", 1, -1)
+		icon:SetTexture(icon:GetTexture())
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetParent(button.backdrop)
+		icon:SetDrawLayer("OVERLAY")
+
+		count:SetParent(button.backdrop)
+		count:SetDrawLayer("OVERLAY")
+
+		button.isSkinned = true
 	end
 
 	hooksecurefunc("LFDQueueFrameRandom_UpdateFrame", function()
@@ -143,29 +152,13 @@ local function LoadSkin()
 				local link = getLFGDungeonRewardLinkFix(dungeonID, i)
 
 				if not button.isSkinned then
-					local count = _G[buttonName.."Count"]
-					local icon = _G[buttonName.."IconTexture"]
-
-					button:StripTextures()
-					button:SetTemplate("Transparent")
-					button:StyleButton(nil, true)
-					button:CreateBackdrop()
-					button.backdrop:SetOutside(icon)
+					SkinLFGRewards(button, dungeonID, i)
 
 					if i == 1 then
 						button:Point("TOPLEFT", LFDQueueFrameRandomScrollFrameChildFrameRewardsDescription, "BOTTOMLEFT", -5, -10)
 					else
 						button:Point("LEFT", LFDQueueFrameRandomScrollFrameChildFrameItem1, "RIGHT", 4, 0) 
 					end
-
-					icon:Point("TOPLEFT", 1, -1)
-					icon:SetTexture(icon:GetTexture())
-					icon:SetTexCoord(unpack(E.TexCoords))
-					icon:SetParent(button.backdrop)
-					icon:SetDrawLayer("OVERLAY")
-
-					count:SetParent(button.backdrop)
-					count:SetDrawLayer("OVERLAY")
 
 					for j = 1, 2 do
 						_G[button:GetName().."RoleIcon"..j]:SetParent(button.backdrop)
@@ -174,24 +167,7 @@ local function LoadSkin()
 					button.isSkinned = true
 				end
 
-				if link then
-					local quality = select(3, GetItemInfo(link))
-
-					if quality then
-						local r, g, b = GetItemQualityColor(quality)
-						button:SetBackdropBorderColor(r, g, b)
-						button.backdrop:SetBackdropBorderColor(r, g, b)
-						name:SetTextColor(r, g, b)
-					else
-						button:SetBackdropBorderColor(unpack(E.media.bordercolor))
-						button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-						name:SetTextColor(1, 1, 1)
-					end
-				else
-					button:SetBackdropBorderColor(unpack(E.media.bordercolor))
-					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-					name:SetTextColor(1, 1, 1)
-				end
+				LFGQualityColors(button, name, link)
 			end
 		end
 	end)
@@ -221,40 +197,30 @@ local function LoadSkin()
  	end
 
 	-- Scenarios
-	ScenarioFinderFrameInset:DisableDrawLayer("BORDER")
-	ScenarioFinderFrame.TopTileStreaks:Hide()
-	ScenarioFinderFrameBtnCornerRight:Hide()
-	ScenarioFinderFrameButtonBottomBorder:Hide()
+	ScenarioFinderFrame:StripTextures()
+	ScenarioFinderFrameInset:StripTextures()
+
 	ScenarioQueueFrame.Bg:Hide()
-	ScenarioFinderFrameInset:GetRegions():Hide()
+
+	S:HandleButton(ScenarioQueueFramePartyBackfillBackfillButton)
+	S:HandleButton(ScenarioQueueFramePartyBackfillNoBackfillButton)
+	S:HandleButton(ScenarioQueueFrameRandomScrollFrameChildFrameBonusRepFrame.ChooseButton)
+	S:HandleButton(ScenarioQueueFrameFindGroupButton)
+
+	S:HandleDropDownBox(ScenarioQueueFrameTypeDropDown)
+	ScenarioQueueFrameTypeDropDown:Point("TOPLEFT", 90, -42)
+
+	S:HandleScrollBar(ScenarioQueueFrameRandomScrollFrameScrollBar)
+	ScenarioQueueFrameRandomScrollFrameScrollBar:ClearAllPoints()
+	ScenarioQueueFrameRandomScrollFrameScrollBar:Point("TOPRIGHT", ScenarioQueueFrameRandomScrollFrame, 20, -11)
+	ScenarioQueueFrameRandomScrollFrameScrollBar:Point("BOTTOMRIGHT", ScenarioQueueFrameRandomScrollFrame, 0, 11)
 
 	ScenarioQueueFrameSpecificScrollFrame:StripTextures()
 
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:StripTextures()
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateBackdrop("Default", nil, true)
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("TOPLEFT", 0, -7)
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:Point("BOTTOMRIGHT", -258, 7)
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture = ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor:CreateTexture(nil, "OVERLAY")
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexture("Interface\\Icons\\pvecurrency-valor")
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetTexCoord(unpack(E.TexCoords))
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetInside(ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop)
-	ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.texture:SetParent(ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor.backdrop)
-
-	ScenarioQueueFrameFindGroupButton:StripTextures()
-	S:HandleButton(ScenarioQueueFrameFindGroupButton)
-
-	S:HandleButton(_G[ScenarioQueueFrame.PartyBackfill:GetName().."BackfillButton"])
-	S:HandleButton(_G[ScenarioQueueFrame.PartyBackfill:GetName().."NoBackfillButton"])
-
-	S:HandleButton(ScenarioQueueFrameRandomScrollFrameChildFrameBonusRepFrame.ChooseButton)
-
-	S:HandleDropDownBox(ScenarioQueueFrameTypeDropDown)
-	ScenarioQueueFrameTypeDropDown:Point("TOPLEFT", 107, -40)
-
-	S:HandleScrollBar(ScenarioQueueFrameRandomScrollFrameScrollBar)
 	S:HandleScrollBar(ScenarioQueueFrameSpecificScrollFrameScrollBar)
+	ScenarioQueueFrameSpecificScrollFrameScrollBar:ClearAllPoints()
+	ScenarioQueueFrameSpecificScrollFrameScrollBar:Point("TOPRIGHT", ScenarioQueueFrameSpecificScrollFrame, 23, -20)
+	ScenarioQueueFrameSpecificScrollFrameScrollBar:Point("BOTTOMRIGHT", ScenarioQueueFrameSpecificScrollFrame, 0, 20)
 
 	hooksecurefunc("ScenarioQueueFrameRandom_UpdateFrame", function()
 		local dungeonID = ScenarioQueueFrame.type
@@ -269,14 +235,7 @@ local function LoadSkin()
 				local link = getLFGDungeonRewardLinkFix(dungeonID, i)
 
 				if not button.isSkinned then
-					local count = _G[buttonName.."Count"]
-					local icon = _G[buttonName.."IconTexture"]
-
-					button:StripTextures()
-					button:SetTemplate("Transparent")
-					button:StyleButton(nil, true)
-					button:CreateBackdrop()
-					button.backdrop:SetOutside(icon)
+					SkinLFGRewards(button, dungeonID, i)
 
 					if i == 1 then
 						button:Point("TOPLEFT", ScenarioQueueFrameRandomScrollFrameChildFrameRewardsDescription, "BOTTOMLEFT", -5, -10)
@@ -284,36 +243,10 @@ local function LoadSkin()
 						button:Point("LEFT", ScenarioQueueFrameRandomScrollFrameChildFrameItem1, "RIGHT", 4, 0) 
 					end
 
-					icon:Point("TOPLEFT", 1, -1)
-					icon:SetTexture(icon:GetTexture())
-					icon:SetTexCoord(unpack(E.TexCoords))
-					icon:SetParent(button.backdrop)
-					icon:SetDrawLayer("OVERLAY")
-
-					count:SetParent(button.backdrop)
-					count:SetDrawLayer("OVERLAY")
-
 					button.isSkinned = true
 				end
 
-				if link then
-					local quality = select(3, GetItemInfo(link))
-
-					if quality then
-						local r, g, b = GetItemQualityColor(quality)
-						button:SetBackdropBorderColor(r, g, b)
-						button.backdrop:SetBackdropBorderColor(r, g, b)
-						name:SetTextColor(r, g, b)
-					else
-						button:SetBackdropBorderColor(unpack(E.media.bordercolor))
-						button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-						name:SetTextColor(1, 1, 1)
-					end
-				else
-					button:SetBackdropBorderColor(unpack(E.media.bordercolor))
-					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-					name:SetTextColor(1, 1, 1)
-				end
+				LFGQualityColors(button, name, link)
 			end
 		end
 	end)
@@ -348,55 +281,36 @@ local function LoadSkin()
 		end
 	end)
 
+	-- Bonus Valor Info
+	for _, frame in pairs({"LFDQueueFrame", "ScenarioQueueFrame"}) do
+		local item = _G[frame.."RandomScrollFrameChildFrameBonusValor"]
+
+		item:CreateBackdrop()
+		item.backdrop:SetOutside(item.Icon)
+
+		item.Icon:SetTexture("Interface\\Icons\\pvecurrency-valor")
+		item.Icon:SetTexCoord(unpack(E.TexCoords))
+		item.Icon:SetParent(item.backdrop)
+
+		item.Border:Hide()
+	end
+
 	-- Raid Finder
 	RaidFinderFrame:StripTextures()
 	RaidFinderFrameBottomInset:StripTextures()
 	RaidFinderFrameRoleInset:StripTextures()
 
-	RaidFinderQueueFrame:StripTextures(true)
-	RaidFinderQueueFrame:StripTextures()
-
-	RaidFinderFrameBottomInsetBg:Hide()
-	RaidFinderFrameBtnCornerRight:Hide()
-	RaidFinderFrameButtonBottomBorder:Hide()
-
-	-- Raid Finder Role Icons
-	local raidFinderQueueRoleIcons = {
-		"RaidFinderQueueFrameRoleButtonTank",
-		"RaidFinderQueueFrameRoleButtonHealer",
-		"RaidFinderQueueFrameRoleButtonDPS",
-		"RaidFinderQueueFrameRoleButtonLeader"
-	}
-
-	for i = 1, #raidFinderQueueRoleIcons do
-		S:HandleCheckBox(_G[raidFinderQueueRoleIcons[i]].checkButton, true)
-
-		_G[raidFinderQueueRoleIcons[i]]:StripTextures()
-		_G[raidFinderQueueRoleIcons[i]]:CreateBackdrop()
-		_G[raidFinderQueueRoleIcons[i]].backdrop:Point("TOPLEFT", 5, -5)
-		_G[raidFinderQueueRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -5, 5)
-		_G[raidFinderQueueRoleIcons[i]]:Size(56)
-
-		_G[raidFinderQueueRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		_G[raidFinderQueueRoleIcons[i]]:GetNormalTexture():SetInside(_G[raidFinderQueueRoleIcons[i]].backdrop)
-	end
-
-	RaidFinderQueueFrameRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	RaidFinderQueueFrameRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	RaidFinderQueueFrameRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-	RaidFinderQueueFrameRoleButtonLeader:SetNormalTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer")
+	RaidFinderQueueFrameBackground:Hide()
 
 	RaidFinderQueueFrameRoleButtonTank:Point("BOTTOMLEFT", 20, 336)
 	RaidFinderQueueFrameRoleButtonLeader:Point("LEFT", RaidFinderQueueFrameRoleButtonDPS, "RIGHT", 34, 0)
 
-	S:HandleButton(_G[RaidFinderQueueFrame.PartyBackfill:GetName().."BackfillButton"])
-	S:HandleButton(_G[RaidFinderQueueFrame.PartyBackfill:GetName().."NoBackfillButton"])
+	S:HandleButton(RaidFinderQueueFramePartyBackfillBackfillButton)
+	S:HandleButton(RaidFinderQueueFramePartyBackfillNoBackfillButton)
+	S:HandleButton(RaidFinderFrameFindRaidButton)
 
 	S:HandleDropDownBox(RaidFinderQueueFrameSelectionDropDown)
-	RaidFinderQueueFrameSelectionDropDown:Point("BOTTOMLEFT", 107, 287)
-
-	RaidFinderFrameFindRaidButton:StripTextures()
-	S:HandleButton(RaidFinderFrameFindRaidButton)
+	RaidFinderQueueFrameSelectionDropDown:Point("BOTTOMLEFT", 90, 285)
 
 	RaidFinderQueueFrameScrollFrameChildFrameItem1:StripTextures()
 	RaidFinderQueueFrameScrollFrameChildFrameItem1:SetTemplate("Transparent")
@@ -416,59 +330,45 @@ local function LoadSkin()
 	-- LFR Queue/Browse Tabs
 	for i = 1, 2 do
 		local tab = _G["LFRParentFrameSideTab"..i]
+		local icon = tab:GetNormalTexture()
 
 		tab:GetRegions():Hide()
 		tab:SetTemplate()
 		tab:StyleButton(nil, true)
-		tab:GetNormalTexture():SetInside()
-		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-	end
 
-	LFRParentFrameSideTab1:Point("TOPLEFT", LFRParentFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -35)
+		if i == 1 then
+			tab:Point("TOPLEFT", LFRParentFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -35)
+		end
+
+		icon:SetInside()
+		icon:SetTexCoord(unpack(E.TexCoords))
+	end
 
 	-- LFR Queue Frame
 	LFRParentFrame:StripTextures()
-	LFRQueueFrame:StripTextures()
 	LFRQueueFrameListInset:StripTextures()
 	LFRQueueFrameRoleInset:StripTextures()
 	LFRQueueFrameCommentInset:StripTextures()
 
-	LFRQueueFrameSpecificListScrollFrameScrollBackgroundTopLeft:Hide()
-	LFRQueueFrameSpecificListScrollFrameScrollBackgroundBottomRight:Hide()
-
-	LFRQueueFrameCommentScrollFrame:StripTextures()
-	LFRQueueFrameCommentScrollFrame:CreateBackdrop()
-
-	-- LFR Queue Role Icons
-	local lfrQueueRoleIcons = {
-		"LFRQueueFrameRoleButtonTank",
-		"LFRQueueFrameRoleButtonHealer",
-		"LFRQueueFrameRoleButtonDPS"
-	}
-
-	for i = 1, #lfrQueueRoleIcons do
-		S:HandleCheckBox(_G[lfrQueueRoleIcons[i]]:GetChildren())
-		_G[lfrQueueRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfrQueueRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
-
-		_G[lfrQueueRoleIcons[i]]:StripTextures()
-		_G[lfrQueueRoleIcons[i]]:CreateBackdrop()
-		_G[lfrQueueRoleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
-		_G[lfrQueueRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -3, 3)
-
-		_G[lfrQueueRoleIcons[i]].texture = _G[lfrQueueRoleIcons[i]]:CreateTexture(nil, "OVERLAY")
-		_G[lfrQueueRoleIcons[i]].texture:SetTexCoord(unpack(E.TexCoords))
-		_G[lfrQueueRoleIcons[i]].texture:SetInside(_G[lfrQueueRoleIcons[i]].backdrop)
-	end
-
-	LFRQueueFrameRoleButtonTank.texture:SetTexture("Interface\\Icons\\Ability_Defend")
-	LFRQueueFrameRoleButtonHealer.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LFRQueueFrameRoleButtonDPS.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-
 	S:HandleButton(LFRQueueFrameFindGroupButton)
+	LFRQueueFrameFindGroupButton:Point("BOTTOMLEFT", 5, 3)
+
 	S:HandleButton(LFRQueueFrameAcceptCommentButton)
+	LFRQueueFrameAcceptCommentButton:Point("BOTTOMRIGHT", -6, 3)
+
+	LFRQueueFrameCommentScrollFrame:CreateBackdrop()
+	LFRQueueFrameCommentScrollFrame:Size(337, 40)
+	LFRQueueFrameCommentScrollFrame:Point("TOPLEFT", LFRQueueFrame, "BOTTOMLEFT", 6, 70)
 
 	S:HandleScrollBar(LFRQueueFrameCommentScrollFrameScrollBar)
+
+	LFRQueueFrameSpecificListScrollFrame:StripTextures()
+	LFRQueueFrameSpecificListScrollFrame:CreateBackdrop("Transparent")
+
 	S:HandleScrollBar(LFRQueueFrameSpecificListScrollFrameScrollBar)
+	LFRQueueFrameSpecificListScrollFrameScrollBar:ClearAllPoints()
+	LFRQueueFrameSpecificListScrollFrameScrollBar:Point("TOPRIGHT", LFRQueueFrameSpecificListScrollFrame, 25, -17)
+	LFRQueueFrameSpecificListScrollFrameScrollBar:Point("BOTTOMRIGHT", LFRQueueFrameSpecificListScrollFrame, 0, 18)
 
 	for i = 1, NUM_LFR_CHOICE_BUTTONS do
 		local button = _G["LFRQueueFrameSpecificListButton"..i]
@@ -496,11 +396,7 @@ local function LoadSkin()
 
 	-- LFR Browse Frame
 	LFRBrowseFrame:StripTextures()
-	LFRBrowseFrameListScrollFrame:StripTextures()
-	LFRBrowseFrameRoleInsetBg:Hide()
-	LFRBrowseFrameRoleInset:DisableDrawLayer("BORDER")
-
-	RaidBrowserFrameBg:Hide()
+	LFRBrowseFrameRoleInset:StripTextures()
 
 	for i = 1, 14 do
 		if i ~= 6 and i ~= 8 then
@@ -516,26 +412,34 @@ local function LoadSkin()
 		_G[button.."Left"]:Kill()
 		_G[button.."Middle"]:Kill()
 		_G[button.."Right"]:Kill()
+
 		_G[button]:StyleButton()
+
+		if i == 1 then
+			_G[button]:Width(88)
+		end
 	end
 
-	LFRBrowseFrameColumnHeader1:Width(88)
-
 	S:HandleButton(LFRBrowseFrameSendMessageButton)
+	LFRBrowseFrameSendMessageButton:Point("BOTTOMLEFT", 5, 3)
+
 	S:HandleButton(LFRBrowseFrameInviteButton)
+	LFRBrowseFrameInviteButton:Point("LEFT", LFRBrowseFrameSendMessageButton, "RIGHT", 11, 0)
+
 	S:HandleButton(LFRBrowseFrameRefreshButton)
+	LFRBrowseFrameRefreshButton:Point("LEFT", LFRBrowseFrameInviteButton, "RIGHT", 11, 0)
 
 	S:HandleDropDownBox(LFRBrowseFrameRaidDropDown)
 
+	LFRBrowseFrameListScrollFrame:StripTextures()
+	LFRBrowseFrameListScrollFrame:CreateBackdrop("Transparent")
+
+	S:HandleScrollBar(LFRBrowseFrameListScrollFrameScrollBar)
+	LFRBrowseFrameListScrollFrameScrollBar:ClearAllPoints()
+	LFRBrowseFrameListScrollFrameScrollBar:Point("TOPRIGHT", LFRBrowseFrameListScrollFrame, 24, -17)
+	LFRBrowseFrameListScrollFrameScrollBar:Point("BOTTOMRIGHT", LFRBrowseFrameListScrollFrame, 0, 17)
+
 	S:HandleCloseButton(RaidBrowserFrameCloseButton)
-
-	LFRBrowseFrame:HookScript("OnShow", function()
-		if not LFRBrowseFrameListScrollFrameScrollBar.isSkinned then
-			S:HandleScrollBar(LFRBrowseFrameListScrollFrameScrollBar)
-
-			LFRBrowseFrameListScrollFrameScrollBar.isSkinned = true
-		end
-	end)
 
 	--[[
 	hooksecurefunc("LFRBrowseFrameListButton_SetData", function(button, index)
@@ -553,14 +457,19 @@ local function LoadSkin()
 	]]
 
 	-- Flexible Raid
-	FlexRaidFrameScrollFrame:StripTextures()
 	FlexRaidFrameBottomInset:StripTextures()
 
-	FlexRaidFrame.ScrollFrame.Background:SetTexture()
-	FlexRaidFrame.ScrollFrame.Background.SetTexture = E.noop
+	S:HandleButton(FlexRaidFrameStartRaidButton)
 
 	S:HandleDropDownBox(FlexRaidFrameSelectionDropDown)
-	S:HandleButton(FlexRaidFrameStartRaidButton)
+	FlexRaidFrameSelectionDropDown:Point("BOTTOMRIGHT", FlexRaidFrameBottomInset, "TOPRIGHT", -13, -10)
+
+	FlexRaidFrameScrollFrame:StripTextures(true)
+
+	S:HandleScrollBar(FlexRaidFrameScrollFrameScrollBar)
+	FlexRaidFrameScrollFrameScrollBar:ClearAllPoints()
+	FlexRaidFrameScrollFrameScrollBar:Point("TOPRIGHT", FlexRaidFrameScrollFrame, 20, -19)
+	FlexRaidFrameScrollFrameScrollBar:Point("BOTTOMRIGHT", FlexRaidFrameScrollFrame, 0, 19)
 
 	-- LFG Ready Dialog
 	LFGDungeonReadyDialog:StripTextures()
@@ -648,60 +557,12 @@ local function LoadSkin()
 	S:HandleButton(LFDRoleCheckPopupAcceptButton)
 	S:HandleButton(LFDRoleCheckPopupDeclineButton)
 
-	-- LFD Role Check Icons
-	local lfdRoleCheckRoleIcons = {
-		"LFDRoleCheckPopupRoleButtonTank",
-		"LFDRoleCheckPopupRoleButtonHealer",
-		"LFDRoleCheckPopupRoleButtonDPS"
-	}
-
-	for i = 1, #lfdRoleCheckRoleIcons do
-		S:HandleCheckBox(_G[lfdRoleCheckRoleIcons[i]]:GetChildren())
-		_G[lfdRoleCheckRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfdRoleCheckRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
-
-		_G[lfdRoleCheckRoleIcons[i]]:StripTextures()
-		_G[lfdRoleCheckRoleIcons[i]]:CreateBackdrop()
-		_G[lfdRoleCheckRoleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
-		_G[lfdRoleCheckRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -3, 3)
-
-		_G[lfdRoleCheckRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		_G[lfdRoleCheckRoleIcons[i]]:GetNormalTexture():SetInside(_G[lfdRoleCheckRoleIcons[i]].backdrop)
-	end
-
-	LFDRoleCheckPopupRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	LFDRoleCheckPopupRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LFDRoleCheckPopupRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-
 	-- LFG Invite PopUp
 	LFGInvitePopup:StripTextures()
 	LFGInvitePopup:SetTemplate("Transparent")
 
 	S:HandleButton(LFGInvitePopupAcceptButton)
 	S:HandleButton(LFGInvitePopupDeclineButton)
-
-	-- LFD Role Check Icons
-	local lfgInviteRoleIcons = {
-		"LFGInvitePopupRoleButtonTank",
-		"LFGInvitePopupRoleButtonHealer",
-		"LFGInvitePopupRoleButtonDPS"
-	}
-
-	for i = 1, #lfgInviteRoleIcons do
-		_G[lfgInviteRoleIcons[i]]:StripTextures()
-		_G[lfgInviteRoleIcons[i]]:CreateBackdrop()
-		_G[lfgInviteRoleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
-		_G[lfgInviteRoleIcons[i]].backdrop:Point("BOTTOMRIGHT", -3, 3)
-
-		_G[lfgInviteRoleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		_G[lfgInviteRoleIcons[i]]:GetNormalTexture():SetInside(_G[lfgInviteRoleIcons[i]].backdrop)
-
-		S:HandleCheckBox(_G[lfgInviteRoleIcons[i]]:GetChildren())
-		_G[lfgInviteRoleIcons[i]]:GetChildren():SetFrameLevel(_G[lfgInviteRoleIcons[i]]:GetChildren():GetFrameLevel() + 2)
-	end
-
-	LFGInvitePopupRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	LFGInvitePopupRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LFGInvitePopupRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 
 	-- Queue Search Status
 	QueueStatusFrame:StripTextures()
@@ -747,12 +608,54 @@ local function LoadSkin()
 		end
 	end)
 
+	-- Role Icons
+	local roleButtonFrames = {
+		"LFDQueueFrameRoleButton",
+		"RaidFinderQueueFrameRoleButton",
+		"LFRQueueFrameRoleButton",
+		"LFDRoleCheckPopupRoleButton",
+		"LFGInvitePopupRoleButton"
+	}
+
+	for _, frame in pairs(roleButtonFrames) do
+		local tank = _G[frame.."Tank"]
+		local damager = _G[frame.."DPS"]
+		local healer = _G[frame.."Healer"]
+		local leader = _G[frame.."Leader"]
+
+		for _, btn in pairs({tank, damager, healer, leader}) do
+			if btn then
+				local icon = btn:GetNormalTexture()
+				local checkbox = btn.checkButton or btn:GetChildren()
+
+				btn:StripTextures()
+				btn:CreateBackdrop()
+				btn.backdrop:Point("TOPLEFT", 3, -3)
+				btn.backdrop:Point("BOTTOMRIGHT", -3, 3)
+
+				icon:SetTexCoord(unpack(E.TexCoords))
+				icon:SetInside(btn.backdrop)
+
+				S:HandleCheckBox(checkbox)
+				checkbox:SetFrameLevel(checkbox:GetFrameLevel() + 2)
+			end
+		end
+
+		tank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+		damager:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+		healer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+
+		if leader then
+			leader:SetNormalTexture("Interface\\Icons\\Ability_Vehicle_LaunchPlayer")
+		end
+	end
+
 	-- Incentive Role Icons
-	hooksecurefunc("LFG_SetRoleIconIncentive", function(roleButton, incentiveIndex)
+	hooksecurefunc("LFG_SetRoleIconIncentive", function(button, incentiveIndex)
 		if incentiveIndex then
-			roleButton.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+			button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 		else
-			roleButton.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 end
