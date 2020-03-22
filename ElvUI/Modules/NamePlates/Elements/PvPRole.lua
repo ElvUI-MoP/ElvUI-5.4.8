@@ -17,10 +17,10 @@ function NP:Update_PvPRole(frame)
 
 		if self.Healers[frame.UnitName] then
 			icon:SetTexture(E.Media.Textures.Healer)
-			icon:SetShown(db.markHealers)
+			icon:SetShown(db.enable and db.markHealers)
 		elseif self.Tanks[frame.UnitName] then
 			icon:SetTexture(E.Media.Textures.Tank)
-			icon:SetShown(db.markTanks)
+			icon:SetShown(db.enable and db.markTanks)
 		end
 	else
 		icon:Hide()
