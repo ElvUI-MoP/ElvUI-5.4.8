@@ -16,7 +16,7 @@ local ArenaHeader = CreateFrame("Frame", "ArenaHeader", E.UIParent)
 function UF:ToggleArenaPreparationInfo(frame, show, specName, specTexture, specClass)
 	if not (frame and frame.ArenaPrepSpec and frame.ArenaPrepIcon) then return end
 
-	local specIcon = (frame.db and frame.db.pvpSpecIcon) and frame:IsElementEnabled('PVPSpecIcon')
+	local specIcon = (frame.db and frame.db.pvpSpecIcon) and frame:IsElementEnabled("PVPSpecIcon")
 
 	frame.forceInRange = show -- used to force unitframe range
 
@@ -31,7 +31,7 @@ function UF:ToggleArenaPreparationInfo(frame, show, specName, specTexture, specC
 			frame.PVPSpecIcon:Hide()
 		end
 	else -- mainly called from `PostUpdateArenaFrame` to hide them
-		frame.ArenaPrepSpec:SetText('')
+		frame.ArenaPrepSpec:SetText("")
 		frame.Health.value:Show()
 
 		if specIcon then
@@ -43,7 +43,7 @@ function UF:ToggleArenaPreparationInfo(frame, show, specName, specTexture, specC
 end
 
 function UF:PostUpdateArenaFrame(event)
-	if self and event and (event ~= 'ARENA_PREP_OPPONENT_SPECIALIZATIONS' and event ~= 'PLAYER_ENTERING_WORLD') then
+	if self and event and (event ~= "ARENA_PREP_OPPONENT_SPECIALIZATIONS" and event ~= "PLAYER_ENTERING_WORLD") then
 		UF:ToggleArenaPreparationInfo(self)
 	end
 end
@@ -85,8 +85,8 @@ function UF:Construct_ArenaFrames(frame)
 		frame.unitframeType = "arena"
 
 		-- Arena Preparation
-		frame.ArenaPrepIcon = frame:CreateTexture(nil, 'OVERLAY')
-		frame.ArenaPrepIcon.bg = CreateFrame('Frame', nil, frame)
+		frame.ArenaPrepIcon = frame:CreateTexture(nil, "OVERLAY")
+		frame.ArenaPrepIcon.bg = CreateFrame("Frame", nil, frame)
 		frame.ArenaPrepIcon.bg:SetAllPoints(frame.PVPSpecIcon.bg)
 		frame.ArenaPrepIcon.bg:SetTemplate()
 		frame.ArenaPrepIcon:SetParent(frame.ArenaPrepIcon.bg)

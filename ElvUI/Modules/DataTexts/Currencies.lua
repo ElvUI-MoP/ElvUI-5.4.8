@@ -2,8 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
 
 local select, pairs = select, pairs
-local format = string.format
-local join = string.join
+local format, join = string.format, string.join
 
 local GetCurrencyInfo = GetCurrencyInfo
 local GetMoney = GetMoney
@@ -12,21 +11,38 @@ local EXPANSION_NAME4 = EXPANSION_NAME4
 local OTHER = OTHER
 local CURRENCY = CURRENCY
 
+local displayString = ""
+local iconStr = "\124T%s:%d:%d:0:0:64:64:5:59:5:59\124t"
+
+local currencyList, gold
+local lastPanel
+
+local function currencyInfo(id)
+	local name, count, texture = GetCurrencyInfo(id)
+	local icon = format(iconStr, texture, 14, 14)
+
+	return name, count, icon
+end
+
 local Currencies = {
+	-- PVE / PVP
+	["395"] = {ID = 395, NAME = currencyInfo(395), ICON = select(3, currencyInfo(395)), COUNT = select(2, currencyInfo(395))}, -- Justice Points
+	["396"] = {ID = 396, NAME = currencyInfo(396), ICON = select(3, currencyInfo(396)), COUNT = select(2, currencyInfo(396))}, -- Valor Points
+	["392"] = {ID = 392, NAME = currencyInfo(392), ICON = select(3, currencyInfo(392)), COUNT = select(2, currencyInfo(392))}, -- Honor Points
+	["390"] = {ID = 390, NAME = currencyInfo(390), ICON = select(3, currencyInfo(390)), COUNT = select(2, currencyInfo(390))}, -- Conquest points
 	-- MoP
-	["ELDER_CHARM_OF_GOOD_FORTUNE"]		= {ID = 697, NAME = GetCurrencyInfo(697), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(697)), 16, 16)},
-	["LESSER_CHARM_OF_GOOD_FORTUNE"]	= {ID = 738, NAME = GetCurrencyInfo(738), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(738)), 16, 16)},
-	["MOGU_RUNE_OF_FATE"]				= {ID = 752, NAME = GetCurrencyInfo(752), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(752)), 16, 16)},
-	["TIMELESS_COIN"]					= {ID = 776, NAME = GetCurrencyInfo(776), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(776)), 16, 16)},
-	["WARFORGED_SEAL"]					= {ID = 777, NAME = GetCurrencyInfo(777), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(777)), 16, 16)},
-	["BLOODY_COIN"]						= {ID = 789, NAME = GetCurrencyInfo(789), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(789)), 16, 16)},
+	["697"] = {ID = 697, NAME = currencyInfo(697), ICON = select(3, currencyInfo(697)), COUNT = select(2, currencyInfo(697))}, -- Elder Charm of Good Fortune
+	["738"] = {ID = 738, NAME = currencyInfo(738), ICON = select(3, currencyInfo(738)), COUNT = select(2, currencyInfo(738))}, -- Lesset Charm of Good Fortune
+	["752"] = {ID = 752, NAME = currencyInfo(752), ICON = select(3, currencyInfo(752)), COUNT = select(2, currencyInfo(752))}, -- Mogu Rune of Fate
+	["776"] = {ID = 776, NAME = currencyInfo(776), ICON = select(3, currencyInfo(776)), COUNT = select(2, currencyInfo(776))}, -- Timeless Coin
+	["777"] = {ID = 777, NAME = currencyInfo(777), ICON = select(3, currencyInfo(777)), COUNT = select(2, currencyInfo(777))}, -- Warforged Seal
+	["789"] = {ID = 789, NAME = currencyInfo(789), ICON = select(3, currencyInfo(789)), COUNT = select(2, currencyInfo(789))}, -- Bloody Coin
 	-- Other
-	["DARKMOON_PRIZE_TICKET"]			= {ID = 515, NAME = GetCurrencyInfo(515), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(515)), 16, 16)},
-	["IRONPAW_TOKEN"]					= {ID = 402, NAME = GetCurrencyInfo(402), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(402)), 16, 16)},
-	["ZEN_JEWELCRAFTERS_TOKEN"]			= {ID = 698, NAME = GetCurrencyInfo(698), ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(698)), 16, 16)},
+	["515"] = {ID = 515, NAME = currencyInfo(515), ICON = select(3, currencyInfo(515)), COUNT = select(2, currencyInfo(515))}, -- Darkmoon Prize Ticket
+	["402"] = {ID = 402, NAME = currencyInfo(402), ICON = select(3, currencyInfo(402)), COUNT = select(2, currencyInfo(402))}, -- Chef's Award
+	["698"] = {ID = 698, NAME = currencyInfo(698), ICON = select(3, currencyInfo(698)), COUNT = select(2, currencyInfo(698))}, -- Ironpaw Token
 }
 
-local currencyList
 function DT:Currencies_GetCurrencyList()
 	currencyList = {}
 	for currency, data in pairs(Currencies) do
@@ -37,24 +53,23 @@ function DT:Currencies_GetCurrencyList()
 	return currencyList
 end
 
-local gold
-local chosenCurrency, currencyAmount
-
 local function OnEvent(self)
 	gold = GetMoney()
 
 	if E.db.datatexts.currencies.displayedCurrency == "GOLD" then
 		self.text:SetText(E:FormatMoney(gold, E.db.datatexts.goldFormat or "BLIZZARD", not E.db.datatexts.goldCoins))
 	else
-		chosenCurrency = Currencies[E.db.datatexts.currencies.displayedCurrency]
+		local chosenCurrency = Currencies[E.db.datatexts.currencies.displayedCurrency]
+
 		if chosenCurrency then
-			currencyAmount = select(2, GetCurrencyInfo(chosenCurrency.ID))
+			local count = select(2, GetCurrencyInfo(chosenCurrency.ID))
+
 			if E.db.datatexts.currencies.displayStyle == "ICON" then
-				self.text:SetFormattedText("%s %d", chosenCurrency.ICON, currencyAmount)
+				self.text:SetFormattedText("%s %d", chosenCurrency.ICON, count)
 			elseif E.db.datatexts.currencies.displayStyle == "ICON_TEXT" then
-				self.text:SetFormattedText("%s %s %d", chosenCurrency.ICON, chosenCurrency.NAME, currencyAmount)
+				self.text:SetFormattedText("%s %s %d", chosenCurrency.ICON, chosenCurrency.NAME, count)
 			else
-				self.text:SetFormattedText("%s %s %d", chosenCurrency.ICON, E:AbbreviateString(chosenCurrency.NAME), currencyAmount)
+				self.text:SetFormattedText("%s %s %d", chosenCurrency.ICON, E:AbbreviateString(chosenCurrency.NAME), count)
 			end
 		end
 	end
@@ -66,19 +81,26 @@ local function OnEnter(self)
 	DT.tooltip:AddDoubleLine(L["Gold"]..":", E:FormatMoney(gold, E.db.datatexts.goldFormat or "BLIZZARD", not E.db.datatexts.goldCoins), nil, nil, nil, 1, 1, 1)
 	DT.tooltip:AddLine(" ")
 
-	DT.tooltip:AddLine(EXPANSION_NAME4) -- MoP
-	DT.tooltip:AddDoubleLine(Currencies["ELDER_CHARM_OF_GOOD_FORTUNE"].NAME, select(2, GetCurrencyInfo(Currencies["ELDER_CHARM_OF_GOOD_FORTUNE"].ID)), 1, 1, 1)
-	DT.tooltip:AddDoubleLine(Currencies["LESSER_CHARM_OF_GOOD_FORTUNE"].NAME, select(2, GetCurrencyInfo(Currencies["LESSER_CHARM_OF_GOOD_FORTUNE"].ID)), 1, 1, 1)
-	DT.tooltip:AddDoubleLine(Currencies["MOGU_RUNE_OF_FATE"].NAME, select(2, GetCurrencyInfo(Currencies["MOGU_RUNE_OF_FATE"].ID)), 1, 1, 1)
-	DT.tooltip:AddDoubleLine(Currencies["TIMELESS_COIN"].NAME, select(2, GetCurrencyInfo(Currencies["TIMELESS_COIN"].ID)), 1, 1, 1)
-	DT.tooltip:AddDoubleLine(Currencies["WARFORGED_SEAL"].NAME, select(2, GetCurrencyInfo(Currencies["WARFORGED_SEAL"].ID)), 1, 1, 1)
-	DT.tooltip:AddDoubleLine(Currencies["BLOODY_COIN"].NAME, select(2, GetCurrencyInfo(Currencies["BLOODY_COIN"].ID)), 1, 1, 1)
+	if Currencies["395"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["395"].ICON, " ", Currencies["395"].NAME), Currencies["395"].COUNT, 1, 1, 1) end
+	if Currencies["396"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["396"].ICON, " ", Currencies["396"].NAME), Currencies["396"].COUNT, 1, 1, 1) end
+	if Currencies["392"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["392"].ICON, " ", Currencies["392"].NAME), Currencies["392"].COUNT, 1, 1, 1) end
+	if Currencies["390"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["390"].ICON, " ", Currencies["390"].NAME), Currencies["390"].COUNT, 1, 1, 1) end
+
 	DT.tooltip:AddLine(" ")
 
-	DT.tooltip:AddLine(OTHER) -- Other
-	DT.tooltip:AddDoubleLine(Currencies["DARKMOON_PRIZE_TICKET"].NAME, select(2, GetCurrencyInfo(Currencies["DARKMOON_PRIZE_TICKET"].ID)), 1, 1, 1)
-	DT.tooltip:AddDoubleLine(Currencies["IRONPAW_TOKEN"].NAME, select(2, GetCurrencyInfo(Currencies["IRONPAW_TOKEN"].ID)), 1, 1, 1)
-	DT.tooltip:AddDoubleLine(Currencies["ZEN_JEWELCRAFTERS_TOKEN"].NAME, select(2, GetCurrencyInfo(Currencies["ZEN_JEWELCRAFTERS_TOKEN"].ID)), 1, 1, 1)
+	DT.tooltip:AddLine(EXPANSION_NAME4)
+	if Currencies["697"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["697"].ICON, " ", Currencies["697"].NAME), Currencies["697"].COUNT, 1, 1, 1) end
+	if Currencies["738"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["738"].ICON, " ", Currencies["738"].NAME), Currencies["738"].COUNT, 1, 1, 1) end
+	if Currencies["752"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["752"].ICON, " ", Currencies["752"].NAME), Currencies["752"].COUNT, 1, 1, 1) end
+	if Currencies["776"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["776"].ICON, " ", Currencies["776"].NAME), Currencies["776"].COUNT, 1, 1, 1) end
+	if Currencies["777"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["777"].ICON, " ", Currencies["777"].NAME), Currencies["777"].COUNT, 1, 1, 1) end
+	if Currencies["789"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["789"].ICON, " ", Currencies["789"].NAME), Currencies["789"].COUNT, 1, 1, 1) end
+	DT.tooltip:AddLine(" ")
+
+	DT.tooltip:AddLine(OTHER)
+	if Currencies["515"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["515"].ICON, " ", Currencies["515"].NAME), Currencies["515"].COUNT, 1, 1, 1) end
+	if Currencies["402"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["402"].ICON, " ", Currencies["402"].NAME), Currencies["402"].COUNT, 1, 1, 1) end
+	if Currencies["698"].COUNT > 0 then DT.tooltip:AddDoubleLine(join("", Currencies["698"].ICON, " ", Currencies["698"].NAME), Currencies["698"].COUNT, 1, 1, 1) end
 
 	local shouldAddHeader = true
 	for currencyID, info in pairs(E.global.datatexts.customCurrencies) do
