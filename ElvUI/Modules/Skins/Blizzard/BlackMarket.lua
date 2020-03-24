@@ -47,11 +47,10 @@ local function LoadSkin()
 
 	local function SkinBlackMarketItems()
 		local buttons = BlackMarketScrollFrame.buttons
-		local numButtons = #buttons
 		local offset = HybridScrollFrame_GetOffset(BlackMarketScrollFrame)
 		local numItems = C_BlackMarket_GetNumItems()
 
-		for i = 1, numButtons do
+		for i = 1, #buttons do
 			local button = buttons[i]
 			local index = offset + i
 
@@ -73,26 +72,25 @@ local function LoadSkin()
 			end
 
 			if type(numItems) == "number" and index <= numItems then
-				local name, texture, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetItemInfoByIndex(index)
-				if name then
+				local _, texture, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetItemInfoByIndex(index)
+
+				if link then
+					local quality = select(3, GetItemInfo(link))
+
 					button.Item.IconTexture:SetTexture(texture)
 
-					if link then
-						local quality = select(3, GetItemInfo(link))
+					if quality then
+						local r, g, b = GetItemQualityColor(quality)
 
-						if quality then
-							local r, g, b = GetItemQualityColor(quality)
-
-							button.Name:SetTextColor(r, g, b)
-							button.handledHighlight:SetVertexColor(r, g, b)
-							button.Selection:SetVertexColor(r, g, b)
-							button.Item.backdrop:SetBackdropBorderColor(r, g, b)
-						else
-							button.Name:SetTextColor(1, 1, 1)
-							button.handledHighlight:SetVertexColor(1, 1, 1)
-							button.Selection:SetVertexColor(1, 1, 1)
-							button.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-						end
+						button.Name:SetTextColor(r, g, b)
+						button.handledHighlight:SetVertexColor(r, g, b)
+						button.Selection:SetVertexColor(r, g, b)
+						button.Item.backdrop:SetBackdropBorderColor(r, g, b)
+					else
+						button.Name:SetTextColor(1, 1, 1)
+						button.handledHighlight:SetVertexColor(1, 1, 1)
+						button.Selection:SetVertexColor(1, 1, 1)
+						button.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				end
 			end
@@ -121,23 +119,24 @@ local function LoadSkin()
 	BlackMarketFrame.bg:SetFrameLevel(BlackMarketFrame.bg:GetFrameLevel() - 1)
 
 	hooksecurefunc("BlackMarketFrame_UpdateHotItem", function(self)
-		local name, _, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetHotItem()
-		if name then
-			if link then
-				local quality = select(3, GetItemInfo(link))
-				if quality then
-					self.HotDeal.Name:SetTextColor(GetItemQualityColor(quality))
-					self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-				else
-					self.HotDeal.Name:SetTextColor(1, 1, 1)
-					self.HotDeal.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				end
+		local link = select(15, C_BlackMarket_GetHotItem())
+
+		if link then
+			local quality = select(3, GetItemInfo(link))
+
+			if quality then
+				self.HotDeal.Name:SetTextColor(GetItemQualityColor(quality))
+				self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+			else
+				self.HotDeal.Name:SetTextColor(1, 1, 1)
+				self.HotDeal.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 		end
 	end)
 
 	for i = 1, BlackMarketFrame:GetNumRegions() do
 		local region = select(i, BlackMarketFrame:GetRegions())
+
 		if region and region:IsObjectType("FontString") and region:GetText() == BLACK_MARKET_TITLE then
 			region:ClearAllPoints()
 			region:Point("TOP", BlackMarketFrame, 0, -4)

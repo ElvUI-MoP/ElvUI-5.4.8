@@ -241,7 +241,6 @@ local function LoadSkin()
 	local classTextColor = E:ClassColor(E.myclass)
 	SpellBookCoreAbilitiesFrame.SpecName:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 	SpellBookCoreAbilitiesFrame.SpecName:Point("TOP", 37, -30)
-	SpellBookCoreAbilitiesFrame.SpecName:FontTemplate(nil, 30)
 
 	hooksecurefunc("SpellBook_UpdateCoreAbilitiesTab", function()
 		local buttons = SpellBookCoreAbilitiesFrame.Abilities
@@ -324,7 +323,6 @@ local function LoadSkin()
 
 	SpellBookWhatHasChanged.ClassName:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 	SpellBookWhatHasChanged.ClassName:Point("TOP", 37, -30)
-	SpellBookWhatHasChanged.ClassName:FontTemplate(nil, 30)
 
 	local changedList = WHAT_HAS_CHANGED_DISPLAY[E.myclass]
 	if changedList then

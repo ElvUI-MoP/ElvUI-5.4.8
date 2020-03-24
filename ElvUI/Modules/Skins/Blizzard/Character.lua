@@ -364,8 +364,32 @@ local function LoadSkin()
 	S:HandleScrollBar(CharacterStatsPaneScrollBar)
 
 	for i = 1, 7 do
-		_G["CharacterStatsPaneCategory"..i]:StripTextures()
+		local frame = _G["CharacterStatsPaneCategory"..i]
+		local name = _G["CharacterStatsPaneCategory"..i.."NameText"]
+		frame.Toolbar = _G["CharacterStatsPaneCategory"..i.."Toolbar"]
+
+		frame:StripTextures()
+
+		S:HandleButton(frame.Toolbar, nil, nil, true)
+		frame.Toolbar.backdrop:SetAllPoints()
+
+		name:ClearAllPoints()
+		name:Point("CENTER", frame.Toolbar, "CENTER")
+		name:SetParent(frame.Toolbar.backdrop)
+
+		_G["CharacterStatsPaneCategory"..i.."Stat1"]:Point("TOPLEFT", frame, "TOPLEFT", 16, -24)
+
+		_G["CharacterStatsPaneCategory"..i.."ToolbarSortUpArrow"]:Kill()
+		_G["CharacterStatsPaneCategory"..i.."ToolbarSortDownArrow"]:Kill()
 	end
+
+	hooksecurefunc("PaperDollFrame_ExpandStatCategory", function(frame)
+		if not frame.collapsed then frame.Toolbar:SetAlpha(1) end
+	end)
+
+	hooksecurefunc("PaperDollFrame_CollapseStatCategory", function(frame)
+		if frame.collapsed then frame.Toolbar:SetAlpha(0.3) end
+	end)
 
 	-- Reputation
 	ReputationFrame:StripTextures(true)

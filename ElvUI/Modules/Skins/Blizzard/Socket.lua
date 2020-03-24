@@ -11,6 +11,8 @@ local hooksecurefunc = hooksecurefunc
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.socket then return end
 
+	ITEM_SOCKETING_DESCRIPTION_MIN_WIDTH = 278
+
 	ItemSocketingFrame:StripTextures()
 	ItemSocketingFrame:SetTemplate("Transparent")
 	ItemSocketingFrame:Height(390)
@@ -20,15 +22,15 @@ local function LoadSkin()
 
 	ItemSocketingScrollFrame:StripTextures()
 	ItemSocketingScrollFrame:CreateBackdrop("Transparent")
-	ItemSocketingScrollFrame:Point("TOPLEFT", 10, -30)
+	ItemSocketingScrollFrame:Point("TOPLEFT", 8, -30)
 	ItemSocketingScrollFrame:Height(269)
 
 	S:HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2)
 	ItemSocketingScrollFrameScrollBar:Point("TOPLEFT", ItemSocketingScrollFrame, "TOPRIGHT", 7, -18)
-	ItemSocketingScrollFrameScrollBar:Point("BOTTOMLEFT", ItemSocketingScrollFrame, "BOTTOMRIGHT", 7, 19)
+	ItemSocketingScrollFrameScrollBar:Point("BOTTOMLEFT", ItemSocketingScrollFrame, "BOTTOMRIGHT", 7, 20)
 
 	S:HandleButton(ItemSocketingSocketButton)
-	ItemSocketingSocketButton:Point("BOTTOMRIGHT", -5, 5)
+	ItemSocketingSocketButton:Point("BOTTOMRIGHT", -7, 7)
 
 	S:HandleCloseButton(ItemSocketingFrameCloseButton)
 
@@ -69,6 +71,14 @@ local function LoadSkin()
 			ItemSocketingSocket1:Point("BOTTOM", ItemSocketingFrame, "BOTTOM", -36, 38)
 		else
 			ItemSocketingSocket1:Point("BOTTOM", ItemSocketingFrame, "BOTTOM", 0, 38)
+		end
+	end)
+
+	hooksecurefunc(ItemSocketingScrollFrame, "SetWidth", function(self, width)
+		if width == 269 then
+			self:Width(300)
+		elseif width == 297 then
+			self:Width(321)
 		end
 	end)
 end

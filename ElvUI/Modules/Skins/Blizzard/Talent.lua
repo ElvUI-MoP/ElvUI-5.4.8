@@ -110,7 +110,7 @@ local function LoadSkin()
 	PlayerTalentFrameSpecialization:StripTextures()
 	PlayerTalentFrameSpecialization:CreateBackdrop("Transparent")
 	PlayerTalentFrameSpecialization.backdrop:Point("TOPLEFT", 235, -16)
-	PlayerTalentFrameSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
+	PlayerTalentFrameSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 330)
 
 	for i = 1, 5 do
 		select(i, PlayerTalentFrameSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
@@ -157,8 +157,8 @@ local function LoadSkin()
 
 		PlayerTalentFramePetSpecialization:StripTextures()
 		PlayerTalentFramePetSpecialization:CreateBackdrop("Transparent")
-		PlayerTalentFramePetSpecialization.backdrop:Point("TOPLEFT", 234, -16)
-		PlayerTalentFramePetSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 329)
+		PlayerTalentFramePetSpecialization.backdrop:Point("TOPLEFT", 235, -16)
+		PlayerTalentFramePetSpecialization.backdrop:Point("BOTTOMRIGHT", -17, 330)
 
 		for i = 1, 5 do
 			select(i, PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
@@ -336,7 +336,7 @@ local function LoadSkin()
 			button.bg2:Point("BOTTOMRIGHT", level, 2, -1)
 
 			level:SetParent(button.bg2)
-			level:FontTemplate(nil, 18, "OUTLINE")
+			level:FontTemplate(nil, 18)
 			level:Point("CENTER", leftCap, "RIGHT", 0, 0)
 		end
 	end

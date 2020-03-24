@@ -33,24 +33,22 @@ local function LoadSkin()
 	}
 
 	for _, slot in pairs(slots) do
-		local item = _G["TransmogrifyFrame"..slot]
+		local button = _G["TransmogrifyFrame"..slot]
 		local icon = _G["TransmogrifyFrame"..slot.."IconTexture"]
 		local popout = _G["TransmogrifyFrame"..slot.."PopoutButton"]
 
-		if item then
-			item:StripTextures()
-			item:CreateBackdrop()
-			item:StyleButton()
-			item:SetFrameLevel(item:GetFrameLevel() + 2)
-			item.backdrop:SetAllPoints()
+		button:StripTextures()
+		button:CreateBackdrop()
+		button.backdrop:SetAllPoints()
+		button:StyleButton()
+		button:SetFrameLevel(button:GetFrameLevel() + 2)
 
-			icon:SetTexCoord(unpack(E.TexCoords))
-			icon:SetInside()
-		end
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside()
 
 		if popout then
 			popout:StripTextures()
-			popout:SetTemplate()
+			popout:SetTemplate(nil, true)
 			popout:HookScript("OnEnter", S.SetModifiedBackdrop)
 			popout:HookScript("OnLeave", S.SetOriginalBackdrop)
 
@@ -59,13 +57,15 @@ local function LoadSkin()
 			popout.icon:Point("CENTER")
 			popout.icon:SetTexture(E.Media.Textures.ArrowUp)
 
-			if slot.verticalFlyout then
+			if button.verticalFlyout then
 				popout:Size(27, 11)
-				popout:Point("TOP", item, "BOTTOM", 0, 5)
+				popout:Point("TOP", button, "BOTTOM", 0, 5)
+
 				popout.icon:SetRotation(3.14)
 			else
 				popout:Size(11, 27)
-				popout:Point("LEFT", item, "RIGHT", -5, 0)
+				popout:Point("LEFT", button, "RIGHT", -5, 0)
+
 				popout.icon:SetRotation(-1.57)
 			end
 		end
@@ -103,7 +103,7 @@ local function LoadSkin()
 	hooksecurefunc("TransmogrifyConfirmationPopup_SetItem", function(itemFrame, itemLink)
 		local _, _, itemQuality = GetItemInfo(itemLink)
 		local r, g, b = GetItemQualityColor(itemQuality or 1)
-		
+
 		itemFrame.backdrop:SetBackdropBorderColor(r, g, b)
 	end)
 

@@ -13,6 +13,7 @@ local function LoadSkin()
 
 	S:HandleCloseButton(PVPUIFrameCloseButton)
 
+	-- Side Buttons
 	for i = 1, 3 do
 		local button = _G["PVPQueueFrameCategoryButton"..i]
 
@@ -36,7 +37,6 @@ local function LoadSkin()
 	PVPQueueFrame.CategoryButton1.CurrencyIcon:Size(20)
 	PVPQueueFrame.CategoryButton1.CurrencyIcon:Point("TOPLEFT", PVPQueueFrame.CategoryButton1, "BOTTOMLEFT", 79, 30)
 
-	PVPQueueFrame.CategoryButton1.CurrencyAmount:FontTemplate(nil, 13, "OUTLINE")
 	PVPQueueFrame.CategoryButton1.CurrencyAmount:Point("LEFT", PVPQueueFrame.CategoryButton1.CurrencyIcon, "RIGHT", 7, 0)
 
 	PVPQueueFrame.CategoryButton2.CurrencyIcon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
@@ -44,29 +44,55 @@ local function LoadSkin()
 	PVPQueueFrame.CategoryButton2.CurrencyIcon:Size(20)
 	PVPQueueFrame.CategoryButton2.CurrencyIcon:Point("TOPLEFT", PVPQueueFrame.CategoryButton2, "BOTTOMLEFT", 79, 30)
 
-	PVPQueueFrame.CategoryButton2.CurrencyAmount:FontTemplate(nil, 13, "OUTLINE")
 	PVPQueueFrame.CategoryButton2.CurrencyAmount:Point("LEFT", PVPQueueFrame.CategoryButton2.CurrencyIcon, "RIGHT", 7, 0)
 
 	-- Honor Frame
+	HonorFrame.Inset:StripTextures()
+	HonorFrame.RoleInset:StripTextures()
+
+	for _, frame in pairs({"DPSIcon", "TankIcon", "HealerIcon"}) do
+		local button = HonorFrame.RoleInset[frame]
+		local icon = button:GetNormalTexture()
+
+		button:StripTextures()
+		button:CreateBackdrop()
+ 
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside(button.backdrop)
+
+		S:HandleCheckBox(button.checkButton, true)
+	end
+
+	HonorFrame.RoleInset.TankIcon:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	HonorFrame.RoleInset.HealerIcon:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	HonorFrame.RoleInset.DPSIcon:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+
 	S:HandleDropDownBox(HonorFrameTypeDropDown)
 	HonorFrameTypeDropDown:Width(200)
 	HonorFrameTypeDropDown:ClearAllPoints()
-	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 143, 322)
+	HonorFrameTypeDropDown:Point("TOP", HonorFrameSoloQueueButton, "TOP", 130, 322)
 
-	HonorFrame.Inset:StripTextures()
+	HonorFrame.BonusFrame.DiceButton:DisableDrawLayer("ARTWORK")
+	HonorFrame.BonusFrame.DiceButton:SetHighlightTexture("")
+	HonorFrame.BonusFrame.DiceButton:ClearAllPoints()
+	HonorFrame.BonusFrame.DiceButton:Point("LEFT", HonorFrameTypeDropDown, "RIGHT", -8, 2)
 
-	S:HandleScrollBar(HonorFrameSpecificFrameScrollBar)
-	HonorFrameSpecificFrameScrollBar:ClearAllPoints()
-	HonorFrameSpecificFrameScrollBar:Point("TOPRIGHT", HonorFrameSpecificFrame, 22, -15)
-	HonorFrameSpecificFrameScrollBar:Point("BOTTOMRIGHT", HonorFrameSpecificFrame, 0, 13)
+	for i = 1, 2 do
+		local button = HonorFrame.BonusFrame["BattlegroundReward"..i]
 
-	S:HandleButton(HonorFrameSoloQueueButton)
-	HonorFrameSoloQueueButton:Point("BOTTOMLEFT", 4, 0)
-	HonorFrameSoloQueueButton:Height(20)
+		button:CreateBackdrop()
+		button.backdrop:SetOutside(button.Icon)
 
-	S:HandleButton(HonorFrameGroupQueueButton)
-	HonorFrameGroupQueueButton:Point("BOTTOMRIGHT", -31, 0)
-	HonorFrameGroupQueueButton:Height(20)
+		button.Icon:SetTexCoord(unpack(E.TexCoords))
+		button.Icon:Size(22)
+
+		if i == 1 then
+			button.Icon:Point("LEFT", 28, -4)
+		end
+
+		button.Amount:ClearAllPoints()
+		button.Amount:Point("LEFT", button.Icon, -29, 0)
+	end
 
 	hooksecurefunc("HonorFrameBonusFrame_Update", function()
 		local hasData, _, _, _, _, winHonorAmount, winConquestAmount = GetHolidayBGInfo()
@@ -77,77 +103,52 @@ local function LoadSkin()
 				rewardIndex = rewardIndex + 1
 				local frame = HonorFrame.BonusFrame["BattlegroundReward"..rewardIndex]
 				frame.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
-				frame.Icon:SetTexCoord(unpack(E.TexCoords))
-				frame.Icon:Size(18)
-				frame.Icon:Point("LEFT", 0, 0)
-
-				frame.Amount:FontTemplate(nil, 13)
-				frame.Amount:ClearAllPoints()
-				frame.Amount:Point("LEFT", frame.Icon, -25, 0)
 			end
 
 			if winHonorAmount and winHonorAmount > 0 then
 				rewardIndex = rewardIndex + 1
 				local frame = HonorFrame.BonusFrame["BattlegroundReward"..rewardIndex]
 				frame.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..E.myfaction)
-				frame.Icon:SetTexCoord(unpack(E.TexCoords))
-				frame.Icon:Size(18)
-
-				frame.Amount:FontTemplate(nil, 13)
-				frame.Amount:ClearAllPoints()
-				frame.Amount:Point("LEFT", frame.Icon, -25, 0)
 			end
 		end
 	end)
 
+	S:HandleScrollBar(HonorFrameSpecificFrameScrollBar)
+	HonorFrameSpecificFrameScrollBar:ClearAllPoints()
+	HonorFrameSpecificFrameScrollBar:Point("TOPRIGHT", HonorFrameSpecificFrame, 22, -15)
+	HonorFrameSpecificFrameScrollBar:Point("BOTTOMRIGHT", HonorFrameSpecificFrame, 0, 13)
+
+	S:HandleButton(HonorFrameSoloQueueButton)
+	HonorFrameSoloQueueButton:Height(20)
+	HonorFrameSoloQueueButton:Point("BOTTOMLEFT", 17, 0)
+
+	S:HandleButton(HonorFrameGroupQueueButton)
+	HonorFrameGroupQueueButton:Height(20)
+	HonorFrameGroupQueueButton:Point("BOTTOMRIGHT", -19, 0)
+
 	HonorFrame.BonusFrame:StripTextures()
 	HonorFrame.BonusFrame.ShadowOverlay:StripTextures()
-	HonorFrame.BonusFrame.RandomBGButton:StripTextures()
-	HonorFrame.BonusFrame.RandomBGButton:SetTemplate()
-	HonorFrame.BonusFrame.RandomBGButton:StyleButton(nil, true)
-	HonorFrame.BonusFrame.RandomBGButton.SelectedTexture:SetInside()
-	HonorFrame.BonusFrame.RandomBGButton.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
 
-	HonorFrame.BonusFrame.CallToArmsButton:StripTextures()
-	HonorFrame.BonusFrame.CallToArmsButton:SetTemplate()
-	HonorFrame.BonusFrame.CallToArmsButton:StyleButton(nil, true)
-	HonorFrame.BonusFrame.CallToArmsButton.SelectedTexture:SetInside()
-	HonorFrame.BonusFrame.CallToArmsButton.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
+	HonorFrame.BonusFrame.bg1 = CreateFrame("Frame", nil, HonorFrame.BonusFrame)
+	HonorFrame.BonusFrame.bg1:CreateBackdrop("Transparent")
+	HonorFrame.BonusFrame.bg1:Point("TOPLEFT", 10, -94)
+	HonorFrame.BonusFrame.bg1:Point("BOTTOMRIGHT", -11, 128)
 
-	HonorFrame.BonusFrame.DiceButton:DisableDrawLayer("ARTWORK")
-	HonorFrame.BonusFrame.DiceButton:SetHighlightTexture("")
+	HonorFrame.BonusFrame.bg2 = CreateFrame("Frame", nil, HonorFrame.BonusFrame)
+	HonorFrame.BonusFrame.bg2:CreateBackdrop("Transparent")
+	HonorFrame.BonusFrame.bg2:Point("TOPLEFT", 10, -258)
+	HonorFrame.BonusFrame.bg2:Point("BOTTOMRIGHT", -11, 6)
 
-	HonorFrame.RoleInset:StripTextures()
-
-	local honorFrameRoleIcons = {
-		HonorFrame.RoleInset.DPSIcon,
-		HonorFrame.RoleInset.TankIcon,
-		HonorFrame.RoleInset.HealerIcon
-	}
-
-	for i = 1, #honorFrameRoleIcons do
-		S:HandleCheckBox(honorFrameRoleIcons[i].checkButton, true)
-
-		honorFrameRoleIcons[i]:StripTextures()
-		honorFrameRoleIcons[i]:CreateBackdrop()
-		honorFrameRoleIcons[i]:Size(50)
- 
-		honorFrameRoleIcons[i]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		honorFrameRoleIcons[i]:GetNormalTexture():SetInside(honorFrameRoleIcons[i].backdrop)
-	end
-
-	HonorFrame.RoleInset.TankIcon:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	HonorFrame.RoleInset.HealerIcon:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	HonorFrame.RoleInset.DPSIcon:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
-
-	for i = 1, 2 do
-		local button = HonorFrame.BonusFrame["WorldPVP"..i.."Button"]
+	for _, frame in pairs({"RandomBGButton", "CallToArmsButton", "WorldPVP1Button", "WorldPVP2Button"}) do
+		local button = HonorFrame.BonusFrame[frame]
 
 		button:StripTextures()
-		button:SetTemplate()
-		button:StyleButton(nil, true)
-		button.SelectedTexture:SetInside()
-		button.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
+		S:HandleButtonHighlight(button)
+
+		button.SelectedTexture:SetTexture(E.Media.Textures.Highlight)
+		button.SelectedTexture:SetVertexColor(0, 0.7, 1, 0.35)
+		button.SelectedTexture:SetTexCoord(0, 1, 0, 1)
+		button.SelectedTexture:SetAllPoints()
 	end
 
 	HonorFrameSpecificFrame:CreateBackdrop("Transparent")
@@ -191,35 +192,44 @@ local function LoadSkin()
 	ConquestPointsBar.progress:SetTexture(E.media.normTex)
 	E:RegisterStatusBar(ConquestPointsBar.progress)
 
-	ConquestFrame.ArenaReward.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
-	ConquestFrame.ArenaReward.Icon:SetTexCoord(unpack(E.TexCoords))
-	ConquestFrame.ArenaReward.Icon:Size(18)
-	ConquestFrame.ArenaReward.Amount:FontTemplate(nil, 14)
-	ConquestFrame.ArenaReward.Amount:ClearAllPoints()
-	ConquestFrame.ArenaReward.Amount:Point("LEFT", ConquestFrame.ArenaReward.Icon, -27, 0)
+	for _, frame in pairs({"ArenaReward", "RatedBGReward"}) do
+		local button = ConquestFrame[frame]
 
-	ConquestFrame.RatedBGReward.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
-	ConquestFrame.RatedBGReward.Icon:SetTexCoord(unpack(E.TexCoords))
-	ConquestFrame.RatedBGReward.Icon:Size(18)
-	ConquestFrame.RatedBGReward.Amount:FontTemplate(nil, 14)
-	ConquestFrame.RatedBGReward.Amount:ClearAllPoints()
-	ConquestFrame.RatedBGReward.Amount:Point("LEFT", ConquestFrame.RatedBGReward.Icon, -27, 0)
+		button:CreateBackdrop()
+		button.backdrop:SetOutside(button.Icon)
 
-	S:HandleButton(ConquestJoinButton)
-	ConquestJoinButton:Point("BOTTOM", 0, 8)
+		button.Icon:SetTexCoord(unpack(E.TexCoords))
+		button.Icon:Size(22)
+		button.Icon:Point("LEFT", -2, -2)
 
-	local function handleButton(button)
-		button:StripTextures()
-		button:SetTemplate()
-		button:StyleButton(nil, true)
-		button.SelectedTexture:SetInside()
-		button.SelectedTexture:SetTexture(0, 0.7, 1, 0.20)
+		button.Amount:ClearAllPoints()
+		button.Amount:Point("LEFT", button.Icon, -29, 0)
 	end
 
-	handleButton(ConquestFrame.RatedBG)
-	handleButton(ConquestFrame.Arena2v2)
-	handleButton(ConquestFrame.Arena3v3)
-	handleButton(ConquestFrame.Arena5v5)
+	ConquestFrame.ArenaReward.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
+	ConquestFrame.RatedBGReward.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
+
+	S:HandleButton(ConquestJoinButton)
+	ConquestJoinButton:Point("BOTTOM", 0, 7)
+
+	ConquestFrame.bg = CreateFrame("Frame", nil, ConquestFrame)
+	ConquestFrame.bg:CreateBackdrop("Transparent")
+	ConquestFrame.bg:Point("TOPLEFT", 21, -87)
+	ConquestFrame.bg:Point("BOTTOMRIGHT", -18, 148)
+
+	for _, frame in pairs({"RatedBG", "Arena2v2", "Arena3v3", "Arena5v5"}) do
+		local button = ConquestFrame[frame]
+
+		button:StripTextures()
+		S:HandleButtonHighlight(button)
+
+		button.SelectedTexture:SetTexture(E.Media.Textures.Highlight)
+		button.SelectedTexture:SetVertexColor(0, 0.7, 1, 0.35)
+		button.SelectedTexture:SetTexCoord(0, 1, 0, 1)
+		button.SelectedTexture:SetAllPoints()
+	end
+
+	ConquestFrame.RatedBG:CreateBackdrop("Transparent")
 
 	ConquestFrame.Arena3v3:Point("TOP", ConquestFrame.Arena2v2, "BOTTOM", 0, -2)
 	ConquestFrame.Arena5v5:Point("TOP", ConquestFrame.Arena3v3, "BOTTOM", 0, -2)
@@ -232,11 +242,16 @@ local function LoadSkin()
 	ConquestTooltip:SetTemplate("Transparent")
 
 	S:HandleButton(WarGameStartButton)
-	S:HandleScrollBar(WarGamesFrameScrollFrameScrollBar)
+	WarGameStartButton:Point("BOTTOM", 0, 2)
 
 	WarGamesFrameScrollFrame:CreateBackdrop("Transparent")
 	WarGamesFrameScrollFrame.backdrop:Point("TOPLEFT", -2, 2)
 	WarGamesFrameScrollFrame.backdrop:Point("BOTTOMRIGHT", -5, -4)
+
+	S:HandleScrollBar(WarGamesFrameScrollFrameScrollBar)
+	WarGamesFrameScrollFrameScrollBar:ClearAllPoints()
+	WarGamesFrameScrollFrameScrollBar:Point("TOPRIGHT", WarGamesFrameScrollFrame, 21, -14)
+	WarGamesFrameScrollFrameScrollBar:Point("BOTTOMRIGHT", WarGamesFrameScrollFrame, 0, 12)
 
 	for i = 1, 8 do
 		local button = _G["WarGamesFrameScrollFrameButton"..i]
