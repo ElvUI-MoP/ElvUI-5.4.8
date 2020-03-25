@@ -145,6 +145,7 @@ L["Installation Complete"] = true
 L["Invalid Target"] = true
 L["Interrupted %s's \124cff71d5ff\124Hspell:%d:0\124h[%s]\124h\124r!"] = true
 L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = true
+L["Item level: %.2f"] = true
 L["Item Level:"] = true
 L["Key"] = true
 L["KEY_ALT"] = "A"

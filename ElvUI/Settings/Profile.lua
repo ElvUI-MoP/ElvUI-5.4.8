@@ -40,6 +40,13 @@ P.general = {
 		statusBarColor = {r = 0.2, g = 0.4, b = 0.8},
 		smoothbars = false
 	},
+	itemLevel = {
+		displayCharacterInfo = true,
+		displayInspectInfo = true,
+		itemLevelFont = "PT Sans Narrow",
+		itemLevelFontSize = 12,
+		itemLevelFontOutline = "OUTLINE"
+	},
 	font = "PT Sans Narrow",
 	fontSize = 12,
 	fontStyle = "OUTLINE",

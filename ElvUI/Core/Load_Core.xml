@@ -18,6 +18,7 @@
 	<Script file="Tutorials.lua"/>
 	<Script file="Distributor.lua"/>
 	<Script file="Dropdown.lua"/>
+	<Script file="ItemLevel.lua"/>
 	<Script file="Cooldowns.lua"/>
 	<Script file="ModuleCopy.lua"/>
 	<Script file="Tags.lua"/>

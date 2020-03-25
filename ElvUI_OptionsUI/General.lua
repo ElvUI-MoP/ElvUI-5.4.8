@@ -785,6 +785,68 @@ E.Options.args.general = {
 					min = 0.5, max = 8, step = 0.5,
 					get = function(info) return E.db.general.durabilityScale end,
 					set = function(info, value) E.db.general.durabilityScale = value E:StaticPopup_Show("CONFIG_RL") end
+				},
+				itemLevelInfo = {
+					order = 12,
+					type = "group",
+					name = L["Item Level"],
+					guiInline = true,
+					get = function(info) return E.db.general.itemLevel[info[#info]] end,
+					args = {
+						displayCharacterInfo = {
+							order = 1,
+							type = "toggle",
+							name = L["Display Character Info"],
+							desc = L["Shows item level of each item, enchants, and gems on the character page."],
+							set = function(info, value)
+								E.db.general.itemLevel.displayCharacterInfo = value
+								Misc:ToggleItemLevelInfo()
+							end
+						},
+						displayInspectInfo = {
+							order = 2,
+							type = "toggle",
+							name = L["Display Inspect Info"],
+							desc = L["Shows item level of each item, enchants, and gems when inspecting another player."],
+							set = function(info, value)
+								E.db.general.itemLevel.displayInspectInfo = value
+								Misc:ToggleItemLevelInfo()
+							end
+						},
+						fontGroup = {
+							order = 3,
+							type = "group",
+							name = L["Fonts"],
+							disabled = function() return not E.db.general.itemLevel.displayCharacterInfo and not E.db.general.itemLevel.displayInspectInfo end,
+							get = function(info) return E.db.general.itemLevel[info[#info]] end,
+							set = function(info, value)
+								E.db.general.itemLevel[info[#info]] = value
+								Misc:UpdateInspectPageFonts("Character")
+								Misc:UpdateInspectPageFonts("Inspect")
+							end,
+							args = {
+								itemLevelFont = {
+									order = 1,
+									type = "select",
+									name = L["Font"],
+									dialogControl = "LSM30_Font",
+									values = AceGUIWidgetLSMlists.font
+								},
+								itemLevelFontSize = {
+									order = 2,
+									type = "range",
+									name = L["FONT_SIZE"],
+									min = 4, max = 40, step = 1
+								},
+								itemLevelFontOutline = {
+									order = 3,
+									type = "select",
+									name = L["Font Outline"],
+									values = C.Values.FontFlags
+								}
+							}
+						}
+					}
 				}
 			}
 		},

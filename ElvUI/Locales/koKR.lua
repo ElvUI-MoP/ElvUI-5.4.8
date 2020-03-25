@@ -145,6 +145,7 @@ L["Installation Complete"] = "설치 완료"
 L["Invalid Target"] = "잘못된 대상"
 L["Interrupted %s's \124cff71d5ff\124Hspell:%d:0\124h[%s]\124h\124r!"] = true
 L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = "현재 설치된 애드온 중 하나가 정상 로드되지 않았습니다. 에러가 날 확률이 높아 리로드합니다."
+L["Item level: %.2f"] = true
 L["Item Level:"] = "템렙:"
 L["Key"] = "단축키"
 L["KEY_ALT"] = "A"

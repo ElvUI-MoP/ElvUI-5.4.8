@@ -93,32 +93,26 @@ E.Options.args.tooltip = {
 					name = L["Guild Ranks"],
 					desc = L["Display guild ranks if a unit is guilded."]
 				},
-				inspectInfo = {
-					order = 11,
-					type = "toggle",
-					name = L["Inspect Info"],
-					desc = L["Display the players talent spec and item level in the tooltip, this may not immediately update when mousing over a unit."]
-				},
 				spellID = {
-					order = 12,
+					order = 11,
 					type = "toggle",
 					name = L["Spell/Item IDs"],
 					desc = L["Display the spell or item ID when mousing over a spell or item tooltip."]
 				},
 				npcID = {
-					order = 13,
+					order = 12,
 					type = "toggle",
 					name = L["NPC IDs"],
 					desc = L["Display the npc ID when mousing over a npc tooltip."]
 				},
 				role = {
-					order = 14,
+					order = 13,
 					type = "toggle",
 					name = L["ROLE"],
 					desc = L["Display the unit role in the tooltip."]
 				},
 				itemCount = {
-					order = 15,
+					order = 14,
 					type = "select",
 					name = L["Item Count"],
 					desc = L["Display how many of a certain item you have in your possession."],
@@ -130,14 +124,14 @@ E.Options.args.tooltip = {
 					}
 				},
 				colorAlpha = {
-					order = 16,
+					order = 15,
 					type = "range",
 					name = L["OPACITY"],
 					isPercent = true,
 					min = 0, max = 1, step = 0.01
 				},
 				fontGroup = {
-					order = 17,
+					order = 16,
 					type = "group",
 					guiInline = true,
 					name = L["Tooltip Font Settings"],
@@ -191,7 +185,7 @@ E.Options.args.tooltip = {
 					}
 				},
 				factionColors = {
-					order = 18,
+					order = 17,
 					type = "group",
 					name = L["Custom Faction Colors"],
 					guiInline = true,

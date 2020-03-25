@@ -81,7 +81,6 @@ local LEVEL1 = strlower(TOOLTIP_UNIT_LEVEL:gsub("%s?%%s%s?%-?", ""))
 local LEVEL2 = strlower(TOOLTIP_UNIT_LEVEL_CLASS:gsub("^%%2$s%s?(.-)%s?%%1$s", "%1"):gsub("^%-?г?о?%s?", ""):gsub("%s?%%s%s?%-?", ""))
 
 local GameTooltip, GameTooltipStatusBar = GameTooltip, GameTooltipStatusBar
-local MATCH_ITEM_LEVEL = ITEM_LEVEL:gsub("%%d", "(%%d+)")
 local targetList = {}
 local TAPPED_COLOR = {r = 0.6, g = 0.6, b = 0.6}
 local AFK_LABEL = " |cffFFFFFF[|r|cffFF0000"..AFK.."|r|cffFFFFFF]|r"
@@ -93,12 +92,6 @@ local classification = {
 	rareelite = format("|cffAF5050+ %s|r", ITEM_QUALITY3_DESC),
 	elite = "|cffAF5050+|r",
 	rare = format("|cffAF5050 %s|r", ITEM_QUALITY3_DESC)
-}
-
-local SlotName = {
-	"Head", "Neck", "Shoulder", "Back", "Chest", "Wrist",
-	"Hands", "Waist", "Legs", "Feet", "Finger0", "Finger1",
-	"Trinket0", "Trinket1", "MainHand", "SecondaryHand"
 }
 
 function TT:GameTooltip_SetDefaultAnchor(tt, parent)
@@ -337,45 +330,55 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 	return color
 end
 
-function TT:ScanForItemLevel(itemLink)
-	E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-	E.ScanTooltip:SetHyperlink(itemLink)
-	E.ScanTooltip:Show()
-
-	local iLvl = 0
-	for i = 2, E.ScanTooltip:NumLines() do
-		local line = _G["ElvUI_ScanTooltipTextLeft"..i]
-		local lineText = line:GetText()
-
-		if lineText and lineText ~= "" then
-			local value = strmatch(lineText, MATCH_ITEM_LEVEL)
-			if value then
-				iLvl = tonumber(value)
-			end
+local inspectGUIDCache = {}
+local inspectColorFallback = {1, 1, 1}
+function TT:PopulateInspectGUIDCache(unitGUID, itemLevel)
+	local specName = self:GetSpecializationInfo("mouseover")
+	if specName and itemLevel then
+		local inspectCache = inspectGUIDCache[unitGUID]
+		if inspectCache then
+			inspectCache.time = GetTime()
+			inspectCache.itemLevel = itemLevel
+			inspectCache.specName = specName
 		end
+
+		GameTooltip:AddDoubleLine(SPECIALIZATION..":", specName, nil, nil, nil, unpack((inspectCache and inspectCache.unitColor) or inspectColorFallback))
+		GameTooltip:AddDoubleLine(L["Item Level:"], itemLevel, nil, nil, nil, 1, 1, 1)
+		GameTooltip:Show()
 	end
-
-	E.ScanTooltip:Hide()
-
-	return iLvl
 end
 
-function TT:GetItemLvL(unit)
-	local total, item = 0, 0
-	for i = 1, #SlotName do
-		local itemLink = GetInventoryItemLink(unit, GetInventorySlotInfo(format("%sSlot", SlotName[i])))
-		if itemLink ~= nil then
-			local iLvl = TT:ScanForItemLevel(itemLink)
-			if iLvl and iLvl > 0 then
-				item = item + 1
-				total = total + iLvl
-			end
+function TT:INSPECT_READY(event, unitGUID)
+	if UnitExists("mouseover") and UnitGUID("mouseover") == unitGUID then
+		local itemLevel, retryUnit, retryTable, iLevelDB = E:GetUnitItemLevel("mouseover")
+
+		if itemLevel == "tooSoon" then
+			E:Delay(0.05, function()
+				local canUpdate = true
+
+				for _, x in ipairs(retryTable) do
+					local slotInfo = E:GetGearSlotInfo(retryUnit, x)
+
+					if slotInfo == "tooSoon" then
+						canUpdate = false
+					else
+						iLevelDB[x] = slotInfo.iLvl
+					end
+				end
+
+				if canUpdate then
+					local calculateItemLevel = E:CalculateAverageItemLevel(iLevelDB, retryUnit)
+					TT:PopulateInspectGUIDCache(unitGUID, calculateItemLevel)
+				end
+			end)
+		else
+			TT:PopulateInspectGUIDCache(unitGUID, itemLevel)
 		end
 	end
 
-	if total < 1 then return end
-
-	return floor(total / item)
+	if event then
+		self:UnregisterEvent(event)
+	end
 end
 
 function TT:GetSpecializationInfo(unit, isPlayer)
@@ -399,36 +402,6 @@ function TT:GetSpecializationInfo(unit, isPlayer)
 	end
 end
 
-local inspectGUIDCache = {}
-local inspectColorFallback = {1, 1, 1}
-function TT:PopulateInspectGUIDCache(unitGUID, itemLevel)
-	local specName = self:GetSpecializationInfo("mouseover")
-	if specName and itemLevel then
-		local inspectCache = inspectGUIDCache[unitGUID]
-		if inspectCache then
-			inspectCache.time = GetTime()
-			inspectCache.itemLevel = itemLevel
-			inspectCache.specName = specName
-		end
-
-		GameTooltip:AddDoubleLine(SPECIALIZATION..":", specName, nil, nil, nil, unpack((inspectCache and inspectCache.unitColor) or inspectColorFallback))
-		GameTooltip:AddDoubleLine(L["Item Level:"], itemLevel, nil, nil, nil, 1, 1, 1)
-		GameTooltip:Show()
-	end
-end
-
-function TT:INSPECT_READY(event, unitGUID)
-	if UnitExists("mouseover") and UnitGUID("mouseover") == unitGUID then
-		local itemLevel = TT:GetItemLvL("mouseover")
-
-		TT:PopulateInspectGUIDCache(unitGUID, itemLevel)
-	end
-
-	if event then
-		self:UnregisterEvent(event)
-	end
-end
-
 local lastGUID
 function TT:AddInspectInfo(tooltip, unit, numTries, r, g, b)
 	if (not unit) or (numTries > 3) or not CanInspect(unit) then return end
@@ -438,7 +411,7 @@ function TT:AddInspectInfo(tooltip, unit, numTries, r, g, b)
 
 	if unitGUID == E.myguid then
 		tooltip:AddDoubleLine(SPECIALIZATION..":", TT:GetSpecializationInfo(unit, true), nil, nil, nil, r, g, b)
-		tooltip:AddDoubleLine(L["Item Level:"], floor(select(2, GetAverageItemLevel())), nil, nil, nil, 1, 1, 1)
+		tooltip:AddDoubleLine(L["Item Level:"], E:GetUnitItemLevel(unit), nil, nil, nil, 1, 1, 1)
 	elseif inspectGUIDCache[unitGUID] and inspectGUIDCache[unitGUID].time then
 		local specName = inspectGUIDCache[unitGUID].specName
 		local itemLevel = inspectGUIDCache[unitGUID].itemLevel
@@ -446,7 +419,7 @@ function TT:AddInspectInfo(tooltip, unit, numTries, r, g, b)
 			inspectGUIDCache[unitGUID].time = nil
 			inspectGUIDCache[unitGUID].specName = nil
 			inspectGUIDCache[unitGUID].itemLevel = nil
-			return TT:AddInspectInfo(tooltip, unit, numTries + 1, r, g, b)
+			return E:Delay(0.33, TT.AddInspectInfo, TT, tooltip, unit, numTries + 1, r, g, b)
 		end
 
 		tooltip:AddDoubleLine(SPECIALIZATION..":", specName, nil, nil, nil, r, g, b)

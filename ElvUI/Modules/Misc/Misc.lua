@@ -154,6 +154,12 @@ function M:RESURRECT_REQUEST()
 	PlaySoundFile(E.Media.Sounds.ThanksForPlaying)
 end
 
+function M:ADDON_LOADED(_, addon)
+	if addon == "Blizzard_InspectUI" then
+		M:SetupInspectPageInfo()
+	end
+end
+
 function M:DisbandRaidGroup()
 	if InCombatLockdown() then return end -- Prevent user error in combat
 
@@ -263,6 +269,7 @@ function M:Initialize()
 	self:LoadLoot()
 	self:LoadLootRoll()
 	self:LoadChatBubbles()
+	self:ToggleItemLevelInfo(true)
 	self:RegisterEvent("MERCHANT_SHOW")
 	self:RegisterEvent("RESURRECT_REQUEST")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "ErrorFrameToggle")
@@ -275,6 +282,12 @@ function M:Initialize()
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "AutoInvite")
 	self:RegisterEvent("CVAR_UPDATE", "ForceCVars")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ForceCVars")
+
+	if IsAddOnLoaded("Blizzard_InspectUI") then
+		M:SetupInspectPageInfo()
+	else
+		self:RegisterEvent("ADDON_LOADED")
+	end
 
 	if E.global.general.mapAlphaWhenMoving < 1 then
 		self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)

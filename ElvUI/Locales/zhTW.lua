@@ -145,6 +145,7 @@ L["Installation Complete"] = "安裝完畢"
 L["Invalid Target"] = "無效的目標"
 L["Interrupted %s's \124cff71d5ff\124Hspell:%d:0\124h[%s]\124h\124r!"] = true
 L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = "看起來你其中的一個插件使得 Blizzard_CompactRaidFrames 停用了. 這會造成錯誤與問題. 插件現在會重新被啟用."
+L["Item level: %.2f"] =  "物品等級: %.2f"
 L["Item Level:"] = "物品等級:"
 L["Key"] = "鍵"
 L["KEY_ALT"] = "A"
