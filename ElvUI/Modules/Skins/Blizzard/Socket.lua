@@ -22,12 +22,13 @@ local function LoadSkin()
 
 	ItemSocketingScrollFrame:StripTextures()
 	ItemSocketingScrollFrame:CreateBackdrop("Transparent")
-	ItemSocketingScrollFrame:Point("TOPLEFT", 8, -30)
+	ItemSocketingScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -2)
 	ItemSocketingScrollFrame:Height(269)
+	ItemSocketingScrollFrame:Point("TOPLEFT", 8, -30)
 
 	S:HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2)
 	ItemSocketingScrollFrameScrollBar:Point("TOPLEFT", ItemSocketingScrollFrame, "TOPRIGHT", 7, -18)
-	ItemSocketingScrollFrameScrollBar:Point("BOTTOMLEFT", ItemSocketingScrollFrame, "BOTTOMRIGHT", 7, 20)
+	ItemSocketingScrollFrameScrollBar:Point("BOTTOMLEFT", ItemSocketingScrollFrame, "BOTTOMRIGHT", 7, 19)
 
 	S:HandleButton(ItemSocketingSocketButton)
 	ItemSocketingSocketButton:Point("BOTTOMRIGHT", -7, 7)
