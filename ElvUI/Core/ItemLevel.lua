@@ -1,7 +1,7 @@
-local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(select(2, ...))
 
 local _G = _G
-local tinsert, strfind, strmatch = tinsert, strfind, strmatch
+local tinsert, strmatch = tinsert, strmatch
 local select, tonumber, format = select, tonumber, format
 local next, max, wipe = next, max, wipe
 local utf8sub = string.utf8sub
@@ -23,9 +23,20 @@ local X2_INVTYPES = {
 	INVTYPE_RANGEDRIGHT = true,
 	INVTYPE_RANGED = true
 }
-local X2_EXCEPTIONS = {
-	[2] = 19 -- wands, use INVTYPE_RANGEDRIGHT, but are 1H
-}
+local locale = GetLocale()
+local X2_EXCEPTIONS =
+locale == "deDE" and "Zauberstäbe" or
+locale == "ruRU" and "Жезлы" or
+locale == "frFR" and "Baguettes" or
+locale == "koKR" and "마법봉류" or
+locale == "zhCN" and "魔杖" or
+locale == "zhTW" and "魔杖" or
+locale == "esES" and "Varitas" or
+locale == "esMX" and "Varitas" or
+locale == "ptBR" and "Varinhas" or
+locale == "itIT" and "Bacchette" or
+"Wands"
+
 local ARMOR_SLOTS = {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 
 function E:InspectGearSlot(line, lineText, slotInfo)
@@ -133,11 +144,11 @@ function E:CalculateAverageItemLevel(iLevelDB, unit)
 	end
 
 	-- Main hand
-	local mainItemLevel, mainQuality, mainEquipLoc, mainItemClass, mainItemSubClass, _ = 0
+	local mainItemLevel, mainQuality, mainEquipLoc, _ = 0
 	link = GetInventoryItemLink(unit, 16)
 	if link then
 		mainItemLevel = iLevelDB[16]
-		_, _, mainQuality, _, _, _, _, _, mainEquipLoc, _, _, mainItemClass, mainItemSubClass = GetItemInfo(link)
+		_, _, mainQuality, _, _, _, _, _, mainEquipLoc = GetItemInfo(link)
 	elseif GetInventoryItemTexture(unit, 16) then
 		isOK = false
 	end
@@ -153,7 +164,7 @@ function E:CalculateAverageItemLevel(iLevelDB, unit)
 	end
 
 	if mainItemLevel and offItemLevel then
-		if (mainQuality == 6) or (not offEquipLoc and X2_INVTYPES[mainEquipLoc] and X2_EXCEPTIONS[mainItemClass] ~= mainItemSubClass and spec ~= 72) then
+		if (mainQuality == 6) or (not offEquipLoc and X2_INVTYPES[mainEquipLoc] and itemSubType ~= X2_EXCEPTIONS and spec ~= 72) then
 			mainItemLevel = max(mainItemLevel, offItemLevel)
 			total = total + mainItemLevel * 2
 		else

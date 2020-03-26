@@ -487,31 +487,8 @@ E.Options.args.general = {
 				}
 			}
 		},
-		objectiveFrameGroup = {
-			order = 6,
-			type = "group",
-			name = L["Objective Frame"],
-			get = function(info) return E.db.general[info[#info]] end,
-			args = {
-				watchFrameAutoHide = {
-					order = 2,
-					type = "toggle",
-					name = L["Auto Hide"],
-					desc = L["Automatically hide the objetive frame during boss or arena fights."],
-					set = function(info, value) E.db.general.watchFrameAutoHide = value Blizzard:SetObjectiveFrameAutoHide() end
-				},
-				watchFrameHeight = {
-					order = 3,
-					type = "range",
-					name = L["Objective Frame Height"],
-					desc = L["Height of the objective tracker. Increase size to be able to see more objectives."],
-					min = 400, max = E.screenheight, step = 1,
-					set = function(info, value) E.db.general.watchFrameHeight = value Blizzard:SetWatchFrameHeight() end
-				}
-			}
-		},
 		threatGroup = {
-			order = 7,
+			order = 6,
 			type = "group",
 			name = L["Threat"],
 			get = function(info) return E.db.general.threat[info[#info]] end,
@@ -570,7 +547,7 @@ E.Options.args.general = {
 			}
 		},
 		alternativePowerGroup = {
-			order = 8,
+			order = 7,
 			type = "group",
 			name = L["Alternative Power"],
 			get = function(info) return E.db.general.altPowerBar[info[#info]] end,
@@ -706,7 +683,7 @@ E.Options.args.general = {
 			}
 		},
 		blizzUIImprovements = {
-			order = 9,
+			order = 8,
 			type = "group",
 			name = L["BlizzUI Improvements"],
 			get = function(info) return E.db.general[info[#info]] end,
@@ -847,11 +824,35 @@ E.Options.args.general = {
 							}
 						}
 					}
+				},
+				objectiveFrameGroup = {
+					order = 13,
+					type = "group",
+					guiInline = true,
+					name = L["Objective Frame"],
+					get = function(info) return E.db.general[info[#info]] end,
+					args = {
+						watchFrameAutoHide = {
+							order = 1,
+							type = "toggle",
+							name = L["Auto Hide"],
+							desc = L["Automatically hide the objetive frame during boss or arena fights."],
+							set = function(info, value) E.db.general.watchFrameAutoHide = value Blizzard:SetObjectiveFrameAutoHide() end
+						},
+						watchFrameHeight = {
+							order = 2,
+							type = "range",
+							name = L["Objective Frame Height"],
+							desc = L["Height of the objective tracker. Increase size to be able to see more objectives."],
+							min = 400, max = E.screenheight, step = 1,
+							set = function(info, value) E.db.general.watchFrameHeight = value Blizzard:SetWatchFrameHeight() end
+						}
+					}
 				}
 			}
 		},
 		misc = {
-			order = 10,
+			order = 9,
 			type = "group",
 			name = L["MISCELLANEOUS"],
 			get = function(info) return E.db.general[info[#info]] end,
