@@ -136,10 +136,10 @@ function M:ToggleItemLevelInfo(setupCharacterPage)
 end
 
 function M:UpdatePageStrings(i, iLevelDB, inspectItem, slotInfo, which) -- `which` is used by plugins
-	if E.private.skins.blizzard.enable and E.private.skins.blizzard.inspect then
-		if inspectItem.backdrop and slotInfo.itemLevelColors and next(slotInfo.itemLevelColors) then
+	if which == "Inspect" and E.private.skins.blizzard.enable and E.private.skins.blizzard.inspect then
+		if slotInfo.itemLevelColors and next(slotInfo.itemLevelColors) then
 			inspectItem.backdrop:SetBackdropBorderColor(unpack(slotInfo.itemLevelColors))
-		elseif inspectItem.backdrop then
+		else
 			inspectItem.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end
