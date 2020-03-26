@@ -77,6 +77,7 @@ local function Enable(self, unit)
 		self:RegisterEvent("UNIT_AURA", Path)
 		self:RegisterEvent("SPELLS_CHANGED", Path)
 		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Path)
+		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", Path)
 		self:RegisterEvent("PLAYER_ENTERING_WORLD", Path)
 		bar.__owner = self
 		bar.ForceUpdate = ForceUpdate
@@ -106,6 +107,7 @@ local function Disable(self,unit)
 		self:UnregisterEvent("UNIT_AURA", Path)
 		self:UnregisterEvent("SPELLS_CHANGED", Path)
 		self:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Path)
+		self:UnregisterEvent("PLAYER_SPECIALIZATION_CHANGED", Path)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD", Path)
 		bar:Hide()
 	end
