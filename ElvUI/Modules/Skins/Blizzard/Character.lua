@@ -20,7 +20,7 @@ local function LoadSkin()
 	CharacterFrame:SetTemplate("Transparent")
 
 	CharacterModelFrame:StripTextures()
-	CharacterModelFrame:CreateBackdrop("Default")
+	CharacterModelFrame:CreateBackdrop("Transparent")
 	CharacterModelFrame.backdrop:Point("TOPLEFT", -1, 1)
 	CharacterModelFrame.backdrop:Point("BOTTOMRIGHT", 1, -2)
 

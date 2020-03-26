@@ -74,7 +74,7 @@ function E:GetGearSlotInfo(unit, slot, deepScan)
 	local slotInfo = tt.slotInfo
 
 	if deepScan then
-		--slotInfo.gems = E:ScanTooltipTextures(nil, true)
+		slotInfo.gems = E:ScanTooltipTextures(true, true)
 
 		if not tt.enchantColors then tt.enchantColors = {} else wipe(tt.enchantColors) end
 		if not tt.itemLevelColors then tt.itemLevelColors = {} else wipe(tt.itemLevelColors) end

@@ -31,7 +31,7 @@ local function LoadSkin()
 	InspectModelFrameBorderBottom2:Kill()
 
 	InspectModelFrame:StripTextures()
-	InspectModelFrame:CreateBackdrop()
+	InspectModelFrame:CreateBackdrop("Transparent")
 	InspectModelFrame.backdrop:Point("TOPLEFT", E.PixelMode and -1 or -2, E.PixelMode and 1 or 2)
 	InspectModelFrame.backdrop:Point("BOTTOMRIGHT", E.PixelMode and 1 or 2, E.PixelMode and -2 or -3)
 
@@ -86,28 +86,6 @@ local function LoadSkin()
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside()
 	end
-
-	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
-		if button.hasItem then
-			local itemID = GetInventoryItemID(InspectFrame.unit, button:GetID())
-			if itemID then
-				local quality = GetInventoryItemQuality(InspectFrame.unit, button:GetID())
-				if not quality then
-					E:Delay(0.1, function()
-						if InspectFrame.unit then
-							InspectPaperDollItemSlotButton_Update(button)
-						end
-					end)
-					return
-				elseif quality then
-					button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-					return
-				end
-			end
-		else
-			button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-		end
-	end)
 
 	-- PvP Tab
 	InspectPVPFrame:StripTextures()

@@ -39,7 +39,7 @@ function M:CreateInspectTexture(slot, x, y)
 	local texture = slot:CreateTexture()
 	texture:Point("BOTTOM", x, y)
 	texture:SetTexCoord(unpack(E.TexCoords))
-	texture:Size(14)
+	texture:Size(12)
 
 	local backdrop = CreateFrame("Frame", nil, slot)
 	backdrop:SetTemplate(nil, nil, true)
@@ -94,6 +94,14 @@ function M:ClearPageInfo(frame, which)
 	end
 end
 
+function M:INSPECT_READY(_, unitGUID)
+	M:UpdateInspectInfo(nil, unitGUID)
+
+	if not E.db.general.itemLevel.displayInspectInfo then
+		M:ClearPageInfo(InspectFrame, "Inspect")
+	end
+end
+
 function M:ToggleItemLevelInfo(setupCharacterPage)
 	if setupCharacterPage then
 		M:CreateSlotStrings(CharacterFrame, "Character")
@@ -120,11 +128,10 @@ function M:ToggleItemLevelInfo(setupCharacterPage)
 		M:ClearPageInfo(CharacterFrame, "Character")
 	end
 
-	if E.db.general.itemLevel.displayInspectInfo then
-		M:RegisterEvent("INSPECT_READY", "UpdateInspectInfo")
+	if E.db.general.itemLevel.displayInspectInfo or (E.private.skins.blizzard.enable and E.private.skins.blizzard.inspect) then
+		M:RegisterEvent("INSPECT_READY")
 	else
 		M:UnregisterEvent("INSPECT_READY")
-		M:ClearPageInfo(InspectFrame, "Inspect")
 	end
 end
 
@@ -139,6 +146,14 @@ function M:UpdatePageStrings(i, iLevelDB, inspectItem, slotInfo, which) -- `whic
 	inspectItem.iLvlText:SetText(slotInfo.iLvl)
 	if slotInfo.itemLevelColors and next(slotInfo.itemLevelColors) then
 		inspectItem.iLvlText:SetTextColor(unpack(slotInfo.itemLevelColors))
+
+		if inspectItem.backdrop then
+			inspectItem.backdrop:SetBackdropBorderColor(unpack(slotInfo.itemLevelColors))
+		end
+	else
+		if inspectItem.backdrop then
+			inspectItem.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		end
 	end
 
 	local gemStep = 1
