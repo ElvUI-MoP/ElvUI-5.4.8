@@ -277,6 +277,7 @@ local function LoadSkin()
 	for i = 1, 3 do
 		local frame = PetJournal.Loadout["Pet"..i]
 		local model = _G["PetJournalLoadoutPet"..i.."ModelFrame"]
+		local emptyTexture = _G["PetJournalLoadoutPet"..i.."HelpFrameHelpPlate"]
 
 		frame:Width(405)
 		frame:StripTextures()
@@ -293,6 +294,9 @@ local function LoadSkin()
 			frame:Point("TOP", 1, -219)
 		end
 
+		emptyTexture:Point("TOPLEFT", 1, -1)
+		emptyTexture:Point("BOTTOMRIGHT", 0, 1)
+
 		frame.petTypeIcon:Point("BOTTOMLEFT", 6, 12)
 		frame.petTypeIcon:SetTexCoord(0, 1, 0, 1)
 		frame.petTypeIcon:Size(36)
@@ -301,7 +305,6 @@ local function LoadSkin()
 		frame.icon:SetTexCoord(unpack(E.TexCoords))
 		frame.icon:Point("TOPLEFT", 4, -4)
 
-		frame.helpFrame:StripTextures()
 		frame.setButton:StripTextures()
 
 		frame.dragButton:SetOutside(frame.icon)

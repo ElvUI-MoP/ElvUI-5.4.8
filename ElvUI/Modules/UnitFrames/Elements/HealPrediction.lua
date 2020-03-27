@@ -51,10 +51,10 @@ function UF:Construct_HealComm(frame)
 	local health = frame.Health
 	local parent = health.ClipFrame
 
-	local myBar = CreateFrame('StatusBar', nil, parent)
-	local otherBar = CreateFrame('StatusBar', nil, parent)
-	local absorbBar = CreateFrame('StatusBar', nil, parent)
-	local healAbsorbBar = CreateFrame('StatusBar', nil, parent)
+	local myBar = CreateFrame("StatusBar", nil, parent)
+	local otherBar = CreateFrame("StatusBar", nil, parent)
+	local absorbBar = CreateFrame("StatusBar", nil, parent)
+	local healAbsorbBar = CreateFrame("StatusBar", nil, parent)
 	local overAbsorb = parent:CreateTexture(nil, "ARTWORK")
 	local overHealAbsorb = parent:CreateTexture(nil, "ARTWORK")
 
@@ -163,7 +163,7 @@ function UF:Configure_HealComm(frame)
 			if showAbsorbAmount then
 				absorbBar:Point(p2, health, p2)
 			else
-				absorbBar:Point(p1, otherBar:GetStatusBarTexture(), p2)
+				absorbBar:Point(p1, myBar:GetStatusBarTexture(), p2)
 			end
 
 			healAbsorbBar:Size(width, 0)
@@ -212,7 +212,7 @@ function UF:Configure_HealComm(frame)
 			if showAbsorbAmount then
 				absorbBar:Point(p2, health, p2)
 			else
-				absorbBar:Point(p1, otherBar:GetStatusBarTexture(), p2)
+				absorbBar:Point(p1, myBar:GetStatusBarTexture(), p2)
 			end
 
 			healAbsorbBar:Size(0, height)
