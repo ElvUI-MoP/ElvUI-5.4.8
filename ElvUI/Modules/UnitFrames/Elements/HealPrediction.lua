@@ -118,7 +118,7 @@ function UF:Configure_HealComm(frame)
 
 		myBar:SetReverseFill(reverseFill)
 		otherBar:SetReverseFill(reverseFill)
-		absorbBar:SetReverseFill(showAbsorbAmount and not reverseFill)
+		absorbBar:SetReverseFill((showAbsorbAmount and not reverseFill) or (reverseFill and not showAbsorbAmount))
 		healAbsorbBar:SetReverseFill(not reverseFill)
 
 		myBar:SetStatusBarColor(c.personal.r, c.personal.g, c.personal.b, c.personal.a)
@@ -163,7 +163,7 @@ function UF:Configure_HealComm(frame)
 			if showAbsorbAmount then
 				absorbBar:Point(p2, health, p2)
 			else
-				absorbBar:Point(p1, myBar:GetStatusBarTexture(), p2)
+				absorbBar:Point(p1, healthBarTexture, p2)
 			end
 
 			healAbsorbBar:Size(width, 0)
@@ -212,7 +212,7 @@ function UF:Configure_HealComm(frame)
 			if showAbsorbAmount then
 				absorbBar:Point(p2, health, p2)
 			else
-				absorbBar:Point(p1, myBar:GetStatusBarTexture(), p2)
+				absorbBar:Point(p1, healthBarTexture, p2)
 			end
 
 			healAbsorbBar:Size(0, height)
