@@ -29,6 +29,7 @@ function E:PostAlertMove(screenQuadrant)
 	local rollBars = Misc.RollBars
 	if E.private.general.lootRoll then
 		local lastframe, lastShownFrame
+
 		for i, frame in pairs(rollBars) do
 			frame:ClearAllPoints()
 			if i ~= 1 then
@@ -61,6 +62,7 @@ function E:PostAlertMove(screenQuadrant)
 		local lastframe, lastShownFrame
 		for i = 1, NUM_GROUP_LOOT_FRAMES do
 			local frame = _G["GroupLootFrame"..i]
+
 			if frame then
 				frame:ClearAllPoints()
 				if i ~= 1 then
@@ -104,6 +106,7 @@ function B:AlertFrame_SetLootAnchors(alertAnchor)
 	if MissingLootFrame:IsShown() then
 		MissingLootFrame:ClearAllPoints()
 		MissingLootFrame:Point(POSITION, alertAnchor, ANCHOR_POINT)
+
 		if GroupLootContainer:IsShown() then
 			GroupLootContainer:ClearAllPoints()
 			GroupLootContainer:Point(POSITION, MissingLootFrame, ANCHOR_POINT, 0, YOFFSET)
@@ -118,6 +121,7 @@ function B:AlertFrame_SetAchievementAnchors()
 	local alertAnchor
 	for i = 1, MAX_ACHIEVEMENT_ALERTS do
 		local frame = _G["AchievementAlertFrame"..i]
+
 		if frame then
 			frame:ClearAllPoints()
 			if alertAnchor and alertAnchor:IsShown() then
@@ -134,6 +138,7 @@ end
 function B:AlertFrame_SetLootWonAnchors(alertAnchor)
 	for i = 1, #LOOT_WON_ALERT_FRAMES do
 		local frame = LOOT_WON_ALERT_FRAMES[i]
+
 		if frame:IsShown() then
 			frame:ClearAllPoints()
 			frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -145,6 +150,7 @@ end
 function B:AlertFrame_SetMoneyWonAnchors(alertAnchor)
 	for i = 1, #MONEY_WON_ALERT_FRAMES do
 		local frame = MONEY_WON_ALERT_FRAMES[i]
+
 		if frame:IsShown() then
 			frame:ClearAllPoints()
 			frame:SetPoint(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -157,6 +163,7 @@ function B:AlertFrame_SetCriteriaAnchors(alertAnchor)
 	if CriteriaAlertFrame1 then
 		for i = 1, MAX_ACHIEVEMENT_ALERTS do
 			local frame = _G["CriteriaAlertFrame"..i]
+
 			if frame and frame:IsShown() then
 				frame:ClearAllPoints()
 				frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -168,6 +175,7 @@ end
 
 function B:AlertFrame_SetChallengeModeAnchors(alertAnchor)
 	local frame = ChallengeModeAlertFrame1
+
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -176,6 +184,7 @@ end
 
 function B:AlertFrame_SetDungeonCompletionAnchors(alertAnchor)
 	local frame = DungeonCompletionAlertFrame1
+
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -184,6 +193,7 @@ end
 
 function B:AlertFrame_SetStorePurchaseAnchors(alertAnchor)
 	local frame = StorePurchaseAlertFrame
+
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -192,6 +202,7 @@ end
 
 function B:AlertFrame_SetScenarioAnchors(alertAnchor)
 	local frame = ScenarioAlertFrame1
+
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -200,6 +211,16 @@ end
 
 function B:AlertFrame_SetGuildChallengeAnchors(alertAnchor)
 	local frame = GuildChallengeAlertFrame
+
+	if frame:IsShown() then
+		frame:ClearAllPoints()
+		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+	end
+end
+
+function B:AlertFrame_SetDigsiteCompleteToastFrameAnchors(alertAnchor)
+	local frame = DigsiteCompleteToastFrame
+
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
@@ -214,6 +235,7 @@ function B:AlertMovers()
 
 	self:SecureHook("AlertFrame_FixAnchors", E.PostAlertMove)
 	self:SecureHook("AlertFrame_SetLootAnchors")
+	self:SecureHook("AlertFrame_SetStorePurchaseAnchors")
 	self:SecureHook("AlertFrame_SetLootWonAnchors")
 	self:SecureHook("AlertFrame_SetMoneyWonAnchors")
 	self:SecureHook("AlertFrame_SetAchievementAnchors")
@@ -222,7 +244,7 @@ function B:AlertMovers()
 	self:SecureHook("AlertFrame_SetDungeonCompletionAnchors")
 	self:SecureHook("AlertFrame_SetScenarioAnchors")
 	self:SecureHook("AlertFrame_SetGuildChallengeAnchors")
-	self:SecureHook("AlertFrame_SetStorePurchaseAnchors")
+	self:SecureHook("AlertFrame_SetDigsiteCompleteToastFrameAnchors")
 
 	E:CreateMover(AlertFrameHolder, "AlertFrameMover", L["Loot / Alert Frames"], nil, nil, E.PostAlertMove, nil, nil, "general,general")
 end
