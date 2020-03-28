@@ -30,21 +30,25 @@ local function LoadSkin()
 
 		button.Ring:Kill()
 		button.Background:Kill()
+
+		if i == 1 or i == 2 then
+			button.bg1 = CreateFrame("Frame", nil, button)
+			button.bg1:CreateBackdrop()
+			button.bg1:SetAllPoints(button.CurrencyIcon)
+
+			if i == 1 then
+				button.CurrencyIcon:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..E.myfaction)
+			else
+				button.CurrencyIcon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
+			end
+
+			button.CurrencyIcon:SetTexCoord(unpack(E.TexCoords))
+			button.CurrencyIcon:Size(20)
+			button.CurrencyIcon:Point("TOPLEFT", button, "BOTTOMLEFT", 79, 30)
+
+			button.CurrencyAmount:Point("LEFT", button.CurrencyIcon, "RIGHT", 7, 0)
+		end
 	end
-
-	PVPQueueFrame.CategoryButton1.CurrencyIcon:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..E.myfaction)
-	PVPQueueFrame.CategoryButton1.CurrencyIcon:SetTexCoord(unpack(E.TexCoords))
-	PVPQueueFrame.CategoryButton1.CurrencyIcon:Size(20)
-	PVPQueueFrame.CategoryButton1.CurrencyIcon:Point("TOPLEFT", PVPQueueFrame.CategoryButton1, "BOTTOMLEFT", 79, 30)
-
-	PVPQueueFrame.CategoryButton1.CurrencyAmount:Point("LEFT", PVPQueueFrame.CategoryButton1.CurrencyIcon, "RIGHT", 7, 0)
-
-	PVPQueueFrame.CategoryButton2.CurrencyIcon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..E.myfaction)
-	PVPQueueFrame.CategoryButton2.CurrencyIcon:SetTexCoord(unpack(E.TexCoords))
-	PVPQueueFrame.CategoryButton2.CurrencyIcon:Size(20)
-	PVPQueueFrame.CategoryButton2.CurrencyIcon:Point("TOPLEFT", PVPQueueFrame.CategoryButton2, "BOTTOMLEFT", 79, 30)
-
-	PVPQueueFrame.CategoryButton2.CurrencyAmount:Point("LEFT", PVPQueueFrame.CategoryButton2.CurrencyIcon, "RIGHT", 7, 0)
 
 	-- Honor Frame
 	HonorFrame.Inset:StripTextures()
@@ -56,7 +60,7 @@ local function LoadSkin()
 
 		button:StripTextures()
 		button:CreateBackdrop()
- 
+
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside(button.backdrop)
 
@@ -315,8 +319,12 @@ local function LoadSecondarySkin()
 
 	PVPReadyDialogRoleIcon:StripTextures()
 	PVPReadyDialogRoleIcon:CreateBackdrop()
-	PVPReadyDialogRoleIcon.backdrop:Point("TOPLEFT", 7, -7)
-	PVPReadyDialogRoleIcon.backdrop:Point("BOTTOMRIGHT", -7, 7)
+	PVPReadyDialogRoleIcon:Size(60)
+
+	PVPReadyDialogRoleIcon.texture:SetTexCoord(unpack(E.TexCoords))
+	PVPReadyDialogRoleIcon.texture.SetTexCoord = E.noop
+	PVPReadyDialogRoleIcon.texture:SetInside(PVPReadyDialogRoleIcon.backdrop)
+	PVPReadyDialogRoleIcon.texture:SetParent(PVPReadyDialogRoleIcon.backdrop)
 
 	hooksecurefunc("PVPReadyDialog_Display", function(self, _, _, _, queueType, _, role)
 		if role == "DAMAGER" then
@@ -326,10 +334,6 @@ local function LoadSecondarySkin()
 		elseif role == "HEALER" then
 			self.roleIcon.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
 		end
-
-		self.roleIcon.texture:SetTexCoord(unpack(E.TexCoords))
-		self.roleIcon.texture:SetInside(self.roleIcon.backdrop)
-		self.roleIcon.texture:SetParent(self.roleIcon.backdrop)
 
 		if queueType == "ARENA" then
 			self:Height(100)
