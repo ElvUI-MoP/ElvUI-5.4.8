@@ -42,6 +42,8 @@ local function OnEvent(self)
 			if ((current / max) * 100) < totalDurability then
 				totalDurability = (current / max) * 100
 			end
+		else
+			invDurability[value] = nil
 		end
 	end
 

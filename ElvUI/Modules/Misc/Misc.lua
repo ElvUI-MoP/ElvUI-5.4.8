@@ -270,6 +270,7 @@ function M:Initialize()
 	self:LoadLootRoll()
 	self:LoadChatBubbles()
 	self:ToggleItemLevelInfo(true)
+
 	self:RegisterEvent("MERCHANT_SHOW")
 	self:RegisterEvent("RESURRECT_REQUEST")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "ErrorFrameToggle")

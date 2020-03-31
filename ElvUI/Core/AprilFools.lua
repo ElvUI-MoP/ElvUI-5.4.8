@@ -1,4 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
+local UF = E:GetModule("UnitFrames")
+local AB = E:GetModule("ActionBars")
 
 local _G = _G
 local pairs = pairs
