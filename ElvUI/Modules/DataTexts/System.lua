@@ -180,6 +180,7 @@ local function OnEnter(self)
 		DT.tooltip:AddLine(L["(Hold Shift) Memory Usage"])
 	end
 
+	DT.tooltip:AddLine(L["(Modifer Click) Collect Garbage"])
 	DT.tooltip:Show()
 end
 

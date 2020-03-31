@@ -489,7 +489,7 @@ E.PopupDialogs.MODULE_COPY_CONFIRM = {
 E.PopupDialogs.SCRIPT_PROFILE = {
 	text = L["You are using CPU Profiling. This causes decreased performance. Do you want to disable it or continue?"],
 	button1 = L["Disable"],
-	button2 = L["Continue"],
+	button2 = CONTINUE,
 	OnAccept = function()
 		SetCVar("scriptProfile", 0)
 		ReloadUI()

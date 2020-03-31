@@ -244,22 +244,22 @@ local function CreateNamePlatesConfig()
 			["FRIENDLY_PLAYER"] = {
 				order = 1,
 				type = "toggle",
-				name = L["Friendly Player Frames"]
+				name = L["FRIENDLY_PLAYER"]
 			},
 			["ENEMY_PLAYER"] = {
 				order = 2,
 				type = "toggle",
-				name = L["Enemy Player Frames"]
+				name = L["ENEMY_PLAYER"]
 			},
 			["FRIENDLY_NPC"] = {
 				order = 3,
 				type = "toggle",
-				name = L["Friendly NPC Frames"]
+				name = L["FRIENDLY_NPC"]
 			},
 			["ENEMY_NPC"] = {
 				order = 4,
 				type = "toggle",
-				name = L["Enemy NPC Frames"]
+				name = L["ENEMY_NPC"]
 			}
 		}
 	}
@@ -414,12 +414,12 @@ local function CreateUnitframesConfig()
 			["boss"] = {
 				order = 13,
 				type = "toggle",
-				name = L["Boss"],
+				name = L["BOSS"],
 			},
 			["arena"] = {
 				order = 14,
 				type = "toggle",
-				name = L["Arena"],
+				name = L["ARENA"],
 			},
 			["tank"] = {
 				order = 15,
