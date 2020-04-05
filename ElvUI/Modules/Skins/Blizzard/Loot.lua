@@ -5,7 +5,6 @@ local _G = _G
 local unpack, select = unpack, select
 local find = string.find
 
-local C_LootHistory_GetNumItems = C_LootHistory.GetNumItems
 local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
 local GetLootSlotInfo = GetLootSlotInfo
@@ -15,6 +14,9 @@ local UnitIsDead = UnitIsDead
 local UnitIsFriend = UnitIsFriend
 local UnitName = UnitName
 local IsFishingLoot = IsFishingLoot
+
+local C_LootHistory_GetNumItems = C_LootHistory.GetNumItems
+
 local LOOTFRAME_NUMBUTTONS = LOOTFRAME_NUMBUTTONS
 local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES
 local LOOT, ITEMS = LOOT, ITEMS
@@ -42,27 +44,35 @@ local function LoadSkin()
 	LootHistoryFrame.ResizeButton.icon:Point("CENTER")
 	LootHistoryFrame.ResizeButton.icon:SetTexture(E.Media.Textures.ArrowUp)
 
-	S:HandleScrollBar(LootHistoryFrameScrollFrameScrollBar)
+	LootHistoryFrame.ScrollFrame:CreateBackdrop("Transparent")
+	LootHistoryFrame.ScrollFrame.backdrop:Point("TOPLEFT", -1, 0)
+	LootHistoryFrame.ScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -3)
 
-	S:HandleCloseButton(LootHistoryFrame.CloseButton)
+	S:HandleScrollBar(LootHistoryFrameScrollFrameScrollBar)
+	LootHistoryFrameScrollFrameScrollBar:ClearAllPoints()
+	LootHistoryFrameScrollFrameScrollBar:Point("TOPRIGHT", LootHistoryFrame.ScrollFrame, 21, -18)
+	LootHistoryFrameScrollFrameScrollBar:Point("BOTTOMRIGHT", LootHistoryFrame.ScrollFrame, 0, 15)
+
+	S:HandleCloseButton(LootHistoryFrame.CloseButton, LootHistoryFrame)
 
 	local function UpdateLoots()
-		local numItems = C_LootHistory_GetNumItems()
-		for i = 1, numItems do
+		for i = 1, C_LootHistory_GetNumItems() do
 			local frame = LootHistoryFrame.itemFrames[i]
 
 			if not frame.isSkinned then
-				local Icon = frame.Icon:GetTexture()
+				local tex = frame.Icon:GetTexture()
 
 				frame:StripTextures()
 				frame:CreateBackdrop()
 				frame.backdrop:SetOutside(frame.Icon)
 
-				frame.Icon:SetTexture(Icon)
+				S:HandleButtonHighlight(frame, true)
+
+				frame.Icon:SetTexture(tex)
 				frame.Icon:SetTexCoord(unpack(E.TexCoords))
 				frame.Icon:SetParent(frame.backdrop)
 
-				frame.ToggleButton:Point("LEFT", 4, 0)
+				frame.ToggleButton:Point("LEFT", 2, 0)
 
 				frame.ToggleButton:SetNormalTexture(E.Media.Textures.Plus)
 				frame.ToggleButton.SetNormalTexture = E.noop
@@ -96,6 +106,12 @@ local function LoadSkin()
 
 				frame.isSkinned = true
 			end
+
+			local quality = select(3, GetItemInfo(frame.itemLink))
+			local r, g, b = GetItemQualityColor(quality)
+
+			frame.backdrop:SetBackdropBorderColor(r, g, b)
+			frame.handledHighlight:SetVertexColor(r, g, b)
 		end
 	end
 	hooksecurefunc("LootHistoryFrame_FullUpdate", UpdateLoots)
@@ -107,18 +123,18 @@ local function LoadSkin()
 
 	hooksecurefunc("MasterLooterFrame_Show", function()
 		local button = MasterLooterFrame.Item
+
 		if button then
-			local icon = button.Icon
-			local texture = icon:GetTexture()
+			local texture = button.Icon:GetTexture()
 			local quality = ITEM_QUALITY_COLORS[LootFrame.selectedQuality]
 
 			button:StripTextures()
 			button:CreateBackdrop()
-			button.backdrop:SetOutside(icon)
+			button.backdrop:SetOutside(button.Icon)
 			button.backdrop:SetBackdropBorderColor(quality.r, quality.g, quality.b)
 
-			icon:SetTexture(texture)
-			icon:SetTexCoord(unpack(E.TexCoords))
+			button.Icon:SetTexture(texture)
+			button.Icon:SetTexCoord(unpack(E.TexCoords))
 		end
 
 		for i = 1, MasterLooterFrame:GetNumChildren() do
@@ -144,7 +160,7 @@ local function LoadSkin()
 	BonusRollFrame:StripTextures()
 	BonusRollFrame:SetTemplate("Transparent")
 
-	BonusRollFrame.SpecRing:SetTexture("")
+	BonusRollFrame.SpecRing:SetTexture()
 	BonusRollFrame.CurrentCountFrame.Text:FontTemplate()
 
 	BonusRollFrame.PromptFrame.Icon:SetTexCoord(unpack(E.TexCoords))
@@ -158,15 +174,17 @@ local function LoadSkin()
 	BonusRollFrame.PromptFrame.Timer:SetStatusBarColor(unpack(E.media.rgbvaluecolor))
 
 	BonusRollFrame.BlackBackgroundHoist.Background:Hide()
+
 	BonusRollFrame.BlackBackgroundHoist.b = CreateFrame("Frame", nil, BonusRollFrame)
 	BonusRollFrame.BlackBackgroundHoist.b:SetTemplate()
 	BonusRollFrame.BlackBackgroundHoist.b:SetOutside(BonusRollFrame.PromptFrame.Timer)
 
 	BonusRollFrame.SpecIcon.b = CreateFrame("Frame", nil, BonusRollFrame)
 	BonusRollFrame.SpecIcon.b:SetTemplate()
-	BonusRollFrame.SpecIcon.b:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 2)
-	BonusRollFrame.SpecIcon.b:SetSize(BonusRollFrame.SpecIcon:GetSize())
+	BonusRollFrame.SpecIcon.b:Point("BOTTOMRIGHT", BonusRollFrame, -2, 2)
+	BonusRollFrame.SpecIcon.b:Size(BonusRollFrame.SpecIcon:GetSize())
 	BonusRollFrame.SpecIcon.b:SetFrameLevel(6)
+
 	BonusRollFrame.SpecIcon:SetParent(BonusRollFrame.SpecIcon.b)
 	BonusRollFrame.SpecIcon:SetTexCoord(unpack(E.TexCoords))
 	BonusRollFrame.SpecIcon:SetInside()
@@ -174,14 +192,14 @@ local function LoadSkin()
 	hooksecurefunc(BonusRollFrame.SpecIcon, "Hide", function(specIcon)
 		if specIcon.b and specIcon.b:IsShown() then
 			BonusRollFrame.CurrentCountFrame:ClearAllPoints()
-			BonusRollFrame.CurrentCountFrame:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 1)
+			BonusRollFrame.CurrentCountFrame:Point("BOTTOMRIGHT", BonusRollFrame, -2, 1)
 			specIcon.b:Hide()
 		end
 	end)
 	hooksecurefunc(BonusRollFrame.SpecIcon, "Show", function(specIcon)
 		if specIcon.b and not specIcon.b:IsShown() and specIcon:GetTexture() ~= nil then
 			BonusRollFrame.CurrentCountFrame:ClearAllPoints()
-			BonusRollFrame.CurrentCountFrame:SetPoint("RIGHT", BonusRollFrame.SpecIcon.b, "LEFT", -2, -2)
+			BonusRollFrame.CurrentCountFrame:Point("RIGHT", BonusRollFrame.SpecIcon.b, "LEFT", -2, -2)
 			specIcon.b:Show()
 		end
 	end)
@@ -199,12 +217,12 @@ local function LoadSkin()
 		if BonusRollFrame.SpecIcon.b then
 			BonusRollFrame.SpecIcon.b:SetShown(BonusRollFrame.SpecIcon:IsShown() and BonusRollFrame.SpecIcon:GetTexture() ~= nil)
 			if BonusRollFrame.SpecIcon.b:IsShown() then
-				BonusRollFrame.CurrentCountFrame:SetPoint("RIGHT", BonusRollFrame.SpecIcon.b, "LEFT", -2, -2)
+				BonusRollFrame.CurrentCountFrame:Point("RIGHT", BonusRollFrame.SpecIcon.b, "LEFT", -2, -2)
 			else
-				BonusRollFrame.CurrentCountFrame:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 1)
+				BonusRollFrame.CurrentCountFrame:Point("BOTTOMRIGHT", BonusRollFrame, -2, 1)
 			end
 		else
-			BonusRollFrame.CurrentCountFrame:SetPoint("BOTTOMRIGHT", BonusRollFrame, -2, 1)
+			BonusRollFrame.CurrentCountFrame:Point("BOTTOMRIGHT", BonusRollFrame, -2, 1)
 		end
 
 		--skin currency icons

@@ -169,10 +169,16 @@ local function LoadSkin()
 
 	S:HandleCheckBox(CalendarCreateEventLockEventCheck)
 
-	S:HandleDropDownBox(CalendarCreateEventHourDropDown, 68)
+	S:HandleDropDownBox(CalendarCreateEventHourDropDown)
 	CalendarCreateEventHourDropDown:Point("TOPLEFT", 4, -114)
-	S:HandleDropDownBox(CalendarCreateEventMinuteDropDown, 68)
-	S:HandleDropDownBox(CalendarCreateEventAMPMDropDown, 68)
+	CalendarCreateEventHourDropDownText.ClearAllPoints = E.noop
+	CalendarCreateEventHourDropDownText.SetPoint = E.noop
+
+	S:HandleDropDownBox(CalendarCreateEventMinuteDropDown)
+	CalendarCreateEventMinuteDropDownText.ClearAllPoints = E.noop
+	CalendarCreateEventMinuteDropDownText.SetPoint = E.noop
+
+	S:HandleDropDownBox(CalendarCreateEventAMPMDropDown)
 	S:HandleDropDownBox(CalendarCreateEventRepeatOptionDropDown, 120)
 
 	CalendarCreateEventInviteListSection:StripTextures()

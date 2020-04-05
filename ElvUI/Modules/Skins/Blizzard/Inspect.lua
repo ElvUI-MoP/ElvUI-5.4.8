@@ -20,16 +20,6 @@ local function LoadSkin()
 		S:HandleTab(_G["InspectFrameTab"..i])
 	end
 
-	InspectModelFrameBorderTopLeft:Kill()
-	InspectModelFrameBorderTopRight:Kill()
-	InspectModelFrameBorderTop:Kill()
-	InspectModelFrameBorderLeft:Kill()
-	InspectModelFrameBorderRight:Kill()
-	InspectModelFrameBorderBottomLeft:Kill()
-	InspectModelFrameBorderBottomRight:Kill()
-	InspectModelFrameBorderBottom:Kill()
-	InspectModelFrameBorderBottom2:Kill()
-
 	InspectModelFrame:StripTextures()
 	InspectModelFrame:CreateBackdrop("Transparent")
 	InspectModelFrame.backdrop:Point("TOPLEFT", E.PixelMode and -1 or -2, E.PixelMode and 1 or 2)

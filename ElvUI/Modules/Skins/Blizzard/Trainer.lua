@@ -30,7 +30,7 @@ local function LoadSkin()
 	ClassTrainerStatusBar:CreateBackdrop()
 	ClassTrainerStatusBar:Size(321, 18)
 	ClassTrainerStatusBar:SetStatusBarTexture(E.media.normTex)
-	ClassTrainerStatusBar:SetStatusBarColor(0.11, 0.50, 1.00)
+	ClassTrainerStatusBar:SetStatusBarColor(0.22, 0.39, 0.84)
 	ClassTrainerStatusBar:ClearAllPoints()
 	ClassTrainerStatusBar:Point("TOP", ClassTrainerFrame, 3, -30)
 
@@ -61,12 +61,12 @@ local function LoadSkin()
 
 	-- Scroll Frame
 	ClassTrainerScrollFrame:CreateBackdrop("Transparent")
-	ClassTrainerScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -2)
+	ClassTrainerScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -3)
 
 	S:HandleScrollBar(ClassTrainerScrollFrameScrollBar)
 	ClassTrainerScrollFrameScrollBar:ClearAllPoints()
 	ClassTrainerScrollFrameScrollBar:Point("TOPRIGHT", ClassTrainerScrollFrame, 23, -15)
-	ClassTrainerScrollFrameScrollBar:Point("BOTTOMRIGHT", ClassTrainerScrollFrame, 0, 14)
+	ClassTrainerScrollFrameScrollBar:Point("BOTTOMRIGHT", ClassTrainerScrollFrame, 0, 13)
 
 	for i = 1, 8 do
 		local button = _G["ClassTrainerScrollFrameButton"..i]

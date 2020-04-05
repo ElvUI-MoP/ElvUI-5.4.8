@@ -7,43 +7,22 @@ local pairs = pairs
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.raid then return end
 
-	local StripAllTextures = {
-		"RaidGroup1",
-		"RaidGroup2",
-		"RaidGroup3",
-		"RaidGroup4",
-		"RaidGroup5",
-		"RaidGroup6",
-		"RaidGroup7",
-		"RaidGroup8"
-	}
+	for i = 1, MAX_RAID_GROUPS do
+		local frame = _G["RaidGroup"..i]
 
-	for _, object in pairs(StripAllTextures) do
-		if not _G[object] then print(object) end
+		frame:StripTextures()
 
-		if _G[object] then
-			_G[object]:StripTextures()
+		for j = 1, 5 do
+			local slot = _G["RaidGroup"..i.."Slot"..j]
+
+			slot:StripTextures()
+			slot:SetTemplate("Transparent")
 		end
 	end
 
 	for i = 1, MAX_RAID_GROUPS * 5 do
 		S:HandleButton(_G["RaidGroupButton"..i], true)
 	end
-
-	for i = 1, 8 do
-		for j = 1, 5 do
-			_G["RaidGroup"..i.."Slot"..j]:StripTextures()
-			_G["RaidGroup"..i.."Slot"..j]:SetTemplate("Transparent")
-		end
-	end
-
-	--[[S:HandleButton(RaidFrameReadyCheckButton)
-	RaidFrameReadyCheckButton:Point("TOPLEFT", RaidFrameAllAssistCheckButton, "TOPRIGHT", 100, -1)
-
-	S:HandleCheckBox(RaidFrameAllAssistCheckButton)
-	RaidFrameAllAssistCheckButton:Point("TOPLEFT", 15, -23)
-
-	RaidFrameAllAssistCheckButtonText:Point("LEFT", RaidFrameAllAssistCheckButton, "RIGHT", 0, -2)]]
 end
 
 S:AddCallbackForAddon("Blizzard_RaidUI", "RaidUI", LoadSkin)

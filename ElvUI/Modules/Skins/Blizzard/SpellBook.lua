@@ -169,7 +169,7 @@ local function LoadSkin()
 			if item.unlearn then
 				S:HandleCloseButton(item.unlearn)
 				item.unlearn:Size(26)
-				item.unlearn:Point("RIGHT", item.statusBar, "LEFT", -128, -9)
+				item.unlearn:Point("RIGHT", item.statusBar, "LEFT", -130, -11)
 				item.unlearn.Texture:SetVertexColor(1, 0, 0)
 
 				item.unlearn:HookScript("OnEnter", function(btn) btn.Texture:SetVertexColor(1, 1, 1) end)
@@ -184,7 +184,7 @@ local function LoadSkin()
 
 			if numItems == 2 then
 				item:Point("TOPLEFT", 10, -(i == 1 and 30 or 130))
-				item.rank:Point("TOPLEFT", 120, -23)
+				item.rank:Point("TOPLEFT", 117, -26)
 			end
 
 			for j = 1, 2 do

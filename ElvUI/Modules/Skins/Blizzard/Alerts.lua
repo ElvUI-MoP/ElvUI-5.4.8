@@ -233,35 +233,55 @@ local function LoadSkin()
 	end)
 
 	-- Loot Won Alerts
-	hooksecurefunc("LootWonAlertFrame_SetUp", function(frame)
-		if frame and not frame.isSkinned then
-			frame:SetTemplate("Transparent")
-			frame:Size(260, 64)
+	hooksecurefunc("LootWonAlertFrame_SetUp", function(frame, itemLink, _, _, _, specID, isCurrency)
+		if frame then
+			if not frame.isSkinned then
+				frame:SetTemplate("Transparent")
+				frame:Size(260, 64)
 
-			frame.Icon.backdrop = CreateFrame("Frame", nil, frame)
-			frame.Icon.backdrop:SetTemplate()
-			frame.Icon.backdrop:SetOutside(frame.Icon)
+				frame.Icon.backdrop = CreateFrame("Frame", nil, frame)
+				frame.Icon.backdrop:SetTemplate()
+				frame.Icon.backdrop:SetOutside(frame.Icon)
 
-			frame.Icon:ClearAllPoints()
-			frame.Icon:Point("LEFT", frame, 6, 0)
-			frame.Icon:SetTexCoord(unpack(E.TexCoords))
-			frame.Icon:SetParent(frame.Icon.backdrop)
+				frame.Icon:ClearAllPoints()
+				frame.Icon:Point("LEFT", frame, 6, 0)
+				frame.Icon:SetTexCoord(unpack(E.TexCoords))
+				frame.Icon:SetParent(frame.Icon.backdrop)
 
-			frame.ItemName:ClearAllPoints()
-			frame.ItemName:Point("LEFT", frame.Icon, 58, 0)
+				frame.SpecIcon.backdrop = CreateFrame("Frame", nil, frame)
+				frame.SpecIcon.backdrop:SetTemplate()
+				frame.SpecIcon.backdrop:SetOutside(frame.SpecIcon)
 
-			frame.RollTypeIcon:Point("TOPRIGHT", frame, -2, 0)
+				frame.SpecIcon:ClearAllPoints()
+				frame.SpecIcon:Point("LEFT", frame.RollTypeIcon, -4, -34)
+				frame.SpecIcon:SetTexCoord(unpack(E.TexCoords))
+				frame.SpecIcon:SetParent(frame.SpecIcon.backdrop)
 
-			if frame.SpecRing and frame.SpecIcon and frame.SpecIcon.GetTexture and frame.SpecIcon:GetTexture() == nil then
-				frame.SpecRing:Hide()
+				if frame.SpecRing and frame.SpecIcon and frame.SpecIcon.GetTexture and frame.SpecIcon:GetTexture() == nil then
+					frame.SpecRing:Hide()
+				end
+
+				frame.ItemName:ClearAllPoints()
+				frame.ItemName:Point("LEFT", frame.Icon, 58, 0)
+
+				frame.RollTypeIcon:Point("TOPRIGHT", frame, -4, -2)
+
+				frame.glow:Kill()
+				frame.shine:Kill()
+				frame.Background:Kill()
+				frame.IconBorder:Kill()
+
+				frame.isSkinned = true
 			end
 
-			frame.glow:Kill()
-			frame.shine:Kill()
-			frame.Background:Kill()
-			frame.IconBorder:Kill()
+			local quality = isCurrency and select(8, GetCurrencyInfo(itemLink)) or select(3, GetItemInfo(itemLink))
+			if quality then
+				frame.Icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+			else
+				frame.Icon.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			end
 
-			frame.isSkinned = true
+			frame.SpecIcon.backdrop:SetShown(specID and specID > 0)
 		end
 	end)
 

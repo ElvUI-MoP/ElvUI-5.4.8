@@ -32,9 +32,11 @@ local function LoadSkin()
 
 	S:HandleButton(MacroDeleteButton)
 	S:HandleButton(MacroExitButton)
-	S:HandleButton(MacroNewButton)
 	S:HandleButton(MacroSaveButton)
 	S:HandleButton(MacroCancelButton)
+
+	S:HandleButton(MacroNewButton)
+	MacroNewButton:Point("BOTTOMRIGHT", -87, 4)
 
 	S:HandleCloseButton(MacroFrameCloseButton)
 

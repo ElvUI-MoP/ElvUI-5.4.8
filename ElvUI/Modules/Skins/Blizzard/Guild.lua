@@ -39,7 +39,7 @@ local function LoadSkin()
 	-- Faction Bar
 	GuildFactionFrame:CreateBackdrop()
 	GuildFactionFrame.backdrop:Point("TOPLEFT")
-	GuildFactionFrame.backdrop:Point("BOTTOMRIGHT", 0, 1)
+	GuildFactionFrame.backdrop:Point("BOTTOMRIGHT", -1, 1)
 
 	GuildFactionBar:StripTextures()
 	GuildFactionBar:SetAllPoints(GuildFactionFrame)
