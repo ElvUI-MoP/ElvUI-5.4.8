@@ -3,7 +3,7 @@
 --Global Settings
 G.general = {
 	UIScale = 0.7111111111111111,
-	version = 2.2,
+	version = 2.3,
 	locale = E:GetLocale(),
 	eyefinity = false,
 	ignoreScalePopup = false,
