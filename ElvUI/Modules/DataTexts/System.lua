@@ -4,7 +4,7 @@ local DT = E:GetModule("DataTexts")
 local select, collectgarbage = select, collectgarbage
 local sort, wipe = table.sort, wipe
 local floor = math.floor
-local format = string.format
+local format, join = string.format, string.join
 
 local GetAddOnCPUUsage = GetAddOnCPUUsage
 local GetAddOnInfo = GetAddOnInfo
@@ -167,6 +167,8 @@ local function OnEnter(self)
 				DT.tooltip:AddDoubleLine(ele[2], formatMem(ele[3]), 1, 1, 1, red, green + .5, 0)
 			end
 		end
+
+		DT.tooltip:AddLine(" ")
 	else
 		for i = 1, #cpuTable do
 			local ele = cpuTable[i]
@@ -176,11 +178,13 @@ local function OnEnter(self)
 				DT.tooltip:AddDoubleLine(ele[2], format(homeLatencyString, ele[3]), 1, 1, 1, red, green + .5, 0)
 			end
 		end
+
 		DT.tooltip:AddLine(" ")
-		DT.tooltip:AddLine(L["(Hold Shift) Memory Usage"])
+		DT.tooltip:AddLine(join("", "|cffaaaaaa", L["(Hold Shift) Memory Usage"], "|r"))
 	end
 
-	DT.tooltip:AddLine(L["(Modifer Click) Collect Garbage"])
+	DT.tooltip:AddLine(join("", "|cffaaaaaa", L["(Modifer Click) Collect Garbage"], "|r"))
+
 	DT.tooltip:Show()
 end
 

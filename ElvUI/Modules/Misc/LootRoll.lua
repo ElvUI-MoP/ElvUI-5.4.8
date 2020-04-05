@@ -324,8 +324,8 @@ M.LOOT_ROLLS_COMPLETE = M.LOOT_HISTORY_ROLL_COMPLETE
 function M:LoadLootRoll()
 	if not E.private.general.lootRoll then return end
 
-	self:RegisterEvent('LOOT_HISTORY_ROLL_CHANGED')
-	self:RegisterEvent('LOOT_HISTORY_ROLL_COMPLETE')
+	self:RegisterEvent("LOOT_HISTORY_ROLL_CHANGED")
+	self:RegisterEvent("LOOT_HISTORY_ROLL_COMPLETE")
 	self:RegisterEvent("START_LOOT_ROLL")
 	self:RegisterEvent("LOOT_ROLLS_COMPLETE")
 

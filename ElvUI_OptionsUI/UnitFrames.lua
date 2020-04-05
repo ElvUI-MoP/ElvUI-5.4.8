@@ -2103,7 +2103,7 @@ local function GetOptionsTable_Power(hasDetatchOption, updateFunc, groupName, nu
 			desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
 			hidden = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
 			values = {
-				["FRAME"] = "FRAME",
+				["FRAME"] = L["Frame"],
 				["UIPARENT"] = "UIPARENT"
 			}
 		}
@@ -2743,7 +2743,7 @@ local function GetOptionsTable_ClassBar(updateFunc, groupName)
 						desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
 						disabled = function() return not E.db.unitframe.units[groupName].classbar.detachFromFrame or not E.db.unitframe.units[groupName].classbar.enable end,
 						values = {
-							["FRAME"] = "FRAME",
+							["FRAME"] = L["Frame"],
 							["UIPARENT"] = "UIPARENT"
 						}
 					},
@@ -2901,7 +2901,7 @@ local function GetOptionsTable_ComboBar(updateFunc, groupName)
 						desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
 						disabled = function() return not E.db.unitframe.units[groupName].combobar.detachFromFrame or not E.db.unitframe.units[groupName].combobar.enable end,
 						values = {
-							["FRAME"] = "FRAME",
+							["FRAME"] = L["Frame"],
 							["UIPARENT"] = "UIPARENT"
 						}
 					},

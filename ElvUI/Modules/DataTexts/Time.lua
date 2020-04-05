@@ -77,6 +77,10 @@ local function GetCurrentDate(formatString, isTooltip)
 	end
 end
 
+local function sortFunc(a, b)
+	return a[1] < b[1]
+end
+
 local instanceIconByName = {}
 local function GetInstanceImages(index, raid)
 	local instanceID, name, _, _, buttonImage = EJ_GetInstanceByIndex(index, raid)
@@ -150,15 +154,15 @@ local function OnEnter(self)
 
 	local lockedInstances = {raids = {}, dungeons = {}}
 	local name, difficulty, locked, extended, isRaid
-	local isLFR, isHeroic, displayHeroic, sortName, difficultyLetter, buttonImg
+	local isLFR, isHeroic, sortName, difficultyLetter, buttonImg
 
 	for i = 1, GetNumSavedInstances() do
 		name, _, _, difficulty, locked, extended, _, isRaid = GetSavedInstanceInfo(i)
 		if (locked or extended) and name then
 			isLFR, isHeroicDungeon = (difficulty == 7 or difficulty == 17), (difficulty == 2 or difficulty == 23)
-			_, _, isHeroic, _, displayHeroic = GetDifficultyInfo(difficulty)
-			sortName = name .. ((isHeroic or displayHeroic) and 3 or isLFR and 1 or 2)
-			difficultyLetter = ((isHeroic or displayHeroic) and difficultyTag[3] or isLFR and difficultyTag[1] or difficultyTag[2])
+			_, _, isHeroic = GetDifficultyInfo(difficulty)
+			sortName = name .. (isHeroic and 3 or isLFR and 1 or 2)
+			difficultyLetter = (isHeroic and difficultyTag[3] or isLFR and difficultyTag[1] or difficultyTag[2])
 			buttonImg = instanceIconByName[name] and format("|T%s:16:16:0:0:96:96:0:64:0:64|t ", instanceIconByName[name]) or ""
 
 			if isRaid then
@@ -176,7 +180,7 @@ local function OnEnter(self)
 		end
 		DT.tooltip:AddLine(L["Saved Raid(s)"])
 
-		tsort(lockedInstances.raids, function(a, b) return a[1] < b[1] end)
+		tsort(lockedInstances.raids, sortFunc)
 
 		for i = 1, #lockedInstances.raids do
 			difficultyLetter = lockedInstances.raids[i][2]
@@ -198,7 +202,7 @@ local function OnEnter(self)
 		end
 		DT.tooltip:AddLine(L["Saved Dungeon(s)"])
 
-		tsort(lockedInstances.dungeons, function(a, b) return a[1] < b[1] end)
+		tsort(lockedInstances.dungeons, sortFunc)
 
 		for i = 1, #lockedInstances.dungeons do
 			difficultyLetter = lockedInstances.dungeons[i][2]
@@ -220,7 +224,7 @@ local function OnEnter(self)
 		name, _, reset = GetSavedWorldBossInfo(i)
 		tinsert(worldbossLockoutList, {name, reset})
 	end
-	tsort(worldbossLockoutList, function( a,b ) return a[1] < b[1] end)
+	tsort(worldbossLockoutList, sortFunc)
 	for i = 1,#worldbossLockoutList do
 		name, reset = unpack(worldbossLockoutList[i])
 		if reset then

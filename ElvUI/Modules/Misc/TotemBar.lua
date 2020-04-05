@@ -26,7 +26,7 @@ function TOTEMS:Update()
 			self.bar[i]:Show()
 			self.bar[i].iconTexture:SetTexture(icon)
 			displayedTotems = displayedTotems + 1
-			CooldownFrame_SetTimer(self.bar[i].cooldown, startTime, duration, 1);
+			CooldownFrame_SetTimer(self.bar[i].cooldown, startTime, duration, 1)
 
 			if E.myclass == "SHAMAN" then
 				color = SLOT_BORDER_COLORS[self.bar[i]:GetID()]
