@@ -764,14 +764,14 @@ E.Options.args.actionbar = {
 			order = 19,
 			type = "group",
 			name = L["Vehicle Exit"],
-			disabled = function() return not E.ActionBars.Initialized; end,
+			disabled = function() return not E.ActionBars.Initialized end,
 			get = function(info) return E.db.actionbar.vehicleExitButton[info[#info]] end,
 			args = {
 				enable = {
 					order = 1,
 					type = "toggle",
 					name = L["ENABLE"],
-					set = function(info, value) E.db.actionbar.vehicleExitButton [info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
+					set = function(info, value) E.db.actionbar.vehicleExitButton[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
 				},
 				size = {
 					order = 2,
@@ -784,7 +784,8 @@ E.Options.args.actionbar = {
 					order = 3,
 					type = "range",
 					name = L["Frame Level"],
-					min = 1, max = 128, step = 1
+					min = 1, max = 128, step = 1,
+					set = function(info, value) E.db.actionbar.vehicleExitButton[info[#info]] = value AB:UpdateVehicleLeave() end
 				},
 				strata = {
 					order = 4,
@@ -797,7 +798,8 @@ E.Options.args.actionbar = {
 						["HIGH"] = "HIGH",
 						["DIALOG"] = "DIALOG",
 						["TOOLTIP"] = "TOOLTIP"
-					}
+					},
+					set = function(info, value) E.db.actionbar.vehicleExitButton[info[#info]] = value AB:UpdateVehicleLeave() end
 				}
 			}
 		},

@@ -378,7 +378,13 @@ function AB:CreateVehicleLeave()
 	MainMenuBarVehicleLeaveButton:SetParent(UIParent)
 	MainMenuBarVehicleLeaveButton:SetPoint("CENTER", holder, "CENTER")
 
-	RegisterStateDriver(MainMenuBarVehicleLeaveButton, "visibility", "[vehicleui] show;hide")
+	MainMenuBarVehicleLeaveButton:HookScript("OnEvent", function(self) self:SetShown(CanExitVehicle()) end)
+	MainMenuBarVehicleLeaveButton:RegisterEvent("PLAYER_ENTERING_WORLD")
+	MainMenuBarVehicleLeaveButton:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
+	MainMenuBarVehicleLeaveButton:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR")
+	MainMenuBarVehicleLeaveButton:RegisterEvent("UNIT_ENTERED_VEHICLE")
+	MainMenuBarVehicleLeaveButton:RegisterEvent("UNIT_EXITED_VEHICLE")
+	MainMenuBarVehicleLeaveButton:RegisterEvent("VEHICLE_UPDATE")
 
 	if MasqueGroup and E.private.actionbar.masque.actionbars then
 		MainMenuBarVehicleLeaveButton:StyleButton(true, true, true)
