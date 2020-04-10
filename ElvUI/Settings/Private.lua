@@ -149,3 +149,7 @@ V.actionbar = {
 		stanceBar = false
 	}
 }
+
+V.worldmap = {
+	enable = true
+}

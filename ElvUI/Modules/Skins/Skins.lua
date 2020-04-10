@@ -728,6 +728,63 @@ function S:ADDON_LOADED(_, addon)
 	end
 end
 
+local function SetPanelWindowInfo(frame, name, value, igroneUpdate)
+	frame:SetAttribute(name, value)
+
+	if not igroneUpdate and frame:IsShown() then
+		UpdateUIPanelPositions(frame)
+	end
+end
+
+local UI_PANEL_OFFSET = 7
+
+function S:SetUIPanelWindowInfo(frame, name, value, offset, igroneUpdate)
+	local frameName = frame and frame.GetName and frame:GetName()
+	if not (frameName and UIPanelWindows[frameName]) then return end
+
+	name = "UIPanelLayout-"..name
+
+	if name == "UIPanelLayout-width" then
+		value = E:Scale(value or (frame.backdrop and frame.backdrop:GetWidth() or frame:GetWidth())) + (offset or 0) + UI_PANEL_OFFSET
+	end
+
+	local valueChanged = frame:GetAttribute(name) ~= value
+
+	if not frame:CanChangeAttribute() then
+		local frameInfo = format("%s-%s", frameName, name)
+
+		if self.uiPanelQueue[frameInfo] then
+			if not valueChanged then
+				self.uiPanelQueue[frameInfo][3] = nil
+			else
+				self.uiPanelQueue[frameInfo][3] = value
+				self.uiPanelQueue[frameInfo][4] = igroneUpdate
+			end
+		elseif valueChanged then
+			self.uiPanelQueue[frameInfo] = {frame, name, value, igroneUpdate}
+
+			if not self.inCombat then
+				self.inCombat = true
+				S:RegisterEvent("PLAYER_REGEN_ENABLED")
+			end
+		end
+	elseif valueChanged then
+		SetPanelWindowInfo(frame, name, value, igroneUpdate)
+	end
+end
+
+function S:PLAYER_REGEN_ENABLED()
+	self.inCombat = nil
+	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+
+	for frameInfo, info in pairs(self.uiPanelQueue) do
+		if info[3] then
+			SetPanelWindowInfo(info[1], info[2], info[3], info[4])
+		end
+		self.uiPanelQueue[frameInfo] = nil
+	end
+end
+
 --Add callback for skin that relies on another addon.
 --These events will be fired when the addon is loaded.
 function S:AddCallbackForAddon(addonName, eventName, loadFunc, forceLoad, bypass)
@@ -803,6 +860,9 @@ end
 function S:Initialize()
 	self.Initialized = true
 	self.db = E.private.skins
+
+	self.uiPanelQueue = {}
+	self.hitRectQueue = {}
 
 	S:SkinAce3()
 

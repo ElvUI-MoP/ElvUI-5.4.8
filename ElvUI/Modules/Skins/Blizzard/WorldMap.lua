@@ -3,11 +3,20 @@ local S = E:GetModule("Skins")
 
 local _G = _G
 
+local InCombatLockdown = InCombatLockdown
+
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.worldmap then return end
 
+	WorldMapFrame:DisableDrawLayer("BACKGROUND")
+	WorldMapFrame:DisableDrawLayer("ARTWORK")
+	WorldMapFrame:DisableDrawLayer("OVERLAY")
 	WorldMapFrame:CreateBackdrop("Transparent")
+	WorldMapFrame:SetFrameLevel(30)
 
+	WorldMapFrameTitle:SetDrawLayer("BORDER")
+
+	WorldMapDetailFrame:SetFrameLevel(WorldMapFrame:GetFrameLevel() + 1)
 	WorldMapDetailFrame:CreateBackdrop()
 	WorldMapDetailFrame.backdrop:Point("TOPLEFT", -2, 2)
 	WorldMapDetailFrame.backdrop:Point("BOTTOMRIGHT", 2, -1)
@@ -24,8 +33,8 @@ local function LoadSkin()
 	WorldMapQuestDetailScrollChildFrame:SetScale(1)
 	S:HandleScrollBar(WorldMapQuestDetailScrollFrameScrollBar, 4)
 	WorldMapQuestDetailScrollFrameScrollBar:ClearAllPoints()
-	WorldMapQuestDetailScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestDetailScrollFrame, "TOPRIGHT", 22, -16)
-	WorldMapQuestDetailScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestDetailScrollFrame, "BOTTOMRIGHT", 0, 14)
+	WorldMapQuestDetailScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestDetailScrollFrame, 22, -16)
+	WorldMapQuestDetailScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestDetailScrollFrame, 0, 14)
 
 	WorldMapQuestRewardScrollFrame:Width(340)
 	WorldMapQuestRewardScrollFrame:Point("LEFT", WorldMapQuestDetailScrollFrame, "RIGHT", 8, 0)
@@ -38,8 +47,8 @@ local function LoadSkin()
 	WorldMapQuestRewardScrollChildFrame:SetScale(1)
 	S:HandleScrollBar(WorldMapQuestRewardScrollFrameScrollBar, 4)
 	WorldMapQuestRewardScrollFrameScrollBar:ClearAllPoints()
-	WorldMapQuestRewardScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestRewardScrollFrame, "TOPRIGHT", 21, -16)
-	WorldMapQuestRewardScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestRewardScrollFrame, "BOTTOMRIGHT", 0, 14)
+	WorldMapQuestRewardScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestRewardScrollFrame, 21, -16)
+	WorldMapQuestRewardScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestRewardScrollFrame, 0, 14)
 
 	WorldMapQuestScrollFrame:CreateBackdrop("Transparent")
 	WorldMapQuestScrollFrame.backdrop:Point("TOPLEFT", -1, 1)
@@ -48,8 +57,8 @@ local function LoadSkin()
 
 	S:HandleScrollBar(WorldMapQuestScrollFrameScrollBar)
 	WorldMapQuestScrollFrameScrollBar:ClearAllPoints()
-	WorldMapQuestScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestScrollFrame, "TOPRIGHT", 21, -20)
-	WorldMapQuestScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestScrollFrame, "BOTTOMRIGHT", 0, 18)
+	WorldMapQuestScrollFrameScrollBar:Point("TOPRIGHT", WorldMapQuestScrollFrame, 21, -20)
+	WorldMapQuestScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldMapQuestScrollFrame, 0, 18)
 
 	WorldMapQuestHighlightBar:SetTexture(E.Media.Textures.Highlight)
 	WorldMapQuestHighlightBar:SetAlpha(0.35)
@@ -81,6 +90,16 @@ local function LoadSkin()
 
 	S:HandleCheckBox(WorldMapTrackQuest)
 
+	WorldMapFrameAreaLabel:FontTemplate(nil, 50, "OUTLINE")
+	WorldMapFrameAreaLabel:SetShadowOffset(2, -2)
+	WorldMapFrameAreaLabel:SetTextColor(0.90, 0.8294, 0.6407)
+
+	WorldMapFrameAreaDescription:FontTemplate(nil, 40, "OUTLINE")
+	WorldMapFrameAreaDescription:SetShadowOffset(2, -2)
+
+	WorldMapZoneInfo:FontTemplate(nil, 27, "OUTLINE")
+	WorldMapZoneInfo:SetShadowOffset(2, -2)
+
 	local function SmallSkin()
 		WorldMapFrame.backdrop:ClearAllPoints()
 		WorldMapFrame.backdrop:Point("TOPLEFT", 5, 0)
@@ -94,10 +113,23 @@ local function LoadSkin()
 		WorldMapLevelDropDown:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -10, -4)
 
 		WorldMapShowDropDown:ClearAllPoints()
-		WorldMapShowDropDown:Point("BOTTOMRIGHT", 2, -2)
+		WorldMapShowDropDown:Point("BOTTOMRIGHT", 6, 1)
 	end
 
 	local function LargeSkin()
+		if not E.private.worldmap.enable or (E.private.worldmap.enable and not E.global.general.smallerWorldMap) then
+			if not InCombatLockdown() then
+				WorldMapFrame:EnableMouse(false)
+				WorldMapFrame:EnableKeyboard(false)
+			elseif not WorldMapFrame:IsEventRegistered("PLAYER_REGEN_ENABLED") then
+				WorldMapFrame:RegisterEvent("PLAYER_REGEN_ENABLED", function(self)
+					self:EnableMouse(false)
+					self:EnableKeyboard(false)
+					self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+				end)
+			end
+		end
+
 		WorldMapFrame.backdrop:ClearAllPoints()
 		WorldMapFrame.backdrop:Point("TOPLEFT", WorldMapDetailFrame, "TOPLEFT", -10, 70)
 		WorldMapFrame.backdrop:Point("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOMRIGHT", 12, -30)
@@ -124,8 +156,6 @@ local function LoadSkin()
 	end
 
 	local function FixSkin()
-		WorldMapFrame:StripTextures()
-
 		if WORLDMAP_SETTINGS.size == WORLDMAP_FULLMAP_SIZE then
 			LargeSkin()
 		elseif WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE then
@@ -133,26 +163,20 @@ local function LoadSkin()
 		elseif WORLDMAP_SETTINGS.size == WORLDMAP_QUESTLIST_SIZE then
 			QuestSkin()
 		end
-
-		WorldMapFrameAreaLabel:FontTemplate(nil, 50, "OUTLINE")
-		WorldMapFrameAreaLabel:SetShadowOffset(2, -2)
-		WorldMapFrameAreaLabel:SetTextColor(0.9, 0.8, 0.6)
-
-		WorldMapFrameAreaDescription:FontTemplate(nil, 40, "OUTLINE")
-		WorldMapFrameAreaDescription:SetShadowOffset(2, -2)
-
-		WorldMapZoneInfo:FontTemplate(nil, 25, "OUTLINE")
-		WorldMapZoneInfo:SetShadowOffset(2, -2)
-
-		if InCombatLockdown() then return end
-
-		WorldMapFrame:SetFrameLevel(30)
-		WorldMapDetailFrame:SetFrameLevel(WorldMapFrame:GetFrameLevel() + 1)
 	end
 
-	WorldMapFrame:HookScript("OnShow", FixSkin)
-	hooksecurefunc("WorldMapFrame_SetFullMapView", LargeSkin)
+	if not E.private.worldmap.enable then
+		ShowUIPanel(WorldMapFrame)
+		FixSkin()
+		HideUIPanel(WorldMapFrame)
+	else
+		FixSkin()
+	end
+
 	hooksecurefunc("WorldMapFrame_SetQuestMapView", QuestSkin)
+	hooksecurefunc("WorldMapFrame_SetFullMapView", LargeSkin)
+	hooksecurefunc("WorldMap_ToggleSizeDown", SmallSkin)
+	hooksecurefunc("ToggleMapFramerate", FixSkin)
 	hooksecurefunc("WorldMap_ToggleSizeUp", FixSkin)
 end
 
