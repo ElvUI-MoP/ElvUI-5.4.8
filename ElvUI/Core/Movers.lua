@@ -201,11 +201,7 @@ local function UpdateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 
 	local function OnMouseUp(_, button)
 		if button == "LeftButton" and not isDragging then
-			if ElvUIMoverNudgeWindow:IsShown() then
-				ElvUIMoverNudgeWindow:Hide()
-			else
-				ElvUIMoverNudgeWindow:Show()
-			end
+			ElvUIMoverNudgeWindow:SetShown(not ElvUIMoverNudgeWindow:IsShown())
 		end
 	end
 
@@ -456,6 +452,6 @@ end
 
 function E:LoadMovers()
 	for name, t in pairs(E.CreatedMovers) do
-		UpdateMover(t.parent, name, t.text, t.overlay, t.snapoffset, t.postdrag, t.shouldDisable, t.configString)
+		UpdateMover(t.parent, name, t.text, t.overlay, t.snapoffset, t.postdrag, t.shouldDisable, t.configString, t.perferCorners)
 	end
 end

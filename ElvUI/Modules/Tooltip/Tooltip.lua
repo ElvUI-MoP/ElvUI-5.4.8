@@ -23,7 +23,6 @@ local GetRelativeDifficultyColor = GetRelativeDifficultyColor
 local GetSpecialization = GetSpecialization
 local GetSpecializationInfo = GetSpecializationInfo
 local GetSpecializationInfoByID = GetSpecializationInfoByID
-local GetSpecializationRoleByID = GetSpecializationRoleByID
 local GetTime = GetTime
 local InCombatLockdown = InCombatLockdown
 local IsAltKeyDown = IsAltKeyDown
@@ -385,20 +384,15 @@ function TT:GetSpecializationInfo(unit, isPlayer)
 	local spec = (isPlayer and GetSpecialization()) or (unit and GetInspectSpecialization(unit))
 
 	if spec and spec > 0 then
+		local _, name, icon
+
 		if isPlayer then
-			local _, name, _, icon = GetSpecializationInfo(spec)
-			icon = icon and "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t " or ""
-
-			return name and icon..name
+			_, name, _, icon = GetSpecializationInfo(spec)
 		else
-			local role = GetSpecializationRoleByID(spec)
-			if role ~= nil then
-				local _, name, _, icon = GetSpecializationInfoByID(spec)
-				icon = icon and "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t " or ""
-
-				return name and icon..name
-			end
+			_, name, _, icon = GetSpecializationInfoByID(spec)
 		end
+
+		return "|T"..icon..":12:12:0:0:64:64:5:59:5:59|t "..name
 	end
 end
 
@@ -478,13 +472,17 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 				targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction(unitTarget, "player")] or FACTION_BAR_COLORS[UnitReaction(unitTarget, "player")]
 			end
 
+			if not targetColor then
+				targetColor = PRIEST_COLOR
+			end
+
 			tt:AddDoubleLine(format("%s:", TARGET), format("|cff%02x%02x%02x%s|r", targetColor.r * 255, targetColor.g * 255, targetColor.b * 255, UnitName(unitTarget)))
 		end
 
 		if self.db.targetInfo and IsInGroup() then
 			for i = 1, GetNumGroupMembers() do
 				local groupUnit = (IsInRaid() and "raid"..i or "party"..i)
-				if (UnitIsUnit(groupUnit.."target", unit)) and (not UnitIsUnit(groupUnit,"player")) then
+				if (UnitIsUnit(groupUnit.."target", unit)) and (not UnitIsUnit(groupUnit, "player")) then
 					local _, class = UnitClass(groupUnit)
 					local classColor = E:ClassColor(class) or PRIEST_COLOR
 					tinsert(targetList, format("|c%s%s|r", classColor.colorStr, UnitName(groupUnit)))
@@ -753,9 +751,9 @@ local function PostBNToastMove(mover)
 
 	local anchorPoint
 	if y > (screenHeight / 2) then
-		anchorPoint = (x > (screenWidth/2)) and "TOPRIGHT" or "TOPLEFT"
+		anchorPoint = (x > (screenWidth / 2)) and "TOPRIGHT" or "TOPLEFT"
 	else
-		anchorPoint = (x > (screenWidth/2)) and "BOTTOMRIGHT" or "BOTTOMLEFT"
+		anchorPoint = (x > (screenWidth / 2)) and "BOTTOMRIGHT" or "BOTTOMLEFT"
 	end
 	mover.anchorPoint = anchorPoint
 
