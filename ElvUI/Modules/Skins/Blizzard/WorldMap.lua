@@ -114,6 +114,9 @@ local function LoadSkin()
 
 		WorldMapShowDropDown:ClearAllPoints()
 		WorldMapShowDropDown:Point("BOTTOMRIGHT", 6, 1)
+
+		WorldMapFrameAreaPetLevels:FontTemplate(nil, 40)
+		WorldMapFrameAreaPetLevels:SetShadowOffset(2, -2)
 	end
 
 	local function LargeSkin()
@@ -140,6 +143,9 @@ local function LoadSkin()
 
 		WorldMapShowDropDown:ClearAllPoints()
 		WorldMapShowDropDown:Point("BOTTOMRIGHT", 9, -53)
+
+		WorldMapFrameAreaPetLevels:FontTemplate(nil, 25)
+		WorldMapFrameAreaPetLevels:SetShadowOffset(2, -2)
 	end
 
 	local function QuestSkin()
