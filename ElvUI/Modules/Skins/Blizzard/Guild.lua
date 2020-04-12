@@ -84,7 +84,14 @@ local function LoadSkin()
 	GuildRewardsFrameVisitText:ClearAllPoints()
 	GuildRewardsFrameVisitText:Point("TOP", GuildRewardsFrame, "TOP", 0, 30)
 
-	S:HandleScrollBar(GuildRewardsContainerScrollBar, 5)
+	GuildRewardsContainer:CreateBackdrop("Transparent")
+	GuildRewardsContainer.backdrop:Point("TOPLEFT", -1, 0)
+	GuildRewardsContainer.backdrop:Point("BOTTOMRIGHT", 0, -2)
+
+	S:HandleScrollBar(GuildRewardsContainerScrollBar)
+	GuildRewardsContainerScrollBar:ClearAllPoints()
+	GuildRewardsContainerScrollBar:Point("TOPRIGHT", GuildRewardsContainer, 23, -16)
+	GuildRewardsContainerScrollBar:Point("BOTTOMRIGHT", GuildRewardsContainer, 0, 14)
 
 	for _, object in pairs({"Rewards", "Perks"}) do
 		for i = 1, 8 do
@@ -105,25 +112,41 @@ local function LoadSkin()
 			if object == "Rewards" then
 				button.subText:SetTextColor(1, 0.80, 0.10)
 				button.icon:Size(E.PixelMode and 43 or 40)
-
-				button:SetScript("OnUpdate", function(self)
-					local _, itemID = GetGuildRewardInfo(self.index)
-					if itemID then
-						local quality = select(3, GetItemInfo(itemID))
-						if quality then
-							self.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-							self.name:SetTextColor(GetItemQualityColor(quality))
-						else
-							self:SetBackdropBorderColor(unpack(E.media.bordercolor))
-							self.name:SetTextColor(1, 1, 1)
-						end
-					end
-				end)
 			elseif object == "Perks" then
 				button.icon:Size(E.PixelMode and 40 or 38)
 			end
 		end
 	end
+
+	local function SkinGuildRewards()
+		local offset = HybridScrollFrame_GetOffset(GuildRewardsContainer)
+		local buttons = GuildRewardsContainer.buttons
+		local button, index, itemID, quality, r, g, b
+ 
+		for i = 1, #buttons do
+			button = buttons[i]
+			index = offset + i
+			itemID = select(2, GetGuildRewardInfo(index))
+
+			if itemID then
+				quality = select(3, GetItemInfo(itemID))
+
+				if quality then
+					r, g, b = GetItemQualityColor(quality)
+
+					button.backdrop:SetBackdropBorderColor(r, g, b)
+					button.name:SetTextColor(r, g, b)
+				else
+					button:SetBackdropBorderColor(unpack(E.media.bordercolor))
+					button.name:SetTextColor(1, 1, 1)
+				end
+			end
+
+			button.index = index
+		end
+	end
+	hooksecurefunc("GuildRewards_Update", SkinGuildRewards)
+	hooksecurefunc("HybridScrollFrame_Update", SkinGuildRewards)
 
 	-- Roster
 	for i = 1, 15 do
@@ -468,16 +491,18 @@ local function LoadSkin()
 	}
 
 	for i = 1, #roleIcons do
-		S:HandleCheckBox(_G[roleIcons[i]]:GetChildren())
-		_G[roleIcons[i]]:GetChildren():SetFrameLevel(_G[roleIcons[i]]:GetChildren():GetFrameLevel() + 2)
+		local button = _G[roleIcons[i]]
+		local icon = button:GetNormalTexture()
 
-		_G[roleIcons[i]]:StripTextures()
-		_G[roleIcons[i]]:CreateBackdrop()
-		_G[roleIcons[i]].backdrop:Point("TOPLEFT", 2, -2)
-		_G[roleIcons[i]].backdrop:Point("BOTTOMRIGHT", -2, 2)
+		button:StripTextures()
+		button:CreateBackdrop()
 
-		_G[roleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		_G[roleIcons[i]]:GetNormalTexture():SetInside(_G[roleIcons[i]].backdrop)
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside(button.backdrop)
+
+		S:HandleCheckBox(button.checkButton)
+		button.checkButton:Point("BOTTOMLEFT", -5, -5)
+		button.checkButton:SetFrameLevel(button.checkButton:GetFrameLevel() + 2)
 	end
 
 	GuildRecruitmentTankButton:SetNormalTexture("Interface\\Icons\\Ability_Defend")
@@ -488,7 +513,7 @@ end
 S:AddCallbackForAddon("Blizzard_GuildUI", "Guild", LoadSkin)
 
 local function LoadSecondarySkin()
-	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.guild ~= true then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.guild then return end
 
 	-- Guild Invitation PopUp Frame
 	GuildInviteFrame:SetTemplate("Transparent")
