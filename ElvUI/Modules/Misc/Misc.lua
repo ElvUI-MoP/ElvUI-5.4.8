@@ -212,15 +212,15 @@ function M:UpdateMapAlpha()
 			self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
 		end
 	else
+		if self.MovingTimer then
+			self:CancelTimer(self.MovingTimer)
+			self.MovingTimer = nil
+		end
+
 		if GetUnitSpeed("player") ~= 0 and not WorldMapPositioningGuide:IsMouseOver() then
 			WorldMapFrame:SetAlpha(1)
 			WorldMapBlobFrame:SetFillAlpha(128)
 			WorldMapBlobFrame:SetBorderAlpha(192)
-		end
-
-		if self.MovingTimer then
-			self:CancelTimer(self.MovingTimer)
-			self.MovingTimer = nil
 		end
 	end
 end
