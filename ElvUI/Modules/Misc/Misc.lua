@@ -202,11 +202,26 @@ function M:CheckMovement()
 end
 
 function M:UpdateMapAlpha()
-	if (E.global.general.mapAlphaWhenMoving >= 1) and self.MovingTimer then
-		self:CancelTimer(self.MovingTimer)
-		self.MovingTimer = nil
-	elseif (E.global.general.mapAlphaWhenMoving < 1) and not self.MovingTimer then
-		self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
+	local db = E.global.general
+
+	if db.fadeMapWhenMoving then
+		if (db.mapAlphaWhenMoving >= 1) and self.MovingTimer then
+			self:CancelTimer(self.MovingTimer)
+			self.MovingTimer = nil
+		elseif (db.mapAlphaWhenMoving < 1) and not self.MovingTimer then
+			self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
+		end
+	else
+		if GetUnitSpeed("player") ~= 0 and not WorldMapPositioningGuide:IsMouseOver() then
+			WorldMapFrame:SetAlpha(1)
+			WorldMapBlobFrame:SetFillAlpha(128)
+			WorldMapBlobFrame:SetBorderAlpha(192)
+		end
+
+		if self.MovingTimer then
+			self:CancelTimer(self.MovingTimer)
+			self.MovingTimer = nil
+		end
 	end
 end
 
@@ -290,7 +305,7 @@ function M:Initialize()
 		self:RegisterEvent("ADDON_LOADED")
 	end
 
-	if E.global.general.mapAlphaWhenMoving < 1 then
+	if E.global.general.fadeMapWhenMoving and (E.global.general.mapAlphaWhenMoving < 1) then
 		self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
 	end
 

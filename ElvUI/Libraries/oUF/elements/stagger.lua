@@ -4,9 +4,9 @@ local oUF = ns.oUF
 local STAGGER_YELLOW_TRANSITION = STAGGER_YELLOW_TRANSITION
 local STAGGER_RED_TRANSITION = STAGGER_RED_TRANSITION
 
-local GREEN_INDEX = 1;
-local YELLOW_INDEX = 2;
-local RED_INDEX = 3;
+local GREEN_INDEX = 1
+local YELLOW_INDEX = 2
+local RED_INDEX = 3
 
 local UnitHealthMax = UnitHealthMax
 local UnitStagger = UnitStagger
