@@ -144,11 +144,11 @@ function E:CalculateAverageItemLevel(iLevelDB, unit)
 	end
 
 	-- Main hand
-	local mainItemLevel, mainQuality, mainEquipLoc, _ = 0
+	local mainItemLevel, mainQuality, mainEquipLoc, itemSubType, _ = 0
 	link = GetInventoryItemLink(unit, 16)
 	if link then
 		mainItemLevel = iLevelDB[16]
-		_, _, mainQuality, _, _, _, _, _, mainEquipLoc = GetItemInfo(link)
+		_, _, mainQuality, _, _, _, itemSubType, _, mainEquipLoc = GetItemInfo(link)
 	elseif GetInventoryItemTexture(unit, 16) then
 		isOK = false
 	end

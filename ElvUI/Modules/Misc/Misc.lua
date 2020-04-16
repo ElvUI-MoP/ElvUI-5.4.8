@@ -17,7 +17,6 @@ local GetNumGuildMembers = GetNumGuildMembers
 local GetNumPartyMembers = GetNumPartyMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
 local GetRepairAllCost = GetRepairAllCost
-local GetUnitSpeed = GetUnitSpeed
 local GuildRoster = GuildRoster
 local InCombatLockdown = InCombatLockdown
 local IsInGuild = IsInGuild
@@ -181,50 +180,6 @@ function M:DisbandRaidGroup()
 	LeaveParty()
 end
 
-function M:CheckMovement()
-	if not WorldMapFrame:IsShown() then return end
-
-	if GetUnitSpeed("player") ~= 0 then
-		if WorldMapPositioningGuide:IsMouseOver() then
-			WorldMapFrame:SetAlpha(1)
-			WorldMapBlobFrame:SetFillAlpha(128)
-			WorldMapBlobFrame:SetBorderAlpha(192)
-		else
-			WorldMapFrame:SetAlpha(E.global.general.mapAlphaWhenMoving)
-			WorldMapBlobFrame:SetFillAlpha(128 * E.global.general.mapAlphaWhenMoving)
-			WorldMapBlobFrame:SetBorderAlpha(192 * E.global.general.mapAlphaWhenMoving)
-		end
-	else
-		WorldMapFrame:SetAlpha(1)
-		WorldMapBlobFrame:SetFillAlpha(128)
-		WorldMapBlobFrame:SetBorderAlpha(192)
-	end
-end
-
-function M:UpdateMapAlpha()
-	local db = E.global.general
-
-	if db.fadeMapWhenMoving then
-		if (db.mapAlphaWhenMoving >= 1) and self.MovingTimer then
-			self:CancelTimer(self.MovingTimer)
-			self.MovingTimer = nil
-		elseif (db.mapAlphaWhenMoving < 1) and not self.MovingTimer then
-			self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
-		end
-	else
-		if self.MovingTimer then
-			self:CancelTimer(self.MovingTimer)
-			self.MovingTimer = nil
-		end
-
-		if GetUnitSpeed("player") ~= 0 and not WorldMapPositioningGuide:IsMouseOver() then
-			WorldMapFrame:SetAlpha(1)
-			WorldMapBlobFrame:SetFillAlpha(128)
-			WorldMapBlobFrame:SetBorderAlpha(192)
-		end
-	end
-end
-
 function M:PVPMessageEnhancement(_, msg)
 	if not E.db.general.enhancedPvpMessages then return end
 
@@ -303,10 +258,6 @@ function M:Initialize()
 		M:SetupInspectPageInfo()
 	else
 		self:RegisterEvent("ADDON_LOADED")
-	end
-
-	if E.global.general.fadeMapWhenMoving and (E.global.general.mapAlphaWhenMoving < 1) then
-		self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
 	end
 
 	self.Initialized = true
