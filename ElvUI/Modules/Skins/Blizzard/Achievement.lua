@@ -26,17 +26,21 @@ local function LoadSkin(preSkin)
 			Achievement.icon.texture:SetTexCoord(unpack(E.TexCoords))
 			Achievement.icon.texture:SetInside()
 
+			Achievement.titleBar:SetTexture(E.Media.Textures.Highlight)
+			Achievement.titleBar.SetTexture = E.noop
+			Achievement.titleBar:SetTexCoord(0, 1, 0, 1)
+			Achievement.titleBar.SetTexCoord = E.noop
+			Achievement.titleBar:SetAlpha(0.5)
+			Achievement.titleBar.SetAlpha = E.noop
+			Achievement.titleBar:SetVertexColor(0.129, 0.671, 0.875)
+			Achievement.titleBar:Point("TOPLEFT", 1, -1)
+			Achievement.titleBar:Point("TOPRIGHT", -1, 0)
+
 			if Achievement.highlight then
 				Achievement.highlight:StripTextures()
 
 				Achievement:HookScript("OnEnter", S.SetModifiedBackdrop)
-				Achievement:HookScript("OnLeave", function(self)
-					if self.player and self.player.accountWide or self.accountWide then
-						self:SetBackdropBorderColor(0.129, 0.671, 0.875)
-					else
-						self:SetBackdropBorderColor(unpack(E.media.bordercolor))
-					end
-				end)
+				Achievement:HookScript("OnLeave", S.SetOriginalBackdrop)
 			end
 
 			if Achievement.label then
@@ -89,12 +93,8 @@ local function LoadSkin(preSkin)
 				for _, button in ipairs(frame.buttons) do
 					if not button.isSkinned then
 						button:StripTextures()
-
-						local highlight = button:GetHighlightTexture()
-						highlight:SetTexture(E.Media.Textures.Highlight)
-						highlight:SetTexCoord(0, 1, 0, 1)
-						highlight:SetAlpha(0.35)
-						highlight:SetInside()
+						S:HandleButtonHighlight(button)
+						button.handledHighlight:Point("TOPLEFT", 0, -1)
 
 						button.isSkinned = true
 					end
@@ -110,13 +110,8 @@ local function LoadSkin(preSkin)
 					SkinAchievement(achievement.friend)
 
 					hooksecurefunc(achievement.player, "Saturate", function()
-						if achievement.player.accountWide then
-							achievement.player:SetBackdropBorderColor(0.129, 0.671, 0.875)
-							achievement.friend:SetBackdropBorderColor(0.129, 0.671, 0.875)
-						else
-							achievement.player:SetBackdropBorderColor(unpack(E.media.bordercolor))
-							achievement.friend:SetBackdropBorderColor(unpack(E.media.bordercolor))
-						end
+						achievement.player.titleBar:SetShown(achievement.player.accountWide)
+						achievement.friend.titleBar:SetShown(achievement.friend.accountWide)
 					end)
 				end
 			elseif template == "StatTemplate" then
@@ -161,8 +156,10 @@ local function LoadSkin(preSkin)
 
 	for _, frame in ipairs(nonameFrames) do
 		frame = _G[frame]
+
 		for i = 1, frame:GetNumChildren() do
 			local child = select(i, frame:GetChildren())
+
 			if child and not child:GetName() then
 				child:SetBackdrop(nil)
 			end
@@ -252,6 +249,7 @@ local function LoadSkin(preSkin)
 			label:Point("LEFT", 4, 0)
 			label:FontTemplate()
 		end
+
 		if text then
 			text:Point("RIGHT", -4, 0)
 			text:FontTemplate()
@@ -287,11 +285,7 @@ local function LoadSkin(preSkin)
 	end
 
 	hooksecurefunc("AchievementButton_DisplayAchievement", function(frame)
-		if frame.accountWide then
-			frame:SetBackdropBorderColor(0.129, 0.671, 0.875)
-		else
-			frame:SetBackdropBorderColor(unpack(E.media.bordercolor))
-		end
+		frame.titleBar:SetShown(frame.accountWide)
 	end)
 
 	hooksecurefunc("AchievementFrameSummary_UpdateAchievements", function()
@@ -311,16 +305,13 @@ local function LoadSkin(preSkin)
 
 			if i ~= 1 then
 				prevFrame = _G["AchievementFrameSummaryAchievement"..(i - 1)]
+
 				frame:ClearAllPoints()
 				frame:Point("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, -1)
 				frame:Point("TOPRIGHT", prevFrame, "BOTTOMRIGHT", 0, 1)
 			end
 
-			if frame.accountWide then
-				frame:SetBackdropBorderColor(0.129, 0.671, 0.875)
-			else
-				frame:SetBackdropBorderColor(unpack(E.media.bordercolor))
-			end
+			frame.titleBar:SetShown(frame.accountWide)
 		end
 	end)
 
@@ -383,10 +374,11 @@ local function LoadSkin(preSkin)
 	end)
 
 	hooksecurefunc("AchievementObjectives_DisplayCriteria", function(objectivesFrame, id)
-		local numCriteria = GetAchievementNumCriteria(id)
 		local textStrings, metas = 0, 0
-		for i = 1, numCriteria do
+
+		for i = 1, GetAchievementNumCriteria(id) do
 			local _, criteriaType, completed, _, _, _, _, assetID = GetAchievementCriteriaInfo(id, i)
+
 			if criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID then
 				metas = metas + 1
 				local metaCriteria = AchievementButton_GetMeta(metas)
@@ -420,6 +412,7 @@ local function LoadSkin(preSkin)
 			elseif criteriaType ~= 1 then
 				textStrings = textStrings + 1
 				local criteria = AchievementButton_GetCriteria(textStrings)
+
 				if objectivesFrame.completed and completed then
 					criteria.name:SetTextColor(1, 1, 1, 1)
 					criteria.name:SetShadowOffset(0, 0)
@@ -449,9 +442,8 @@ local function LoadSkin(preSkin)
 				mini.backdropTexture:SetAlpha(0)
 				mini:Size(32)
 
-				local prevFrame = _G["AchievementFrameMiniAchievement"..i - 1]
 				if i ~= 1 and i ~= 7 then
-					mini:Point("TOPLEFT", prevFrame, "TOPRIGHT", 10, 0)
+					mini:Point("TOPLEFT", _G["AchievementFrameMiniAchievement"..i - 1], "TOPRIGHT", 10, 0)
 				elseif i == 1 then
 					mini:Point("TOPLEFT", 6, -4)
 				elseif i == 7 then
@@ -472,35 +464,6 @@ local function LoadSkin(preSkin)
 			end
 		end
 	end)
-
-	for i = 1, 20 do
-		local button = _G["AchievementFrameCategoriesContainerButton"..i]
-		if not button or (button and button.isSkinned) then return end
-
-		button:StripTextures(true)
-		button:StyleButton()
-		button.isSkinned = true
-	end
-
-	for i = 1, 10 do
-		local achievement = _G["AchievementFrameComparisonContainerButton"..i]
-		if not achievement or (achievement and achievement.isSkinned) then return end
-
-		SkinAchievement(achievement.player)
-		SkinAchievement(achievement.friend)
-
-		hooksecurefunc(achievement.player, "Saturate", function()
-			if achievement.player.accountWide then
-				achievement.player:SetBackdropBorderColor(0.129, 0.671, 0.875)
-				achievement.friend:SetBackdropBorderColor(0.129, 0.671, 0.875)
-			else
-				achievement.player:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				achievement.friend:SetBackdropBorderColor(unpack(E.media.bordercolor))
-			end
-		end)
-
-		achievement.isSkinned = true
-	end
 end
 
 S:AddCallback("Skin_AchievementUI", function() LoadSkin(true) end)

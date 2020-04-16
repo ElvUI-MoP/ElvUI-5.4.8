@@ -67,7 +67,7 @@ local function LoadSkin()
 	FriendsFriendsFrame:StripTextures()
 	FriendsFriendsFrame:CreateBackdrop("Transparent")
 
-	FriendsFrameBroadcastInput:CreateBackdrop("Default")
+	FriendsFrameBroadcastInput:CreateBackdrop()
 
 	FriendsFriendsList:StripTextures()
 	S:HandleEditBox(FriendsFriendsList)
@@ -255,8 +255,8 @@ local function LoadSkin()
 	ChannelFrameDaughterFrame:StripTextures()
 	ChannelFrameDaughterFrame:CreateBackdrop("Transparent")
 
-	ChannelFrameDaughterFrameChannelName:CreateBackdrop("Default")
-	ChannelFrameDaughterFrameChannelPassword:CreateBackdrop("Default")
+	ChannelFrameDaughterFrameChannelName:CreateBackdrop()
+	ChannelFrameDaughterFrameChannelPassword:CreateBackdrop()
 
 	hooksecurefunc("ChannelList_Update", function()
 		for i = 1, MAX_DISPLAY_CHANNEL_BUTTONS do
@@ -295,7 +295,7 @@ local function LoadSkin()
 	BNConversationInviteDialog:CreateBackdrop("Transparent")
 
 	BNConversationInviteDialogList:StripTextures()
-	BNConversationInviteDialogList:SetTemplate("Default")
+	BNConversationInviteDialogList:SetTemplate()
 
 	S:HandleButton(BNConversationInviteDialogInviteButton)
 	S:HandleButton(BNConversationInviteDialogCancelButton)
@@ -345,12 +345,12 @@ local function LoadSkin()
 	ScrollOfResurrectionSelectionFrame:SetTemplate("Transparent")
 
 	ScrollOfResurrectionFrameNoteFrame:StripTextures()
-	ScrollOfResurrectionFrameNoteFrame:SetTemplate("Default")
+	ScrollOfResurrectionFrameNoteFrame:SetTemplate()
 
 	ScrollOfResurrectionSelectionFrameList:StripTextures()
-	ScrollOfResurrectionSelectionFrameList:SetTemplate("Default")
+	ScrollOfResurrectionSelectionFrameList:SetTemplate()
 
-	ScrollOfResurrectionFrameTargetEditBox:SetTemplate("Default")
+	ScrollOfResurrectionFrameTargetEditBox:SetTemplate()
 	ScrollOfResurrectionFrameTargetEditBoxLeft:SetTexture(nil)
 	ScrollOfResurrectionFrameTargetEditBoxMiddle:SetTexture(nil)
 	ScrollOfResurrectionFrameTargetEditBoxRight:SetTexture(nil)
@@ -365,7 +365,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(ScrollOfResurrectionSelectionFrameListScrollFrameScrollBar, 4)
 
-	FriendsTabHeaderSoRButton:SetTemplate("Default")
+	FriendsTabHeaderSoRButton:SetTemplate()
 	FriendsTabHeaderSoRButton:StyleButton()
 	FriendsTabHeaderSoRButton:Point("TOPRIGHT", FriendsTabHeader, "TOPRIGHT", -6, -50)
 
@@ -378,14 +378,22 @@ local function LoadSkin()
 	RecruitAFriendFrame:StripTextures()
 	RecruitAFriendFrame:SetTemplate("Transparent")
 
-	S:HandleCloseButton(RecruitAFriendFrameCloseButton)
-	S:HandleButton(RecruitAFriendFrameSendButton)
-	S:HandleEditBox(RecruitAFriendNameEditBox)
+	RecruitAFriendFrame.CharacterInfo:StripTextures()
+	RecruitAFriendFrame.CharacterInfo:SetTemplate("Transparent")
 
-	RecruitAFriendNoteFrame:StripTextures()
+	RecruitAFriendSentFrame:StripTextures()
+	RecruitAFriendSentFrame:SetTemplate("Transparent")
+
+	S:HandleEditBox(RecruitAFriendNameEditBox)
 	S:HandleEditBox(RecruitAFriendNoteFrame)
 
-	FriendsTabHeaderRecruitAFriendButton:SetTemplate("Default")
+	S:HandleButton(RecruitAFriendFrame.SendButton)
+	S:HandleButton(RecruitAFriendSentFrame.OKButton)
+
+	S:HandleCloseButton(RecruitAFriendFrameCloseButton)
+	S:HandleCloseButton(RecruitAFriendSentFrameCloseButton)
+
+	FriendsTabHeaderRecruitAFriendButton:SetTemplate()
 	FriendsTabHeaderRecruitAFriendButton:StyleButton()
 
 	FriendsTabHeaderRecruitAFriendButtonIcon:SetInside()

@@ -87,7 +87,7 @@ local function LoadSkin()
 				token:CreateBackdrop()
 				token.backdrop:SetOutside(token.icon)
 
-				token.icon:Size(14)
+				token.icon:Size(16)
 				token.icon:SetTexCoord(unpack(E.TexCoords))
 				token.icon:Point("LEFT", token.count, "RIGHT", 2, 0)
 
