@@ -844,6 +844,7 @@ function NP:OnUpdate()
 
 		NP:SetMouseoverFrame(frame)
 		NP:SetTargetFrame(frame)
+		NP:CheckRaidIcon(frame)
 
         if frame.UnitReaction ~= NP:GetUnitInfo(frame) then
             NP:UpdateAllFrame(frame, nil, true)
@@ -865,6 +866,8 @@ function NP:CheckRaidIcon(frame)
 	else
 		frame.RaidIconType = nil
 	end
+
+	self:StyleFilterUpdate(frame, "RAID_TARGET_UPDATE")
 end
 
 function NP:SearchNameplateByGUID(guid)

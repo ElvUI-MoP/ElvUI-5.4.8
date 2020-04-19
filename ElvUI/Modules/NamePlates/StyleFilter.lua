@@ -37,6 +37,16 @@ NP.TriggerConditions = {
 		[14] = "normal",
 		[15] = "heroic"
 	},
+	raidTargets = {
+		STAR = "star",
+		CIRCLE = "circle",
+		DIAMOND = "diamond",
+		TRIANGLE = "triangle",
+		MOON = "moon",
+		SQUARE = "square",
+		CROSS = "cross",
+		SKULL = "skull",
+	},
 	totems = {},
 	uniqueUnits = {}
 }
@@ -456,6 +466,11 @@ function NP:StyleFilterConditionCheck(frame, filter, trigger)
 		if ((reaction == 1 or reaction == 2 or reaction == 3) and trigger.reactionType.hostile) or (reaction == 4 and trigger.reactionType.neutral) or (reaction == 5 and trigger.reactionType.friendly) then passed = true else return end
 	end
 
+	-- Raid Target
+	if trigger.raidTarget.star or trigger.raidTarget.circle or trigger.raidTarget.diamond or trigger.raidTarget.triangle or trigger.raidTarget.moon or trigger.raidTarget.square or trigger.raidTarget.cross or trigger.raidTarget.skull then
+		if trigger.raidTarget[NP.TriggerConditions.raidTargets[frame.RaidIconType]] then passed = true else return end
+	end
+
 	-- Casting
 	if trigger.casting then
 		local b, c = frame.CastBar, trigger.casting
@@ -611,6 +626,10 @@ function NP:StyleFilterConfigure()
 
 				-- real events
 				NP.StyleFilterTriggerEvents.PLAYER_TARGET_CHANGED = true
+
+				if t.raidTarget and (t.raidTarget.star or t.raidTarget.circle or t.raidTarget.diamond or t.raidTarget.triangle or t.raidTarget.moon or t.raidTarget.square or t.raidTarget.cross or t.raidTarget.skull) then
+					NP.StyleFilterTriggerEvents.RAID_TARGET_UPDATE = 1
+				end
 
 				if t.healthThreshold then
 					NP.StyleFilterTriggerEvents.UNIT_HEALTH = 1

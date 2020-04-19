@@ -1457,7 +1457,6 @@ local function UpdateFilterGroup()
 							E.db.nameplates.filters[selectedNameplateFilter].triggers and
 							E.db.nameplates.filters[selectedNameplateFilter].triggers.enable)
 					end,
-					hidden = true,
 					args = {
 						star = {
 							order = 1,
