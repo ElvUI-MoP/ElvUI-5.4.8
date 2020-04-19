@@ -38,9 +38,6 @@ local function LoadSkin(preSkin)
 
 			if Achievement.highlight then
 				Achievement.highlight:StripTextures()
-
-				Achievement:HookScript("OnEnter", S.SetModifiedBackdrop)
-				Achievement:HookScript("OnLeave", S.SetOriginalBackdrop)
 			end
 
 			if Achievement.label then
@@ -75,6 +72,9 @@ local function LoadSkin(preSkin)
 				trackedText:SetTextColor(1, 1, 1)
 				trackedText:Point("TOPLEFT", 18, -2)
 			end
+
+			Achievement:HookScript("OnEnter", S.SetModifiedBackdrop)
+			Achievement:HookScript("OnLeave", S.SetOriginalBackdrop)
 
 			hooksecurefunc(Achievement, "Saturate", function(self)
 				self:SetBackdropBorderColor(unpack(E.media.bordercolor))

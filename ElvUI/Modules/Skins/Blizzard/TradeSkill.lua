@@ -161,13 +161,13 @@ local function LoadSkin()
 	end
 
 	TradeSkillReagent1:Point("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", 0, -3)
-	TradeSkillReagent2:Point("LEFT", TradeSkillReagent1, "RIGHT", 3, 0)
+	TradeSkillReagent2:Point("LEFT", TradeSkillReagent1, "RIGHT", 4, 0)
 	TradeSkillReagent3:Point("TOPLEFT", TradeSkillReagent1, "BOTTOMLEFT", 0, -4)
-	TradeSkillReagent4:Point("LEFT", TradeSkillReagent3, "RIGHT", 3, 0)
+	TradeSkillReagent4:Point("LEFT", TradeSkillReagent3, "RIGHT", 4, 0)
 	TradeSkillReagent5:Point("TOPLEFT", TradeSkillReagent3, "BOTTOMLEFT", 0, -4)
-	TradeSkillReagent6:Point("LEFT", TradeSkillReagent5, "RIGHT", 3, 0)
+	TradeSkillReagent6:Point("LEFT", TradeSkillReagent5, "RIGHT", 4, 0)
 	TradeSkillReagent7:Point("TOPLEFT", TradeSkillReagent5, "BOTTOMLEFT", 0, -4)
-	TradeSkillReagent8:Point("LEFT", TradeSkillReagent7, "RIGHT", 3, 0)
+	TradeSkillReagent8:Point("LEFT", TradeSkillReagent7, "RIGHT", 4, 0)
 
 	TradeSkillFilterBar:StripTextures()
 	TradeSkillFilterBar.texture = TradeSkillFilterBar:CreateTexture(nil, "ARTWORK")
