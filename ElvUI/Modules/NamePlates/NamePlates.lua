@@ -29,7 +29,7 @@ local WorldFrame = WorldFrame
 local WorldGetChildren = WorldFrame.GetChildren
 local WorldGetNumChildren = WorldFrame.GetNumChildren
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
- 
+
 local numChildren, hasTarget = 0
 local FSPAT = "%s*"..(gsub(gsub(_G.FOREIGN_SERVER_LABEL, "^%s", ""), "[%*()]", "%%%1")).."$"
 
