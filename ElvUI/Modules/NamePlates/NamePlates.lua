@@ -11,9 +11,12 @@ local format, find, gsub, match, split = string.format, string.find, string.gsub
 local twipe = table.wipe
 
 local CreateFrame = CreateFrame
+local GetArenaOpponentSpec = GetArenaOpponentSpec
 local GetBattlefieldScore = GetBattlefieldScore
-local IsInRaid = IsInRaid
+local GetNumArenaOpponentSpecs = GetNumArenaOpponentSpecs
 local GetNumBattlefieldScores = GetNumBattlefieldScores
+local GetSpecializationInfoByID = GetSpecializationInfoByID
+local IsInRaid = IsInRaid
 local SetCVar = SetCVar
 local UnitClass = UnitClass
 local UnitExists = UnitExists
@@ -382,6 +385,8 @@ end
 
 function NP:OnShow(isConfig, dontHideHighlight)
 	local frame = self.UnitFrame
+
+	NP:CheckRaidIcon(frame)
 
 	if self:IsShown() then
 		NP.VisiblePlates[frame] = 1
@@ -844,7 +849,6 @@ function NP:OnUpdate()
 
 		NP:SetMouseoverFrame(frame)
 		NP:SetTargetFrame(frame)
-		NP:CheckRaidIcon(frame)
 
         if frame.UnitReaction ~= NP:GetUnitInfo(frame) then
             NP:UpdateAllFrame(frame, nil, true)
@@ -866,8 +870,6 @@ function NP:CheckRaidIcon(frame)
 	else
 		frame.RaidIconType = nil
 	end
-
-	self:StyleFilterUpdate(frame, "RAID_TARGET_UPDATE")
 end
 
 function NP:SearchNameplateByGUID(guid)
@@ -1041,6 +1043,13 @@ function NP:UNIT_POWER()
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_POWER")
 end
 
+function NP:RAID_TARGET_UPDATE()
+	for frame in pairs(self.VisiblePlates) do
+		NP:CheckRaidIcon(frame)
+		NP:StyleFilterUpdate(frame, "RAID_TARGET_UPDATE")
+	end
+end
+
 function NP:CacheArenaUnits()
 	twipe(self.ENEMY_PLAYER)
 	twipe(self.ENEMY_NPC)
@@ -1130,6 +1139,7 @@ function NP:Initialize()
 	self:RegisterEvent("UNIT_POWER")
 	self:RegisterEvent("UNIT_COMBO_POINTS")
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+	self:RegisterEvent("RAID_TARGET_UPDATE")
 
 	-- Arena & Arena Pets
 	self:CacheArenaUnits()
