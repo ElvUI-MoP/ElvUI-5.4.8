@@ -464,14 +464,14 @@ function A:Initialize()
 	if E.private.auras.buffsHeader then
 		A.BuffFrame = A:CreateAuraHeader("HELPFUL")
 		A.BuffFrame:Point("TOPRIGHT", MMHolder or Minimap, "TOPLEFT", -(6 + E.Border), -E.Border - E.Spacing)
-		E:CreateMover(A.BuffFrame, "BuffMover", L["Player Buffs"], nil, nil, nil, nil, nil, "auras,buffs")
+		E:CreateMover(A.BuffFrame, "BuffsMover", L["Player Buffs"], nil, nil, nil, nil, nil, "auras,buffs")
 		if Masque and MasqueGroupBuffs then A.BuffsMasqueGroup = MasqueGroupBuffs end
 	end
 
 	if E.private.auras.debuffsHeader then
 		A.DebuffFrame = A:CreateAuraHeader("HARMFUL")
 		A.DebuffFrame:Point("BOTTOMRIGHT", MMHolder or Minimap, "BOTTOMLEFT", -(6 + E.Border), E.Border + E.Spacing)
-		E:CreateMover(A.DebuffFrame, "DebuffMover", L["Player Debuffs"], nil, nil, nil, nil, nil, "auras,debuffs")
+		E:CreateMover(A.DebuffFrame, "DebuffsMover", L["Player Debuffs"], nil, nil, nil, nil, nil, "auras,debuffs")
 		if Masque and MasqueGroupDebuffs then A.DebuffsMasqueGroup = MasqueGroupDebuffs end
 	end
 

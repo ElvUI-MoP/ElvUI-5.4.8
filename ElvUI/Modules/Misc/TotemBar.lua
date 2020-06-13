@@ -63,6 +63,8 @@ function TOTEMS:ToggleEnable()
 end
 
 function TOTEMS:PositionAndSize()
+	if not self.Initialized then return end
+
 	for i = 1, MAX_TOTEMS do
 		local button = self.bar[i]
 		local prevButton = self.bar[i - 1]

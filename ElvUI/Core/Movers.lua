@@ -51,16 +51,19 @@ local function UpdateCoords(self)
 	E:UpdateNudgeFrame(mover, x, y)
 end
 
-local function SetPoints(name, holder, parent)
+function E:SetMoverPoints(name, parent)
+	local holder = E.CreatedMovers[name]
+	if not holder then return end
+
 	local point1, relativeTo1, relativePoint1, xOffset1, yOffset1 = unpack(holder.parentPoint)
 	local point2, relativeTo2, relativePoint2, xOffset2, yOffset2 = GetSettingPoints(name)
-	if not point2 then -- fallback to the parents original point (on create) if the setting doesn't exist
+	if not _G[relativeTo2] then -- fallback to the parents original point (on create) if the setting doesn't exist
 		point2, relativeTo2, relativePoint2, xOffset2, yOffset2 = point1, relativeTo1, relativePoint1, xOffset1, yOffset1
 	end
 
 	if point2 then
-		_G[name]:ClearAllPoints()
-		_G[name]:Point(point2, relativeTo2, relativePoint2, xOffset2, yOffset2)
+		holder.mover:ClearAllPoints()
+		holder.mover:Point(point2, relativeTo2, relativePoint2, xOffset2, yOffset2)
 	end
 
 	if parent then
@@ -121,7 +124,7 @@ local function UpdateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 	E.snapBars[#E.snapBars + 1] = f
 
 	parent:SetScript("OnSizeChanged", SizeChanged)
-	SetPoints(name, holder, parent)
+	E:SetMoverPoints(name, parent)
 
 	local function OnDragStart(self)
 		if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
@@ -174,8 +177,8 @@ local function UpdateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 
 	local function OnEnter(self)
 		if isDragging then return end
-		for key in pairs(E.CreatedMovers) do
-			local mover = _G[key]
+		for _, frame in pairs(E.CreatedMovers) do
+			local mover = frame.mover
 			if mover:IsShown() and mover ~= self then
 				E:UIFrameFadeOut(mover, 0.75, mover:GetAlpha(), 0.5)
 			end
@@ -189,8 +192,8 @@ local function UpdateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 
 	local function OnLeave(self)
 		if isDragging then return end
-		for key in pairs(E.CreatedMovers) do
-			local mover = _G[key]
+		for _, frame in pairs(E.CreatedMovers) do
+			local mover = frame.mover
 			if mover:IsShown() and mover ~= self then
 				E:UIFrameFadeIn(mover, 0.75, mover:GetAlpha(), 1)
 			end
@@ -294,14 +297,14 @@ function E:HasMoverBeenMoved(name)
 end
 
 function E:SaveMoverPosition(name)
-	if not _G[name] then return end
+	local holder = E.CreatedMovers[name]
+	if not holder then return end
 	if not E.db.movers then E.db.movers = {} end
-
-	E.db.movers[name] = GetPoint(_G[name])
+	E.db.movers[name] = GetPoint(holder.mover)
 end
 
 function E:SetMoverSnapOffset(name, offset)
-	local holder = _G[name] and E.CreatedMovers[name]
+	local holder = E.CreatedMovers[name]
 	if not holder then return end
 
 	holder.mover.snapOffset = offset or -2
@@ -310,7 +313,9 @@ end
 
 function E:SetMoverLayoutPositionPoint(holder, name, parent)
 	local layout = E.LayoutMoverPositions[E.db.layoutSetting]
-	holder.point = (layout and layout[name]) or E.LayoutMoverPositions.ALL[name] or GetPoint(parent or _G[name])
+	local layoutPoint = (layout and layout[name]) or E.LayoutMoverPositions.ALL[name]
+	holder.layoutPoint = layoutPoint
+	holder.point = layoutPoint or GetPoint(parent or holder.mover)
 
 	if parent then -- CreateMover call
 		holder.parentPoint = {parent:GetPoint()}
@@ -318,14 +323,13 @@ function E:SetMoverLayoutPositionPoint(holder, name, parent)
 end
 
 function E:SaveMoverDefaultPosition(name)
-	local frame = _G[name]
-	local holder = frame and E.CreatedMovers[name]
+	local holder = E.CreatedMovers[name]
 	if not holder then return end
 
 	E:SetMoverLayoutPositionPoint(holder, name)
 
 	if holder.postdrag and type(holder.postdrag) == "function" then
-		holder.postdrag(frame, E:GetScreenQuadrant(frame))
+		holder.postdrag(holder.mover, E:GetScreenQuadrant(holder.mover))
 	end
 end
 
@@ -351,29 +355,36 @@ end
 function E:ToggleMovers(show, moverType)
 	self.configMode = show
 
-	for name, holder in pairs(E.CreatedMovers) do
+	for _, holder in pairs(E.CreatedMovers) do
 		if show and holder.type[moverType] then
-			_G[name]:Show()
+			holder.mover:Show()
 		else
-			_G[name]:Hide()
+			holder.mover:Hide()
 		end
 	end
+end
+
+function E:GetMoverHolder(name)
+	local created = self.CreatedMovers[name]
+	local disabled = self.DisabledMovers[name]
+	return created or disabled, not not disabled
 end
 
 function E:DisableMover(name)
 	if self.DisabledMovers[name] then return end
 
-	if not self.CreatedMovers[name] then
-		error("mover doesn't exist")
+	local holder = self.CreatedMovers[name]
+	if not holder then
+		error(format("mover %s doesnt exist", name or "nil"))
 	end
 
 	self.DisabledMovers[name] = {}
-	for x, y in pairs(self.CreatedMovers[name]) do
+	for x, y in pairs(holder) do
 		self.DisabledMovers[name][x] = y
 	end
 
 	if self.configMode then
-		_G[name]:Hide()
+		holder.mover:Hide()
 	end
 
 	self.CreatedMovers[name] = nil
@@ -382,17 +393,18 @@ end
 function E:EnableMover(name)
 	if self.CreatedMovers[name] then return end
 
-	if not self.DisabledMovers[name] then
-		error("mover doesn't exist")
+	local holder = self.DisabledMovers[name]
+	if not holder then
+		error(format("mover %s doesnt exist", name or "nil"))
 	end
 
 	self.CreatedMovers[name] = {}
-	for x, y in pairs(self.DisabledMovers[name]) do
+	for x, y in pairs(holder) do
 		self.CreatedMovers[name][x] = y
 	end
 
 	if self.configMode then
-		_G[name]:Show()
+		holder.mover:Show()
 	end
 
 	self.DisabledMovers[name] = nil
@@ -406,7 +418,7 @@ function E:ResetMovers(arg)
 		if all or (holder.mover and holder.mover.textString == arg) then
 			local point, anchor, secondaryPoint, x, y = split(",", holder.point)
 
-			local frame = _G[name]
+			local frame = holder.mover
 			if point then
 				frame:ClearAllPoints()
 				frame:Point(point, anchor, secondaryPoint, x, y)
@@ -416,15 +428,17 @@ function E:ResetMovers(arg)
 				holder.postdrag(frame, E:GetScreenQuadrant(frame))
 			end
 
-			if not all then
-				if self.db.movers then
+			if all then
+				E:SaveMoverPosition(name)
+			else
+				if holder.layoutPoint then
+					E:SaveMoverPosition(name)
+				elseif self.db.movers then
 					self.db.movers[name] = nil
 				end
 				break
 			end
 		end
-
-		E:SaveMoverPosition(name)
 	end
 end
 
@@ -439,14 +453,14 @@ function E:SetMoversPositions()
 		if not shouldDisable then E:EnableMover(name) end
 	end
 
-	for name, holder in pairs(E.CreatedMovers) do
-		SetPoints(name, holder)
+	for name in pairs(E.CreatedMovers) do
+		E:SetMoverPoints(name)
 	end
 end
 
 function E:SetMoversClampedToScreen(value)
-	for name in pairs(E.CreatedMovers) do
-		_G[name]:SetClampedToScreen(value)
+	for _, holder in pairs(E.CreatedMovers) do
+		holder.mover:SetClampedToScreen(value)
 	end
 end
 

@@ -140,6 +140,11 @@ function M:UpdateMapAlpha()
 			self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
 		end
 	else
+		if self.MovingTimer then
+			self:CancelTimer(self.MovingTimer)
+			self.MovingTimer = nil
+		end
+
 		if GetUnitSpeed("player") ~= 0 and not WorldMapPositioningGuide:IsMouseOver() then
 			WorldMapFrame:SetAlpha(1)
 			WorldMapBlobFrame:SetFillAlpha(128)
@@ -147,20 +152,13 @@ function M:UpdateMapAlpha()
 			WorldMapArchaeologyDigSites:SetFillAlpha(128)
 			WorldMapArchaeologyDigSites:SetBorderAlpha(192)
 		end
-
-		if self.MovingTimer then
-			self:CancelTimer(self.MovingTimer)
-			self.MovingTimer = nil
-		end
 	end
 end
 
 function M:Initialize()
 	local db = E.global.general
 
-	if db.fadeMapWhenMoving and (db.mapAlphaWhenMoving < 1) then
-		self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
-	end
+	M:UpdateMapAlpha()
 
 	if not E.private.worldmap.enable then return end
 

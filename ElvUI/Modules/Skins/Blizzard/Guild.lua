@@ -122,7 +122,7 @@ local function LoadSkin()
 		local offset = HybridScrollFrame_GetOffset(GuildRewardsContainer)
 		local buttons = GuildRewardsContainer.buttons
 		local button, index, itemID, quality, r, g, b
- 
+
 		for i = 1, #buttons do
 			button = buttons[i]
 			index = offset + i

@@ -26,7 +26,7 @@ function UF:Configure_Stagger(frame)
 	local stagger = frame.Stagger
 	local db = frame.db
 
-	frame.STAGGER_WIDTH = stagger and frame.STAGGER_SHOWN and (db.stagger.width + (frame.BORDER*3)) or 0
+	frame.STAGGER_WIDTH = stagger and frame.STAGGER_SHOWN and (db.stagger.width + (frame.BORDER * 3)) or 0
 
 	if db.stagger.enable then
 		if not frame:IsElementEnabled("Stagger") then
@@ -36,18 +36,18 @@ function UF:Configure_Stagger(frame)
 		stagger:ClearAllPoints()
 		if db.power.enable and not frame.USE_MINI_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED and not frame.USE_POWERBAR_OFFSET then
 			if frame.ORIENTATION == "RIGHT" then
-				stagger:Point("BOTTOMRIGHT", frame.Power, "BOTTOMLEFT", -frame.BORDER*2 + (frame.BORDER - frame.SPACING*3), 0)
+				stagger:Point("BOTTOMRIGHT", frame.Power, "BOTTOMLEFT", -frame.BORDER * 2 + (frame.BORDER - frame.SPACING * 3), 0)
 				stagger:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.STAGGER_WIDTH, 0)
 			else
-				stagger:Point("BOTTOMLEFT", frame.Power, "BOTTOMRIGHT", frame.BORDER*2 + (-frame.BORDER + frame.SPACING*3), 0)
+				stagger:Point("BOTTOMLEFT", frame.Power, "BOTTOMRIGHT", frame.BORDER * 2 + (-frame.BORDER + frame.SPACING * 3), 0)
 				stagger:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.STAGGER_WIDTH, 0)
 			end
 		else
 			if frame.ORIENTATION == "RIGHT" then
-				stagger:Point("BOTTOMRIGHT", frame.Health, "BOTTOMLEFT", -frame.BORDER*2 + (frame.BORDER - frame.SPACING*3), 0)
+				stagger:Point("BOTTOMRIGHT", frame.Health, "BOTTOMLEFT", -frame.BORDER * 2 + (frame.BORDER - frame.SPACING * 3), 0)
 				stagger:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.STAGGER_WIDTH, 0)
 			else
-				stagger:Point("BOTTOMLEFT", frame.Health, "BOTTOMRIGHT", frame.BORDER*2 + (-frame.BORDER + frame.SPACING*3), 0)
+				stagger:Point("BOTTOMLEFT", frame.Health, "BOTTOMRIGHT", frame.BORDER * 2 + (-frame.BORDER + frame.SPACING * 3), 0)
 				stagger:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.STAGGER_WIDTH, 0)
 			end
 		end

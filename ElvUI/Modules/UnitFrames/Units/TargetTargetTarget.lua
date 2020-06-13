@@ -54,6 +54,18 @@ function UF:Update_TargetTargetTargetFrame(frame, db)
 		frame.VARIABLES_SET = true
 	end
 
+	if db.strataAndLevel and db.strataAndLevel.useCustomStrata then
+		frame:SetFrameStrata(db.strataAndLevel.frameStrata)
+	else
+		frame:SetFrameStrata(frame:GetParent():GetFrameStrata())
+	end
+
+	if db.strataAndLevel and db.strataAndLevel.useCustomLevel then
+		frame:SetFrameLevel(db.strataAndLevel.frameLevel)
+	else
+		frame:SetFrameLevel(frame:GetParent():GetFrameLevel() + 1)
+	end
+
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")

@@ -43,6 +43,7 @@ function UF:Construct_TargetFrame(frame)
 	frame.PvPIndicator = self:Construct_PvPIcon(frame)
 	frame.Fader = self:Construct_Fader()
 	frame.Cutaway = self:Construct_Cutaway(frame)
+	frame.CombatIndicator = UF:Construct_CombatIndicator(frame)
 	frame.customTexts = {}
 
 	frame:Point("BOTTOMRIGHT", E.UIParent, "BOTTOM", 413, 68)
@@ -84,6 +85,18 @@ function UF:Update_TargetFrame(frame, db)
 		frame.VARIABLES_SET = true
 	end
 
+	if db.strataAndLevel and db.strataAndLevel.useCustomStrata then
+		frame:SetFrameStrata(db.strataAndLevel.frameStrata)
+	else
+		frame:SetFrameStrata(frame:GetParent():GetFrameStrata())
+	end
+
+	if db.strataAndLevel and db.strataAndLevel.useCustomLevel then
+		frame:SetFrameLevel(db.strataAndLevel.frameLevel)
+	else
+		frame:SetFrameLevel(frame:GetParent():GetFrameLevel() + 1)
+	end
+
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
@@ -120,6 +133,7 @@ function UF:Update_TargetFrame(frame, db)
 	UF:Configure_PVPIcon(frame)
 	UF:Configure_Cutaway(frame)
 	UF:Configure_CustomTexts(frame)
+	UF:Configure_CombatIndicator(frame)
 
 	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + db.castbar.height))
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")

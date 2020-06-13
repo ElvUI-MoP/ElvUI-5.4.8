@@ -10,7 +10,7 @@ local SPEC_PRIEST_SHADOW = SPEC_PRIEST_SHADOW
 
 local ClassPowerID, ClassPowerType
 local ClassPowerEnable, ClassPowerDisable
-local RequireSpec, RequirePower, RequireSpell, RequireFormID
+local RequireSpec, RequirePower, RequireSpell
 
 local function UpdateColor(element, powerType)
 	local color = element.__owner.colors.power[powerType]
@@ -93,12 +93,6 @@ local function Visibility(self, event, unit)
 	local powerType = ClassPowerType
 
 	if(shouldEnable) then
-		if(not UnitHasVehicleUI("player")) then
-			element:Show()
-		else
-			element:Hide()
-		end
-
 		(element.UpdateColor or UpdateColor) (element, powerType)
 	end
 

@@ -30,6 +30,7 @@ function UF:Construct_FocusFrame(frame)
 	frame.DebuffHighlight = self:Construct_DebuffHighlight(frame)
 	frame.Fader = self:Construct_Fader()
 	frame.Cutaway = self:Construct_Cutaway(frame)
+	frame.CombatIndicator = UF:Construct_CombatIndicator(frame)
 
 	frame.customTexts = {}
 	frame:Point("BOTTOMRIGHT", ElvUF_Target, "TOPRIGHT", 0, 220)
@@ -61,6 +62,18 @@ function UF:Update_FocusFrame(frame, db)
 		frame.VARIABLES_SET = true
 	end
 
+	if db.strataAndLevel and db.strataAndLevel.useCustomStrata then
+		frame:SetFrameStrata(db.strataAndLevel.frameStrata)
+	else
+		frame:SetFrameStrata(frame:GetParent():GetFrameStrata())
+	end
+
+	if db.strataAndLevel and db.strataAndLevel.useCustomLevel then
+		frame:SetFrameLevel(db.strataAndLevel.frameLevel)
+	else
+		frame:SetFrameLevel(frame:GetParent():GetFrameLevel() + 1)
+	end
+
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
@@ -87,6 +100,7 @@ function UF:Update_FocusFrame(frame, db)
 	UF:Configure_Cutaway(frame)
 	UF:Configure_CustomTexts(frame)
 	UF:Configure_DebuffHighlight(frame)
+	UF:Configure_CombatIndicator(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

@@ -1540,6 +1540,7 @@ P.unitframe = {
 				xOffsetTime = -4,
 				yOffsetTime = 0,
 				overlayOnFrame = "None",
+				reverse = false,
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = "LOW",
@@ -1617,6 +1618,12 @@ P.unitframe = {
 				enable = true,
 				autoHide = true,
 				width = 10
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		target = {
@@ -1702,6 +1709,16 @@ P.unitframe = {
 				yOffset = 0,
 				scale = 0.8
 			},
+			CombatIcon = {
+				enable = true,
+				defaultColor = true,
+				color = {r = 1, g = 0.2, b = 0.2, a = 1},
+				anchorPoint = "CENTER",
+				xOffset = 0,
+				yOffset = 0,
+				size = 20,
+				texture = "DEFAULT"
+			},
 			pvpIcon = {
 				enable = false,
 				anchorPoint = "CENTER",
@@ -1786,6 +1803,7 @@ P.unitframe = {
 				xOffsetTime = -4,
 				yOffsetTime = 0,
 				overlayOnFrame = "None",
+				reverse = false,
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = "LOW",
@@ -1870,6 +1888,12 @@ P.unitframe = {
 				attachToObject = "Frame",
 				xOffset = 0,
 				yOffset = 0
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		targettarget = {
@@ -2007,6 +2031,12 @@ P.unitframe = {
 					lengthBeforeFade = 0.3,
 					forceBlankTexture = true
 				}
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		targettargettarget = {
@@ -2143,6 +2173,12 @@ P.unitframe = {
 					lengthBeforeFade = 0.3,
 					forceBlankTexture = true
 				}
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		focus = {
@@ -2210,6 +2246,16 @@ P.unitframe = {
 				xOffset = 0,
 				yOffset = 0,
 				attachTextTo = "Health"
+			},
+			CombatIcon = {
+				enable = true,
+				defaultColor = true,
+				color = {r = 1, g = 0.2, b = 0.2, a = 1},
+				anchorPoint = "CENTER",
+				xOffset = 0,
+				yOffset = 0,
+				size = 20,
+				texture = "DEFAULT"
 			},
 			portrait = {
 				enable = false,
@@ -2288,6 +2334,7 @@ P.unitframe = {
 				xOffsetTime = -4,
 				yOffsetTime = 0,
 				overlayOnFrame = "None",
+				reverse = false,
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = "LOW",
@@ -2341,6 +2388,12 @@ P.unitframe = {
 					lengthBeforeFade = 0.3,
 					forceBlankTexture = true
 				}
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		focustarget = {
@@ -2477,6 +2530,12 @@ P.unitframe = {
 					lengthBeforeFade = 0.3,
 					forceBlankTexture = true
 				}
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		pet = {
@@ -2641,6 +2700,7 @@ P.unitframe = {
 				xOffsetTime = -4,
 				yOffsetTime = 0,
 				overlayOnFrame = "None",
+				reverse = false,
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = "LOW",
@@ -2661,6 +2721,12 @@ P.unitframe = {
 					lengthBeforeFade = 0.3,
 					forceBlankTexture = true
 				}
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		pettarget = {
@@ -2789,6 +2855,12 @@ P.unitframe = {
 					lengthBeforeFade = 0.3,
 					forceBlankTexture = true
 				}
+			},
+			strataAndLevel = {
+				useCustomStrata = false,
+				frameStrata = "LOW",
+				useCustomLevel = false,
+				frameLevel = 1
 			}
 		},
 		boss = {
@@ -2931,6 +3003,7 @@ P.unitframe = {
 				xOffsetTime = -4,
 				yOffsetTime = 0,
 				overlayOnFrame = "None",
+				reverse = false,
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = "LOW",
@@ -3106,6 +3179,7 @@ P.unitframe = {
 				xOffsetTime = -4,
 				yOffsetTime = 0,
 				overlayOnFrame = "None",
+				reverse = false,
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = "LOW",
@@ -3327,6 +3401,12 @@ P.unitframe = {
 				xOffsetTime = -4,
 				yOffsetTime = 0,
 				overlayOnFrame = "None",
+				reverse = false,
+				positionsGroup = {
+					anchorPoint = "BOTTOM",
+					xOffset = 0,
+					yOffset = 0
+				},
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = "LOW",

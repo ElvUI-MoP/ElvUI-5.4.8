@@ -162,9 +162,6 @@ function UF:Configure_ClassBar(frame)
 
 		if E.myclass == "WARLOCK" then
 			bars:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
-			--if bars.bg then
-			--	bars.bg:SetTexture(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
-			--end
 		end
 	end
 

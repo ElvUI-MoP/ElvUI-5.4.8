@@ -14,11 +14,11 @@ local function SetFont(obj, font, size, style, sr, sg, sb, sa, sox, soy, r, g, b
 end
 
 function E:UpdateBlizzardFonts()
-	local NORMAL		= self.media.normFont
-	local NUMBER		= self.media.normFont
-	local COMBAT		= LSM:Fetch("font", self.private.general.dmgfont)
-	local NAMEFONT		= LSM:Fetch("font", self.private.general.namefont)
-	local BUBBLE		= LSM:Fetch("font", self.private.general.chatBubbleFont)
+	local NORMAL		= E.media.normFont
+	local NUMBER		= E.media.normFont
+	local COMBAT		= LSM:Fetch("font", E.private.general.dmgfont)
+	local NAMEFONT		= LSM:Fetch("font", E.private.general.namefont)
+	local BUBBLE		= LSM:Fetch("font", E.private.general.chatBubbleFont)
 	local SHADOWCOLOR	= _G.SHADOWCOLOR
 	local NORMALOFFSET	= _G.NORMALOFFSET
 	local BIGOFFSET		= _G.BIGOFFSET
@@ -27,11 +27,11 @@ function E:UpdateBlizzardFonts()
 	UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 12
 	CHAT_FONT_HEIGHTS = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
 
-	if self.db.general.font == "Homespun" then
+	if E.db.general.font == "Homespun" then
 		MONOCHROME = "MONOCHROME"
 	end
 
-	if self.eyefinity then
+	if E.eyefinity then
 		InterfaceOptionsCombatTextPanelTargetDamage:Hide()
 		InterfaceOptionsCombatTextPanelPeriodicDamage:Hide()
 		InterfaceOptionsCombatTextPanelPetDamage:Hide()
@@ -45,12 +45,18 @@ function E:UpdateBlizzardFonts()
 		COMBAT = E.Media.Fonts.Invisible
 	end
 
-	UNIT_NAME_FONT		= NAMEFONT
-	NAMEPLATE_FONT		= NAMEFONT
-	DAMAGE_TEXT_FONT	= COMBAT
-	STANDARD_TEXT_FONT	= NORMAL
+	if E.private.general.replaceNameFont then
+		UNIT_NAME_FONT = NAMEFONT
+	end
 
-	if self.private.general.replaceBlizzFonts then
+	if E.private.general.replaceCombatFont then
+		DAMAGE_TEXT_FONT = COMBAT
+	end
+
+	if E.private.general.replaceBlizzFonts then
+		NAMEPLATE_FONT = NAMEFONT
+		STANDARD_TEXT_FONT = NORMAL
+
 		SetFont(ChatBubbleFont,						BUBBLE, self.private.general.chatBubbleFontSize, self.private.general.chatBubbleFontOutline)
 		SetFont(GameTooltipHeader,					NORMAL, self.db.general.fontSize)
 		SetFont(NumberFont_OutlineThick_Mono_Small,	NUMBER, self.db.general.fontSize, "OUTLINE")

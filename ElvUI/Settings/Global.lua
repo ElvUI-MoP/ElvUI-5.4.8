@@ -214,7 +214,7 @@ G.unitframe = {
 
 G.profileCopy = {
 	--Specific values
-	selected = "Minimalistic",
+	selected = "Default",
 	movers = {},
 	--Modules
 	actionbar = {
