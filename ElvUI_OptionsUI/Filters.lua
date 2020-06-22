@@ -229,7 +229,9 @@ E.Options.args.filters = {
 						if not spell then return true end
 
 						local _, defaultTable = GetSelectedFilters()
-						return defaultTable[spell]
+						if defaultTable then
+							return defaultTable[spell]
+						end
 					end
 				},
 				quickSearch = {
@@ -252,6 +254,13 @@ E.Options.args.filters = {
 					get = function() return E.global.unitframe.aurafilters[selectedFilter].type end,
 					set = function(info, value) E.global.unitframe.aurafilters[selectedFilter].type = value UF:Update_AllFrames() end,
 					hidden = function() return (selectedFilter == "Debuff Highlight" or selectedFilter == "AuraBar Colors" or selectedFilter == "Buff Indicator (Pet)" or selectedFilter == "Buff Indicator (Profile)" or selectedFilter == "Buff Indicator" or selectedFilter == "Whitelist" or selectedFilter == "Blacklist") end
+				},
+				selectSpellheader = {
+					order = 9,
+					type = "description",
+					name = L["|cffFF0000Warning:|r Click the arrow on the dropdown box to see a list of spells."],
+					fontSize = "medium",
+					hidden = function() return not E.db.unitframe.smartRaidFilter end
 				},
 				selectSpell = {
 					order = 10,

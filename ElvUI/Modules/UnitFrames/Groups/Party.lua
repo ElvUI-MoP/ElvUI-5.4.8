@@ -23,6 +23,7 @@ function UF:Construct_PartyFrames()
 		self.Health = UF:Construct_HealthBar(self, true)
 		self.MouseGlow = UF:Construct_MouseGlow(self)
 		self.TargetGlow = UF:Construct_TargetGlow(self)
+		self.FocusGlow = UF:Construct_FocusGlow(self)
 		self.Name = UF:Construct_NameText(self)
 		self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 
@@ -45,13 +46,14 @@ function UF:Construct_PartyFrames()
 		self.Debuffs = UF:Construct_Debuffs(self)
 		self.AuraWatch = UF:Construct_AuraWatch(self)
 		self.RaidDebuffs = UF:Construct_RaidDebuffs(self)
-		self.DebuffHighlight = UF:Construct_DebuffHighlight(self)
+		self.AuraHighlight = UF:Construct_AuraHighlight(self)
 		self.ResurrectIndicator = UF:Construct_ResurrectionIcon(self)
 		self.GroupRoleIndicator = UF:Construct_RoleIcon(self)
 		self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 		self.MouseGlow = UF:Construct_MouseGlow(self)
 		self.PhaseIndicator = UF:Construct_PhaseIcon(self)
 		self.TargetGlow = UF:Construct_TargetGlow(self)
+		self.FocusGlow = UF:Construct_FocusGlow(self)
 		self.ThreatIndicator = UF:Construct_Threat(self)
 		self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 		self.ReadyCheckIndicator = UF:Construct_ReadyCheckIcon(self)
@@ -145,6 +147,8 @@ function UF:Update_PartyFrames(frame, db)
 		local childDB = db.petsGroup
 		if frame.childType == "target" then
 			childDB = db.targetsGroup
+		else
+			frame.Health.colorPetByUnitClass = childDB.colorPetByUnitClass
 		end
 
 		frame:Size(childDB.width, childDB.height)
@@ -178,7 +182,7 @@ function UF:Update_PartyFrames(frame, db)
 		UF:Configure_Castbar(frame)
 		UF:Configure_RaidIcon(frame)
 		UF:Configure_ResurrectionIcon(frame)
-		UF:Configure_DebuffHighlight(frame)
+		UF:Configure_AuraHighlight(frame)
 		UF:Configure_RoleIcon(frame)
 		UF:Configure_HealComm(frame)
 		UF:Configure_GPS(frame)

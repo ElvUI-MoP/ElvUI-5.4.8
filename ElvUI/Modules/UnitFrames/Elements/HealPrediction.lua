@@ -55,8 +55,8 @@ function UF:Construct_HealComm(frame)
 	local otherBar = CreateFrame("StatusBar", nil, parent)
 	local absorbBar = CreateFrame("StatusBar", nil, parent)
 	local healAbsorbBar = CreateFrame("StatusBar", nil, parent)
-	local overAbsorb = parent:CreateTexture(nil, "ARTWORK")
-	local overHealAbsorb = parent:CreateTexture(nil, "ARTWORK")
+	local overAbsorb = myBar:CreateTexture(nil, "ARTWORK")
+	local overHealAbsorb = myBar:CreateTexture(nil, "ARTWORK")
 
 	myBar:SetFrameLevel(11)
 	otherBar:SetFrameLevel(11)
@@ -70,7 +70,6 @@ function UF:Construct_HealComm(frame)
 		healAbsorbBar = healAbsorbBar,
 		overAbsorb_ = overAbsorb,
 		overHealAbsorb_ = overHealAbsorb,
-		PostUpdate = UF.UpdateHealComm,
 		maxOverflow = 1,
 		health = health,
 		parent = parent,
@@ -106,8 +105,10 @@ function UF:Configure_HealComm(frame)
 		local health = frame.Health
 		local orientation = health:GetOrientation()
 		local reverseFill = health:GetReverseFill()
+
 		local healthBarTexture = health:GetStatusBarTexture()
-		local showAbsorbAmount = frame.db.healPrediction.showAbsorbAmount
+		local myBarTexture = myBar:GetStatusBarTexture()
+		local otherBarTexture = otherBar:GetStatusBarTexture()
 
 		UF:SetTexture_HealComm(healPrediction, UF.db.colors.transparentHealth and E.media.blankTex or healthBarTexture:GetTexture())
 
@@ -118,7 +119,7 @@ function UF:Configure_HealComm(frame)
 
 		myBar:SetReverseFill(reverseFill)
 		otherBar:SetReverseFill(reverseFill)
-		absorbBar:SetReverseFill((showAbsorbAmount and not reverseFill) or (reverseFill and not showAbsorbAmount))
+		absorbBar:SetReverseFill(reverseFill)
 		healAbsorbBar:SetReverseFill(not reverseFill)
 
 		myBar:SetStatusBarColor(c.personal.r, c.personal.g, c.personal.b, c.personal.a)
@@ -128,7 +129,7 @@ function UF:Configure_HealComm(frame)
 		overAbsorb:SetVertexColor(c.overabsorbs.r, c.overabsorbs.g, c.overabsorbs.b, c.overabsorbs.a)
 		overHealAbsorb:SetVertexColor(c.overhealabsorbs.r, c.overhealabsorbs.g, c.overhealabsorbs.b, c.overhealabsorbs.a)
 
-		if frame.db.healPrediction.showOverAbsorbs and not showAbsorbAmount then
+		if frame.db.healPrediction.showOverAbsorbs then
 			healPrediction.overAbsorb = overAbsorb
 			healPrediction.overHealAbsorb = overHealAbsorb
 		elseif healPrediction.overAbsorb then
@@ -152,19 +153,19 @@ function UF:Configure_HealComm(frame)
 
 			otherBar:Size(width, 0)
 			otherBar:ClearAllPoints()
-			otherBar:Point("TOP", health, "TOP")
-			otherBar:Point("BOTTOM", health, "BOTTOM")
-			otherBar:Point(p1, myBar:GetStatusBarTexture(), p2)
 
 			absorbBar:Size(width, 0)
 			absorbBar:ClearAllPoints()
-			absorbBar:Point("TOP", health, "TOP")
-			absorbBar:Point("BOTTOM", health, "BOTTOM")
-			if showAbsorbAmount then
-				absorbBar:Point(p2, health, p2)
-			else
-				absorbBar:Point(p1, healthBarTexture, p2)
-			end
+
+			E:Delay(0.1, function()
+				otherBar:Point("TOP", health, "TOP")
+				otherBar:Point("BOTTOM", health, "BOTTOM")
+				otherBar:Point(p1, myBarTexture, p2)
+
+				absorbBar:Point("TOP", health, "TOP")
+				absorbBar:Point("BOTTOM", health, "BOTTOM")
+				absorbBar:Point(p1, otherBarTexture, p2)
+			end)
 
 			healAbsorbBar:Size(width, 0)
 			healAbsorbBar:ClearAllPoints()
@@ -173,7 +174,7 @@ function UF:Configure_HealComm(frame)
 			healAbsorbBar:Point(p2, healthBarTexture, p2)
 
 			if healPrediction.overAbsorb then
-				healPrediction.overAbsorb:Size(1, 0)
+				healPrediction.overAbsorb:Size(4, 0)
 				healPrediction.overAbsorb:ClearAllPoints()
 				healPrediction.overAbsorb:Point("TOP", health, "TOP")
 				healPrediction.overAbsorb:Point("BOTTOM", health, "BOTTOM")
@@ -181,7 +182,7 @@ function UF:Configure_HealComm(frame)
 			end
 
 			if healPrediction.overHealAbsorb then
-				healPrediction.overHealAbsorb:Size(1, 0)
+				healPrediction.overHealAbsorb:Size(4, 0)
 				healPrediction.overHealAbsorb:ClearAllPoints()
 				healPrediction.overHealAbsorb:Point("TOP", health, "TOP")
 				healPrediction.overHealAbsorb:Point("BOTTOM", health, "BOTTOM")
@@ -201,19 +202,19 @@ function UF:Configure_HealComm(frame)
 
 			otherBar:Size(0, height)
 			otherBar:ClearAllPoints()
-			otherBar:Point("LEFT", health, "LEFT")
-			otherBar:Point("RIGHT", health, "RIGHT")
-			otherBar:Point(p1, myBar:GetStatusBarTexture(), p2)
 
 			absorbBar:Size(0, height)
 			absorbBar:ClearAllPoints()
-			absorbBar:Point("LEFT", health, "LEFT")
-			absorbBar:Point("RIGHT", health, "RIGHT")
-			if showAbsorbAmount then
-				absorbBar:Point(p2, health, p2)
-			else
-				absorbBar:Point(p1, healthBarTexture, p2)
-			end
+
+			E:Delay(0.1, function()
+				otherBar:Point("LEFT", health, "LEFT")
+				otherBar:Point("RIGHT", health, "RIGHT")
+				otherBar:Point(p1, myBarTexture, p2)
+
+				absorbBar:Point("LEFT", health, "LEFT")
+				absorbBar:Point("RIGHT", health, "RIGHT")
+				absorbBar:Point(p1, otherBarTexture, p2)
+			end)
 
 			healAbsorbBar:Size(0, height)
 			healAbsorbBar:ClearAllPoints()
@@ -222,7 +223,7 @@ function UF:Configure_HealComm(frame)
 			healAbsorbBar:Point(p2, healthBarTexture, p2)
 
 			if healPrediction.overAbsorb then
-				healPrediction.overAbsorb:Size(0, 1)
+				healPrediction.overAbsorb:Size(0, 4)
 				healPrediction.overAbsorb:ClearAllPoints()
 				healPrediction.overAbsorb:Point("LEFT", health, "LEFT")
 				healPrediction.overAbsorb:Point("RIGHT", health, "RIGHT")
@@ -230,7 +231,7 @@ function UF:Configure_HealComm(frame)
 			end
 
 			if healPrediction.overHealAbsorb then
-				healPrediction.overHealAbsorb:Size(0, 1)
+				healPrediction.overHealAbsorb:Size(0, 4)
 				healPrediction.overHealAbsorb:ClearAllPoints()
 				healPrediction.overHealAbsorb:Point("LEFT", health, "LEFT")
 				healPrediction.overHealAbsorb:Point("RIGHT", health, "RIGHT")
@@ -239,12 +240,5 @@ function UF:Configure_HealComm(frame)
 		end
 	elseif frame:IsElementEnabled("HealthPrediction") then
 		frame:DisableElement("HealthPrediction")
-	end
-end
-
-function UF:UpdateHealComm(unit, _, _, _, _, hasOverAbsorb)
-	local pred = self.frame and self.frame.db and self.frame.db.healPrediction
-	if pred and (pred.showOverAbsorbs and pred.showAbsorbAmount) and hasOverAbsorb then
-		self.absorbBar:SetValue(UnitGetTotalAbsorbs(unit))
 	end
 end

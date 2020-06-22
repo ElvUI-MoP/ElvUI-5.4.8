@@ -224,18 +224,15 @@ end
 --Basically check if another class border is being used on a class that doesn't match. And then return true if a match is found.
 function E:CheckClassColor(r, g, b)
 	r, g, b = E:GrabColorPickerValues(r, g, b)
-	local matchFound = false
 	for class in pairs(RAID_CLASS_COLORS) do
 		if class ~= E.myclass then
 			local colorTable = E:ClassColor(class, true)
 			local red, green, blue = E:GrabColorPickerValues(colorTable.r, colorTable.g, colorTable.b)
 			if red == r and green == g and blue == b then
-				matchFound = true
+				return true
 			end
 		end
 	end
-
-	return matchFound
 end
 
 function E:SetColorTable(t, data)
@@ -359,9 +356,8 @@ do	--Update font/texture paths when they are registered by the addon providing t
 end
 
 function E:ValueFuncCall()
-	for func in pairs(self.valueColorUpdateFuncs) do
-		func(self.media.hexvaluecolor, unpack(self.media.rgbvaluecolor))
-	end
+	local hex, r, g, b = E.media.hexvaluecolor, unpack(E.media.rgbvaluecolor)
+	for func in pairs(E.valueColorUpdateFuncs) do func(hex, r, g, b) end
 end
 
 function E:UpdateFrameTemplates()
@@ -387,11 +383,13 @@ function E:UpdateFrameTemplates()
 end
 
 function E:UpdateBorderColors()
+	local r, g, b = unpack(E.media.bordercolor)
+
 	for frame in pairs(self.frames) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBorderColors then
 				if frame.template == "Default" or frame.template == "Transparent" or frame.template == nil then
-					frame:SetBackdropBorderColor(unpack(self.media.bordercolor))
+					frame:SetBackdropBorderColor(r, g, b)
 				end
 			end
 		else
@@ -399,11 +397,12 @@ function E:UpdateBorderColors()
 		end
 	end
 
+	local r2, g2, b2 = unpack(E.media.unitframeBorderColor)
 	for frame in pairs(self.unitFrameElements) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBorderColors then
 				if frame.template == "Default" or frame.template == "Transparent" or frame.template == nil then
-					frame:SetBackdropBorderColor(unpack(self.media.unitframeBorderColor))
+					frame:SetBackdropBorderColor(r2, g2, b2)
 				end
 			end
 		else
@@ -413,17 +412,20 @@ function E:UpdateBorderColors()
 end
 
 function E:UpdateBackdropColors()
+	local r, g, b = unpack(E.media.backdropcolor)
+	local r2, g2, b2, a2 = unpack(E.media.backdropfadecolor)
+
 	for frame in pairs(self.frames) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBackdropColors then
 				if frame.template == "Default" or frame.template == nil then
 					if frame.backdropTexture then
-						frame.backdropTexture:SetVertexColor(unpack(self.media.backdropcolor))
+						frame.backdropTexture:SetVertexColor(r, g, b)
 					else
-						frame:SetBackdropColor(unpack(self.media.backdropcolor))
+						frame:SetBackdropColor(r, g, b)
 					end
 				elseif frame.template == "Transparent" then
-					frame:SetBackdropColor(unpack(self.media.backdropfadecolor))
+					frame:SetBackdropColor(r2, g2, b2, a2)
 				end
 			end
 		else
@@ -436,12 +438,12 @@ function E:UpdateBackdropColors()
 			if not frame.ignoreBackdropColors then
 				if frame.template == "Default" or frame.template == nil then
 					if frame.backdropTexture then
-						frame.backdropTexture:SetVertexColor(unpack(self.media.backdropcolor))
+						frame.backdropTexture:SetVertexColor(r, g, b)
 					else
-						frame:SetBackdropColor(unpack(self.media.backdropcolor))
+						frame:SetBackdropColor(r, g, b)
 					end
 				elseif frame.template == "Transparent" then
-					frame:SetBackdropColor(unpack(self.media.backdropfadecolor))
+					frame:SetBackdropColor(r2, g2, b2, a2)
 				end
 			end
 		else
@@ -1093,6 +1095,12 @@ local function buffwatchConvert(spell)
 	end
 end
 
+local ttModSwap
+do -- tooltip convert
+	local swap = {ALL = "HIDE", NONE = "SHOW"}
+	ttModSwap = function(val) return swap[val] end
+end
+
 function E:DBConversions()
 	--Fix issue where UIScale was incorrectly stored as string
 	E.global.general.UIScale = tonumber(E.global.general.UIScale)
@@ -1250,6 +1258,34 @@ function E:DBConversions()
 	if E.db.unitframe.colors.debuffHighlight.blendMode == "MOD" then
 		E.db.unitframe.colors.debuffHighlight.blendMode = P.unitframe.colors.debuffHighlight.blendMode
 	end
+
+	do -- tooltip modifier code was dumb, change it but keep the past setting
+		local swap = ttModSwap(E.db.tooltip.modifierID)
+		if swap then E.db.tooltip.modifierID = swap end
+
+		swap = ttModSwap(E.db.tooltip.visibility.bags)
+		if swap then E.db.tooltip.visibility.bags = swap end
+
+		swap = ttModSwap(E.db.tooltip.visibility.unitFrames)
+		if swap then E.db.tooltip.visibility.unitFrames = swap end
+
+		swap = ttModSwap(E.db.tooltip.visibility.actionbars)
+		if swap then E.db.tooltip.visibility.actionbars = swap end
+
+		swap = ttModSwap(E.db.tooltip.visibility.combatOverride)
+		if swap then E.db.tooltip.visibility.combatOverride = swap end
+
+		-- remove the old combat variable and just use the mod since it supports show/hide states
+		local hideInCombat = E.db.tooltip.visibility.combat
+		if hideInCombat ~= nil then
+			E.db.tooltip.visibility.combat = nil
+
+			local override = E.db.tooltip.visibility.combatOverride
+			if hideInCombat and (override ~= "SHIFT" and override ~= "CTRL" and override ~= "ALT") then -- wouldve been NONE but now it would be HIDE
+				E.db.tooltip.visibility.combatOverride = "HIDE"
+			end
+		end
+	end
 end
 
 function E:RefreshModulesDB()
@@ -1309,8 +1345,9 @@ function E:Initialize()
 	end
 
 	if self.db.general.loginmessage then
-		local msg = format(L["LOGIN_MSG"], self.media.hexvaluecolor, self.media.hexvaluecolor, self.version)
+		local msg = format(L["LOGIN_MSG"], self.version)
 		if Chat.Initialized then msg = select(2, Chat:FindURL("CHAT_MSG_DUMMY", msg)) end
-		E:Print(msg)
+		print(msg)
+		print(L["LOGIN_MSG_HELP"])
 	end
 end

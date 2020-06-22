@@ -294,60 +294,57 @@ local function LoadSkin()
 	-- Guild Info
 	GuildInfoFrameInfo:StripTextures()
 	GuildInfoFrameApplicants:StripTextures()
+
 	GuildInfoFrameApplicantsContainer:StripTextures()
+	GuildInfoFrameApplicantsContainer:CreateBackdrop("Transparent")
+	GuildInfoFrameApplicantsContainer.backdrop:Point("BOTTOMRIGHT", 0, -3)
+	GuildInfoFrameApplicantsContainer:Point("TOPLEFT", 1, 0)
+
+	S:HandleScrollBar(GuildInfoFrameApplicantsContainerScrollBar)
+	GuildInfoFrameApplicantsContainerScrollBar:ClearAllPoints()
+	GuildInfoFrameApplicantsContainerScrollBar:Point("TOPRIGHT", GuildInfoFrameApplicantsContainer, "TOPRIGHT", 24, -15)
+	GuildInfoFrameApplicantsContainerScrollBar:Point("BOTTOMRIGHT", GuildInfoFrameApplicantsContainer, "BOTTOMRIGHT", 0, 13)
 
 	S:HandleScrollBar(GuildInfoDetailsFrameScrollBar, 4)
-	S:HandleScrollBar(GuildInfoFrameApplicantsContainerScrollBar)
 
 	S:HandleButton(GuildViewLogButton)
 	S:HandleButton(GuildControlButton)
 	S:HandleButton(GuildAddMemberButton)
 
 	for _, button in next, GuildInfoFrameApplicantsContainer.buttons do
-		button:SetBackdrop(nil)
-		button:GetHighlightTexture():Kill()
-
 		button:StripTextures()
-		button:CreateBackdrop("Transparent")
-		button.backdrop:SetAllPoints()
-		button:StyleButton()
 
 		button.bg = CreateFrame("Frame", nil, button)
-		button.bg:SetTemplate("Default", true)
+		button.bg:SetTemplate(nil, true)
 		button.bg:SetOutside(button.class)
 
 		button.class:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
 		button.class:SetParent(button.bg)
 
-		button.selectedTex:SetTexture(1, 1, 1, 0.3)
+		local highlight = button:GetHighlightTexture()
+		highlight:SetTexture(E.Media.Textures.Highlight)
+		highlight:SetTexCoord(0, 1, 0, 1)
+		highlight:SetInside()
+
+		button.selectedTex:SetTexture(E.Media.Textures.Highlight)
+		button.selectedTex:SetTexCoord(0, 1, 0, 1)
 		button.selectedTex:SetInside()
 
 		button.name:Point("TOPLEFT", 75, -10)
-		button.name:SetParent(button.backdrop)
-
 		button.level:Point("TOPLEFT", 58, -10)
-		button.level:SetParent(button.backdrop)
-
-		button.comment:SetParent(button.backdrop)
-		button.comment:Point("BOTTOMRIGHT", 0, 0)
-
-		button.fullComment:SetParent(button.backdrop)
-		button.timeLeft:SetParent(button.backdrop)
+		button.timeLeft:Point("TOPLEFT", 0, -10)
 
 		button.tankTex:SetTexture(E.Media.Textures.Tank)
 		button.tankTex:SetTexCoord(unpack(E.TexCoords))
 		button.tankTex:Size(20)
-		button.tankTex:SetParent(button.backdrop)
 
 		button.healerTex:SetTexture(E.Media.Textures.Healer)
 		button.healerTex:SetTexCoord(unpack(E.TexCoords))
 		button.healerTex:Size(18)
-		button.healerTex:SetParent(button.backdrop)
 
 		button.damageTex:SetTexture(E.Media.Textures.DPS)
 		button.damageTex:SetTexCoord(unpack(E.TexCoords))
 		button.damageTex:Size(16)
-		button.damageTex:SetParent(button.backdrop)
 	end
 
 	local function SkinGuildApplicants()
@@ -355,38 +352,49 @@ local function LoadSkin()
 		local offset = HybridScrollFrame_GetOffset(scrollFrame)
 		local buttons = scrollFrame.buttons
 		local numButtons = #buttons
-		local button, index
+		local _, level, class, button, index
+		local classColor, levelColor
 
 		for i = 1, numButtons do
 			button = buttons[i]
 			index = offset + i
-			local name, level, class = GetGuildApplicantInfo(index)
-			if name then
-				local classTextColor = E:ClassColor(class)
-				local levelTextColor = GetQuestDifficultyColor(level)
+			_, level, class = GetGuildApplicantInfo(index)
 
-				button.name:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
-				button.level:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
-				button.bg:SetBackdropBorderColor(classTextColor.r, classTextColor.g, classTextColor.b)
+			if class then
+				classColor = E:ClassColor(class)
+
+				button:GetHighlightTexture():SetVertexColor(classColor.r, classColor.g, classColor.b, 0.35)
+				button.selectedTex:SetVertexColor(classColor.r, classColor.g, classColor.b, 0.35)
+				button.bg:SetBackdropBorderColor(classColor.r, classColor.g, classColor.b)
+				button.name:SetTextColor(classColor.r, classColor.g, classColor.b)
+			end
+
+			if level then
+				levelColor = GetQuestDifficultyColor(level)
+
+				button.level:SetTextColor(levelColor.r, levelColor.g, levelColor.b)
 			end
 		end
 	end
 	hooksecurefunc("GuildInfoFrameApplicants_Update", SkinGuildApplicants)
 	hooksecurefunc("HybridScrollFrame_Update", SkinGuildApplicants)
 
-	GuildInfoFrameTab1:Point("TOPLEFT", 55, 33)
-
 	for i = 1, 3 do
-		local headerTab = _G["GuildInfoFrameTab"..i]
-		headerTab:StripTextures()
-		headerTab.backdrop = CreateFrame("Frame", nil, headerTab)
-		headerTab.backdrop:SetTemplate("Default", true)
-		headerTab.backdrop:Point("TOPLEFT", 3, -7)
-		headerTab.backdrop:Point("BOTTOMRIGHT", -2, -1)
-		headerTab.backdrop:SetFrameLevel(headerTab:GetFrameLevel() - 1)
+		local tab = _G["GuildInfoFrameTab"..i]
 
-		headerTab:HookScript("OnEnter", S.SetModifiedBackdrop)
-		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop)
+		tab:StripTextures()
+		tab.backdrop = CreateFrame("Frame", nil, tab)
+		tab.backdrop:SetTemplate("Default", true)
+		tab.backdrop:Point("TOPLEFT", 3, -7)
+		tab.backdrop:Point("BOTTOMRIGHT", -2, -1)
+		tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
+
+		if i == 1 then
+			tab:Point("TOPLEFT", 40, 40)
+		end
+
+		tab:HookScript("OnEnter", S.SetModifiedBackdrop)
+		tab:HookScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
 	local backdrop1 = CreateFrame("Frame", nil, GuildInfoFrameInfo)

@@ -7,6 +7,14 @@ local pairs, unpack = pairs, unpack
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfguild then return end
 
+	LookingForGuildFrame:StripTextures()
+	LookingForGuildFrame:SetTemplate("Transparent")
+
+	LookingForGuildFrameInset:StripTextures()
+
+	S:HandleCloseButton(LookingForGuildFrameCloseButton)
+
+	-- Settings Tab
 	local checkbox = {
 		"LookingForGuildPvPButton",
 		"LookingForGuildWeekendsButton",
@@ -21,51 +29,97 @@ local function LoadSkin()
 		S:HandleCheckBox(_G[v])
 	end
 
-	LookingForGuildFrameInset:StripTextures()
-	LookingForGuildFrame:StripTextures()
-	LookingForGuildFrame:SetTemplate("Transparent")
+	local roleIcons = {
+		"LookingForGuildTankButton",
+		"LookingForGuildHealerButton",
+		"LookingForGuildDamagerButton"
+	}
 
-	LookingForGuildBrowseButton_LeftSeparator:Kill()
-	LookingForGuildRequestButton_RightSeparator:Kill()
+	for i = 1, #roleIcons do
+		local frame = _G[roleIcons[i]]
+		local icon = frame:GetNormalTexture()
 
-	S:HandleScrollBar(LookingForGuildBrowseFrameContainerScrollBar)
+		frame:StripTextures()
+		frame:CreateBackdrop()
+		frame.backdrop:Point("TOPLEFT", 3, -3)
+		frame.backdrop:Point("BOTTOMRIGHT", -3, 3)
 
-	S:HandleButton(LookingForGuildBrowseButton)
-	S:HandleButton(LookingForGuildRequestButton)
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside(frame.backdrop)
 
-	S:HandleCloseButton(LookingForGuildFrameCloseButton)
+		S:HandleCheckBox(frame.checkButton)
+		frame.checkButton:SetFrameLevel(frame.checkButton:GetFrameLevel() + 2)
+	end
+
+	LookingForGuildTankButton:SetNormalTexture("Interface\\Icons\\Ability_Defend")
+	LookingForGuildHealerButton:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+	LookingForGuildDamagerButton:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 
 	LookingForGuildCommentInputFrame:StripTextures()
 	LookingForGuildCommentInputFrame:CreateBackdrop("Transparent")
+
+	S:HandleButton(LookingForGuildBrowseButton)
+
+	-- Browse Tab
+	LookingForGuildBrowseFrameContainer:CreateBackdrop("Transparent")
+	LookingForGuildBrowseFrameContainer.backdrop:Point("BOTTOMRIGHT", 0, -2)
+
+	S:HandleScrollBar(LookingForGuildBrowseFrameContainerScrollBar)
+	LookingForGuildBrowseFrameContainerScrollBar:ClearAllPoints()
+	LookingForGuildBrowseFrameContainerScrollBar:Point("TOPRIGHT", LookingForGuildBrowseFrameContainer, "TOPRIGHT", 22, -15)
+	LookingForGuildBrowseFrameContainerScrollBar:Point("BOTTOMRIGHT", LookingForGuildBrowseFrameContainer, "BOTTOMRIGHT", 0, 14)
+
+	S:HandleButton(LookingForGuildRequestButton)
+	LookingForGuildRequestButton:Point("BOTTOMLEFT", LookingForGuildFrame, 7, 3)
 
 	for i = 1, 5 do
 		local button = _G["LookingForGuildBrowseFrameContainerButton"..i]
 
 		button:SetBackdrop(nil)
-		button:SetTemplate("Transparent")
-		button:StyleButton()
 
-		button.selectedTex:SetTexture(1, 1, 1, 0.3)
+		local highlight = button:GetHighlightTexture()
+		highlight:SetTexture(E.Media.Textures.Highlight)
+		highlight:SetAlpha(0.35)
+		highlight:SetTexCoord(0, 1, 0, 1)
+		highlight:SetInside()
+
+		button.selectedTex:SetTexture(E.Media.Textures.Highlight)
+		button.selectedTex:SetAlpha(0.35)
+		button.selectedTex:SetTexCoord(0, 1, 0, 1)
 		button.selectedTex:SetInside()
 
 		button.name:Point("TOPLEFT", 75, -10)
 		button.level:Point("TOPLEFT", 58, -10)
 
+		button.PointsSpentBgGold:SetAlpha(0)
+		button.border:SetAlpha(0)
 		_G["LookingForGuildBrowseFrameContainerButton"..i.."Ring"]:SetAlpha(0)
-		_G["LookingForGuildBrowseFrameContainerButton"..i.."LevelRing"]:SetAlpha(0)
-		_G["LookingForGuildBrowseFrameContainerButton"..i.."TabardBorder"]:SetAlpha(0)
 	end
+
+	-- Requests Tab
+	LookingForGuildAppsFrameContainer:SetTemplate("Transparent")
 
 	for i = 1, 10 do
 		local button = _G["LookingForGuildAppsFrameContainerButton"..i]
+		local highlight = _G["LookingForGuildAppsFrameContainerButton"..i.."Highlight"]
 
-		button:SetBackdrop(nil)
-		button:SetTemplate("Transparent")
-		button:StyleButton()
+		button:StripTextures()
+
+		highlight:SetTexture(E.Media.Textures.Highlight)
+		highlight:SetAlpha(0.35)
+		highlight:SetTexCoord(0, 1, 0, 1)
+		highlight:SetInside()
+
+		S:HandleCloseButton(button.removeButton)
+		button.removeButton:Size(26)
+		button.removeButton.Texture:SetVertexColor(1, 0, 0)
+		button.removeButton:HookScript("OnEnter", function(btn) btn.Texture:SetVertexColor(1, 1, 1) end)
+		button.removeButton:HookScript("OnLeave", function(btn) btn.Texture:SetVertexColor(1, 0, 0) end)
 	end
 
 	for i = 1, 3 do
 		local headerTab = _G["LookingForGuildFrameTab"..i]
+
 		headerTab:StripTextures()
 		headerTab.backdrop = CreateFrame("Frame", nil, headerTab)
 		headerTab.backdrop:SetTemplate("Default", true)
@@ -77,38 +131,17 @@ local function LoadSkin()
 		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
+	-- Request Frame
 	GuildFinderRequestMembershipFrame:StripTextures(true)
 	GuildFinderRequestMembershipFrame:SetTemplate("Transparent")
+
+	S:HandleScrollBar(GuildFinderRequestMembershipFrameInputFrameScrollFrameScrollBar)
 
 	S:HandleButton(GuildFinderRequestMembershipFrameAcceptButton)
 	S:HandleButton(GuildFinderRequestMembershipFrameCancelButton)
 
 	GuildFinderRequestMembershipFrameInputFrame:StripTextures()
 	GuildFinderRequestMembershipFrameInputFrame:SetTemplate()
-
-	-- Role Icons
-	local roleIcons = {
-		"LookingForGuildTankButton",
-		"LookingForGuildHealerButton",
-		"LookingForGuildDamagerButton"
-	}
-
-	for i = 1, #roleIcons do
-		S:HandleCheckBox(_G[roleIcons[i]].checkButton)
-		_G[roleIcons[i]]:GetChildren():SetFrameLevel(_G[roleIcons[i]]:GetChildren():GetFrameLevel() + 2)
-
-		_G[roleIcons[i]]:StripTextures()
-		_G[roleIcons[i]]:CreateBackdrop()
-		_G[roleIcons[i]].backdrop:Point("TOPLEFT", 3, -3)
-		_G[roleIcons[i]].backdrop:Point("BOTTOMRIGHT", -3, 3)
-
-		_G[roleIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		_G[roleIcons[i]]:GetNormalTexture():SetInside(_G[roleIcons[i]].backdrop)
-	end
-
-	LookingForGuildTankButton:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	LookingForGuildHealerButton:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LookingForGuildDamagerButton:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
 end
 
 S:AddCallbackForAddon("Blizzard_LookingForGuildUI", "LookingForGuild", LoadSkin)

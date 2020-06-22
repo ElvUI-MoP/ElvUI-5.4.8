@@ -75,6 +75,7 @@ function UF:Construct_ArenaFrames(frame)
 		frame.HealthPrediction = self:Construct_HealComm(frame)
 		frame.MouseGlow = self:Construct_MouseGlow(frame)
 		frame.TargetGlow = self:Construct_TargetGlow(frame)
+		frame.FocusGlow = UF:Construct_FocusGlow(frame)
 		frame.Trinket = self:Construct_Trinket(frame)
 		frame.PVPSpecIcon = self:Construct_PVPSpecIcon(frame)
 		frame.Fader = self:Construct_Fader()
@@ -136,6 +137,14 @@ function UF:Update_ArenaFrames(frame, db)
 		frame.PVPINFO_WIDTH = db.pvpSpecIcon and frame.UNIT_HEIGHT or 0
 
 		frame.VARIABLES_SET = true
+	end
+
+	if not IsAddOnLoaded("Clique") then
+		if db.middleClickFocus then
+			frame:SetAttribute("type3", "focus")
+		elseif frame:GetAttribute("type3") == "focus" then
+			frame:SetAttribute("type3", nil)
+		end
 	end
 
 	frame.colors = ElvUF.colors

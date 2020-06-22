@@ -24,6 +24,7 @@ function UF:Construct_TankFrames()
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 	self.MouseGlow = UF:Construct_MouseGlow(self)
 	self.TargetGlow = UF:Construct_TargetGlow(self)
+	self.FocusGlow = UF:Construct_FocusGlow(self)
 	self.Fader = UF:Construct_Fader()
 	self.Cutaway = UF:Construct_Cutaway(self)
 
@@ -32,7 +33,7 @@ function UF:Construct_TankFrames()
 		self.Debuffs = UF:Construct_Debuffs(self)
 		self.AuraWatch = UF:Construct_AuraWatch(self)
 		self.RaidDebuffs = UF:Construct_RaidDebuffs(self)
-		self.DebuffHighlight = UF:Construct_DebuffHighlight(self)
+		self.AuraHighlight = UF:Construct_AuraHighlight(self)
 
 		self.unitframeType = "tank"
 	else
@@ -138,10 +139,18 @@ function UF:Update_TankFrames(frame, db)
 	UF:Configure_RaidIcon(frame)
 
 	if not frame.isChild then
+		if not IsAddOnLoaded("Clique") then
+			if db.middleClickFocus then
+				frame:SetAttribute("type3", "focus")
+			elseif frame:GetAttribute("type3") == "focus" then
+				frame:SetAttribute("type3", nil)
+			end
+		end
+
 		UF:EnableDisable_Auras(frame)
 		UF:Configure_AllAuras(frame)
 		UF:Configure_RaidDebuffs(frame)
-		UF:Configure_DebuffHighlight(frame)
+		UF:Configure_AuraHighlight(frame)
 		UF:Configure_AuraWatch(frame)
 	end
 

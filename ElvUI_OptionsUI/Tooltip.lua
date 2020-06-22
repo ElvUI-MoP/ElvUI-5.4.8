@@ -2,10 +2,15 @@ local E, _, V, P, G = unpack(ElvUI)
 local C, L = unpack(select(2, ...))
 local TT = E:GetModule("Tooltip")
 
-local _G = _G
 local tonumber = tonumber
 
-local GameTooltipStatusBar = _G["GameTooltipStatusBar"]
+local modifierValues = {
+	SHOW = L["SHOW"],
+	HIDE = L["HIDE"],
+	SHIFT = L["SHIFT_KEY"],
+	CTRL = L["CTRL_KEY"],
+	ALT = L["ALT_KEY"]
+}
 
 E.Options.args.tooltip = {
 	order = 2,
@@ -34,104 +39,93 @@ E.Options.args.tooltip = {
 			disabled = function() return not E.Tooltip.Initialized end,
 			args = {
 				cursorAnchor = {
-					order = 2,
+					order = 1,
 					type = "toggle",
 					name = L["Cursor Anchor"],
 					desc = L["Should tooltip be anchored to mouse cursor"]
 				},
 				cursorAnchorType = {
-					order = 3,
+					order = 2,
 					type = "select",
 					name = L["Cursor Anchor Type"],
 					values = {
 						["ANCHOR_CURSOR"] = L["ANCHOR_CURSOR"],
 						["ANCHOR_CURSOR_LEFT"] = L["ANCHOR_CURSOR_LEFT"],
-						["ANCHOR_CURSOR_RIGHT"] = L["ANCHOR_CURSOR_RIGHT"],
+						["ANCHOR_CURSOR_RIGHT"] = L["ANCHOR_CURSOR_RIGHT"]
 					},
 					disabled = function() return (not E.db.tooltip.cursorAnchor) end
 				},
 				cursorAnchorX = {
-					order = 4,
+					order = 3,
 					type = "range",
 					name = L["Cursor Anchor Offset X"],
 					min = -128, max = 128, step = 1,
 					disabled = function() return (not E.db.tooltip.cursorAnchor) or (E.db.tooltip.cursorAnchorType == "ANCHOR_CURSOR") end
 				},
 				cursorAnchorY = {
-					order = 5,
+					order = 4,
 					type = "range",
 					name = L["Cursor Anchor Offset Y"],
 					min = -128, max = 128, step = 1,
 					disabled = function() return (not E.db.tooltip.cursorAnchor) or (E.db.tooltip.cursorAnchorType == "ANCHOR_CURSOR") end
 				},
 				targetInfo = {
-					order = 6,
+					order = 5,
 					type = "toggle",
 					name = L["Target Info"],
 					desc = L["When in a raid group display if anyone in your raid is targeting the current tooltip unit."]
 				},
 				showElvUIUsers = {
-					order = 7,
+					order = 6,
 					type = "toggle",
 					name = L["Show ElvUI Users"],
 					desc = L["Show ElvUI users and their version of ElvUI."]
 				},
 				alwaysShowRealm = {
-					order = 8,
+					order = 7,
 					type = "toggle",
 					name = L["Always Show Realm"]
 				},
 				playerTitles = {
-					order = 9,
+					order = 8,
 					type = "toggle",
 					name = L["Player Titles"],
 					desc = L["Display player titles."]
 				},
 				guildRanks = {
-					order = 10,
+					order = 9,
 					type = "toggle",
 					name = L["Guild Ranks"],
 					desc = L["Display guild ranks if a unit is guilded."]
 				},
-				spellID = {
-					order = 11,
-					type = "toggle",
-					name = L["Spell/Item IDs"],
-					desc = L["Display the spell or item ID when mousing over a spell or item tooltip."]
-				},
-				npcID = {
-					order = 12,
-					type = "toggle",
-					name = L["NPC IDs"],
-					desc = L["Display the npc ID when mousing over a npc tooltip."]
-				},
 				role = {
-					order = 13,
+					order = 10,
 					type = "toggle",
 					name = L["ROLE"],
 					desc = L["Display the unit role in the tooltip."]
 				},
+				modifierID = {
+					order = 11,
+					type = "select",
+					name = L["Modifier for IDs"],
+					values = modifierValues
+				},
 				itemCount = {
-					order = 14,
+					order = 12,
 					type = "select",
 					name = L["Item Count"],
 					desc = L["Display how many of a certain item you have in your possession."],
-					values = {
-						["BAGS_ONLY"] = L["Bags Only"],
-						["BANK_ONLY"] = L["Bank Only"],
-						["BOTH"] = L["Both"],
-						["NONE"] = L["NONE"]
-					}
+					values = modifierValues
 				},
 				colorAlpha = {
-					order = 15,
+					order = 13,
 					type = "range",
 					name = L["OPACITY"],
 					isPercent = true,
 					min = 0, max = 1, step = 0.01
 				},
 				fontGroup = {
-					order = 16,
+					order = 14,
 					type = "group",
 					guiInline = true,
 					name = L["Tooltip Font Settings"],
@@ -185,7 +179,7 @@ E.Options.args.tooltip = {
 					}
 				},
 				factionColors = {
-					order = 17,
+					order = 15,
 					type = "group",
 					name = L["Custom Faction Colors"],
 					guiInline = true,
@@ -221,67 +215,33 @@ E.Options.args.tooltip = {
 			disabled = function() return not E.Tooltip.Initialized end,
 			args = {
 				actionbars = {
-					order = 2,
+					order = 1,
 					type = "select",
 					name = L["ActionBars"],
 					desc = L["Choose when you want the tooltip to show. If a modifer is chosen, then you need to hold that down to show the tooltip."],
-					values = {
-						["ALL"] = L["Always Hide"],
-						["NONE"] = L["Never Hide"],
-						["SHIFT"] = L["SHIFT_KEY"],
-						["ALT"] = L["ALT_KEY"],
-						["CTRL"] = L["CTRL_KEY"]
-					}
+					values = modifierValues
 				},
 				bags = {
-					order = 3,
+					order = 2,
 					type = "select",
 					name = L["Bags/Bank"],
 					desc = L["Choose when you want the tooltip to show. If a modifer is chosen, then you need to hold that down to show the tooltip."],
-					values = {
-						["ALL"] = L["Always Hide"],
-						["NONE"] = L["Never Hide"],
-						["SHIFT"] = L["SHIFT_KEY"],
-						["ALT"] = L["ALT_KEY"],
-						["CTRL"] = L["CTRL_KEY"]
-					}
+					values = modifierValues
 				},
 				unitFrames = {
-					order = 4,
+					order = 3,
 					type = "select",
 					name = L["UnitFrames"],
 					desc = L["Choose when you want the tooltip to show. If a modifer is chosen, then you need to hold that down to show the tooltip."],
-					values = {
-						["ALL"] = L["Always Hide"],
-						["NONE"] = L["Never Hide"],
-						["SHIFT"] = L["SHIFT_KEY"],
-						["ALT"] = L["ALT_KEY"],
-						["CTRL"] = L["CTRL_KEY"]
-					}
-				},
-				spacer = {
-					order = 5,
-					type = "description",
-					name = ""
-				},
-				combat = {
-					order = 6,
-					type = "toggle",
-					name = L["Hide In Combat"],
-					desc = L["Hide tooltip while in combat."]
+					values = modifierValues
 				},
 				combatOverride = {
-					order = 7,
+					order = 4,
 					type = "select",
 					name = L["Combat Override Key"],
 					desc = L["Choose when you want the tooltip to show in combat. If a modifer is chosen, then you need to hold that down to show the tooltip."],
 					disabled = function() return not E.db.tooltip.visibility.combat end,
-					values = {
-						["ALL"] = L["Always Hide"],
-						["SHIFT"] = L["SHIFT_KEY"],
-						["ALT"] = L["ALT_KEY"],
-						["CTRL"] = L["CTRL_KEY"]
-					}
+					values = modifierValues
 				}
 			}
 		},
@@ -294,14 +254,14 @@ E.Options.args.tooltip = {
 			disabled = function() return not E.Tooltip.Initialized end,
 			args = {
 				height = {
-					order = 2,
+					order = 1,
 					type = "range",
 					name = L["Height"],
 					min = 1, max = 15, step = 1,
 					set = function(info, value) E.db.tooltip.healthBar.height = value GameTooltipStatusBar:Height(value) end
 				},
 				statusPosition = {
-					order = 3,
+					order = 2,
 					type = "select",
 					name = L["Position"],
 					values = {
@@ -310,7 +270,7 @@ E.Options.args.tooltip = {
 					}
 				},
 				text = {
-					order = 4,
+					order = 3,
 					type = "toggle",
 					name = L["Text"],
 					set = function(info, value)
@@ -323,12 +283,12 @@ E.Options.args.tooltip = {
 					end
 				},
 				spacer = {
-					order = 5,
+					order = 4,
 					type = "description",
 					name = ""
 				},
 				font = {
-					order = 6,
+					order = 5,
 					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
 					values = AceGUIWidgetLSMlists.font,
@@ -339,7 +299,7 @@ E.Options.args.tooltip = {
 					disabled = function() return not E.db.tooltip.healthBar.text end,
 				},
 				fontSize = {
-					order = 7,
+					order = 6,
 					type = "range",
 					name = L["FONT_SIZE"],
 					min = 4, max = 33, step = 1,
@@ -350,7 +310,7 @@ E.Options.args.tooltip = {
 					disabled = function() return not E.db.tooltip.healthBar.text end,
 				},
 				fontOutline = {
-					order = 8,
+					order = 7,
 					type = "select",
 					name = L["Font Outline"],
 					values = C.Values.FontFlags,

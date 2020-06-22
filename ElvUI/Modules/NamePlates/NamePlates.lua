@@ -4,7 +4,6 @@ local LAI = E.Libs.LAI
 
 local _G = _G
 local pcall = pcall
-local type = type
 local select, unpack, pairs, next, tonumber = select, unpack, pairs, next, tonumber
 local floor = math.floor
 local format, find, gsub, match, split = string.format, string.find, string.gsub, string.match, string.split
@@ -922,26 +921,24 @@ function NP:UpdateCVars()
 	end
 end
 
-local function CopySettings(from, to)
-	for setting, value in pairs(from) do
-		if type(value) == "table" and to[setting] ~= nil then
-			CopySettings(from[setting], to[setting])
-		else
-			if to[setting] ~= nil then
-				to[setting] = from[setting]
-			end
-		end
-	end
-end
+local Blacklist = {
+	ENEMY_PLAYER = {},
+	FRIENDLY_PLAYER = {},
+	ENEMY_NPC = {},
+	FRIENDLY_NPC = {}
+}
 
 function NP:ResetSettings(unit)
-	CopySettings(P.nameplates.units[unit], self.db.units[unit])
+	E:CopyTable(NP.db.units[unit], P.nameplates.units[unit])
 end
 
 function NP:CopySettings(from, to)
-	if from == to then return end
+	if from == to then
+		E:Print(L["You cannot copy settings from the same unit."])
+		return
+	end
 
-	CopySettings(self.db.units[from], self.db.units[to])
+	E:CopyTable(NP.db.units[to], E:FilterTableFromBlacklist(NP.db.units[from], Blacklist[to]))
 end
 
 function NP:PLAYER_ENTERING_WORLD()

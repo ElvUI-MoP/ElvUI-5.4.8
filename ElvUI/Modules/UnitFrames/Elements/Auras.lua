@@ -45,14 +45,19 @@ function UF:Construct_Debuffs(frame)
 	return debuffs
 end
 
-local function OnClick(btn)
-	local mod = E.db.unitframe.auraBlacklistModifier
-	if mod == "NONE" or not ((mod == "SHIFT" and IsShiftKeyDown()) or (mod == "ALT" and IsAltKeyDown()) or (mod == "CTRL" and IsControlKeyDown())) then return end
-	local auraName = btn.name
+function UF:Aura_OnClick()
+	local keyDown = IsShiftKeyDown() and 'SHIFT' or IsAltKeyDown() and 'ALT' or IsControlKeyDown() and 'CTRL'
+	if not keyDown then return end
 
-	if auraName then
-		E:Print(format(L["The spell '%s' has been added to the Blacklist unitframe aura filter."], auraName))
-		E.global.unitframe.aurafilters.Blacklist.spells[btn.spellID] = {enable = true, priority = 0}
+	local spellName, spellID = self.name, self.spellID
+	local listName = UF.db.modifiers[keyDown]
+	if spellName and spellID and listName ~= 'NONE' then
+		if not E.global.unitframe.aurafilters[listName].spells[spellID] then
+			E:Print(format(L["The spell '%s' has been added to the '%s' unitframe aura filter."], spellName, listName))
+			E.global.unitframe.aurafilters[listName].spells[spellID] = { enable = true, priority = 0 }
+		else
+			E.global.unitframe.aurafilters[listName].spells[spellID].enable = true
+		end
 
 		UF:Update_AllFrames()
 	end
@@ -76,7 +81,7 @@ function UF:Construct_AuraIcon(button)
 	button.stealable:SetTexture()
 
 	button:RegisterForClicks("RightButtonUp")
-	button:SetScript("OnClick", OnClick)
+	button:SetScript("OnClick", UF.Aura_OnClick)
 
 	button.cd.CooldownOverride = "unitframe"
 	E:RegisterCooldown(button.cd)
@@ -247,6 +252,7 @@ function UF:Configure_Auras(frame, which)
 		if button then
 			button.db = auras.db
 			UF:UpdateAuraSettings(auras, button)
+			button:SetBackdropBorderColor(unpack(E.media.unitframeBorderColor))
 		end
 
 		index = index + 1
@@ -359,19 +365,21 @@ end
 function UF:PostUpdateAura(_, button)
 	if button.isDebuff then
 		if not button.isFriend and not button.isPlayer then --[[and (not E.isDebuffWhiteList[name])]]
-			button:SetBackdropBorderColor(0.9, 0.1, 0.1)
+			if UF.db.colors.auraByType then button:SetBackdropBorderColor(0.9, 0.1, 0.1) end
 			button.icon:SetDesaturated(button.canDesaturate)
 		else
-			if E.BadDispels[button.spellID] and E:IsDispellableByMe(button.dtype) then
-				button:SetBackdropBorderColor(0.05, 0.85, 0.94)
-			else
-				local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
-				button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
+			if UF.db.colors.auraByType then
+				if E.BadDispels[button.spellID] and button.dtype and E:IsDispellableByMe(button.dtype) then
+					button:SetBackdropBorderColor(0.05, 0.85, 0.94)
+				else
+					local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
+					button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
+				end
 			end
 			button.icon:SetDesaturated(false)
 		end
 	else
-		if button.isStealable and not button.isFriend then
+		if UF.db.colors.auraByType and button.isStealable and not button.isFriend then
 			button:SetBackdropBorderColor(0.93, 0.91, 0.55, 1.0)
 		else
 			button:SetBackdropBorderColor(unpack(E.media.unitframeBorderColor))
@@ -443,6 +451,7 @@ function UF:AuraFilter(unit, button, name, _, _, count, debuffType, duration, ex
 	button.dtype = debuffType
 	button.duration = duration
 	button.expiration = expiration
+	button.noTime = duration == 0 and expiration == 0
 	button.stackCount = count
 	button.name = name
 	button.spellID = spellID

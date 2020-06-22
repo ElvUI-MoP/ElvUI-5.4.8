@@ -48,61 +48,61 @@ UF.units = {}
 UF.statusbars = {}
 UF.fontstrings = {}
 UF.badHeaderPoints = {
-	["TOP"] = "BOTTOM",
-	["LEFT"] = "RIGHT",
-	["BOTTOM"] = "TOP",
-	["RIGHT"] = "LEFT"
+	TOP = "BOTTOM",
+	LEFT = "RIGHT",
+	BOTTOM = "TOP",
+	RIGHT = "LEFT"
 }
 
 UF.headerFunctions = {}
 
 UF.classMaxResourceBar = {
-	["DEATHKNIGHT"] = 6,
-	["PALADIN"] = 5,
-	["MONK"] = 5,
-	["WARLOCK"] = 4,
-	["PRIEST"] = 3,
-	["MAGE"] = 4,
-	["ROGUE"] = 5,
+	DEATHKNIGHT = 6,
+	PALADIN = 5,
+	MONK = 5,
+	WARLOCK = 4,
+	PRIEST = 3,
+	MAGE = 4,
+	ROGUE = 5
 }
 
 UF.headerGroupBy = {
-	["CLASS"] = function(header)
+	CLASS = function(header)
 		header:SetAttribute("groupingOrder", "DEATHKNIGHT,DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR,MONK")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", "CLASS")
 	end,
-	["MTMA"] = function(header)
+	MTMA = function(header)
 		header:SetAttribute("groupingOrder", "MAINTANK,MAINASSIST,NONE")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", "ROLE")
 	end,
-	["ROLE"] = function(header)
+	ROLE = function(header)
 		header:SetAttribute("groupingOrder", "TANK,HEALER,DAMAGER,NONE")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", "ASSIGNEDROLE")
 	end,
-	["ROLE2"] = function(header)
+	ROLE2 = function(header)
 		header:SetAttribute("groupingOrder", "TANK,DAMAGER,HEALER,NONE")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", "ASSIGNEDROLE")
 	end,
-	["NAME"] = function(header)
+	NAME = function(header)
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", nil)
 	end,
-	["GROUP"] = function(header)
+	GROUP = function(header)
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
 		header:SetAttribute("sortMethod", "INDEX")
 		header:SetAttribute("groupBy", "GROUP")
 	end,
-	["CLASSROLE"] = function(header)
+	CLASSROLE = function(header)
 		header:SetAttribute("groupingOrder", "DEATHKNIGHT,WARRIOR,ROGUE,MONK,PALADIN,DRUID,SHAMAN,HUNTER,PRIEST,MAGE,WARLOCK")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", "CLASS")
 	end,
-	["PETNAME"] = function(header)
+	PETNAME = function(header)
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", nil)
@@ -111,18 +111,18 @@ UF.headerGroupBy = {
 }
 
 local POINT_COLUMN_ANCHOR_TO_DIRECTION = {
-	["TOPTOP"] = "UP_RIGHT",
-	["BOTTOMBOTTOM"] = "TOP_RIGHT",
-	["LEFTLEFT"] = "RIGHT_UP",
-	["RIGHTRIGHT"] = "LEFT_UP",
-	["RIGHTTOP"] = "LEFT_DOWN",
-	["LEFTTOP"] = "RIGHT_DOWN",
-	["LEFTBOTTOM"] = "RIGHT_UP",
-	["RIGHTBOTTOM"] = "LEFT_UP",
-	["BOTTOMRIGHT"] = "UP_LEFT",
-	["BOTTOMLEFT"] = "UP_RIGHT",
-	["TOPRIGHT"] = "DOWN_LEFT",
-	["TOPLEFT"] = "DOWN_RIGHT"
+	TOPTOP = "UP_RIGHT",
+	BOTTOMBOTTOM = "TOP_RIGHT",
+	LEFTLEFT = "RIGHT_UP",
+	RIGHTRIGHT = "LEFT_UP",
+	RIGHTTOP = "LEFT_DOWN",
+	LEFTTOP = "RIGHT_DOWN",
+	LEFTBOTTOM = "RIGHT_UP",
+	RIGHTBOTTOM = "LEFT_UP",
+	BOTTOMRIGHT = "UP_LEFT",
+	BOTTOMLEFT = "UP_RIGHT",
+	TOPRIGHT = "DOWN_LEFT",
+	TOPLEFT = "DOWN_RIGHT"
 }
 
 local DIRECTION_TO_POINT = {
@@ -515,33 +515,34 @@ end
 function UF:Update_AllFrames()
 	if not E.private.unitframe.enable then return end
 
-	self:UpdateColors()
-	self:Update_FontStrings()
-	self:Update_StatusBars()
+	UF:UpdateColors()
+	UF:Update_FontStrings()
+	UF:Update_StatusBars()
 
-	for unit in pairs(self.units) do
-		if self.db.units[unit].enable then
-			self[unit]:Update()
-			self[unit]:Enable()
-			E:EnableMover(self[unit].mover:GetName())
+	for unit in pairs(UF.units) do
+		if UF.db.units[unit].enable then
+			UF[unit]:Update()
+			UF[unit]:Enable()
+			E:EnableMover(UF[unit].mover:GetName())
 		else
-			self[unit]:Update()
-			self[unit]:Disable()
-			E:DisableMover(self[unit].mover:GetName())
+			UF[unit]:Update()
+			UF[unit]:Disable()
+			E:DisableMover(UF[unit].mover:GetName())
 		end
 	end
 
-	for unit, group in pairs(self.groupunits) do
-		if self.db.units[group].enable then
-			self[unit]:Enable()
-			self[unit]:Update()
-			E:EnableMover(self[unit].mover:GetName())
+	for unit, group in pairs(UF.groupunits) do
+		if UF.db.units[group].enable then
+			UF[unit]:Enable()
+			UF[unit]:Update()
+			E:EnableMover(UF[unit].mover:GetName())
 		else
-			self[unit]:Disable()
-			E:DisableMover(self[unit].mover:GetName())
+			UF[unit]:Disable()
+			E:DisableMover(UF[unit].mover:GetName())
 		end
-		if self[unit].isForced then
-			self:ForceShow(self[unit])
+
+		if UF[unit].isForced then
+			UF:ForceShow(UF[unit])
 		end
 	end
 
@@ -1215,59 +1216,97 @@ function UF:ToggleForceShowGroupFrames(unitGroup, numGroup)
 	end
 end
 
-local ignoreSettings = {
-	["position"] = true,
-	["priority"] = true
+local Blacklist = {
+	arena = {
+		enable = true,
+		fader = true
+	},
+	assist = {
+		enable = true,
+		fader = true
+	},
+	boss = {
+		enable = true,
+		fader = true
+	},
+	focus = {
+		enable = true,
+		fader = true
+	},
+	focustarget = {
+		enable = true,
+		fader = true
+	},
+	party = {
+		enable = true,
+		visibility = true,
+		fader = true
+	},
+	pet = {
+		enable = true,
+		fader = true
+	},
+	pettarget = {
+		enable = true,
+		fader = true
+	},
+	player = {
+		enable = true,
+		aurabars = true,
+		fader = true,
+		buffs = {
+			priority = true,
+			minDuration = true,
+			maxDuration = true
+		},
+		debuffs = {
+			priority = true,
+			minDuration = true,
+			maxDuration = true
+		}
+	},
+	raid = {
+		enable = true,
+		fader = true,
+		visibility = true
+	},
+	raid40 = {
+		enable = true,
+		fader = true,
+		visibility = true
+	},
+	raidpet = {
+		enable = true,
+		fader = true,
+		visibility = true
+	},
+	tank = {
+		fader = true,
+		enable = true
+	},
+	target = {
+		fader = true,
+		enable = true
+	},
+	targettarget = {
+		fader = true,
+		enable = true
+	},
+	targettargettarget = {
+		fader = true,
+		enable = true
+	}
 }
 
-local ignoreSettingsGroup = {
-	["visibility"] = true
-}
-
-local allowPass = {
-	["sizeOverride"] = true
-}
-
-function UF:MergeUnitSettings(fromUnit, toUnit, isGroupUnit)
-	local db = self.db.units
-	local filter = ignoreSettings
-	if isGroupUnit then
-		filter = ignoreSettingsGroup
-	end
-	if fromUnit ~= toUnit then
-		for option, value in pairs(db[fromUnit]) do
-			if type(value) ~= "table" and not filter[option] then
-				if db[toUnit][option] ~= nil then
-					db[toUnit][option] = value
-				end
-			elseif not filter[option] then
-				if type(value) == "table" then
-					for opt, val in pairs(db[fromUnit][option]) do
-						--local val = db[fromUnit][option][opt]
-						if type(val) ~= "table" and not filter[opt] then
-							if db[toUnit][option] ~= nil and (db[toUnit][option][opt] ~= nil or allowPass[opt]) then
-								db[toUnit][option][opt] = val
-							end
-						elseif not filter[opt] then
-							if type(val) == "table" then
-								for o, v in pairs(db[fromUnit][option][opt]) do
-									if not filter[o] then
-										if db[toUnit][option] ~= nil and db[toUnit][option][opt] ~= nil and db[toUnit][option][opt][o] ~= nil then
-											db[toUnit][option][opt][o] = v
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	else
+function UF:MergeUnitSettings(from, to)
+	if from == to then
 		E:Print(L["You cannot copy settings from the same unit."])
+		return
 	end
 
-	self:Update_AllFrames()
+	E:CopyTable(UF.db.units[to], E:FilterTableFromBlacklist(UF.db.units[from], Blacklist[to]))
+
+	UF:Update_AllFrames()
 end
 
 function UF:UpdateBackdropTextureColor(r, g, b)

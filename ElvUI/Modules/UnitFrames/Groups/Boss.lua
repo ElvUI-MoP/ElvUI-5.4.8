@@ -23,7 +23,7 @@ function UF:Construct_BossFrames(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 	frame.Buffs = self:Construct_Buffs(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
-	frame.DebuffHighlight = self:Construct_DebuffHighlight(frame)
+	frame.AuraHighlight = self:Construct_AuraHighlight(frame)
 	frame.Castbar = self:Construct_Castbar(frame)
 	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
 	frame.AlternativePower = self:Construct_AltPowerBar(frame)
@@ -32,6 +32,7 @@ function UF:Construct_BossFrames(frame)
 	frame.Cutaway = self:Construct_Cutaway(frame)
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.FocusGlow = UF:Construct_FocusGlow(frame)
 	frame:SetAttribute("type2", "focus")
 	frame.customTexts = {}
 
@@ -76,6 +77,14 @@ function UF:Update_BossFrames(frame, db)
 		frame.VARIABLES_SET = true
 	end
 
+	if not IsAddOnLoaded("Clique") then
+		if db.middleClickFocus then
+			frame:SetAttribute("type3", "focus")
+		elseif frame:GetAttribute("type3") == "focus" then
+			frame:SetAttribute("type3", nil)
+		end
+	end
+
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
@@ -91,7 +100,7 @@ function UF:Update_BossFrames(frame, db)
 	UF:Configure_Castbar(frame)
 	UF:Configure_RaidIcon(frame)
 	UF:Configure_AltPower(frame)
-	UF:Configure_DebuffHighlight(frame)
+	UF:Configure_AuraHighlight(frame)
 	UF:Configure_CustomTexts(frame)
 	UF:Configure_Fader(frame)
 	UF:Configure_Cutaway(frame)

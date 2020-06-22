@@ -975,7 +975,7 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 				order = 12,
 				type = "toggle",
 				name = L["Display Target"],
-				desc = L["Display the target of your current cast. Useful for mouseover casts."]
+				desc = L["Display the target of current cast."]
 			},
 			overlayOnFrame = {
 				order = 13,
@@ -1096,6 +1096,7 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 						order = 4,
 						type = "select",
 						name = L["Attach To"],
+						desc = L["The object you want to attach to."],
 						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end,
 						values = {
 							["Frame"] = L["Frame"],
@@ -1639,7 +1640,7 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 		set = function(info, value) E.db.unitframe.units[groupName].health[info[#info]] = value updateFunc(UF, groupName, numUnits) end,
 		args = {
 			reverseFill = {
-				order = 2,
+				order = 1,
 				type = "toggle",
 				name = L["Reverse Fill"]
 			},
@@ -1717,6 +1718,14 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 		}
 	end
 
+	if groupName == "pet" or groupName == "raidpet" then
+		config.args.colorPetByUnitClass = {
+			order = 2,
+			type = "toggle",
+			name = L["Color by Unit Class"]
+		}
+	end
+
 	return config
 end
 
@@ -1729,7 +1738,7 @@ local function GetOptionsTable_HealPrediction(updateFunc, groupName, numGroup)
 		set = function(info, value) E.db.unitframe.units[groupName].healPrediction[info[#info]] = value updateFunc(UF, groupName, numGroup) end,
 		args = {
 			enable = {
-				order = 2,
+				order = 1,
 				type = "toggle",
 				name = L["ENABLE"]
 			},
@@ -1738,14 +1747,8 @@ local function GetOptionsTable_HealPrediction(updateFunc, groupName, numGroup)
 				type = "toggle",
 				name = L["Show Over Absorbs"]
 			},
-			showAbsorbAmount = {
-				order = 3,
-				type = "toggle",
-				name = L["Show Absorb Amount"],
-				disabled = function() return not E.db.unitframe.units[groupName].healPrediction.showOverAbsorbs end
-			},
 			colors = {
-				order = 4,
+				order = 3,
 				type = "execute",
 				name = L["COLORS"],
 				buttonElvUI = true,
@@ -3237,6 +3240,26 @@ local function GetOptionsTableForNonGroup_GPS(unit)
 	return config
 end
 
+local filterList = {}
+local function modifierList()
+	wipe(filterList)
+
+	filterList["NONE"] = L["NONE"]
+	filterList["Blacklist"] = L["Blacklist"]
+	filterList["Whitelist"] = L["Whitelist"]
+
+	local list = E.global.unitframe.aurafilters
+	if list then
+		for filter in pairs(list) do
+			if not G.unitframe.aurafilters[filter] then
+				filterList[filter] = filter
+			end
+		end
+	end
+
+	return filterList
+end
+
 E.Options.args.unitframe = {
 	order = 2,
 	type = "group",
@@ -3278,26 +3301,8 @@ E.Options.args.unitframe = {
 					name = L["General"],
 					disabled = function() return not E.UnitFrames.Initialized end,
 					args = {
-						auraBlacklistModifier = {
-							order = 1,
-							type = "select",
-							name = L["Blacklist Modifier"],
-							desc = L["You need to hold this modifier down in order to blacklist an aura by right-clicking the icon. Set to None to disable the blacklist functionality."],
-							values = {
-								["NONE"] = L["NONE"],
-								["SHIFT"] = L["SHIFT_KEY"],
-								["ALT"] = L["ALT_KEY"],
-								["CTRL"] = L["CTRL_KEY"]
-							}
-						},
-						spacer1 = {
-							order = 2,
-							type = "description",
-							name = " ",
-							width = "full"
-						},
 						thinBorders = {
-							order = 3,
+							order = 1,
 							type = "toggle",
 							name = L["Thin Borders"],
 							desc = L["Use thin borders on certain unitframe elements."],
@@ -3305,19 +3310,19 @@ E.Options.args.unitframe = {
 							set = function(info, value) E.db.unitframe[info[#info]] = value E:StaticPopup_Show("CONFIG_RL") end
 						},
 						targetOnMouseDown = {
-							order = 4,
+							order = 2,
 							type = "toggle",
 							name = L["Target On Mouse-Down"],
 							desc = L["Target units on mouse down rather than mouse up. \n\n|cffFF0000Warning: If you are using the addon Clique you may have to adjust your Clique settings when changing this."]
 						},
 						targetSound = {
-							order = 5,
+							order = 3,
 							type = "toggle",
 							name = L["Targeting Sound"],
 							desc = L["Enable a sound if you select a unit."]
 						},
 						effectiveGroup = {
-							order = 6,
+							order = 4,
 							type = "group",
 							guiInline = true,
 							name = L["Effective Updates"],
@@ -3385,8 +3390,42 @@ E.Options.args.unitframe = {
 								}
 							}
 						},
+						modifiers = {
+							order = 5,
+							type = "group",
+							name = L["Filter Modifiers"],
+							guiInline = true,
+							get = function(info) return E.db.unitframe.modifiers[info[#info]] end,
+							set = function(info, value) E.db.unitframe.modifiers[info[#info]] = value end,
+							args = {
+								warning = {
+									order = 1,
+									type = "description",
+									fontSize = "medium",
+									name = L["You need to hold this modifier down in order to blacklist an aura by right-clicking the icon. Set to None to disable the blacklist functionality."]
+								},
+								SHIFT = {
+									order = 2,
+									type = "select",
+									name = L["SHIFT_KEY"],
+									values = modifierList
+								},
+								ALT = {
+									order = 3,
+									type = "select",
+									name = L["ALT_KEY"],
+									values = modifierList
+								},
+								CTRL = {
+									order = 4,
+									type = "select",
+									name = L["CTRL_KEY"],
+									values = modifierList
+								}
+							}
+						},
 						barGroup = {
-							order = 8,
+							order = 6,
 							type = "group",
 							guiInline = true,
 							name = L["Bars"],
@@ -3409,7 +3448,7 @@ E.Options.args.unitframe = {
 							}
 						},
 						fontGroup = {
-							order = 9,
+							order = 7,
 							type = "group",
 							guiInline = true,
 							name = L["Fonts"],
@@ -3545,8 +3584,55 @@ E.Options.args.unitframe = {
 								}
 							}
 						},
-						mouseoverGlow = {
+						focusGlow = {
 							order = 4,
+							type = "group",
+							guiInline = true,
+							name = L["Focused Glow"],
+							get = function(info)
+								local t = E.db.unitframe.colors.frameGlow.focusGlow[info[#info]]
+								if type(t) == "boolean" then return t end
+								local d = P.unitframe.colors.frameGlow.focusGlow[info[#info]]
+								return t.r, t.g, t.b, t.a, d.r, d.g, d.b, d.a
+							end,
+							set = function(info, r, g, b, a)
+								local t = E.db.unitframe.colors.frameGlow.focusGlow[info[#info]]
+								if type(t) == "boolean" then
+									E.db.unitframe.colors.frameGlow.focusGlow[info[#info]] = r
+								else
+									t.r, t.g, t.b, t.a = r, g, b, a
+								end
+								UF:FrameGlow_UpdateFrames()
+							end,
+							disabled = function() return not E.db.unitframe.colors.frameGlow.focusGlow.enable end,
+							args = {
+								enable = {
+									order = 1,
+									type = "toggle",
+									name = L["ENABLE"],
+									disabled = false
+								},
+								spacer = {
+									order = 2,
+									type = "description",
+									name = ""
+								},
+								class = {
+									order = 3,
+									type = "toggle",
+									name = L["Use Class Color"],
+									desc = L["Alpha channel is taken from the color option."]
+								},
+								color = {
+									order = 4,
+									type = "color",
+									name = L["COLOR"],
+									hasAlpha = true
+								}
+							}
+						},
+						mouseoverGlow = {
+							order = 5,
 							type = "group",
 							guiInline = true,
 							name = L["Mouseover Highlight"],
@@ -3960,8 +4046,20 @@ E.Options.args.unitframe = {
 								}
 							}
 						},
-						auraBars = {
+						auras = {
 							order = 6,
+							type = "group",
+							name = L["Auras"],
+							args = {
+								auraByType = {
+									order = 1,
+									type = "toggle",
+									name = L["By Type"]
+								}
+							}
+						},
+						auraBars = {
+							order = 7,
 							type = "group",
 							name = L["Aura Bars"],
 							args = {
@@ -4085,7 +4183,7 @@ E.Options.args.unitframe = {
 							}
 						},
 						reactionGroup = {
-							order = 7,
+							order = 8,
 							type = "group",
 							name = L["Reactions"],
 							get = function(info)
@@ -4117,7 +4215,7 @@ E.Options.args.unitframe = {
 							}
 						},
 						healPrediction = {
-							order = 8,
+							order = 9,
 							type = "group",
 							name = L["Heal Prediction"],
 							get = function(info)
@@ -4180,7 +4278,7 @@ E.Options.args.unitframe = {
 							}
 						},
 						debuffHighlight = {
-							order = 9,
+							order = 10,
 							type = "group",
 							name = L["Debuff Highlighting"],
 							get = function(info)
@@ -4468,6 +4566,12 @@ E.Options.args.unitframe.args.individualUnits.args.player = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -4745,13 +4849,19 @@ E.Options.args.unitframe.args.individualUnits.args.target = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 15,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
 		aurabar = GetOptionsTable_AuraBars(UF.CreateAndUpdateUF, "target"),
 		buffs = GetOptionsTable_Auras("buffs", false, UF.CreateAndUpdateUF, "target"),
 		castbar = GetOptionsTable_Castbar(false, UF.CreateAndUpdateUF, "target"),
-		CombatIcon = GetOptionsTable_CombatIconGroup(UF.CreateAndUpdateUF, "player"),
+		CombatIcon = GetOptionsTable_CombatIconGroup(UF.CreateAndUpdateUF, "target"),
 		combobar = GetOptionsTable_ComboBar(UF.CreateAndUpdateUF, "target"),
 		customText = GetOptionsTable_CustomText(UF.CreateAndUpdateUF, "target"),
 		cutaway = GetOptionsTable_Cutaway(UF.CreateAndUpdateUF, "target"),
@@ -4876,6 +4986,12 @@ E.Options.args.unitframe.args.individualUnits.args.targettarget = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -4993,6 +5109,12 @@ E.Options.args.unitframe.args.individualUnits.args.targettargettarget = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -5110,14 +5232,20 @@ E.Options.args.unitframe.args.individualUnits.args.focus = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
 		aurabar = GetOptionsTable_AuraBars(UF.CreateAndUpdateUF, "focus"),
-		--buffIndicator = GetOptionsTable_AuraWatch(UF.CreateAndUpdateUF, "focus"),
+		buffIndicator = GetOptionsTable_AuraWatch(UF.CreateAndUpdateUF, "focus"),
 		buffs = GetOptionsTable_Auras("buffs", false, UF.CreateAndUpdateUF, "focus"),
 		castbar = GetOptionsTable_Castbar(false, UF.CreateAndUpdateUF, "focus"),
-		CombatIcon = GetOptionsTable_CombatIconGroup(UF.CreateAndUpdateUF, "player"),
+		CombatIcon = GetOptionsTable_CombatIconGroup(UF.CreateAndUpdateUF, "focus"),
 		customText = GetOptionsTable_CustomText(UF.CreateAndUpdateUF, "focus"),
 		cutaway = GetOptionsTable_Cutaway(UF.CreateAndUpdateUF, "focus"),
 		debuffs = GetOptionsTable_Auras("debuffs", false, UF.CreateAndUpdateUF, "focus"),
@@ -5233,6 +5361,12 @@ E.Options.args.unitframe.args.individualUnits.args.focustarget = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -5350,6 +5484,12 @@ E.Options.args.unitframe.args.individualUnits.args.pet = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -5470,6 +5610,12 @@ E.Options.args.unitframe.args.individualUnits.args.pettarget = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -5531,7 +5677,7 @@ E.Options.args.unitframe.args.groupUnits.args.boss = {
 			name = L["General"],
 			args = {
 				width = {
-					order = 2,
+					order = 1,
 					type = "range",
 					name = L["Width"],
 					min = 50, max = 1000, step = 1,
@@ -5545,21 +5691,19 @@ E.Options.args.unitframe.args.groupUnits.args.boss = {
 					end
 				},
 				height = {
-					order = 3,
+					order = 2,
 					type = "range",
 					name = L["Height"],
 					min = 10, max = 500, step = 1
 				},
-				hideonnpc = {
-					order = 4,
-					type = "toggle",
-					name = L["Text Toggle On NPC"],
-					desc = L["Power text will be hidden on NPC targets, in addition the name text will be repositioned to the power texts anchor point."],
-					get = function(info) return E.db.unitframe.units.boss.power.hideonnpc end,
-					set = function(info, value) E.db.unitframe.units.boss.power.hideonnpc = value UF:CreateAndUpdateUFGroup("boss", MAX_BOSS_FRAMES) end
+				spacing = {
+					order = 3,
+					type = "range",
+					name = L["Spacing"],
+					min = ((E.db.unitframe.thinBorders or E.PixelMode) and -1 or -4), max = 400, step = 1
 				},
 				growthDirection = {
-					order = 5,
+					order = 4,
 					type = "select",
 					name = L["Growth Direction"],
 					values = {
@@ -5569,11 +5713,19 @@ E.Options.args.unitframe.args.groupUnits.args.boss = {
 						["RIGHT"] = L["Left to Right"]
 					}
 				},
-				spacing = {
+				orientation = {
+					order = 5,
+					type = "select",
+					name = L["Frame Orientation"],
+					desc = L["Set the orientation of the UnitFrame."],
+					values = orientationValues
+				},
+				smartAuraPosition = {
 					order = 6,
-					type = "range",
-					name = L["Spacing"],
-					min = ((E.db.unitframe.thinBorders or E.PixelMode) and -1 or -4), max = 400, step = 1
+					type = "select",
+					name = L["Smart Aura Position"],
+					desc = L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."],
+					values = smartAuraPositionValues
 				},
 				threatStyle = {
 					order = 7,
@@ -5581,19 +5733,20 @@ E.Options.args.unitframe.args.groupUnits.args.boss = {
 					name = L["Threat Display Mode"],
 					values = threatValues
 				},
-				smartAuraPosition = {
+				hideonnpc = {
 					order = 8,
-					type = "select",
-					name = L["Smart Aura Position"],
-					desc = L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."],
-					values = smartAuraPositionValues
+					type = "toggle",
+					name = L["Text Toggle On NPC"],
+					desc = L["Power text will be hidden on NPC targets, in addition the name text will be repositioned to the power texts anchor point."],
+					get = function(info) return E.db.unitframe.units.boss.power.hideonnpc end,
+					set = function(info, value) E.db.unitframe.units.boss.power.hideonnpc = value UF:CreateAndUpdateUFGroup("boss", MAX_BOSS_FRAMES) end
 				},
-				orientation = {
+				middleClickFocus = {
 					order = 9,
-					type = "select",
-					name = L["Frame Orientation"],
-					desc = L["Set the orientation of the UnitFrame."],
-					values = orientationValues
+					type = "toggle",
+					name = L["Middle Click - Set Focus"],
+					desc = L["Middle clicking the unit frame will cause your focus to match the unit."],
+					disabled = function() return IsAddOnLoaded("Clique") end
 				},
 				disableMouseoverGlow = {
 					order = 10,
@@ -5606,6 +5759,12 @@ E.Options.args.unitframe.args.groupUnits.args.boss = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 12,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -5687,13 +5846,11 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 					name = L["Height"],
 					min = 10, max = 500, step = 1
 				},
-				hideonnpc = {
+				spacing = {
 					order = 4,
-					type = "toggle",
-					name = L["Text Toggle On NPC"],
-					desc = L["Power text will be hidden on NPC targets, in addition the name text will be repositioned to the power texts anchor point."],
-					get = function(info) return E.db.unitframe.units.arena.power.hideonnpc end,
-					set = function(info, value) E.db.unitframe.units.arena.power.hideonnpc = value UF:CreateAndUpdateUFGroup("arena", 5) end
+					type = "range",
+					name = L["Spacing"],
+					min = 0, max = 400, step = 1
 				},
 				growthDirection = {
 					order = 5,
@@ -5706,21 +5863,8 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 						["RIGHT"] = L["Left to Right"]
 					}
 				},
-				spacing = {
-					order = 6,
-					type = "range",
-					name = L["Spacing"],
-					min = 0, max = 400, step = 1
-				},
-				smartAuraPosition = {
-					order = 7,
-					type = "select",
-					name = L["Smart Aura Position"],
-					desc = L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."],
-					values = smartAuraPositionValues
-				},
 				orientation = {
-					order = 8,
+					order = 6,
 					type = "select",
 					name = L["Frame Orientation"],
 					desc = L["Set the orientation of the UnitFrame."],
@@ -5731,23 +5875,51 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 						["RIGHT"] = L["Right"]
 					}
 				},
-				pvpSpecIcon = {
+				smartAuraPosition = {
+					order = 7,
+					type = "select",
+					name = L["Smart Aura Position"],
+					desc = L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."],
+					values = smartAuraPositionValues
+				},
+				hideonnpc = {
+					order = 8,
+					type = "toggle",
+					name = L["Text Toggle On NPC"],
+					desc = L["Power text will be hidden on NPC targets, in addition the name text will be repositioned to the power texts anchor point."],
+					get = function(info) return E.db.unitframe.units.arena.power.hideonnpc end,
+					set = function(info, value) E.db.unitframe.units.arena.power.hideonnpc = value UF:CreateAndUpdateUFGroup("arena", 5) end
+				},
+				middleClickFocus = {
 					order = 9,
+					type = "toggle",
+					name = L["Middle Click - Set Focus"],
+					desc = L["Middle clicking the unit frame will cause your focus to match the unit."],
+					disabled = function() return IsAddOnLoaded("Clique") end
+				},
+				pvpSpecIcon = {
+					order = 10,
 					type = "toggle",
 					name = L["Spec Icon"],
 					desc = L["Display icon on arena frame indicating the units talent specialization or the units faction if inside a battleground."]
 				},
 				disableMouseoverGlow = {
-					order = 10,
+					order = 11,
 					type = "toggle",
 					name = L["Block Mouseover Glow"],
 					desc = L["Forces Mouseover Glow to be disabled for these frames"]
 				},
 				disableTargetGlow = {
-					order = 11,
+					order = 12,
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 13,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -5883,6 +6055,12 @@ E.Options.args.unitframe.args.groupUnits.args.party = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 9,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				},
 				positionsGroup = {
 					order = 100,
@@ -6068,9 +6246,14 @@ E.Options.args.unitframe.args.groupUnits.args.party = {
 			set = function(info, value) E.db.unitframe.units.party.petsGroup[info[#info]] = value UF:CreateAndUpdateHeaderGroup("party") end,
 			args = {
 				enable = {
-					order = 2,
+					order = 1,
 					type = "toggle",
 					name = L["ENABLE"]
+				},
+				colorPetByUnitClass = {
+					order = 2,
+					type = "toggle",
+					name = L["Color by Unit Class"]
 				},
 				width = {
 					order = 3,
@@ -6327,6 +6510,12 @@ E.Options.args.unitframe.args.groupUnits.args.raid = {
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 7,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				},
 				positionsGroup = {
 					order = 100,
@@ -6606,6 +6795,12 @@ E.Options.args.unitframe.args.groupUnits.args.raid40 = {
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
 				},
+				disableFocusGlow = {
+					order = 7,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
+				},
 				positionsGroup = {
 					order = 100,
 					type = "group",
@@ -6876,6 +7071,12 @@ E.Options.args.unitframe.args.groupUnits.args.raidpet = {
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
 				},
+				disableFocusGlow = {
+					order = 6,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
+				},
 				positionsGroup = {
 					order = 100,
 					type = "group",
@@ -7101,31 +7302,44 @@ E.Options.args.unitframe.args.groupUnits.args.tank = {
 					name = L["Vertical Spacing"],
 					min = 0, max = 100, step = 1
 				},
-				disableDebuffHighlight = {
-					order = 5,
-					type = "toggle",
-					name = L["Disable Debuff Highlight"],
-					desc = L["Forces Debuff Highlight to be disabled for these frames"],
-					disabled = function() return E.db.unitframe.debuffHighlighting == "NONE" end
-				},
 				orientation = {
-					order = 6,
+					order = 5,
 					type = "select",
 					name = L["Frame Orientation"],
 					desc = L["Set the orientation of the UnitFrame."],
 					values = orientationValues
 				},
-				disableMouseoverGlow = {
+				disableDebuffHighlight = {
+					order = 6,
+					type = "toggle",
+					name = L["Disable Debuff Highlight"],
+					desc = L["Forces Debuff Highlight to be disabled for these frames"],
+					disabled = function() return E.db.unitframe.debuffHighlighting == "NONE" end
+				},
+				middleClickFocus = {
 					order = 7,
+					type = "toggle",
+					name = L["Middle Click - Set Focus"],
+					desc = L["Middle clicking the unit frame will cause your focus to match the unit."],
+					disabled = function() return IsAddOnLoaded("Clique") end
+				},
+				disableMouseoverGlow = {
+					order = 8,
 					type = "toggle",
 					name = L["Block Mouseover Glow"],
 					desc = L["Forces Mouseover Glow to be disabled for these frames"]
 				},
 				disableTargetGlow = {
-					order = 8,
+					order = 9,
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},
@@ -7236,31 +7450,44 @@ E.Options.args.unitframe.args.groupUnits.args.assist = {
 					name = L["Vertical Spacing"],
 					min = 0, max = 100, step = 1
 				},
-				disableDebuffHighlight = {
-					order = 5,
-					type = "toggle",
-					name = L["Disable Debuff Highlight"],
-					desc = L["Forces Debuff Highlight to be disabled for these frames"],
-					disabled = function() return E.db.unitframe.debuffHighlighting == "NONE" end
-				},
 				orientation = {
-					order = 6,
+					order = 5,
 					type = "select",
 					name = L["Frame Orientation"],
 					desc = L["Set the orientation of the UnitFrame."],
 					values = orientationValues
 				},
-				disableMouseoverGlow = {
+				disableDebuffHighlight = {
+					order = 6,
+					type = "toggle",
+					name = L["Disable Debuff Highlight"],
+					desc = L["Forces Debuff Highlight to be disabled for these frames"],
+					disabled = function() return E.db.unitframe.debuffHighlighting == "NONE" end
+				},
+				middleClickFocus = {
 					order = 7,
+					type = "toggle",
+					name = L["Middle Click - Set Focus"],
+					desc = L["Middle clicking the unit frame will cause your focus to match the unit."],
+					disabled = function() return IsAddOnLoaded("Clique") end
+				},
+				disableMouseoverGlow = {
+					order = 8,
 					type = "toggle",
 					name = L["Block Mouseover Glow"],
 					desc = L["Forces Mouseover Glow to be disabled for these frames"]
 				},
 				disableTargetGlow = {
-					order = 8,
+					order = 9,
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
+				},
+				disableFocusGlow = {
+					order = 10,
+					type = "toggle",
+					name = L["Block Focus Glow"],
+					desc = L["Forces Focus Glow to be disabled for these frames"]
 				}
 			}
 		},

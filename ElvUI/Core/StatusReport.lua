@@ -29,17 +29,17 @@ local function GetDisplayMode()
 end
 
 local EnglishClassName = {
-	["DEATHKNIGHT"] = "Death Knight",
-	["DRUID"] = "Druid",
-	["HUNTER"] = "Hunter",
-	["MAGE"] = "Mage",
-	["MONK"] = "Monk",
-	["PALADIN"] = "Paladin",
-	["PRIEST"] = "Priest",
-	["ROGUE"] = "Rogue",
-	["SHAMAN"] = "Shaman",
-	["WARLOCK"] = "Warlock",
-	["WARRIOR"] = "Warrior",
+	DEATHKNIGHT = "Death Knight",
+	DRUID = "Druid",
+	HUNTER = "Hunter",
+	MAGE = "Mage",
+	MONK = "Monk",
+	PALADIN = "Paladin",
+	PRIEST = "Priest",
+	ROGUE = "Rogue",
+	SHAMAN = "Shaman",
+	WARLOCK = "Warlock",
+	WARRIOR = "Warrior"
 }
 
 local EnglishSpecName = {
@@ -76,7 +76,7 @@ local EnglishSpecName = {
 	[267] = "Destruction",
 	[71] = "Arms",
 	[72] = "Fury",
-	[73] = "Protection",
+	[73] = "Protection"
 }
 
 local function GetSpecName()

@@ -94,7 +94,7 @@ AB.barDefaults = {
 		page = 8,
 		bindButtons = "EXTRABAR8BUTTON",
 		conditions = "",
-		position = "BOTTOM,ElvUI_Bar1,TOP,0,122'"
+		position = "BOTTOM,ElvUI_Bar1,TOP,0,122"
 	},
 	bar9 = {
 		page = 9,

@@ -1013,7 +1013,15 @@ end
 
 ElvUF.Tags.Events["class"] = "UNIT_NAME_UPDATE"
 ElvUF.Tags.Methods["class"] = function(unit)
-	return UnitClass(unit)
+	if not UnitIsPlayer(unit) then return end
+
+	local _, classToken = UnitClass(unit)
+
+	if UnitSex(unit) == 3 then
+		return LOCALIZED_CLASS_NAMES_FEMALE[classToken]
+	else
+		return LOCALIZED_CLASS_NAMES_MALE[classToken]
+	end
 end
 
 ElvUF.Tags.Events["specialization"] = "PLAYER_TALENT_UPDATE"

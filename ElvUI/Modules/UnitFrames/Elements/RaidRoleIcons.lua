@@ -53,7 +53,7 @@ function UF:RaidRoleUpdate()
 	local assistant = frame.AssistantIndicator
 	local masterLooter = frame.MasterLooterIndicator
 
-	if not leader or not masterLooter or not assistant then return; end
+	if not leader or not masterLooter or not assistant then return end
 
 	local db = frame.db
 	local isLeader = leader:IsShown()
@@ -69,14 +69,14 @@ function UF:RaidRoleUpdate()
 			leader:Point("LEFT", anchor, "LEFT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
 			masterLooter:Point("RIGHT", anchor, "RIGHT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
 		elseif isLeader and db.raidRoleIcons.position == "TOPRIGHT" then
-			leader:Point("RIGHT", anchor, "RIGHT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
-			masterLooter:Point("LEFT", anchor, "LEFT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
+			leader:Point("RIGHT", anchor, "RIGHT", -db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
+			masterLooter:Point("LEFT", anchor, "LEFT", -db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
 		elseif isAssist and db.raidRoleIcons.position == "TOPLEFT" then
 			assistant:Point("LEFT", anchor, "LEFT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
 			masterLooter:Point("RIGHT", anchor, "RIGHT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
 		elseif isAssist and db.raidRoleIcons.position == "TOPRIGHT" then
-			assistant:Point("RIGHT", anchor, "RIGHT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
-			masterLooter:Point("LEFT", anchor, "LEFT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
+			assistant:Point("RIGHT", anchor, "RIGHT", -db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
+			masterLooter:Point("LEFT", anchor, "LEFT", -db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
 		elseif isMasterLooter and db.raidRoleIcons.position == "TOPLEFT" then
 			masterLooter:Point("LEFT", anchor, "LEFT", db.raidRoleIcons.xOffset, db.raidRoleIcons.yOffset)
 		else

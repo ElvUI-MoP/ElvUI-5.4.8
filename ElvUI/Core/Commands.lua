@@ -175,6 +175,10 @@ function E:GetCPUImpact()
 	end
 end
 
+function E:EHelp()
+	print(L["EHELP_COMMANDS"])
+end
+
 local BLIZZARD_ADDONS = {
 	"Blizzard_AchievementUI",
 	"Blizzard_ArchaeologyUI",
@@ -266,6 +270,8 @@ function E:LoadCommands()
 	self:RegisterChatCommand("cleanguild", "MassGuildKick")
 	self:RegisterChatCommand("enableblizzard", "EnableBlizzardAddOns")
 	self:RegisterChatCommand("estatus", "ShowStatusReport")
+	self:RegisterChatCommand("ehelp", "EHelp")
+	self:RegisterChatCommand("ecommands", "EHelp")
 
 	if E.private.actionbar.enable then
 		self:RegisterChatCommand("kb", AB.ActivateBindMode)

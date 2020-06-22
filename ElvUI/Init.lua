@@ -1,5 +1,5 @@
 local _G = _G
-local gsub, type, tcopy = gsub, type, table.copy
+local gsub, type = gsub, type
 
 local CreateFrame = CreateFrame
 local GetAddOnMetadata = GetAddOnMetadata
@@ -39,53 +39,6 @@ Engine[4] = E.DF.profile
 Engine[5] = E.DF.global
 _G.ElvUI = Engine
 
-do
-	local locale = GetLocale()
-	local convert = {enGB = "enUS", esES = "esMX", itIT = "enUS"}
-	local gameLocale = convert[locale] or locale or "enUS"
-
-	function E:GetLocale()
-		return gameLocale
-	end
-end
-
-do
-	E.Libs = {}
-	E.LibsMinor = {}
-	function E:AddLib(name, major, minor)
-		if not name then return end
-
-		-- in this case: `major` is the lib table and `minor` is the minor version
-		if type(major) == "table" and type(minor) == "number" then
-			self.Libs[name], self.LibsMinor[name] = major, minor
-		else -- in this case: `major` is the lib name and `minor` is the silent switch
-			self.Libs[name], self.LibsMinor[name] = LibStub(major, minor)
-		end
-	end
-
-	E:AddLib("AceAddon", AceAddon, AceAddonMinor)
-	E:AddLib("AceDB", "AceDB-3.0")
-	E:AddLib("EP", "LibElvUIPlugin-1.0")
-	E:AddLib("LSM", "LibSharedMedia-3.0")
-	E:AddLib("ACL", "AceLocale-3.0-ElvUI")
-	E:AddLib("LAB", "LibActionButton-1.0-ElvUI")
-	E:AddLib("LAI", "LibAuraInfo-1.0-ElvUI", true)
-	E:AddLib("LDB", "LibDataBroker-1.1")
-	E:AddLib("DualSpec", "LibDualSpec-1.0")
-	E:AddLib("SimpleSticky", "LibSimpleSticky-1.0")
-	E:AddLib("SpellRange", "SpellRange-1.0")
-	E:AddLib("ItemSearch", "LibItemSearch-1.2-ElvUI")
-	E:AddLib("Compress", "LibCompress")
-	E:AddLib("Base64", "LibBase64-1.0-ElvUI")
-	E:AddLib("Masque", "Masque", true)
-	E:AddLib("Translit", "LibTranslit-1.0")
-	-- added on ElvUI_OptionsUI load: AceGUI, AceConfig, AceConfigDialog, AceConfigRegistry, AceDBOptions
-
-	-- backwards compatible for plugins
-	E.LSM = E.Libs.LSM
-	E.Masque = E.Libs.Masque
-end
-
 E.oUF = Engine.oUF
 E.ActionBars = E:NewModule("ActionBars", "AceHook-3.0", "AceEvent-3.0")
 E.AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0")
@@ -111,6 +64,53 @@ E.Tooltip = E:NewModule("Tooltip", "AceHook-3.0", "AceEvent-3.0")
 E.TotemBar = E:NewModule("Totems", "AceEvent-3.0")
 E.UnitFrames = E:NewModule("UnitFrames", "AceTimer-3.0", "AceEvent-3.0", "AceHook-3.0")
 E.WorldMap = E:NewModule("WorldMap", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
+
+do
+	local locale = GetLocale()
+	local convert = {enGB = "enUS", esES = "esMX", itIT = "enUS"}
+	local gameLocale = convert[locale] or locale or "enUS"
+
+	function E:GetLocale()
+		return gameLocale
+	end
+end
+
+do
+	E.Libs = {}
+	E.LibsMinor = {}
+	function E:AddLib(name, major, minor)
+		if not name then return end
+
+		-- in this case: `major` is the lib table and `minor` is the minor version
+		if type(major) == "table" and type(minor) == "number" then
+			E.Libs[name], E.LibsMinor[name] = major, minor
+		else -- in this case: `major` is the lib name and `minor` is the silent switch
+			E.Libs[name], E.LibsMinor[name] = LibStub(major, minor)
+		end
+	end
+
+	E:AddLib("AceAddon", AceAddon, AceAddonMinor)
+	E:AddLib("AceDB", "AceDB-3.0")
+	E:AddLib("EP", "LibElvUIPlugin-1.0")
+	E:AddLib("LSM", "LibSharedMedia-3.0")
+	E:AddLib("ACL", "AceLocale-3.0-ElvUI")
+	E:AddLib("LAB", "LibActionButton-1.0-ElvUI")
+	E:AddLib("LAI", "LibAuraInfo-1.0-ElvUI", true)
+	E:AddLib("LDB", "LibDataBroker-1.1")
+	E:AddLib("DualSpec", "LibDualSpec-1.0")
+	E:AddLib("SimpleSticky", "LibSimpleSticky-1.0")
+	E:AddLib("SpellRange", "SpellRange-1.0")
+	E:AddLib("ItemSearch", "LibItemSearch-1.2-ElvUI")
+	E:AddLib("Compress", "LibCompress")
+	E:AddLib("Base64", "LibBase64-1.0-ElvUI")
+	E:AddLib("Masque", "Masque", true)
+	E:AddLib("Translit", "LibTranslit-1.0")
+	-- added on ElvUI_OptionsUI load: AceGUI, AceConfig, AceConfigDialog, AceConfigRegistry, AceDBOptions
+
+	-- backwards compatible for plugins
+	E.LSM = E.Libs.LSM
+	E.Masque = E.Libs.Masque
+end
 
 do
 	local a1, a2, a3 = "","([%(%)%.%%%+%-%*%?%[%^%$])","%%%1"
@@ -142,62 +142,63 @@ function E:OnInitialize()
 	ElvPrivateData = nil --Depreciated
 	ElvData = nil --Depreciated
 
-	self.db = tcopy(self.DF.profile, true)
-	self.global = tcopy(self.DF.global, true)
+	E.db = E:CopyTable({}, E.DF.profile)
+	E.global = E:CopyTable({}, E.DF.global)
+	E.private = E:CopyTable({}, E.privateVars.profile)
 
 	local ElvDB = ElvDB
 	if ElvDB then
 		if ElvDB.global then
-			self:CopyTable(self.global, ElvDB.global)
+			E:CopyTable(E.global, ElvDB.global)
 		end
 
 		local profileKey
 		if ElvDB.profileKeys then
-			profileKey = ElvDB.profileKeys[self.myname.." - "..self.myrealm]
+			profileKey = ElvDB.profileKeys[E.myname.." - "..E.myrealm]
 		end
 
 		if profileKey and ElvDB.profiles and ElvDB.profiles[profileKey] then
-			self:CopyTable(self.db, ElvDB.profiles[profileKey])
+			E:CopyTable(E.db, ElvDB.profiles[profileKey])
 		end
 	end
-
-	self.private = tcopy(self.privateVars.profile, true)
 
 	local ElvPrivateDB = ElvPrivateDB
 	if ElvPrivateDB then
 		local profileKey
 		if ElvPrivateDB.profileKeys then
-			profileKey = ElvPrivateDB.profileKeys[self.myname.." - "..self.myrealm]
+			profileKey = ElvPrivateDB.profileKeys[E.myname.." - "..E.myrealm]
 		end
 
 		if profileKey and ElvPrivateDB.profiles and ElvPrivateDB.profiles[profileKey] then
-			self:CopyTable(self.private, ElvPrivateDB.profiles[profileKey])
+			E:CopyTable(E.private, ElvPrivateDB.profiles[profileKey])
 		end
 	end
 
-	self.twoPixelsPlease = false
-	self.ScanTooltip = CreateFrame("GameTooltip", "ElvUI_ScanTooltip", UIParent, "GameTooltipTemplate")
-	self.PixelMode = self.twoPixelsPlease or self.private.general.pixelPerfect -- keep this over `UIScale`
-	self:UIScale(true)
-	self:UpdateMedia()
-	self:Contruct_StaticPopups()
-	self:InitializeInitialModules()
+	E.twoPixelsPlease = false
+	E.ScanTooltip = CreateFrame("GameTooltip", "ElvUI_ScanTooltip", UIParent, "GameTooltipTemplate")
+	E.PixelMode = E.twoPixelsPlease or E.private.general.pixelPerfect -- keep this over `UIScale`
+	E:UIScale(true)
+	E:UpdateMedia()
+	E:Contruct_StaticPopups()
+	E:InitializeInitialModules()
 
 	if IsAddOnLoaded("Tukui") then
-		self:StaticPopup_Show("TUKUI_ELVUI_INCOMPATIBLE")
+		E:StaticPopup_Show("TUKUI_ELVUI_INCOMPATIBLE")
 	end
 
 	local GameMenuButton = CreateFrame("Button", "GameMenuButtonElvUI", GameMenuFrame, "GameMenuButtonTemplate")
 	GameMenuButton:SetText(self.title)
+	GameMenuButton:Size(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())
+	GameMenuButton:Point("TOPLEFT", GameMenuButtonAddons, "BOTTOMLEFT", 0, -1)
 	GameMenuButton:SetScript("OnClick", function()
 		E:ToggleOptionsUI()
 		HideUIPanel(GameMenuFrame)
 	end)
 	GameMenuFrame[AddOnName] = GameMenuButton
 
-	GameMenuButton:Size(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())
-	GameMenuButton:Point("TOPLEFT", GameMenuButtonAddons, "BOTTOMLEFT", 0, -1)
 	hooksecurefunc("GameMenuFrame_UpdateVisibleButtons", self.PositionGameMenuButton)
+
+	E.loadedtime = GetTime()
 end
 
 function E:PositionGameMenuButton()
@@ -222,7 +223,7 @@ function E:ResetProfile()
 
 	local ElvPrivateDB = ElvPrivateDB
 	if ElvPrivateDB.profileKeys then
-		profileKey = ElvPrivateDB.profileKeys[self.myname.." - "..self.myrealm]
+		profileKey = ElvPrivateDB.profileKeys[E.myname.." - "..E.myrealm]
 	end
 
 	if profileKey and ElvPrivateDB.profiles and ElvPrivateDB.profiles[profileKey] then
@@ -234,5 +235,5 @@ function E:ResetProfile()
 end
 
 function E:OnProfileReset()
-	self:StaticPopup_Show("RESET_PROFILE_PROMPT")
+	E:StaticPopup_Show("RESET_PROFILE_PROMPT")
 end

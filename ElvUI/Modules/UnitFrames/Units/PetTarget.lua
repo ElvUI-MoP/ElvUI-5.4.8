@@ -21,6 +21,7 @@ function UF:Construct_PetTargetFrame(frame)
 	frame.Cutaway = self:Construct_Cutaway(frame)
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.FocusGlow = UF:Construct_FocusGlow(frame)
 	frame.customTexts = {}
 
 	frame:Point("BOTTOM", ElvUF_Pet, "TOP", 0, 7)
