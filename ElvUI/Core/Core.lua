@@ -53,6 +53,7 @@ E.myLocalizedClass, E.myclass, E.myClassID = UnitClass("player")
 E.myLocalizedRace, E.myrace = UnitRace("player")
 E.myname = UnitName("player")
 E.myrealm = GetRealmName()
+E.mynameRealm = format("%s - %s", E.myname, E.myrealm) -- contains spaces/dashes in realm (for profile keys)
 E.myspec = GetSpecialization()
 E.version = tonumber(GetAddOnMetadata("ElvUI", "Version"))
 E.wowpatch, E.wowbuild = GetBuildInfo()
@@ -175,6 +176,18 @@ do -- used in optionsUI
 	E.DEFAULT_FILTER = {}
 	for filter, tbl in pairs(G.unitframe.aurafilters) do
 		E.DEFAULT_FILTER[filter] = tbl.type
+	end
+end
+
+do
+	local a1, a2 = "", "[%s%-]"
+	function E:ShortenRealm(realm)
+		return gsub(realm, a2, a1)
+	end
+
+	local a3 = format("%%-%s", E:ShortenRealm(E.myrealm))
+	function E:StripMyRealm(name)
+		return gsub(name, a3, a1)
 	end
 end
 
@@ -530,8 +543,9 @@ end
 --Compare 2 tables and remove duplicate key/value pairs
 --param cleanTable : table you want cleaned
 --param checkTable : table you want to check against.
+--param generatedKeys : table defined in `Distributor.lua` to allow user generated tables to be exported (customTexts, customCurrencies, etc).
 --return : a copy of cleanTable with duplicate key/value pairs removed
-function E:RemoveTableDuplicates(cleanTable, checkTable, customVars)
+function E:RemoveTableDuplicates(cleanTable, checkTable, generatedKeys)
 	if type(cleanTable) ~= "table" then
 		E:Print("Bad argument #1 to 'RemoveTableDuplicates' (table expected)")
 		return
@@ -542,12 +556,20 @@ function E:RemoveTableDuplicates(cleanTable, checkTable, customVars)
 	end
 
 	local rtdCleaned = {}
+	local keyed = type(generatedKeys) == "table"
 	for option, value in pairs(cleanTable) do
-		if not customVars or (customVars[option] or checkTable[option] ~= nil) then
-			-- we only want to add settings which are existing in the default table, unless it's allowed by customVars
-			if type(value) == "table" and type(checkTable[option]) == "table" then
-				rtdCleaned[option] = self:RemoveTableDuplicates(value, checkTable[option], customVars)
-			elseif cleanTable[option] ~= checkTable[option] then
+		local default, genTable, genOption = checkTable[option]
+		if keyed then genTable = generatedKeys[option] else genOption = generatedKeys end
+
+		-- we only want to add settings which are existing in the default table, unless it's allowed by generatedKeys
+		if default ~= nil or (genTable or genOption ~= nil) then
+			if type(value) == "table" and type(default) == "table" then
+				if genOption ~= nil then
+					rtdCleaned[option] = self:RemoveTableDuplicates(value, default, genOption)
+				else
+					rtdCleaned[option] = self:RemoveTableDuplicates(value, default, genTable or nil)
+				end
+			elseif cleanTable[option] ~= default then
 				-- add unique data to our clean table
 				rtdCleaned[option] = value
 			end
@@ -754,17 +776,16 @@ do
 	end
 
 	local SendRecieveGroupSize = 0
-	local myRealm = gsub(E.myrealm, "[%s%-]", "")
-	local myName = E.myname.."-"..myRealm
+	local PLAYER_NAME = format("%s-%s", E.myname, E:ShortenRealm(E.myrealm))
 	local function SendRecieve(_, event, prefix, message, _, sender)
 		if event == "CHAT_MSG_ADDON" then
-			if sender == myName then return end
+			if sender == PLAYER_NAME then return end
 
 			if prefix == "ELVUI_VERSIONCHK" then
 				local msg, ver = tonumber(message), E.version
 				local inCombat = InCombatLockdown()
 
-				E.UserList[gsub(sender, "%-"..myRealm, "")] = msg
+				E.UserList[E:StripMyRealm(sender)] = msg
 
 				if ver ~= G.general.version then
 					if not E.shownUpdatedWhileRunningPopup and not inCombat then
@@ -814,8 +835,6 @@ function E:UpdateAll(ignoreInstall)
 	E.private = E.charSettings.profile
 	E.db = E.data.profile
 	E.global = E.data.global
-	E.db.theme = nil
-	E.db.install_complete = nil
 
 	E:DBConversions()
 
@@ -910,7 +929,7 @@ function E:UpdateAll(ignoreInstall)
 		E:RefreshGUI()
 	end
 
-	if (ignoreInstall ~= true) and (E.private.install_complete == nil or (E.private.install_complete and type(E.private.install_complete) == "boolean") or (E.private.install_complete and type(tonumber(E.private.install_complete)) == "number" and tonumber(E.private.install_complete) <= 3.83)) then
+	if not ignoreInstall and not E.private.install_complete then
 		E:Install()
 	end
 
@@ -1295,6 +1314,33 @@ function E:RefreshModulesDB()
 	UnitFrames.db = self.db.unitframe --new ref
 end
 
+do
+	-- Shamelessly taken from AceDB-3.0 and stripped down by Simpy
+	function E:CopyDefaults(dest, src)
+		for k, v in pairs(src) do
+			if type(v) == "table" then
+				if not rawget(dest, k) then rawset(dest, k, {}) end
+				if type(dest[k]) == "table" then E:CopyDefaults(dest[k], v) end
+			elseif rawget(dest, k) == nil then
+				rawset(dest, k, v)
+			end
+		end
+	end
+
+	function E:RemoveDefaults(db, defaults)
+		setmetatable(db, nil)
+
+		for k, v in pairs(defaults) do
+			if type(v) == "table" and type(db[k]) == "table" then
+				E:RemoveDefaults(db[k], v)
+				if next(db[k]) == nil then db[k] = nil end
+			elseif db[k] == defaults[k] then
+				db[k] = nil
+			end
+		end
+	end
+end
+
 function E:Initialize()
 	twipe(self.db)
 	twipe(self.global)
@@ -1306,10 +1352,10 @@ function E:Initialize()
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
 	self.charSettings = E.Libs.AceDB:New("ElvPrivateDB", self.privateVars)
-	E.Libs.DualSpec:EnhanceDatabase(self.data, "ElvUI")
 	self.private = self.charSettings.profile
-	self.db = self.data.profile
 	self.global = self.data.global
+	self.db = self.data.profile
+	E.Libs.DualSpec:EnhanceDatabase(self.data, "ElvUI")
 
 	self:CheckIncompatible()
 	self:DBConversions()
@@ -1331,8 +1377,8 @@ function E:Initialize()
 		E:SetSmoothingAmount(E.db.general.smoothingAmount)
 	end
 
-	if self.private.install_complete == nil then
-		self:Install()
+	if not E.private.install_complete then
+		E:Install()
 	end
 
 	if self:HelloKittyFixCheck() then

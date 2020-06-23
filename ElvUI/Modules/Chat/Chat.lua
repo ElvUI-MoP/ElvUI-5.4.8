@@ -86,8 +86,8 @@ local msgList, msgCount, msgTime = {}, {}, {}
 local CreatedFrames = 0
 local lfgRoles = {}
 
-local PLAYER_REALM = gsub(E.myrealm,"[%s%-]","")
-local PLAYER_NAME = E.myname.."-"..PLAYER_REALM or E.myname
+local PLAYER_REALM = E:ShortenRealm(E.myrealm)
+local PLAYER_NAME = format("%s-%s", E.myname, PLAYER_REALM)
 
 local DEFAULT_STRINGS = {
 	GUILD = L["G"],
@@ -1014,7 +1014,7 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 		local nameWithRealm -- we also use this lower in function to correct mobile to link with the realm as well
 
 		--Cache name->class
-		realm = (realm and realm ~= "") and gsub(realm, "[%s%-]", "") -- also used similar to nameWithRealm except for emotes to link the realm
+		realm = (realm and realm ~= "") and E:ShortenRealm(realm)
 		if name and name ~= "" then
 			CH.ClassNames[strlower(name)] = englishClass
 			nameWithRealm = (realm and name.."-"..realm) or name.."-"..PLAYER_REALM

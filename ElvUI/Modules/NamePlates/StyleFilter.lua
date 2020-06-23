@@ -734,44 +734,24 @@ function NP:StyleFilterRemoveCustomCheck(name)
 	NP.StyleFilterCustomChecks[name] = nil
 end
 
--- Shamelessy taken from AceDB-3.0 and stripped down by Simpy
-local function copyDefaults(dest, src)
-	for k, v in pairs(src) do
-		if type(v) == "table" then
-			if not rawget(dest, k) then rawset(dest, k, {}) end
-			if type(dest[k]) == "table" then copyDefaults(dest[k], v) end
-		elseif rawget(dest, k) == nil then
-			rawset(dest, k, v)
-		end
-	end
+function NP:PLAYER_LOGOUT()
+	NP:StyleFilterClearDefaults(E.global.nameplates.filters)
 end
 
-local function removeDefaults(db, defaults)
-	setmetatable(db, nil)
-	for k, v in pairs(defaults) do
-		if type(v) == "table" and type(db[k]) == "table" then
-			removeDefaults(db[k], v)
-			if next(db[k]) == nil then db[k] = nil end
-		elseif db[k] == defaults[k] then
-			db[k] = nil
-		end
-	end
-end
-
-function NP:StyleFilterClearDefaults()
-	for filterName, filterTable in pairs(E.global.nameplates.filters) do
+function NP:StyleFilterClearDefaults(tbl)
+	for filterName, filterTable in pairs(tbl) do
 		if G.nameplates.filters[filterName] then
 			local defaultTable = E:CopyTable({}, E.StyleFilterDefaults)
 			E:CopyTable(defaultTable, G.nameplates.filters[filterName])
-			removeDefaults(filterTable, defaultTable)
+			E:RemoveDefaults(filterTable, defaultTable)
 		else
-			removeDefaults(filterTable, E.StyleFilterDefaults)
+			E:RemoveDefaults(filterTable, E.StyleFilterDefaults)
 		end
 	end
 end
 
 function NP:StyleFilterCopyDefaults(tbl)
-	copyDefaults(tbl, E.StyleFilterDefaults)
+	E:CopyDefaults(tbl, E.StyleFilterDefaults)
 end
 
 function NP:StyleFilterInitialize()
