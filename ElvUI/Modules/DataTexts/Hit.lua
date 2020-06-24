@@ -28,7 +28,7 @@ local missChance, level
 local lastPanel
 
 local function OnEvent(self)
-	if E.Role == "Caster" then
+	if E.role == "Caster" then
 		hitRatingBonus = GetCombatRatingBonus(CR_HIT_SPELL)
 	else
 		if E.myclass == "HUNTER" then
@@ -46,7 +46,7 @@ end
 local function OnEnter(self)
 	DT:SetupTooltip(self)
 
-	if E.Role == "Caster" then
+	if E.role == "Caster" then
 		DT.tooltip:AddLine(format(STAT_HIT_SPELL_TOOLTIP, GetCombatRating(CR_HIT_SPELL), GetCombatRatingBonus(CR_HIT_SPELL)))
 		DT.tooltip:AddLine(" ")
 		DT.tooltip:AddDoubleLine(STAT_TARGET_LEVEL, MISS_CHANCE, 1, 1, 1, 1, 1, 1)

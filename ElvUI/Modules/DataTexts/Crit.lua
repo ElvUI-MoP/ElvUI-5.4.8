@@ -24,7 +24,7 @@ local displayModifierString = ""
 local lastPanel
 
 local function OnEvent(self)
-	if E.Role == "Caster" then
+	if E.role == "Caster" then
 		critRating = GetSpellCritChance(2)
 	else
 		if E.myclass == "HUNTER" then
@@ -42,7 +42,7 @@ local function OnEnter(self)
 	DT:SetupTooltip(self)
 
 	local text, tooltip
-	if E.Role == "Caster" then
+	if E.role == "Caster" then
 		text = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, SPELL_CRIT_CHANCE).." "..format("%.2F%%", GetSpellCritChance(2))
 		tooltip = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, COMBAT_RATING_NAME11).." "..GetCombatRating(11)
 	else

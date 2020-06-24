@@ -104,20 +104,20 @@ function E:GetPlayerRole()
 end
 
 function E:CheckRole()
-	local talentTree = GetSpecialization()
+	E.myspec = GetSpecialization()
+	E.myrole = E:GetPlayerRole()
+
 	local IsInPvPGear = false
-	local role
 	local resilperc = GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
 	if resilperc > GetDodgeChance() and resilperc > GetParryChance() and UnitLevel("player") == MAX_PLAYER_LEVEL then
 		IsInPvPGear = true
 	end
 
-	E.myspec = talentTree
-
+	local role
 	if type(E.ClassRole[E.myclass]) == "string" then
 		role = E.ClassRole[E.myclass]
-	elseif talentTree then
-		role = E.ClassRole[E.myclass][talentTree]
+	elseif E.myspec then
+		role = E.ClassRole[E.myclass][E.myspec]
 	end
 
 	if role == "Tank" and IsInPvPGear then
@@ -130,15 +130,11 @@ function E:CheckRole()
 		local base, posBuff, negBuff = UnitAttackPower("player")
 		local playerap = base + posBuff + negBuff
 
-		if (playerap > playerint) or (playeragi > playerint) then
-			role = "Melee"
-		else
-			role = "Caster"
-		end
+		role = ((playerap > playerint) or (playeragi > playerint)) and "Melee" or "Caster"
 	end
 
-	if E.Role ~= role then
-		E.Role = role
+	if E.role ~= role then
+		E.role = role
 		E.callbacks:Fire("RoleChanged")
 	end
 
@@ -152,7 +148,7 @@ function E:CheckRole()
 end
 
 function E:IsDispellableByMe(debuffType)
-	local dispel = self.DispelClasses[self.myclass]
+	local dispel = E.DispelClasses[E.myclass]
 
 	return dispel and dispel[debuffType]
 end
@@ -313,6 +309,7 @@ function E:RegisterPetBattleHideFrames(object, originalParent, originalStrata)
 	if C_PetBattles_IsInBattle() then
 		object:SetParent(E.HiddenFrame)
 	end
+
 	E.FrameLocks[object] = {
 		parent = originalParent,
 		strata = originalStrata or nil,
@@ -475,7 +472,7 @@ function E:GetUnitBattlefieldFaction(unit)
 end
 
 function E:NEUTRAL_FACTION_SELECT_RESULT()
-	E.myfaction, E.myLocalizedFaction = UnitFactionGroup('player')
+	E.myfaction, E.myLocalizedFaction = UnitFactionGroup("player")
 end
 
 function E:PLAYER_LEVEL_UP(_, level)

@@ -5,7 +5,7 @@ local LSM = E.Libs.LSM
 
 local _G = _G
 local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring
-local assert, type = assert, type
+local assert, rawget, rawset, setmetatable, type = assert, rawget, rawset, setmetatable, type
 local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
 local format, find, match, strrep, strlen, sub, gsub, strjoin = string.format, string.find, string.match, strrep, strlen, string.sub, string.gsub, strjoin
 
@@ -107,42 +107,17 @@ E.HealingClasses = {
 }
 
 E.ClassRole = {
-	PALADIN = {
-		[1] = "Caster",
-		[2] = "Tank",
-		[3] = "Melee"
-	},
-	PRIEST = "Caster",
-	WARLOCK = "Caster",
-	WARRIOR = {
-		[1] = "Melee",
-		[2] = "Melee",
-		[3] = "Tank"
-	},
 	HUNTER = "Melee",
-	SHAMAN = {
-		[1] = "Caster",
-		[2] = "Melee",
-		[3] = "Caster"
-	},
 	ROGUE = "Melee",
 	MAGE = "Caster",
-	DEATHKNIGHT = {
-		[1] = "Tank",
-		[2] = "Melee",
-		[3] = "Melee"
-	},
-	DRUID = {
-		[1] = "Caster",
-		[2] = "Melee",
-		[3] = "Tank",
-		[4] = "Caster"
-	},
-	MONK = {
-		[1] = "Tank",
-		[2] = "Caster",
-		[3] = "Melee"
-	}
+	PRIEST = "Caster",
+	WARLOCK = "Caster",
+	WARRIOR = {"Melee", "Melee", "Tank"},
+	DEATHKNIGHT = {"Tank", "Melee", "Melee"},
+	MONK = {"Tank", "Caster", "Melee"},
+	PALADIN = {"Caster", "Tank", "Melee"},
+	SHAMAN = {"Caster", "Melee", "Caster"},
+	DRUID = {"Caster", "Melee", "Tank", "Caster"}
 }
 
 E.DispelClasses = {
@@ -155,8 +130,8 @@ E.DispelClasses = {
 }
 
 E.BadDispels = {
-	[30108] = "Unstable Affliction", --silences
-	[34914] = "Vampiric Touch" --horrifies
+	[30108] = "Unstable Affliction", -- silences
+	[34914] = "Vampiric Touch" -- horrifies
 }
 
 --Workaround for people wanting to use white and it reverting to their class color.
@@ -210,7 +185,7 @@ function E:ColorizedName(name, arg2)
 end
 
 function E:Print(...)
-	(_G[self.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", E:ColorizedName("ElvUI", true), ...)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
+	(_G[E.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", E:ColorizedName("ElvUI", true), ...)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
 end
 
 function E:GrabColorPickerValues(r, g, b)
@@ -297,56 +272,56 @@ function E:GetColorTable(data)
 end
 
 function E:UpdateMedia()
-	if not self.db.general or not self.private.general then return end --Prevent rare nil value errors
+	if not E.db.general or not E.private.general then return end --Prevent rare nil value errors
 
 	-- Fonts
-	self.media.normFont = LSM:Fetch("font", self.db.general.font)
-	self.media.combatFont = LSM:Fetch("font", self.private.general.dmgfont)
+	E.media.normFont = LSM:Fetch("font", E.db.general.font)
+	E.media.combatFont = LSM:Fetch("font", E.private.general.dmgfont)
 
 	-- Textures
-	self.media.blankTex = LSM:Fetch("background", "ElvUI Blank")
-	self.media.normTex = LSM:Fetch("statusbar", self.private.general.normTex)
-	self.media.glossTex = LSM:Fetch("statusbar", self.private.general.glossTex)
+	E.media.blankTex = LSM:Fetch("background", "ElvUI Blank")
+	E.media.normTex = LSM:Fetch("statusbar", E.private.general.normTex)
+	E.media.glossTex = LSM:Fetch("statusbar", E.private.general.glossTex)
 
 	-- Border Color
 	local border = E.db.general.bordercolor
-	if self:CheckClassColor(border.r, border.g, border.b) then
+	if E:CheckClassColor(border.r, border.g, border.b) then
 		local classColor = E:ClassColor(E.myclass, true)
 		E.db.general.bordercolor.r = classColor.r
 		E.db.general.bordercolor.g = classColor.g
 		E.db.general.bordercolor.b = classColor.b
 	end
 
-	self.media.bordercolor = {border.r, border.g, border.b}
+	E.media.bordercolor = {border.r, border.g, border.b}
 
 	-- UnitFrame Border Color
 	border = E.db.unitframe.colors.borderColor
-	if self:CheckClassColor(border.r, border.g, border.b) then
+	if E:CheckClassColor(border.r, border.g, border.b) then
 		local classColor = E:ClassColor(E.myclass, true)
 		E.db.unitframe.colors.borderColor.r = classColor.r
 		E.db.unitframe.colors.borderColor.g = classColor.g
 		E.db.unitframe.colors.borderColor.b = classColor.b
 	end
-	self.media.unitframeBorderColor = {border.r, border.g, border.b}
+	E.media.unitframeBorderColor = {border.r, border.g, border.b}
 
 	-- Backdrop Color
-	self.media.backdropcolor = E:SetColorTable(self.media.backdropcolor, self.db.general.backdropcolor)
+	E.media.backdropcolor = E:SetColorTable(E.media.backdropcolor, E.db.general.backdropcolor)
 
 	-- Backdrop Fade Color
-	self.media.backdropfadecolor = E:SetColorTable(self.media.backdropfadecolor, self.db.general.backdropfadecolor)
+	E.media.backdropfadecolor = E:SetColorTable(E.media.backdropfadecolor, E.db.general.backdropfadecolor)
 
 	-- Value Color
-	local value = self.db.general.valuecolor
+	local value = E.db.general.valuecolor
 
-	if self:CheckClassColor(value.r, value.g, value.b) then
+	if E:CheckClassColor(value.r, value.g, value.b) then
 		value = E:ClassColor(E.myclass, true)
-		self.db.general.valuecolor.r = value.r
-		self.db.general.valuecolor.g = value.g
-		self.db.general.valuecolor.b = value.b
+		E.db.general.valuecolor.r = value.r
+		E.db.general.valuecolor.g = value.g
+		E.db.general.valuecolor.b = value.b
 	end
 
-	self.media.hexvaluecolor = self:RGBToHex(value.r, value.g, value.b)
-	self.media.rgbvaluecolor = {value.r, value.g, value.b}
+	E.media.hexvaluecolor = E:RGBToHex(value.r, value.g, value.b)
+	E.media.rgbvaluecolor = {value.r, value.g, value.b}
 
 	if LeftChatPanel and LeftChatPanel.tex and RightChatPanel and RightChatPanel.tex then
 		LeftChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameLeft)
@@ -357,8 +332,8 @@ function E:UpdateMedia()
 		RightChatPanel.tex:SetAlpha(a)
 	end
 
-	self:ValueFuncCall()
-	self:UpdateBlizzardFonts()
+	E:ValueFuncCall()
+	E:UpdateBlizzardFonts()
 end
 
 do	--Update font/texture paths when they are registered by the addon providing them
@@ -374,23 +349,23 @@ function E:ValueFuncCall()
 end
 
 function E:UpdateFrameTemplates()
-	for frame in pairs(self.frames) do
+	for frame in pairs(E.frames) do
 		if frame and frame.template and not frame.ignoreUpdates then
 			if not frame.ignoreFrameTemplates then
 				frame:SetTemplate(frame.template, frame.glossTex, nil, frame.forcePixelMode)
 			end
 		else
-			self.frames[frame] = nil
+			E.frames[frame] = nil
 		end
 	end
 
-	for frame in pairs(self.unitFrameElements) do
+	for frame in pairs(E.unitFrameElements) do
 		if frame and frame.template and not frame.ignoreUpdates then
 			if not frame.ignoreFrameTemplates then
 				frame:SetTemplate(frame.template, frame.glossTex, nil, frame.forcePixelMode, frame.isUnitFrameElement)
 			end
 		else
-			self.unitFrameElements[frame] = nil
+			E.unitFrameElements[frame] = nil
 		end
 	end
 end
@@ -398,7 +373,7 @@ end
 function E:UpdateBorderColors()
 	local r, g, b = unpack(E.media.bordercolor)
 
-	for frame in pairs(self.frames) do
+	for frame in pairs(E.frames) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBorderColors then
 				if frame.template == "Default" or frame.template == "Transparent" or frame.template == nil then
@@ -406,12 +381,12 @@ function E:UpdateBorderColors()
 				end
 			end
 		else
-			self.frames[frame] = nil
+			E.frames[frame] = nil
 		end
 	end
 
 	local r2, g2, b2 = unpack(E.media.unitframeBorderColor)
-	for frame in pairs(self.unitFrameElements) do
+	for frame in pairs(E.unitFrameElements) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBorderColors then
 				if frame.template == "Default" or frame.template == "Transparent" or frame.template == nil then
@@ -419,7 +394,7 @@ function E:UpdateBorderColors()
 				end
 			end
 		else
-			self.unitFrameElements[frame] = nil
+			E.unitFrameElements[frame] = nil
 		end
 	end
 end
@@ -428,7 +403,7 @@ function E:UpdateBackdropColors()
 	local r, g, b = unpack(E.media.backdropcolor)
 	local r2, g2, b2, a2 = unpack(E.media.backdropfadecolor)
 
-	for frame in pairs(self.frames) do
+	for frame in pairs(E.frames) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBackdropColors then
 				if frame.template == "Default" or frame.template == nil then
@@ -442,11 +417,11 @@ function E:UpdateBackdropColors()
 				end
 			end
 		else
-			self.frames[frame] = nil
+			E.frames[frame] = nil
 		end
 	end
 
-	for frame in pairs(self.unitFrameElements) do
+	for frame in pairs(E.unitFrameElements) do
 		if frame and not frame.ignoreUpdates then
 			if not frame.ignoreBackdropColors then
 				if frame.template == "Default" or frame.template == nil then
@@ -460,31 +435,31 @@ function E:UpdateBackdropColors()
 				end
 			end
 		else
-			self.unitFrameElements[frame] = nil
+			E.unitFrameElements[frame] = nil
 		end
 	end
 end
 
 function E:UpdateFontTemplates()
-	for text in pairs(self.texts) do
+	for text in pairs(E.texts) do
 		if text then
 			text:FontTemplate(text.font, text.fontSize, text.fontStyle)
 		else
-			self.texts[text] = nil
+			E.texts[text] = nil
 		end
 	end
 end
 
 function E:RegisterStatusBar(statusBar)
-	tinsert(self.statusBars, statusBar)
+	tinsert(E.statusBars, statusBar)
 end
 
 function E:UpdateStatusBars()
-	for _, statusBar in pairs(self.statusBars) do
+	for _, statusBar in pairs(E.statusBars) do
 		if statusBar and statusBar:IsObjectType("StatusBar") then
-			statusBar:SetStatusBarTexture(self.media.normTex)
+			statusBar:SetStatusBarTexture(E.media.normTex)
 		elseif statusBar and statusBar:IsObjectType("Texture") then
-			statusBar:SetTexture(self.media.normTex)
+			statusBar:SetTexture(E.media.normTex)
 		end
 	end
 end
@@ -513,7 +488,7 @@ function E:CopyTable(currentTable, defaultTable)
 	if type(defaultTable) == "table" then
 		for option, value in pairs(defaultTable) do
 			if type(value) == "table" then
-				value = self:CopyTable(currentTable[option], value)
+				value = E:CopyTable(currentTable[option], value)
 			end
 
 			currentTable[option] = value
@@ -534,7 +509,7 @@ function E:RemoveEmptySubTables(tbl)
 			if next(v) == nil then
 				tbl[k] = nil
 			else
-				self:RemoveEmptySubTables(v)
+				E:RemoveEmptySubTables(v)
 			end
 		end
 	end
@@ -565,9 +540,9 @@ function E:RemoveTableDuplicates(cleanTable, checkTable, generatedKeys)
 		if default ~= nil or (genTable or genOption ~= nil) then
 			if type(value) == "table" and type(default) == "table" then
 				if genOption ~= nil then
-					rtdCleaned[option] = self:RemoveTableDuplicates(value, default, genOption)
+					rtdCleaned[option] = E:RemoveTableDuplicates(value, default, genOption)
 				else
-					rtdCleaned[option] = self:RemoveTableDuplicates(value, default, genTable or nil)
+					rtdCleaned[option] = E:RemoveTableDuplicates(value, default, genTable or nil)
 				end
 			elseif cleanTable[option] ~= default then
 				-- add unique data to our clean table
@@ -577,7 +552,7 @@ function E:RemoveTableDuplicates(cleanTable, checkTable, generatedKeys)
 	end
 
 	--Clean out empty sub-tables
-	self:RemoveEmptySubTables(rtdCleaned)
+	E:RemoveEmptySubTables(rtdCleaned)
 
 	return rtdCleaned
 end
@@ -599,7 +574,7 @@ function E:FilterTableFromBlacklist(cleanTable, blacklistTable)
 	local tfbCleaned = {}
 	for option, value in pairs(cleanTable) do
 		if type(value) == "table" and blacklistTable[option] and type(blacklistTable[option]) == "table" then
-			tfbCleaned[option] = self:FilterTableFromBlacklist(value, blacklistTable[option])
+			tfbCleaned[option] = E:FilterTableFromBlacklist(value, blacklistTable[option])
 		else
 			-- Filter out blacklisted keys
 			if blacklistTable[option] ~= true then
@@ -609,7 +584,7 @@ function E:FilterTableFromBlacklist(cleanTable, blacklistTable)
 	end
 
 	--Clean out empty sub-tables
-	self:RemoveEmptySubTables(tfbCleaned)
+	E:RemoveEmptySubTables(tfbCleaned)
 
 	return tfbCleaned
 end
@@ -1036,8 +1011,9 @@ do
 		end
 	end
 end
+
 function E:ResetAllUI()
-	self:ResetMovers()
+	E:ResetMovers()
 
 	if E.db.layoutSet then
 		E:SetupLayout(E.db.layoutSet, true)
@@ -1052,13 +1028,13 @@ function E:ResetUI(...)
 		return
 	end
 
-	self:ResetMovers(...)
+	E:ResetMovers(...)
 end
 
 function E:CallLoadedModule(obj, silent, object, index)
 	local name, func
 	if type(obj) == "table" then name, func = unpack(obj) else name = obj end
-	local module = name and self:GetModule(name, silent)
+	local module = name and E:GetModule(name, silent)
 
 	if not module then return end
 	if func and type(func) == "string" then
@@ -1075,14 +1051,14 @@ function E:CallLoadedModule(obj, silent, object, index)
 end
 
 function E:RegisterInitialModule(name, func)
-	self.RegisteredInitialModules[#self.RegisteredInitialModules + 1] = (func and {name, func}) or name
+	E.RegisteredInitialModules[#E.RegisteredInitialModules + 1] = (func and {name, func}) or name
 end
 
 function E:RegisterModule(name, func)
-	if self.initialized then
+	if E.initialized then
 		E:CallLoadedModule((func and {name, func}) or name)
 	else
-		self.RegisteredModules[#self.RegisteredModules + 1] = (func and {name, func}) or name
+		E.RegisteredModules[#E.RegisteredModules + 1] = (func and {name, func}) or name
 	end
 end
 
@@ -1311,7 +1287,7 @@ function E:RefreshModulesDB()
 	-- this function is specifically used to reference the new database
 	-- onto the unitframe module, its useful dont delete! D:
 	twipe(UnitFrames.db) --old ref, dont need so clear it
-	UnitFrames.db = self.db.unitframe --new ref
+	UnitFrames.db = E.db.unitframe --new ref
 end
 
 do
@@ -1342,34 +1318,34 @@ do
 end
 
 function E:Initialize()
-	twipe(self.db)
-	twipe(self.global)
-	twipe(self.private)
+	twipe(E.db)
+	twipe(E.global)
+	twipe(E.private)
 
-	self.myguid = UnitGUID("player")
-	self.data = E.Libs.AceDB:New("ElvDB", self.DF)
-	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
-	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
-	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
-	self.charSettings = E.Libs.AceDB:New("ElvPrivateDB", self.privateVars)
-	self.private = self.charSettings.profile
-	self.global = self.data.global
-	self.db = self.data.profile
-	E.Libs.DualSpec:EnhanceDatabase(self.data, "ElvUI")
+	E.myguid = UnitGUID("player")
+	E.data = E.Libs.AceDB:New("ElvDB", E.DF)
+	E.data.RegisterCallback(E, "OnProfileChanged", "UpdateAll")
+	E.data.RegisterCallback(E, "OnProfileCopied", "UpdateAll")
+	E.data.RegisterCallback(E, "OnProfileReset", "OnProfileReset")
+	E.charSettings = E.Libs.AceDB:New("ElvPrivateDB", E.privateVars)
+	E.private = E.charSettings.profile
+	E.global = E.data.global
+	E.db = E.data.profile
+	E.Libs.DualSpec:EnhanceDatabase(E.data, "ElvUI")
 
-	self:CheckIncompatible()
-	self:DBConversions()
-	self:UIScale()
-	self:BuildPrefixValues()
-	self:LoadAPI()
-	self:LoadCommands()
-	self:InitializeModules()
-	self:RefreshModulesDB()
-	self:LoadMovers()
-	self:UpdateMedia()
-	self:UpdateCooldownSettings("all")
-	self:Tutorials()
-	self.initialized = true
+	E:CheckIncompatible()
+	E:DBConversions()
+	E:UIScale()
+	E:BuildPrefixValues()
+	E:LoadAPI()
+	E:LoadCommands()
+	E:InitializeModules()
+	E:RefreshModulesDB()
+	E:LoadMovers()
+	E:UpdateMedia()
+	E:UpdateCooldownSettings("all")
+	E:Tutorials()
+	E.initialized = true
 
 	Minimap:UpdateSettings()
 
@@ -1381,17 +1357,17 @@ function E:Initialize()
 		E:Install()
 	end
 
-	if self:HelloKittyFixCheck() then
-		self:HelloKittyFix()
+	if E:HelloKittyFixCheck() then
+		E:HelloKittyFix()
 	end
 
-	if self.db.general.kittys then
-		self:CreateKittys()
-		self:Delay(5, self.Print, self, L["Type /hellokitty to revert to old settings."])
+	if E.db.general.kittys then
+		E:CreateKittys()
+		E:Delay(5, E.Print, E, L["Type /hellokitty to revert to old settings."])
 	end
 
-	if self.db.general.loginmessage then
-		local msg = format(L["LOGIN_MSG"], self.version)
+	if E.db.general.loginmessage then
+		local msg = format(L["LOGIN_MSG"], E.version)
 		if Chat.Initialized then msg = select(2, Chat:FindURL("CHAT_MSG_DUMMY", msg)) end
 		print(msg)
 		print(L["LOGIN_MSG_HELP"])

@@ -271,8 +271,11 @@ local function LoadSkin()
 
 		button:SetNormalTexture(E.Media.Textures.Plus)
 		button.SetNormalTexture = E.noop
-		button:GetNormalTexture():Size(14)
-		button:GetNormalTexture():Point("LEFT", 2, 2)
+
+		local normal = button:GetNormalTexture()
+		normal:Size(14)
+		normal:Point("LEFT", 3, 2)
+		normal.SetPoint = E.noop
 
 		highlight:SetTexture("")
 		highlight.SetTexture = E.noop
@@ -287,9 +290,7 @@ local function LoadSkin()
 
 		button.SubSkillRankBar.Rank:Point("CENTER", 0, -1)
 
-		hooksecurefunc(button, "SetNormalTexture", function(self, texture)
-			local normal = self:GetNormalTexture()
-
+		hooksecurefunc(button, "SetNormalTexture", function(_, texture)
 			if find(texture, "MinusButton") then
 				normal:SetTexture(E.Media.Textures.Minus)
 			elseif find(texture, "PlusButton") then

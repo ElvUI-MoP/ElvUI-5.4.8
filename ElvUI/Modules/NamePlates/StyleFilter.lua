@@ -2,7 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local NP = E:GetModule("NamePlates")
 local LSM = E.Libs.LSM
 
-local ipairs, next, pairs, rawget, rawset, select, setmetatable, tonumber, type, unpack, tostring = ipairs, next, pairs, rawget, rawset, select, setmetatable, tonumber, type, unpack, tostring
+local ipairs, next, pairs, select, tonumber, unpack, tostring = ipairs, next, pairs, select, tonumber, unpack, tostring
 local tinsert, sort, twipe = table.insert, table.sort, table.wipe
 
 local GetInstanceInfo = GetInstanceInfo

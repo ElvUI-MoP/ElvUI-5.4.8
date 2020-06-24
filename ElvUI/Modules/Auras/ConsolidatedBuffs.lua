@@ -210,7 +210,7 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 	twipe(ignoreIcons)
 
 	if E.db.auras.consolidatedBuffs.filter then
-		if E.Role == "Caster" then
+		if E.role == "Caster" then
 			ignoreIcons[3] = true
 			ignoreIcons[4] = 2
 		else
