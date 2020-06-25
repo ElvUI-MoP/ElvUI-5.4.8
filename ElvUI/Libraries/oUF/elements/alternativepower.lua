@@ -1,6 +1,35 @@
+--[[
+# Element: Alternative Power Bar
+
+Handles the visibility and updating of a status bar that displays encounter- or quest-related power information, such as
+the number of hour glass charges during the Murozond encounter in the dungeon End Time.
+
+## Widget
+
+AlternativePower - A `StatusBar` used to represent the unit's alternative power.
+
+## Notes
+
+If mouse interactivity is enabled for the widget, `OnEnter` and/or `OnLeave` handlers will be set to display a tooltip.
+A default texture will be applied if the widget is a StatusBar and doesn't have a texture set.
+
+## Examples
+
+    -- Position and size
+    local AlternativePower = CreateFrame('StatusBar', nil, self)
+    AlternativePower:SetHeight(20)
+    AlternativePower:SetPoint('BOTTOM')
+    AlternativePower:SetPoint('LEFT')
+    AlternativePower:SetPoint('RIGHT')
+
+    -- Register with oUF
+    self.AlternativePower = AlternativePower
+--]]
+
 local _, ns = ...
 local oUF = ns.oUF
 
+-- sourced from FrameXML/UnitPowerBarAlt.lua
 local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX or 10
 
 local function updateTooltip(self)
@@ -12,6 +41,7 @@ end
 local function onEnter(self)
 	if(not self:IsVisible()) then return end
 
+	GameTooltip:ClearAllPoints()
 	GameTooltip_SetDefaultAnchor(GameTooltip, self)
 	self:UpdateTooltip()
 end
@@ -25,6 +55,11 @@ local function Update(self, event, unit, powerType)
 
 	local element = self.AlternativePower
 
+	--[[ Callback: AlternativePower:PreUpdate()
+	Called before the element has been updated.
+
+	* self - the AlternativePower element
+	--]]
 	if(element.PreUpdate) then
 		element:PreUpdate()
 	end
@@ -41,12 +76,29 @@ local function Update(self, event, unit, powerType)
 		element:SetValue(cur)
 	end
 
+	--[[ Callback: AlternativePower:PostUpdate(unit, cur, min, max)
+	Called after the element has been updated.
+
+	* self - the AlternativePower element
+	* unit - the unit for which the update has been triggered (string)
+	* cur  - the current value of the unit's alternative power (number)
+	* min  - the minimum value of the unit's alternative power (number)
+	* max  - the maximum value of the unit's alternative power (number)
+	--]]
 	if(element.PostUpdate) then
 		return element:PostUpdate(unit, cur, min, max)
 	end
 end
 
 local function Path(self, ...)
+	--[[ Override: AlternativePower.Override(self, event, unit, ...)
+	Used to completely override the element's update process.
+
+	* self  - the parent object
+	* event - the event triggering the update (string)
+	* unit  - the unit accompanying the event (string)
+	* ...   - the arguments accompanying the event
+	--]]
 	return (self.AlternativePower.Override or Update)(self, ...)
 end
 
@@ -71,6 +123,13 @@ local function Visibility(self, event, unit)
 end
 
 local function VisibilityPath(self, ...)
+	--[[ Override: AlternativePower.OverrideVisibility(self, event, unit)
+	Used to completely override the element's visibility update process.
+
+	* self  - the parent object
+	* event - the event triggering the update (string)
+	* unit  - the unit accompanying the event (string)
+	--]]
 	return (self.AlternativePower.OverrideVisibility or Visibility)(self, ...)
 end
 
@@ -100,6 +159,11 @@ local function Enable(self, unit)
 				element:SetScript('OnLeave', onLeave)
 			end
 
+			--[[ Override: AlternativePower:UpdateTooltip()
+			Called when the mouse is over the widget. Used to populate its tooltip.
+
+			* self - the AlternativePower element
+			--]]
 			if(not element.UpdateTooltip) then
 				element.UpdateTooltip = updateTooltip
 			end
