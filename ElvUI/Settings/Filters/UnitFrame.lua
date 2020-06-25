@@ -416,7 +416,8 @@ G.unitframe.aurafilters.Blacklist = {
 		[124275] = Defaults(),	-- Stagger
 		[124274] = Defaults(),	-- Stagger
 		[124273] = Defaults(),	-- Stagger
-		[117870] = Defaults()	-- Touch of The Titans
+		[117870] = Defaults(),	-- Touch of The Titans
+		[161780] = Defaults()	-- Gaze of the Black Prince
 	}
 }
 
