@@ -334,7 +334,7 @@ local function Update(self, event, unit)
 end
 
 local function Enable(self)
-	if playerClass == "DRUID" or playerClass == "PALADIN" or playerClass == "SHAMAN" then
+	if playerClass == "DRUID" or playerClass == "PALADIN" or playerClass == "SHAMAN" or playerClass == "PRIEST" or playerClass == "MAGE" or playerClass == "MONK" then
 		self:RegisterEvent("PLAYER_TALENT_UPDATE", CheckSpec, true)
 		self:RegisterEvent("CHARACTER_POINTS_CHANGED", CheckSpec, true)
 
@@ -357,7 +357,7 @@ local function Disable(self)
 		self.RaidDebuffs:Hide()
 	end
 
-	if playerClass == "DRUID" or playerClass == "PALADIN" or playerClass == "SHAMAN" then
+	if playerClass == "DRUID" or playerClass == "PALADIN" or playerClass == "SHAMAN" or playerClass == "PRIEST" or playerClass == "MAGE" or playerClass == "MONK" then
 		self:UnregisterEvent("PLAYER_TALENT_UPDATE", CheckSpec)
 		self:UnregisterEvent("CHARACTER_POINTS_CHANGED", CheckSpec)
 

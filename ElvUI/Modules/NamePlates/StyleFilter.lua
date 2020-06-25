@@ -17,15 +17,15 @@ local UnitPowerMax = UnitPowerMax
 
 NP.TriggerConditions = {
 	frameTypes = {
-		["FRIENDLY_PLAYER"] = "friendlyPlayer",
-		["FRIENDLY_NPC"] = "friendlyNPC",
-		["ENEMY_PLAYER"] = "enemyPlayer",
-		["ENEMY_NPC"] = "enemyNPC",
+		FRIENDLY_PLAYER = "friendlyPlayer",
+		FRIENDLY_NPC = "friendlyNPC",
+		ENEMY_PLAYER = "enemyPlayer",
+		ENEMY_NPC = "enemyNPC",
 	},
 	roles = {
-		["TANK"] = "tank",
-		["HEALER"] = "healer",
-		["DAMAGER"] = "damager"
+		TANK = "tank",
+		HEALER = "healer",
+		DAMAGER = "damager"
 	},
 	difficulties = {
 		-- dungeons

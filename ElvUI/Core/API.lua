@@ -94,10 +94,7 @@ end
 function E:GetPlayerRole()
 	local assignedRole = UnitGroupRolesAssigned("player")
 	if assignedRole == "NONE" then
-		local spec = GetSpecialization()
-		if spec then
-			return GetSpecializationRole(spec)
-		end
+		return E.myspec and GetSpecializationRole(E.myspec)
 	end
 
 	return assignedRole
@@ -107,12 +104,6 @@ function E:CheckRole()
 	E.myspec = GetSpecialization()
 	E.myrole = E:GetPlayerRole()
 
-	local IsInPvPGear = false
-	local resilperc = GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
-	if resilperc > GetDodgeChance() and resilperc > GetParryChance() and UnitLevel("player") == MAX_PLAYER_LEVEL then
-		IsInPvPGear = true
-	end
-
 	local role
 	if type(E.ClassRole[E.myclass]) == "string" then
 		role = E.ClassRole[E.myclass]
@@ -120,17 +111,19 @@ function E:CheckRole()
 		role = E.ClassRole[E.myclass][E.myspec]
 	end
 
-	if role == "Tank" and IsInPvPGear then
+	local resilience = GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
+	local isInPvPGear = resilience > GetDodgeChance() and resilience > GetParryChance() and E.mylevel == MAX_PLAYER_LEVEL
+	if role == "Tank" and isInPvPGear then
 		role = "Melee"
 	end
 
 	if not role then
-		local playerint = select(2, UnitStat("player", 4))
-		local playeragi	= select(2, UnitStat("player", 2))
+		local playerInt = select(2, UnitStat("player", 4))
+		local playerAgi	= select(2, UnitStat("player", 2))
 		local base, posBuff, negBuff = UnitAttackPower("player")
-		local playerap = base + posBuff + negBuff
+		local playerAp = base + posBuff + negBuff
 
-		role = ((playerap > playerint) or (playeragi > playerint)) and "Melee" or "Caster"
+		role = ((playerAp > playerInt) or (playerAgi > playerInt)) and "Melee" or "Caster"
 	end
 
 	if E.role ~= role then
@@ -139,11 +132,7 @@ function E:CheckRole()
 	end
 
 	if E.HealingClasses[E.myclass] ~= nil and E.myclass ~= "PRIEST" then
-		if E:CheckTalentTree(E.HealingClasses[E.myclass]) then
-			E.DispelClasses[E.myclass].Magic = true
-		else
-			E.DispelClasses[E.myclass].Magic = false
-		end
+		E.DispelClasses[E.myclass].Magic = E:CheckTalentTree(E.HealingClasses[E.myclass])
 	end
 end
 
