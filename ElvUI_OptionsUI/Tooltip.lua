@@ -115,7 +115,12 @@ E.Options.args.tooltip = {
 					type = "select",
 					name = L["Item Count"],
 					desc = L["Display how many of a certain item you have in your possession."],
-					values = modifierValues
+					values = {
+						["BAGS_ONLY"] = L["Bags Only"],
+						["BANK_ONLY"] = L["Bank Only"],
+						["BOTH"] = L["Both"],
+						["NONE"] = L["NONE"]
+					}
 				},
 				colorAlpha = {
 					order = 13,
