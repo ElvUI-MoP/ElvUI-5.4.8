@@ -248,7 +248,7 @@ ElvUF.Tags.Methods["name:abbrev"] = function(unit)
 end
 
 do
-	local function NameHealthColor(tags,hex,unit,default)
+	local function NameHealthColor(tags, hex, unit, default)
 		if hex == "class" or hex == "reaction" then
 			return tags.namecolor(unit)
 		elseif hex and strmatch(hex, "^%x%x%x%x%x%x$") then
@@ -1168,6 +1168,7 @@ E.TagInfo = {
 	["runes"] = {category = "Classpower", description = "Displays the runes (Death Knight)"},
 	["soulshards"] = {category = "Classpower", description = "Displays the soulshards (Warlock)"},
 	["holypower"] = {category = "Classpower", description = "Displays the holy power (Paladin)"},
+	["stagger"] = {category = "Classpower", description = "Displays the staggered damage (Monk)"},
 	["cpoints"] = {category = "Classpower", description = "Displays amount of combo points the player has (only for player, shows nothing on 0)"},
 	["classpower:current"] = {category = "Classpower", description = "Displays the unit's current amount of special power"},
 	["classpower:current-max"] = {category = "Classpower", description = "Displays the unit's current and max amount of special power, separated by a dash"},

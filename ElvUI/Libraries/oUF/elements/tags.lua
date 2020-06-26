@@ -412,6 +412,13 @@ local tagStrings = {
 		end
 	end]],
 
+	['stagger'] = [[function()
+		local stagger = UnitStagger('player')
+		if stagger and stagger > 0 then
+			return stagger
+		end
+	end]],
+
 	['status'] = [[function(u)
 		if(UnitIsDead(u)) then
 			return 'Dead'
@@ -482,7 +489,7 @@ local tags = setmetatable(
 			end
 
 			rawset(self, key, val)
-		end,
+		end
 	}
 )
 
@@ -498,7 +505,7 @@ local vars = setmetatable({}, {
 		end
 
 		rawset(self, key, val)
-	end,
+	end
 })
 
 _ENV._VARS = vars
@@ -538,10 +545,11 @@ local tagEvents = {
 	['pvp']                 = 'UNIT_FACTION',
 	['rare']                = 'UNIT_CLASSIFICATION_CHANGED',
 	['resting']             = 'PLAYER_UPDATE_RESTING',
-	['shadoworbs']	= 'UNIT_POWER',
+	['shadoworbs']          = 'UNIT_POWER',
 	['shortclassification'] = 'UNIT_CLASSIFICATION_CHANGED',
 	['smartlevel']          = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED',
 	['soulshards']          = 'UNIT_POWER',
+	['stagger']             = 'UNIT_AURA',
 	['status']              = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT PLAYER_UPDATE_RESTING UNIT_CONNECTION',
 	['threat']              = 'UNIT_THREAT_SITUATION_UPDATE',
 	['threatcolor']         = 'UNIT_THREAT_SITUATION_UPDATE',
