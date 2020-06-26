@@ -27,16 +27,15 @@ function UF:Construct_PlayerFrame(frame)
 		frame.ClassBarHolder = CreateFrame("Frame", nil, frame)
 		frame.ClassBarHolder:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 150)
 
-		if E.myclass == "PALADIN" then
+		if E.myclass == "PALADIN" or E.myclass == "MONK" or E.myclass == "PRIEST" then
 			frame.ClassPower = self:Construct_ClassBar(frame)
 			frame.ClassBar = "ClassPower"
-		elseif E.myclass == "MONK" then
-			frame.ClassPower = self:Construct_ClassBar(frame)
-			frame.ClassBar = "ClassPower"
-			frame.Stagger = self:Construct_Stagger(frame)
-		elseif E.myclass == "PRIEST" then
-			frame.ClassPower = self:Construct_ClassBar(frame)
-			frame.ClassBar = "ClassPower"
+			if E.myclass == "MONK" then
+				frame.Stagger = self:Construct_Stagger(frame)
+			end
+		elseif E.myclass == "MAGE" or E.myclass == "ROGUE" then
+			frame.SpecPower = self:Construct_SpecPower(frame)
+			frame.ClassBar = "SpecPower"
 		elseif E.myclass == "WARLOCK" then
 			frame.SoulShards = self:Construct_SoulShardsBar(frame)
 			frame.ClassBar = "SoulShards"
@@ -45,12 +44,6 @@ function UF:Construct_PlayerFrame(frame)
 		elseif E.myclass == "DEATHKNIGHT" then
 			frame.Runes = self:Construct_DeathKnightResourceBar(frame)
 			frame.ClassBar = "Runes"
-		elseif E.myclass == "MAGE" then
-			frame.ArcaneChargeBar = self:Construct_MageResourceBar(frame)
-			frame.ClassBar = "ArcaneChargeBar"
-		elseif E.myclass == "ROGUE" then
-			frame.Anticipation = self:Construct_RogueResourceBar(frame)
-			frame.ClassBar = "Anticipation"
 		elseif E.myclass == "DRUID" then
 			frame.EclipseBar = self:Construct_DruidEclipseBar(frame)
 			frame.ClassBar = "EclipseBar"

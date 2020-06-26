@@ -66,8 +66,8 @@ function UF:FrameGlow_ClassGlowPosition(frame, powerName, glow, offset, fromScri
 
 	-- check for Additional Power to hook scripts on
 	local useBonusPower, bonus, bonusName
-	if powerName == "AdditionalPower" then
-		bonusName = (frame.EclipseBar and "EclipseBar")
+	if powerName == "AdditionalPower" or powerName == "EclipseBar" then
+		bonusName = powerName == "AdditionalPower" and (frame.EclipseBar and "EclipseBar") or powerName == "EclipseBar" and (frame.AdditionalPower and "AdditionalPower")
 		bonus = bonusName and frame[bonusName]
 
 		if bonus then
@@ -77,9 +77,8 @@ function UF:FrameGlow_ClassGlowPosition(frame, powerName, glow, offset, fromScri
 
 			useBonusPower = bonus:IsVisible()
 		end
-	elseif powerName == "BurningEmbers" then
-		bonusName = frame.SoulShards and "SoulShards"
-
+	elseif powerName == "BurningEmbers" or powerName == "SoulShards" then
+		bonusName = powerName == "BurningEmbers" and (frame.SoulShards and "SoulShards") or powerName == "SoulShards" and (frame.BurningEmbers and "BurningEmbers")
 		bonus = bonusName and frame[bonusName]
 
 		if bonus then
@@ -124,14 +123,6 @@ end
 function UF:FrameGlow_PositionGlow(frame, mainGlow, powerGlow)
 	if not (frame and frame.VARIABLES_SET) then return end
 
-	local additionalPower = frame.AdditionalPower
-	local classPower = frame.ClassPower
-	local runes = frame.Runes
-	local arcane = frame.ArcaneChargeBar
-	local anticipation = frame.Anticipation
-	local comboPoints = frame.ComboPoints
-	local altPower = frame.AlternativePower
-	local demonic = frame.DemonicFury
 	local power = frame.Power and frame.Power.backdrop
 	local health = frame.Health and frame.Health.backdrop
 	local portrait = (frame.USE_PORTRAIT and not frame.USE_PORTRAIT_OVERLAY and not frame.PORTRAIT_DETACHED) and (frame.Portrait and frame.Portrait.backdrop)
@@ -164,21 +155,19 @@ function UF:FrameGlow_PositionGlow(frame, mainGlow, powerGlow)
 		powerGlow:Point("BOTTOMRIGHT", power, offset, -offset)
 	end
 
-	if additionalPower then
+	if frame.AdditionalPower then
 		UF:FrameGlow_ClassGlowPosition(frame, "AdditionalPower", mainGlow, offset)
-	elseif classPower then
+	elseif frame.ClassPower then
 		UF:FrameGlow_ClassGlowPosition(frame, "ClassPower", mainGlow, offset)
-	elseif runes then
+	elseif frame.Runes then
 		UF:FrameGlow_ClassGlowPosition(frame, "Runes", mainGlow, offset)
-	elseif demonic then
+	elseif frame.DemonicFury then
 		UF:FrameGlow_ClassGlowPosition(frame, "DemonicFury", mainGlow, offset)
-	elseif arcane then
-		UF:FrameGlow_ClassGlowPosition(frame, "ArcaneChargeBar", mainGlow, offset)
-	elseif anticipation then
-		UF:FrameGlow_ClassGlowPosition(frame, "Anticipation", mainGlow, offset)
-	elseif comboPoints then
+	elseif frame.SpecPower then
+		UF:FrameGlow_ClassGlowPosition(frame, "SpecPower", mainGlow, offset)
+	elseif frame.ComboPoints then
 		UF:FrameGlow_ClassGlowPosition(frame, "ComboPoints", mainGlow, offset)
-	elseif altPower and (frame.isForced or (frame.unit and frame.unit:find("boss%d"))) then
+	elseif frame.AlternativePower and (frame.isForced or (frame.unit and frame.unit:find("boss%d"))) then
 		UF:FrameGlow_ClassGlowPosition(frame, "AlternativePower", mainGlow, offset)
 	end
 end

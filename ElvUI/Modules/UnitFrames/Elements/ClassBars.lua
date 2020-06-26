@@ -56,7 +56,7 @@ function UF:Configure_ClassBar(frame)
 	local color = E.db.unitframe.colors.borderColor
 	bars.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 
-	if frame.ClassBar == "ClassPower" or frame.ClassBar == "ArcaneChargeBar" or frame.ClassBar == "Anticipation" or frame.ClassBar == "Runes" or frame.ClassBar == "BurningEmbers" or frame.ClassBar == "SoulShards" then
+	if frame.ClassBar == "ClassPower" or frame.ClassBar == "SpecPower" or frame.ClassBar == "Runes" or frame.ClassBar == "BurningEmbers" or frame.ClassBar == "SoulShards" then
 		if (not frame.USE_MINI_CLASSBAR) and frame.USE_CLASSBAR then
 			bars.backdrop:Show()
 		else
@@ -245,11 +245,8 @@ function UF:Configure_ClassBar(frame)
 		if frame.ClassPower and not frame:IsElementEnabled("ClassPower") then
 			frame:EnableElement("ClassPower")
 		end
-		if frame.ArcaneChargeBar and not frame:IsElementEnabled("ArcaneChargeBar") then
-			frame:EnableElement("ArcaneChargeBar")
-		end
-		if frame.Anticipation and not frame:IsElementEnabled("Anticipation") then
-			frame:EnableElement("Anticipation")
+		if frame.SpecPower and not frame:IsElementEnabled("SpecPower") then
+			frame:EnableElement("SpecPower")
 		end
 		if frame.Runes and not frame:IsElementEnabled("Runes") then
 			frame:EnableElement("Runes")
@@ -273,11 +270,8 @@ function UF:Configure_ClassBar(frame)
 		if frame.ClassPower and frame:IsElementEnabled("ClassPower") then
 			frame:DisableElement("ClassPower")
 		end
-		if frame.ArcaneChargeBar and frame:IsElementEnabled("ArcaneChargeBar") then
-			frame:DisableElement("ArcaneChargeBar")
-		end
-		if frame.Anticipation and frame:IsElementEnabled("Anticipation") then
-			frame:DisableElement("Anticipation")
+		if frame.SpecPower and frame:IsElementEnabled("SpecPower") then
+			frame:DisableElement("SpecPower")
 		end
 		if frame.Runes and frame:IsElementEnabled("Runes") then
 			frame:DisableElement("Runes")
@@ -413,9 +407,9 @@ function UF:UpdateClassBar(current, maxBars, hasMaxChanged)
 end
 
 -------------------------------------------------------------
--- MAGE
+-- MAGE, ROGUE
 -------------------------------------------------------------
-function UF:Construct_MageResourceBar(frame)
+function UF:Construct_SpecPower(frame)
 	local bars = CreateFrame("Frame", nil, frame)
 	bars:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
@@ -434,7 +428,7 @@ function UF:Construct_MageResourceBar(frame)
 		bars[i].bg:SetParent(bars[i].backdrop)
 	end
 
-	bars.PostUpdate = UF.UpdateArcaneCharges
+	bars.PostUpdate = UF.UpdateSpecPower
 
 	bars:SetScript("OnShow", ToggleResourceBar)
 	bars:SetScript("OnHide", ToggleResourceBar)
@@ -442,77 +436,12 @@ function UF:Construct_MageResourceBar(frame)
 	return bars
 end
 
-function UF:UpdateArcaneCharges(event, arcaneCharges, maxCharges)
+function UF:UpdateSpecPower(_, charges, maxCharges)
 	local frame = self.origParent or self:GetParent()
 	local db = frame.db
 	if not db then return end
 
-	if E.myspec == 1 and arcaneCharges == 0 then
-		if db.classbar.autoHide then
-			self:Hide()
-		else
-			for i = 1, maxCharges do
-				self[i]:SetValue(0)
-				self[i]:SetScript("OnUpdate", nil)
-			end
-
-			self:Show()
-		end
-	end
-
-	local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
-	for i = 1, #self do
-		if custom_backdrop then
-			self[i].bg:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)
-		else
-			local r, g, b = self[i]:GetStatusBarColor()
-			self[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
-		end
-
-		if maxCharges and (i <= maxCharges) then
-			self[i].bg:Show()
-		else
-			self[i].bg:Hide()
-		end
-	end
-end
-
--------------------------------------------------------------
--- ROGUE
--------------------------------------------------------------
-function UF:Construct_RogueResourceBar(frame)
-	local bars = CreateFrame("Frame", nil, frame)
-	bars:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
-
-	for i = 1, UF.classMaxResourceBar[E.myclass] do
-		bars[i] = CreateFrame("StatusBar", frame:GetName().."ClassBarButton"..i, bars)
-		bars[i]:SetStatusBarTexture(E.media.blankTex)
-		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		UF.statusbars[bars[i]] = true
-
-		bars[i]:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
-		bars[i].backdrop:SetParent(bars)
-
-		bars[i].bg = bars:CreateTexture(nil, "BORDER")
-		bars[i].bg:SetAllPoints(bars[i])
-		bars[i].bg:SetTexture(E.media.blankTex)
-		bars[i].bg:SetParent(bars[i].backdrop)
-	end
-
-	bars.PostUpdate = UF.UpdateAnticipation
-
-	bars:SetScript("OnShow", ToggleResourceBar)
-	bars:SetScript("OnHide", ToggleResourceBar)
-
-	return bars
-end
-
-function UF:UpdateAnticipation(_, charges, maxCharges)
-	local frame = self.origParent or self:GetParent()
-	local db = frame.db
-	if not db then return end
-
-	if IsSpellKnown(114015) and charges == 0 then
+	if charges == 0 and (IsSpellKnown(114664) or IsSpellKnown(114015)) then
 		if db.classbar.autoHide then
 			self:Hide()
 		else
