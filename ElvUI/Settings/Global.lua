@@ -12,7 +12,7 @@ G.general = {
 	mapAlphaWhenMoving = 0.35,
 	AceGUI = {
 		width = 1000,
-		height = 720
+		height = 730
 	},
 	WorldMapCoordinates = {
 		enable = true,
