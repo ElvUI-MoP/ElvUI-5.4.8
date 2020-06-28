@@ -94,6 +94,7 @@ L["Auto Add New Spells"] = "Ajouter automatiquement les nouveaux sorts"
 L["Auto Greed/DE"] = "Dez / Cupidité Auto"
 L["Auto Hide"] = "Masquer Automatiquement"
 L["Auto Repair"] = "Réparation automatique"
+L["Auto Track Reputation"] = true
 L["Auto Vendor Junk"] = "Vente automatique d'objet "
 L["Auto-Close Pet Battle Log"] = "Fermeture automatique du journal de combat des mascottes"
 L["Automatic"] = "Automatique"

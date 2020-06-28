@@ -94,6 +94,7 @@ L["Auto Add New Spells"] = true
 L["Auto Greed/DE"] = "Escolher Ganância/Desencantar automaticamente"
 L["Auto Hide"] = "Auto-Esconder"
 L["Auto Repair"] = "Reparar automaticamente"
+L["Auto Track Reputation"] = true
 L["Auto Vendor Junk"] = true
 L["Auto-Close Pet Battle Log"] = true
 L["Automatic"] = true

@@ -94,6 +94,7 @@ L["Auto Add New Spells"] = "自动添加新技能"
 L["Auto Greed/DE"] = "自动贪婪/分解"
 L["Auto Hide"] = "自动隐藏"
 L["Auto Repair"] = "自动修理"
+L["Auto Track Reputation"] = true
 L["Auto Vendor Junk"] = "自动出售灰色物品"
 L["Auto-Close Pet Battle Log"] = "自动关闭宠物对战日志"
 L["Automatic"] = "自动"

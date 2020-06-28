@@ -883,7 +883,7 @@ E.Options.args.general = {
 			set = function(info, value) E.db.general[info[#info]] = value end,
 			args = {
 				interruptAnnounce = {
-					order = 2,
+					order = 1,
 					type = "select",
 					name = L["Announce Interrupts"],
 					desc = L["Announce when you interrupt a spell to the specified chat channel."],
@@ -905,7 +905,7 @@ E.Options.args.general = {
 					end
 				},
 				autoRepair = {
-					order = 3,
+					order = 2,
 					type = "select",
 					name = L["Auto Repair"],
 					desc = L["Automatically repair using the following method when visiting a merchant."],
@@ -914,6 +914,11 @@ E.Options.args.general = {
 						["GUILD"] = L["GUILD"],
 						["PLAYER"] = L["PLAYER"]
 					}
+				},
+				autoTrackReputation = {
+					order = 3,
+					type = "toggle",
+					name = L["Auto Track Reputation"]
 				},
 				autoAcceptInvite = {
 					order = 4,

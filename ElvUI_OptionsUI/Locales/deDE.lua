@@ -94,6 +94,7 @@ L["Auto Add New Spells"] = "Automatisches hinzufügen von neuen Zaubern"
 L["Auto Greed/DE"] = "Auto-Gier/DE"
 L["Auto Hide"] = "Auto Verstecken"
 L["Auto Repair"] = "Auto-Reparatur"
+L["Auto Track Reputation"] = true
 L["Auto Vendor Junk"] = "Junk automatisch verkaufen"
 L["Auto-Close Pet Battle Log"] = "Kampfhaustier Kampflog automatisch schließen"
 L["Automatic"] = "Automatisch"

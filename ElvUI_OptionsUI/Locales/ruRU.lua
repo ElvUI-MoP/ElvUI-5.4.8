@@ -94,6 +94,7 @@ L["Auto Add New Spells"] = "Автоматически добавлять нов
 L["Auto Greed/DE"] = "Авто. не откажусь/распылить"
 L["Auto Hide"] = "Автоскрытие"
 L["Auto Repair"] = "Автоматический ремонт"
+L["Auto Track Reputation"] = true
 L["Auto Vendor Junk"] = "Авто продажа"
 L["Auto-Close Pet Battle Log"] = "Автоматически закрывать журнал битв питомцев"
 L["Automatic"] = "Автоматически"

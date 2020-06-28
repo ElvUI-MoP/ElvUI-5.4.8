@@ -94,6 +94,7 @@ L["Auto Add New Spells"] = "새로운 주문 자동 추가"
 L["Auto Greed/DE"] = "자동 차비/추출 선택"
 L["Auto Hide"] = "자동으로 숨기기"
 L["Auto Repair"] = "자동 수리"
+L["Auto Track Reputation"] = true
 L["Auto Vendor Junk"] = "잡동사니 자동 판매"
 L["Auto-Close Pet Battle Log"] = "애완동물 대전 기록 자동닫기"
 L["Automatic"] = "자동"

@@ -84,6 +84,23 @@ function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, _, _, _, dest
 	end
 end
 
+function M:COMBAT_TEXT_UPDATE(event, ...)
+	if not E.db.general.autoTrackReputation then return end
+
+	local messagetype, faction = ...
+	if (messagetype == "FACTION") then
+		if faction ~= "Guild" and faction ~= GetWatchedFactionInfo() then
+			ExpandAllFactionHeaders()
+			for i = 1, GetNumFactions() do
+				if faction == GetFactionInfo(i) then
+					SetWatchedFactionIndex(i)
+					break
+				end
+			end
+		end
+	end
+end
+
 do -- Auto Repair Functions
 	local STATUS, TYPE, COST, POSS
 	function M:AttemptAutoRepair(playerOverride)
@@ -252,6 +269,7 @@ function M:Initialize()
 	self:RegisterEvent("PARTY_INVITE_REQUEST", "AutoInvite")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "AutoInvite")
 	self:RegisterEvent("CVAR_UPDATE", "ForceCVars")
+	self:RegisterEvent("COMBAT_TEXT_UPDATE")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ForceCVars")
 
 	if IsAddOnLoaded("Blizzard_InspectUI") then
