@@ -93,8 +93,6 @@ local throttle = {}
 
 local PLAYER_REALM = E:ShortenRealm(E.myrealm)
 local PLAYER_NAME = format("%s-%s", E.myname, PLAYER_REALM)
-local PLAYER_REALM_CUSTOM = "evermoon"
-local PLAYER_NAME_CUSTOM = format("%s-%s", E.myname, PLAYER_REALM_CUSTOM)
 
 local DEFAULT_STRINGS = {
 	GUILD = L["G"],
@@ -1336,8 +1334,18 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 
 			local channels = strfind(chatType, "WHISPER") and "WHISPER" or strfind(chatType, "INSTANCE_CHAT") and "INSTANCE_CHAT" or strfind(chatType, "PARTY") and "PARTY" or strfind(chatType, "RAID") and "RAID" or chatType
 			local alertType = CH.db.channelAlerts[channels]
-			local notMyName = not (arg2 == E.myname or arg2 == PLAYER_NAME or arg2 == PLAYER_NAME_CUSTOM)
-			if notChatHistory and not CH.SoundTimer and notMyName and alertType and alertType ~= "None" and (not CH.db.noAlertInCombat or not InCombatLockdown()) then
+
+			local notMyName = not (arg2 == E.myname or arg2 == PLAYER_NAME)
+			-- Support private servers with custom realm name at character's 'name-realm'
+			local myCustomName = false
+			for _, customRealm in pairs(E.privateServerRealms) do
+				local customRealmName = format("%s-%s", E.myname, customRealm)
+				if arg2 == customRealmName then
+					myCustomName = true
+				end
+			end
+
+			if notChatHistory and not CH.SoundTimer and notMyName and not myCustomName and alertType and alertType ~= "None" and (not CH.db.noAlertInCombat or not InCombatLockdown()) then
 				CH.SoundTimer = E:Delay(5, CH.ThrottleSound)
 				PlaySoundFile(LSM:Fetch("sound", alertType), "Master")
 			end
@@ -1466,8 +1474,17 @@ function CH:ChatThrottleHandler(arg1, arg2, when)
 end
 
 function CH:ChatThrottleBlockFlag(author, message, when)
-	local notMyName = not (author == E.myname or author == PLAYER_NAME or author == PLAYER_NAME_CUSTOM)
-	local msg = notMyName and (CH.db.throttleInterval ~= 0) and PrepareMessage(author, message)
+	local notMyName = not (author == E.myname or author == PLAYER_NAME)
+	-- Support private servers with custom realm name at character's 'name-realm'
+	local myCustomName = false
+	for _, customRealm in pairs(E.privateServerRealms) do
+		local customRealmName = format("%s-%s", E.myname, customRealm)
+		if author == customRealmName then
+			myCustomName = true
+		end
+	end
+
+	local msg = notMyName and not myCustomName and (CH.db.throttleInterval ~= 0) and PrepareMessage(author, message)
 	local object = msg and throttle[msg]
 
 	return object and object.time and object.count and object.count > 1 and (difftime(when, object.time) <= CH.db.throttleInterval), object
@@ -1503,8 +1520,17 @@ end
 local protectLinks = {}
 function CH:CheckKeyword(message, author)
 	local letInCombat = not CH.db.noAlertInCombat or not InCombatLockdown()
-	local notMyName = not (author == E.myname or author == PLAYER_NAME or author == PLAYER_NAME_CUSTOM)
-	local letSound = not CH.SoundTimer and (CH.db.keywordSound ~= "None" and notMyName) and letInCombat
+	local notMyName = not (author == E.myname or author == PLAYER_NAME)
+	-- Support private servers with custom realm name at character's 'name-realm'
+	local myCustomName = false
+	for _, customRealm in pairs(E.privateServerRealms) do
+		local customRealmName = format("%s-%s", E.myname, customRealm)
+		if author == customRealmName then
+			myCustomName = true
+		end
+	end
+
+	local letSound = not CH.SoundTimer and notMyName and not myCustomName and CH.db.keywordSound ~= "None" and letInCombat
 
 	for hyperLink in gmatch(message, "|%x+|H.-|h.-|h|r") do
 		protectLinks[hyperLink] = gsub(hyperLink,"%s","|s")
@@ -1761,8 +1787,14 @@ function CH:CheckLFGRoles()
 
 	local role = UnitGroupRolesAssigned("player")
 	if role then
-		for _, myName in pairs({E.myname, PLAYER_NAME, PLAYER_NAME_CUSTOM}) do
+		for _, myName in pairs({E.myname, PLAYER_NAME}) do
 			lfgRoles[myName] = rolePaths[role]
+		end
+
+		-- Support private servers with custom realm names in character 'name-realm'
+		for _, customRealm in pairs(E.privateServerRealms) do
+			local myCustomNameRealm = format("%s-%s", E.myname, customRealm)
+			lfgRoles[myCustomNameRealm] = rolePaths[role]
 		end
 	end
 
@@ -1773,11 +1805,16 @@ function CH:CheckLFGRoles()
 
 			if role and name then
 				local name1 = name.."-"..PLAYER_REALM
-				local name2 = name.."-"..PLAYER_REALM_CUSTOM
-				local name3 = (realm and realm ~= "" and name.."-"..realm)
+				local name2 = (realm and realm ~= "" and name.."-"..realm)
 
-				for _, otherName in pairs({name, name1, name2, name3}) do
+				for _, otherName in pairs({name, name1, name2}) do
 					lfgRoles[otherName] = rolePaths[role]
+				end
+
+				-- Support private servers with custom realm names in character 'name-realm'
+				for _, customRealm in pairs(E.privateServerRealms) do
+					local customNameRealm = format("%s-%s", name, customRealm)
+					lfgRoles[customNameRealm] = rolePaths[role]
 				end
 			end
 		end

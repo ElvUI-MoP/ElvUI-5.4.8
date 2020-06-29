@@ -86,6 +86,14 @@ E.VehicleLocks = {}
 E.CreditsList = {}
 E.UserList = {}
 
+E.privateServerRealms = {
+	-- Tauri realms
+	"evermoon",
+	"tauri",
+	"wod",
+	"ptr"
+}
+
 E.InversePoints = {
 	TOP = "BOTTOM",
 	BOTTOM = "TOP",
@@ -754,13 +762,19 @@ do
 	local PLAYER_NAME = format("%s-%s", E.myname, E:ShortenRealm(E.myrealm))
 	local function SendRecieve(_, event, prefix, message, _, sender)
 		if event == "CHAT_MSG_ADDON" then
-			if sender == PLAYER_NAME then return end
+			if sender == E.myname or sender == PLAYER_NAME then return end
+
+			-- Support private servers with custom realm names in character 'name-realm'
+			for _, customRealm in pairs(E.privateServerRealms) do
+				local customRealmName = format("%s-%s", E.myname, customRealm)
+				if sender == customRealmName then return end
+			end
 
 			if prefix == "ELVUI_VERSIONCHK" then
 				local msg, ver = tonumber(message), E.version
 				local inCombat = InCombatLockdown()
 
-				E.UserList[E:StripMyRealm(sender)] = msg
+				E.UserList[sender] = msg
 
 				if ver ~= G.general.version then
 					if not E.shownUpdatedWhileRunningPopup and not inCombat then

@@ -270,6 +270,17 @@ function TT:SetUnitText(tt, unit)
 
 				GameTooltip:AddDoubleLine(E.title, format("%s%s", "v", addonUser), r, g, b, v and 0 or 1, v and 1 or 0, 0)
 			end
+
+			-- Support private servers with custom realm name at character's 'name-realm'
+			for _, customRealm in pairs(E.privateServerRealms) do
+				local customRealmName = format("%s-%s", name, customRealm)
+				local customAddonUser = E.UserList[customRealmName]
+				if customAddonUser then
+					local v, r, g, b = customAddonUser == E.version, unpack(E.media.rgbvaluecolor)
+
+					GameTooltip:AddDoubleLine(E.title, format("%s%s", "v", customAddonUser), r, g, b, v and 0 or 1, v and 1 or 0, 0)
+				end
+			end
 		end
 
 		return nameColor
