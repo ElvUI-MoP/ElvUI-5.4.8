@@ -644,7 +644,9 @@ function E:Config_SetButtonColor(btn, disabled)
 	if disabled then
 		btn:Disable()
 		btn:SetBackdropBorderColor(1, 0.82, 0)
-		btn.backdropTexture:SetVertexColor(1, 0.82, 0, 0.4)
+		if btn.backdropTexture then
+			btn.backdropTexture:SetVertexColor(1, 0.82, 0, 0.4)
+		end
 		btn:GetFontString():SetTextColor(1, 1, 1)
 		E:Config_SetButtonText(btn, true)
 	else
@@ -652,7 +654,9 @@ function E:Config_SetButtonColor(btn, disabled)
 		local r, g, b = unpack(E.media.bordercolor)
 		btn:SetBackdropBorderColor(r, g, b)
 		r, g, b = unpack(E.media.backdropcolor)
-		btn.backdropTexture:SetVertexColor(r, g, b, 1)
+		if btn.backdropTexture then
+			btn.backdropTexture:SetVertexColor(r, g, b, 1)
+		end
 		btn:GetFontString():SetTextColor(1, 0.82, 0)
 		E:Config_SetButtonText(btn)
 	end
@@ -1085,7 +1089,7 @@ function E:ToggleOptionsUI(msg)
 			bottom:Height(37)
 			frame.bottomHolder = bottom
 
-			local unskinned = false -- suppress lint error
+			local unskinned = not E.private.skins.ace3.enable
 
 			local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 			close:SetScript("OnClick", E.Config_CloseClicked)

@@ -244,11 +244,7 @@ function A:UpdateAura(button, index)
 			button.count:SetText("")
 		end
 
-		if A.db.showDuration then
-			button.text:Show()
-		else
-			button.text:Hide()
-		end
+		button.text:SetShown(A.db.showDuration)
 
 		if (A.db.barShow and duration > 0) or (A.db.barShow and A.db.barNoDuration and duration == 0) then
 			button.statusBar:Show()
@@ -300,6 +296,8 @@ function A:UpdateTempEnchant(button, index)
 	else
 		A:ClearAuraTime(button)
 	end
+
+	button.text:SetShown(A.db.showDuration)
 
 	if (A.db.barShow and remaining > 0) or (A.db.barShow and A.db.barNoDuration and not expiration) then
 		button.statusBar:Show()
