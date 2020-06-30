@@ -114,6 +114,6 @@ function E:UpdateBlizzardFonts()
 		SetFont(GameFont_Gigantic,					NORMAL, 32, nil, SHADOWCOLOR, BIGOFFSET)
 		SetFont(SystemFont_Shadow_Med2,				NORMAL, self.db.general.fontSize * 1.1)
 		SetFont(CoreAbilityFont,					NORMAL, 26)
-		SetFont(GameFontNormalHuge,					NORMAL, 24)
+		--SetFont(GameFontNormalHuge,					NORMAL, 24)
 	end
 end
