@@ -6,6 +6,8 @@ local pairs, unpack = pairs, unpack
 local find = string.find
 
 local function LoadSkin()
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.pvp then return end
+
 	PVPUIFrame:StripTextures()
 	PVPUIFrame:SetTemplate("Transparent")
 	PVPUIFrame.LeftInset:StripTextures()
