@@ -187,6 +187,7 @@ L["Casting"] = "Incantation"
 L["Center"] = "Centrer"
 L["Change settings for the display of the location text that is on the minimap."] = "Modifier les paramètres pour l'affichage du texte d'emplacement sur la minicarte."
 L["Change the alpha level of the frame."] = "Changer le niveau alpha de la fenêtre."
+L["Channel Alerts"] = true
 L["Channel Time Format"] = true
 L["Character Frame"] = "Fenêtre du Personnage"
 L["Chat Bubble Names"] = true

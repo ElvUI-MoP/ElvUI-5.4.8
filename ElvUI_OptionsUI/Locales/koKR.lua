@@ -187,6 +187,7 @@ L["Casting"] = "시전중"
 L["Center"] = "정 중앙"
 L["Change settings for the display of the location text that is on the minimap."] = "미니맵 상단에 있는 지역이름의 표시방법을 결정합니다."
 L["Change the alpha level of the frame."] = "해당 프레임의 투명한 수준을 결정합니다."
+L["Channel Alerts"] = true
 L["Channel Time Format"] = "채널링 시간 형식"
 L["Character Frame"] = "캐릭터 창"
 L["Chat Bubble Names"] = "말풍선에 이름 표시"

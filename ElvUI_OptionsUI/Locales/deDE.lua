@@ -187,6 +187,7 @@ L["Casting"] = "Zaubernd"
 L["Center"] = "Zentrum"
 L["Change settings for the display of the location text that is on the minimap."] = "Ändere die Einstellungen für die Anzeige des Umgebungstextes an der Minimap."
 L["Change the alpha level of the frame."] = "Ändere den Alphakanal des Fensters."
+L["Channel Alerts"] = true
 L["Channel Time Format"] = "Kanalisierung Zeitformat"
 L["Character Frame"] = "Charakterfenster"
 L["Chat Bubble Names"] = "Sprechblasen Name"

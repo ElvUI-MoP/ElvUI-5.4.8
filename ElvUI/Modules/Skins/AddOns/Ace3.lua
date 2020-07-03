@@ -23,7 +23,6 @@ function S:Ace3_SkinDropdown()
 		local dropdown = self.obj.dropdown
 
 		if pullout and pullout.frame then
-
 			if not pullout.frame.template then
 				pullout.frame:SetTemplate(nil, true)
 			end

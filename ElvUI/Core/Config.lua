@@ -893,8 +893,8 @@ function E:Config_WindowOpened(frame)
 		local titlebg = frame.obj.titlebg
 		E:Config_SaveOldPosition(titlebg)
 		titlebg:ClearAllPoints()
-		titlebg:SetPoint("TOPLEFT", frame)
-		titlebg:SetPoint("TOPRIGHT", frame)
+		titlebg:SetPoint("TOPLEFT", frame, unskinned and 22 or 0, 0)
+		titlebg:SetPoint("TOPRIGHT", frame, unskinned and -26 or 0, 0)
 	end
 end
 
@@ -1094,7 +1094,7 @@ function E:ToggleOptionsUI(msg)
 			local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 			close:SetScript("OnClick", E.Config_CloseClicked)
 			close:SetFrameLevel(1000)
-			close:Point("TOPRIGHT", unskinned and -8 or 1, unskinned and -8 or 2)
+			close:Point("TOPRIGHT", unskinned and -8 or 1, unskinned and -4 or 2)
 			close:Size(32)
 			close.originalClose = frame.originalClose
 			frame.closeButton = close

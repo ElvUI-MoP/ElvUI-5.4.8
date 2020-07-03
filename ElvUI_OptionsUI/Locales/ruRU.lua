@@ -187,6 +187,7 @@ L["Casting"] = "Заклинания"
 L["Center"] = "Центр"
 L["Change settings for the display of the location text that is on the minimap."] = "Изменяет опции отображения названия локации на миникарте"
 L["Change the alpha level of the frame."] = "Изменяет прозрачность этого элемента"
+L["Channel Alerts"] = true
 L["Channel Time Format"] = "Формат времени поддерживаемого"
 L["Character Frame"] = "Окно персонажа"
 L["Chat Bubble Names"] = "Имена на облачках сообщений"

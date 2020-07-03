@@ -187,6 +187,7 @@ L["Casting"] = true
 L["Center"] = "Centro"
 L["Change settings for the display of the location text that is on the minimap."] = "Alterar as configurações de exibição do texto de localização que está no minimapa."
 L["Change the alpha level of the frame."] = "Mudar o nível de transparência do quadro."
+L["Channel Alerts"] = true
 L["Channel Time Format"] = true
 L["Character Frame"] = "Personagem"
 L["Chat Bubble Names"] = true

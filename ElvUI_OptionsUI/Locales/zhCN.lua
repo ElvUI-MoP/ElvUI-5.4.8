@@ -187,6 +187,7 @@ L["Casting"] = "施法"
 L["Center"] = "居中"
 L["Change settings for the display of the location text that is on the minimap."] = "改变小地图所在位置文字的显示设置"
 L["Change the alpha level of the frame."] = "改变框架透明度"
+L["Channel Alerts"] = true
 L["Channel Time Format"] = "引导法术时间格式"
 L["Character Frame"] = "角色"
 L["Chat Bubble Names"] = "聊天气泡名字"
