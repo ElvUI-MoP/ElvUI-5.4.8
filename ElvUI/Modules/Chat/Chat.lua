@@ -386,10 +386,14 @@ function CH:StyleChat(frame)
 		editBox:SetText(strtrim(editBox.historyLines[#editBox.historyLines - (editBox.historyIndex - 1)]))
 	end
 
-	local a, b, c = select(6, editbox:GetRegions()) a:Kill() b:Kill() c:Kill()
+	local a, b, c = select(6, editbox:GetRegions())
+	a:Kill()
+	b:Kill()
+	c:Kill()
 	_G[format(editbox:GetName().."FocusLeft", id)]:Kill()
 	_G[format(editbox:GetName().."FocusMid", id)]:Kill()
 	_G[format(editbox:GetName().."FocusRight", id)]:Kill()
+
 	editbox:SetTemplate("Default", true)
 	editbox:SetAltArrowKeyMode(CH.db.useAltKey)
 	editbox:SetAllPoints(LeftChatDataPanel)
@@ -400,6 +404,7 @@ function CH:StyleChat(frame)
 	editbox.historyLines = ElvCharacterDB.ChatEditHistory
 	editbox.historyIndex = 0
 	editbox:HookScript("OnArrowPressed", OnArrowPressed)
+
 	editbox:Hide()
 
 	editbox:HookScript("OnEditFocusGained", function(editBox)
@@ -409,6 +414,7 @@ function CH:StyleChat(frame)
 			LeftChatToggleButton:GetScript("OnEnter")(LeftChatToggleButton)
 		end
 	end)
+
 	editbox:HookScript("OnEditFocusLost", function(editBox)
 		if LeftChatPanel.editboxforced then
 			LeftChatPanel.editboxforced = nil
@@ -426,18 +432,20 @@ function CH:StyleChat(frame)
 	end
 
 	--copy chat button
-	frame.button = CreateFrame("Button", format("CopyChatButton%d", id), frame)
-	frame.button:EnableMouse(true)
-	frame.button:SetAlpha(0.35)
-	frame.button:Size(20, 22)
-	frame.button:Point("TOPRIGHT")
-	frame.button:SetFrameLevel(frame:GetFrameLevel() + 5)
+	local copyButton = CreateFrame("Frame", format("CopyChatButton%d", id), frame)
+	copyButton:EnableMouse(true)
+	copyButton:SetAlpha(0.35)
+	copyButton:Size(20, 22)
+	copyButton:Point("TOPRIGHT", 0, -4)
+	copyButton:SetFrameLevel(frame:GetFrameLevel() + 5)
+	frame.copyButton = copyButton
 
-	frame.button.tex = frame.button:CreateTexture(nil, "OVERLAY")
-	frame.button.tex:SetInside()
-	frame.button.tex:SetTexture(E.Media.Textures.Copy)
+	local copyTexture = frame.copyButton:CreateTexture(nil, "OVERLAY")
+	copyTexture:SetInside()
+	copyTexture:SetTexture(E.Media.Textures.Copy)
+	copyButton.texture = copyTexture
 
-	frame.button:SetScript("OnMouseUp", function(_, btn)
+	copyButton:SetScript("OnMouseUp", function(_, btn)
 		if btn == "RightButton" and id == 1 then
 			ToggleFrame(ChatMenu)
 		else
@@ -445,8 +453,8 @@ function CH:StyleChat(frame)
 		end
 	end)
 
-	frame.button:SetScript("OnEnter", function(button) button:SetAlpha(1) end)
-	frame.button:SetScript("OnLeave", function(button)
+	copyButton:SetScript("OnEnter", function(button) button:SetAlpha(1) end)
+	copyButton:SetScript("OnLeave", function(button)
 		if _G[button:GetParent():GetName().."TabText"]:IsShown() then
 			button:SetAlpha(0.35)
 		else
@@ -455,6 +463,7 @@ function CH:StyleChat(frame)
 	end)
 
 	CreatedFrames = id
+
 	frame.styled = true
 end
 
@@ -480,11 +489,8 @@ function CH:AddMessage(msg, infoR, infoG, infoB, infoID, accessID, typeID, isHis
 end
 
 function CH:UpdateSettings()
-	for i = 1, CreatedFrames do
-		local chat = _G[format("ChatFrame%d", i)]
-		local name = chat:GetName()
-		local editbox = _G[name.."EditBox"]
-		editbox:SetAltArrowKeyMode(CH.db.useAltKey)
+	for _, name in ipairs(CHAT_FRAMES) do
+		_G[name.."EditBox"]:SetAltArrowKeyMode(CH.db.useAltKey)
 	end
 end
 
@@ -513,6 +519,7 @@ local function colorizeLine(text, r, g, b)
 
 	return text
 end
+
 local copyLines = {}
 function CH:GetLines(...)
 	local index = 1
@@ -1137,7 +1144,7 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 				frame:AddMessage(format(globalstring, arg8, arg4, arg2), info.r, info.g, info.b, info.id, nil, nil, isHistory, historyTime)
 			end
 			if arg1 == "INVITE" and GetCVarBool("blockChannelInvites") then
-				frame:AddMessage(CHAT_MSG_BLOCK_CHAT_CHANNEL_INVITE, info.r, info.g, info.b, info.id)
+				frame:AddMessage(CHAT_MSG_BLOCK_CHAT_CHANNEL_INVITE, info.r, info.g, info.b, info.id, nil, nil, isHistory, historyTime)
 			end
 		elseif chatType == "CHANNEL_NOTICE" then
 			if arg1 == "NOT_IN_LFG" then return end
@@ -1405,7 +1412,7 @@ end
 function CH:SetupChat()
 	if not E.private.chat.enable then return end
 
-	for _, frameName in pairs(CHAT_FRAMES) do
+	for _, frameName in ipairs(CHAT_FRAMES) do
 		local frame = _G[frameName]
 		local id = frame:GetID()
 		local _, fontSize = FCF_GetChatWindowInfo(id)
@@ -1444,7 +1451,7 @@ function CH:SetupChat()
 	GeneralDockManager:SetParent(LeftChatPanel)
 	CH:PositionChat(true)
 
-	if not self.HookSecured then
+	if not CH.HookSecured then
 		CH:SecureHook("FCF_OpenTemporaryWindow", "SetupChat")
 		CH.HookSecured = true
 	end
@@ -1578,7 +1585,9 @@ function CH:CheckKeyword(message, author)
 
 				if wordMatch and not E.global.chat.classColorMentionExcludedNames[wordMatch] then
 					local classColorTable = E:ClassColor(classMatch)
-					word = gsub(word, gsub(tempWord, "%-","%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
+					if classColorTable then
+						word = gsub(word, gsub(tempWord, "%-","%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
+					end
 				end
 			end
 		end
@@ -1609,8 +1618,6 @@ function CH:AddLines(lines, ...)
 end
 
 function CH:ChatEdit_OnEnterPressed(editBox)
-	editBox:ClearHistory() -- we will use our own editbox history so keeping them populated on blizzards end is pointless
-
 	local chatType = editBox:GetAttribute("chatType")
 	local chatFrame = chatType and editBox:GetParent()
 	if chatFrame and (not chatFrame.isTemporary) and (ChatTypeInfo[chatType].sticky == 1) then
@@ -1626,15 +1633,38 @@ function CH:SetChatFont(dropDown, chatFrame, fontSize)
 	chatFrame:FontTemplate(LSM:Fetch("font", CH.db.font), fontSize, CH.db.fontOutline)
 end
 
+CH.SecureSlashCMD = {
+	"^/assist",
+	"^/camp",
+	"^/cancelaura",
+	"^/cancelform",
+	"^/cast",
+	"^/castsequence",
+	"^/equip",
+	"^/exit",
+	"^/logout",
+	"^/reload",
+	"^/rl",
+	"^/startattack",
+	"^/stopattack",
+	"^/tar",
+	"^/target",
+	"^/use"
+}
+
 function CH:ChatEdit_AddHistory(_, line) -- editBox, line
 	line = line and strtrim(line)
 
 	if line and strlen(line) > 0 then
-		if strfind(line, "/rl") then return end
+		for _, command in next, CH.SecureSlashCMD do
+			if strmatch(line, command) then
+				return
+			end
+		end
 
-		for _, text in pairs(ElvCharacterDB.ChatEditHistory) do
+		for index, text in pairs(ElvCharacterDB.ChatEditHistory) do
 			if text == line then
-				tremove(ElvCharacterDB.ChatEditHistory)
+				tremove(ElvCharacterDB.ChatEditHistory, index)
 				break
 			end
 		end
@@ -1663,12 +1693,22 @@ end
 function CH:PET_BATTLE_CLOSE()
 	if not CH.db.autoClosePetBattleLog then return end
 
-	for _, frameName in pairs(CHAT_FRAMES) do
-		local frame = _G[frameName]
-		if frame then
+	-- closing a chat tab (or window) in combat = chat tab (or window) goofs..
+	-- might have something to do with HideUIPanel inside of FCF_Close
+	if InCombatLockdown() then
+		CH:RegisterEvent("PLAYER_REGEN_ENABLED", "PET_BATTLE_CLOSE")
+		return
+	else -- we can take this off once it goes through once
+		CH:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	end
+
+	for _, frameName in ipairs(CHAT_FRAMES) do
+		local chat = _G[frameName]
+		if chat then
 			local text = _G[frameName.."Tab"]:GetText()
-			if strmatch(text, PET_BATTLE_COMBAT_LOG) then
-				FCF_Close(frame)
+			if text and strmatch(text, PET_BATTLE_COMBAT_LOG) then
+				FCF_Close(chat)
+				break -- we found it, dont gotta keep lookin'
 			end
 		end
 	end
@@ -1690,7 +1730,7 @@ function CH:DisplayChatHistory()
 
 	CH.SoundTimer = true
 
-	for _, chat in pairs(CHAT_FRAMES) do
+	for _, chat in ipairs(CHAT_FRAMES) do
 		for _, d in ipairs(data) do
 			if type(d) == "table" then
 				for _, messageType in pairs(_G[chat].messageTypeList) do
@@ -1713,18 +1753,21 @@ tremove(ChatTypeGroup.GUILD, 2)
 function CH:DelayGuildMOTD()
 	local delay, checks, delayFrame, chat = 0, 0, CreateFrame("Frame")
 	tinsert(ChatTypeGroup.GUILD, 2, "GUILD_MOTD")
+
 	delayFrame:SetScript("OnUpdate", function(df, elapsed)
 		delay = delay + elapsed
 		if delay < 5 then return end
+
 		local msg = GetGuildRosterMOTD()
 		if msg and strlen(msg) > 0 then
-			for _, frame in pairs(CHAT_FRAMES) do
+			for _, frame in ipairs(CHAT_FRAMES) do
 				chat = _G[frame]
 				if chat and chat:IsEventRegistered("CHAT_MSG_GUILD") then
 					CH:ChatFrame_SystemEventHandler(chat, "GUILD_MOTD", msg)
 					chat:RegisterEvent("GUILD_MOTD")
 				end
 			end
+
 			df:SetScript("OnUpdate", nil)
 		else -- 5 seconds can be too fast for the API response. let's try once every 5 seconds (max 5 checks).
 			delay, checks = 0, checks + 1
