@@ -202,21 +202,11 @@ function LO:ToggleChatPanels()
 	local SPACING = E.Border*3 - E.Spacing
 	local SIDE_BUTTON_SPACING = (E.PixelMode and E.Border*4) or SPACING*2
 
-	if E.db.datatexts.leftChatPanel then
-		LeftChatDataPanel:Show()
-		LeftChatToggleButton:Show()
-	else
-		LeftChatDataPanel:Hide()
-		LeftChatToggleButton:Hide()
-	end
+	LeftChatDataPanel:SetShown(E.db.datatexts.leftChatPanel)
+	LeftChatToggleButton:SetShown(E.db.datatexts.leftChatPanel)
 
-	if E.db.datatexts.rightChatPanel then
-		RightChatDataPanel:Show()
-		RightChatToggleButton:Show()
-	else
-		RightChatDataPanel:Hide()
-		RightChatToggleButton:Hide()
-	end
+	RightChatDataPanel:SetShown(E.db.datatexts.rightChatPanel)
+	RightChatToggleButton:SetShown(E.db.datatexts.rightChatPanel)
 
 	local panelBackdrop = E.db.chat.panelBackdrop
 	if panelBackdrop == "SHOWBOTH" then
@@ -268,7 +258,6 @@ function LO:CreateChatPanels()
 
 	--Left Chat
 	local lchat = CreateFrame("Frame", "LeftChatPanel", E.UIParent)
-	--lchat:SetFrameStrata("BACKGROUND")
 	lchat:SetFrameStrata("LOW")
 	lchat:Size(E.db.chat.panelWidth, E.db.chat.panelHeight)
 	lchat:Point("BOTTOMLEFT", E.UIParent, 4, 4)
@@ -323,7 +312,6 @@ function LO:CreateChatPanels()
 
 	--Right Chat
 	local rchat = CreateFrame("Frame", "RightChatPanel", E.UIParent)
-	--rchat:SetFrameStrata("BACKGROUND")
 	rchat:SetFrameStrata("LOW")
 	rchat:Size(E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth, E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
 	rchat:Point("BOTTOMRIGHT", E.UIParent, -4, 4)
@@ -401,13 +389,8 @@ function LO:CreateMinimapPanels()
 	rminipanel:SetTemplate(E.db.datatexts.panelTransparency and "Transparent" or "Default", true)
 	DT:RegisterPanel(rminipanel, 1, "ANCHOR_BOTTOM", 0, -4)
 
-	if E.db.datatexts.minimapPanels then
-		LeftMiniPanel:Show()
-		RightMiniPanel:Show()
-	else
-		LeftMiniPanel:Hide()
-		RightMiniPanel:Hide()
-	end
+	LeftMiniPanel:SetShown(E.db.datatexts.minimapPanels)
+	RightMiniPanel:SetShown(E.db.datatexts.minimapPanels)
 
 	local configtoggle = CreateFrame("Button", "ElvConfigToggle", Minimap)
 	if E.db.auras.consolidatedBuffs.position == "LEFT" then

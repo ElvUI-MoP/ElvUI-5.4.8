@@ -1,5 +1,6 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
 local CH = E:GetModule("Chat")
+local LO = E:GetModule("Layout")
 local Skins = E:GetModule("Skins")
 local LibBase64 = E.Libs.Base64
 local LSM = E.Libs.LSM
@@ -60,7 +61,6 @@ local UnitExists, UnitIsUnit = UnitExists, UnitIsUnit
 local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local UnitName = UnitName
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
---local LE_REALM_RELATION_SAME = LE_REALM_RELATION_SAME
 local AFK = AFK
 local BN_INLINE_TOAST_BROADCAST = BN_INLINE_TOAST_BROADCAST
 local BN_INLINE_TOAST_BROADCAST_INFORM = BN_INLINE_TOAST_BROADCAST_INFORM
@@ -269,25 +269,31 @@ end
 
 function CH:StyleChat(frame)
 	local name = frame:GetName()
+
 	_G[name.."TabText"]:FontTemplate(LSM:Fetch("font", CH.db.tabFont), CH.db.tabFontSize, CH.db.tabFontOutline)
 
 	if frame.styled then return end
 
 	frame:SetFrameLevel(4)
+	frame:SetClampRectInsets(0, 0, 0, 0)
+	frame:SetClampedToScreen(false)
+	frame:StripTextures(true)
+
+	_G[name.."ButtonFrame"]:Kill()
 
 	local id = frame:GetID()
-
 	local tab = _G[name.."Tab"]
 	local editbox = _G[name.."EditBox"]
 
 	--Character count
-	editbox.characterCount = editbox:CreateFontString()
-	editbox.characterCount:FontTemplate()
-	editbox.characterCount:SetTextColor(190, 190, 190, 0.4)
-	editbox.characterCount:Point("TOPRIGHT", editbox, "TOPRIGHT", -5, 0)
-	editbox.characterCount:Point("BOTTOMRIGHT", editbox, "BOTTOMRIGHT", -5, 0)
-	editbox.characterCount:SetJustifyH("CENTER")
-	editbox.characterCount:Width(40)
+	local charCount = editbox:CreateFontString()
+	charCount:FontTemplate()
+	charCount:SetTextColor(190, 190, 190, 0.4)
+	charCount:Point("TOPRIGHT", editbox, "TOPRIGHT", -5, 0)
+	charCount:Point("BOTTOMRIGHT", editbox, "BOTTOMRIGHT", -5, 0)
+	charCount:SetJustifyH("CENTER")
+	charCount:Width(40)
+	editbox.characterCount = charCount
 
 	for _, texName in pairs(tabTexs) do
 		_G[tab:GetName()..texName.."Left"]:SetTexture(nil)
@@ -317,48 +323,57 @@ function CH:StyleChat(frame)
 		tab.conversationIcon:Point("RIGHT", tab.text, "LEFT", -1, 0)
 	end
 
-	frame:SetClampRectInsets(0, 0, 0, 0)
-	frame:SetClampedToScreen(false)
-	frame:StripTextures(true)
-	_G[name.."ButtonFrame"]:Kill()
-
+	local repeatedText
 	local function OnTextChanged(editBox)
 		local text = editBox:GetText()
+		local len = strlen(text)
 
-		if InCombatLockdown() then
+		if (not repeatedText or not strfind(text, repeatedText, 1, true)) and InCombatLockdown() then
 			local MIN_REPEAT_CHARACTERS = CH.db.numAllowedCombatRepeat
-			if strlen(text) > MIN_REPEAT_CHARACTERS then
+			if len > MIN_REPEAT_CHARACTERS then
 				local repeatChar = true
 				for i = 1, MIN_REPEAT_CHARACTERS, 1 do
-					if strsub(text,(0 - i), (0 - i)) ~= strsub(text,(-1 - i),(-1 - i)) then
+					local first = -1 - i
+					if strsub(text, -i, -i) ~= strsub(text, first, first) then
 						repeatChar = false
 						break
 					end
 				end
 				if repeatChar then
+					repeatedText = text
 					editBox:Hide()
 					return
 				end
 			end
 		end
 
-		if strlen(text) < 5 then
-			if strsub(text, 1, 4) == "/tt " then
-				local unitname, realm = UnitName("target")
-				if unitname then unitname = gsub(unitname, " ", "") end
-				--if unitname and UnitRealmRelationship("target") ~= LE_REALM_RELATION_SAME then
-				if unitname and not UnitIsSameServer("player", "target") then
-					unitname = format("%s-%s", unitname, gsub(realm, " ", ""))
-				end
-				ChatFrame_SendTell((unitname or L["Invalid Target"]), ChatFrame1)
-			end
+		if len == 4 then
+			if text == "/tt " then
+				local Name, Realm = UnitName("target")
+				if Name then
+					Name = gsub(Name, "%s", "")
 
-			if strsub(text, 1, 4) == "/gr " then
+					if Realm and Realm ~= "" then
+						Name = format("%s-%s", Name, E:ShortenRealm(Realm))
+					end
+				end
+
+				if Name then
+					ChatFrame_SendTell(Name, editBox.chatFrame)
+				else
+					UIErrorsFrame:AddMessage(E.InfoColor..L["Invalid Target"])
+				end
+			elseif text == "/gr " then
 				editBox:SetText(CH:GetGroupDistribution()..strsub(text, 5))
 				ChatEdit_ParseText(editBox, 0)
 			end
 		end
-		editbox.characterCount:SetText((255 - strlen(text)))
+
+		editbox.characterCount:SetText(len > 0 and (255 - len) or "")
+
+		if repeatedText then
+			repeatedText = nil
+		end
 	end
 
 	--Work around broken SetAltArrowKeyMode API. Code from Prat
@@ -390,9 +405,9 @@ function CH:StyleChat(frame)
 	a:Kill()
 	b:Kill()
 	c:Kill()
-	_G[format(editbox:GetName().."FocusLeft", id)]:Kill()
-	_G[format(editbox:GetName().."FocusMid", id)]:Kill()
-	_G[format(editbox:GetName().."FocusRight", id)]:Kill()
+	_G[name.."EditBoxFocusLeft"]:Kill()
+	_G[name.."EditBoxFocusMid"]:Kill()
+	_G[name.."EditBoxFocusRight"]:Kill()
 
 	editbox:SetTemplate("Default", true)
 	editbox:SetAltArrowKeyMode(CH.db.useAltKey)
@@ -404,7 +419,6 @@ function CH:StyleChat(frame)
 	editbox.historyLines = ElvCharacterDB.ChatEditHistory
 	editbox.historyIndex = 0
 	editbox:HookScript("OnArrowPressed", OnArrowPressed)
-
 	editbox:Hide()
 
 	editbox:HookScript("OnEditFocusGained", function(editBox)
@@ -576,12 +590,12 @@ function CH:OnLeave(frame)
 end
 
 function CH:SetupChatTabs(frame, hook)
-	if hook and (not self.hooks or not self.hooks[frame] or not self.hooks[frame].OnEnter) then
-		self:HookScript(frame, "OnEnter")
-		self:HookScript(frame, "OnLeave")
-	elseif not hook and self.hooks and self.hooks[frame] and self.hooks[frame].OnEnter then
-		self:Unhook(frame, "OnEnter")
-		self:Unhook(frame, "OnLeave")
+	if hook and (not CH.hooks or not CH.hooks[frame] or not CH.hooks[frame].OnEnter) then
+		CH:HookScript(frame, "OnEnter")
+		CH:HookScript(frame, "OnLeave")
+	elseif not hook and CH.hooks and CH.hooks[frame] and CH.hooks[frame].OnEnter then
+		CH:Unhook(frame, "OnEnter")
+		CH:Unhook(frame, "OnLeave")
 	end
 
 	if not hook then
@@ -648,10 +662,10 @@ function CH:UpdateChatTabs()
 
 	for i = 1, CreatedFrames do
 		local chat = _G[format("ChatFrame%d", i)]
-		local chatbg = format("ChatFrame%dBackground", i)
 		local tab = _G[format("ChatFrame%sTab", i)]
-		local isDocked = chat.isDocked
 		local id = chat:GetID()
+		local isDocked = chat.isDocked
+		local chatbg = format("ChatFrame%dBackground", i)
 
 		if id > NUM_CHAT_WINDOWS then
 			isDocked = select(2, tab:GetPoint()):GetName() ~= chatbg
@@ -694,20 +708,16 @@ function CH:PositionChat(override)
 		local BASE_OFFSET = 57 + E.Spacing*3
 
 		local chat = _G[format("ChatFrame%d", i)]
-		local chatbg = format("ChatFrame%dBackground", i)
-		local id = chat:GetID()
 		local tab = _G[format("ChatFrame%sTab", i)]
+		local id = chat:GetID()
 		local isDocked = chat.isDocked
+		local chatbg = format("ChatFrame%dBackground", i)
 
 		tab.isDocked = isDocked
 		tab.owner = chat
 
 		if id > NUM_CHAT_WINDOWS then
-			if select(2, tab:GetPoint()):GetName() ~= chatbg then
-				isDocked = true
-			else
-				isDocked = false
-			end
+			isDocked = select(2, tab:GetPoint()):GetName() ~= chatbg
 		end
 
 		if chat:IsShown() and not (id > NUM_CHAT_WINDOWS) and id == self.RightChatWindowID then
@@ -778,7 +788,7 @@ function CH:PositionChat(override)
 		end
 	end
 
-	E.Layout:RepositionChatDataPanels() --Bugfix: #686
+	LO:RepositionChatDataPanels()
 
 	self.initialMove = true
 end
@@ -940,21 +950,13 @@ end
 --Copied from FrameXML ChatFrame.lua and modified to add CUSTOM_CLASS_COLORS
 function CH:GetColoredName(event, _, arg2, _, _, _, _, _, arg8, _, _, _, arg12)
 	local chatType = strsub(event, 10)
-	if strsub(chatType, 1, 7) == "WHISPER" then
-		chatType = "WHISPER"
-	end
-	if strsub(chatType, 1, 7) == "CHANNEL" then
-		chatType = "CHANNEL"..arg8
-	end
-	local info = ChatTypeInfo[chatType]
+	if strsub(chatType, 1, 7) == "WHISPER" then chatType = "WHISPER" end
+	if strsub(chatType, 1, 7) == "CHANNEL" then chatType = "CHANNEL"..arg8 end
 
 	--ambiguate guild chat names
-	if chatType == "GUILD" then
-		arg2 = Ambiguate(arg2, "guild")
-	else
-		arg2 = Ambiguate(arg2, "none")
-	end
+	arg2 = Ambiguate(arg2, (chatType == "GUILD" and "guild") or "none")
 
+	local info = ChatTypeInfo[chatType]
 	if info and info.colorNameByClass and arg12 then
 		local _, englishClass = GetPlayerInfoByGUID(arg12)
 
@@ -981,6 +983,8 @@ local function GetChatIcons(sender)
 end
 
 function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, isHistory, historyTime, historyName)
+	-- ElvUI Chat History Note: isHistory, historyTime and historyName are passed from CH:DisplayChatHistory() and need to be on the end to prevent issues in other addons that listen on ChatFrame_MessageEventHandler.
+	-- we also send isHistory and historyTime into CH:AddMessage so that we don't have to override the timestamp.
 	if strsub(event, 1, 8) == "CHAT_MSG" then
 		local notChatHistory, historySavedName --we need to extend the arguments on CH.ChatFrame_MessageEventHandler so we can properly handle saved names without overriding
 		if isHistory == "ElvUI_ChatHistory" then
@@ -988,6 +992,7 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 		else
 			notChatHistory = true
 		end
+
 		local chatType = strsub(event, 10)
 		local info = ChatTypeInfo[chatType]
 
@@ -1706,7 +1711,7 @@ function CH:PET_BATTLE_CLOSE()
 		local chat = _G[frameName]
 		if chat then
 			local text = _G[frameName.."Tab"]:GetText()
-			if text and strmatch(text, PET_BATTLE_COMBAT_LOG) then
+			if text and strmatch(text, DEFAULT_STRINGS.PET_BATTLE_COMBAT_LOG) then
 				FCF_Close(chat)
 				break -- we found it, dont gotta keep lookin'
 			end

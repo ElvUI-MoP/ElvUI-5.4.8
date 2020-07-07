@@ -477,7 +477,8 @@ E.Options.args.chat = {
 					order = 1,
 					type = "toggle",
 					name = L["Lock Positions"],
-					desc = L["Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish."]
+					desc = L["Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish."],
+					set = function(info, value) E.db.chat.lockPositions = value CH:PositionChat(true) end
 				},
 				panelTabBackdrop = {
 					order = 2,
