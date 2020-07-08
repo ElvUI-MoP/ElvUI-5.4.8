@@ -29,7 +29,7 @@ local WorldGetChildren = WorldFrame.GetChildren
 local WorldGetNumChildren = WorldFrame.GetNumChildren
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
-local numChildren, hasTarget = 0
+local lastChildern, numChildren, hasTarget = 0, 0
 local FSPAT = "%s*"..(gsub(gsub(_G.FOREIGN_SERVER_LABEL, "^%s", ""), "[%*()]", "%%%1")).."$"
 
 local RaidIconCoordinate = {
@@ -818,26 +818,24 @@ function NP:SetMouseoverFrame(frame)
 	self:StyleFilterUpdate(frame, "UNIT_AURA")
 end
 
-local function findNewPlate(num)
-	if num == numChildren then return end
+local function findNewPlate(...)
+	for i = lastChildern + 1, numChildren do
+		local frame = select(i, ...)
+		local name = frame:GetName()
 
-	for i = numChildren + 1, num do
-		local frame = select(i, WorldGetChildren(WorldFrame))
-
-		if not NP.CreatedPlates[frame] then
-			local name = frame:GetName()
-
-			if name and find(name, "NamePlate%d") then
-				NP:OnCreated(frame)
-			end
+		if name and find(name, "NamePlate%d") then
+			NP:OnCreated(frame)
 		end
 	end
-
-	numChildren = num
 end
 
 function NP:OnUpdate()
-	findNewPlate(WorldGetNumChildren(WorldFrame))
+	numChildren = WorldGetNumChildren(WorldFrame)
+	if lastChildern ~= numChildren then
+		findNewPlate(WorldGetChildren(WorldFrame))
+		lastChildern = numChildren
+	end
+
 	for frame in pairs(NP.VisiblePlates) do
 		if hasTarget then
 			frame.alpha = frame:GetParent():GetAlpha()

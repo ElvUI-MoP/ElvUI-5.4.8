@@ -784,7 +784,7 @@ do
 					end
 				elseif msg and (msg > ver) and (msg < 5) then -- you're outdated D:
 					if not E.recievedOutOfDateMessage then
-						E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"])
+						print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"])
 
 						if msg and ((msg - ver) >= 0.01) and not inCombat then
 							E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
