@@ -229,15 +229,6 @@ function A:UpdateAura(button, index)
 			A:ClearAuraTime(button)
 		end
 
-		local r, g, b
-		if button.timeLeft and A.db.barColorGradient then
-			r, g, b = E.oUF:ColorGradient(button.timeLeft, duration or 0, 0.8, 0, 0, 0.8, 0.8, 0, 0, 0.8, 0)
-		else
-			r, g, b = A.db.barColor.r, A.db.barColor.g, A.db.barColor.b
-		end
-
-		button.statusBar:SetStatusBarColor(r, g, b)
-
 		if count and count > 1 then
 			button.count:SetText(count)
 		else
@@ -246,11 +237,23 @@ function A:UpdateAura(button, index)
 
 		button.text:SetShown(A.db.showDuration)
 
-		if (A.db.barShow and duration > 0) or (A.db.barShow and A.db.barNoDuration and duration == 0) then
-			button.statusBar:Show()
+		local showStatusBar = (A.db.barShow and duration > 0) or (A.db.barShow and A.db.barNoDuration and duration == 0)
+		button.statusBar:SetShown(showStatusBar)
+
+		local r, g, b
+		if A.db.barColorGradient then
+			if duration == 0 then
+				r, g, b = 0, 0.8, 0
+			elseif button.timeLeft then
+				r, g, b = E.oUF:ColorGradient(button.timeLeft, duration or 0, 0.8, 0, 0, 0.8, 0.8, 0, 0, 0.8, 0)
+			else
+				r, g, b = A.db.barColor.r, A.db.barColor.g, A.db.barColor.b
+			end
 		else
-			button.statusBar:Hide()
+			r, g, b = A.db.barColor.r, A.db.barColor.g, A.db.barColor.b
 		end
+
+		button.statusBar:SetStatusBarColor(r, g, b)
 
 		if button.debuffType ~= DebuffType then
 			if button.filter == "HARMFUL" then
@@ -299,11 +302,8 @@ function A:UpdateTempEnchant(button, index)
 
 	button.text:SetShown(A.db.showDuration)
 
-	if (A.db.barShow and remaining > 0) or (A.db.barShow and A.db.barNoDuration and not expiration) then
-		button.statusBar:Show()
-	else
-		button.statusBar:Hide()
-	end
+	local showStatusBar = (A.db.barShow and remaining > 0) or (A.db.barShow and A.db.barNoDuration and not expiration)
+	button.statusBar:SetShown(showStatusBar)
 
 	local r, g, b
 	if expiration and A.db.barColorGradient then
