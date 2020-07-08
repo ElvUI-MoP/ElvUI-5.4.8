@@ -15,5 +15,7 @@ function oUF:HandleUnit(object, unit)
 		object:RegisterEvent('PLAYER_FOCUS_CHANGED', object.UpdateAllElements)
 	elseif(unit:match('%w+target') or unit:match('(boss)%d?$') == 'boss') then
 		enableTargetUpdate(object)
+	elseif(unit:match('arena%d?$')) then
+		object:RegisterEvent('ARENA_OPPONENT_UPDATE', object.UpdateAllElements)
 	end
 end
