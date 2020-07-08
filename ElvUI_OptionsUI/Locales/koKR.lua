@@ -370,6 +370,7 @@ L["Display the target of your current cast. Useful for mouseover casts."] = "현
 L["Display the unit role in the tooltip."] = true
 L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = "게임내에서 캐릭터를 강화할 수 있는 것으로 판단되는 아이템에 강화 아이콘을 표시합니다."
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "시전바에 시전되는 주문의 틱을 표시합니다. 영혼 흡수나 가속이 추가되는 주문에 따라 틱이 자동 조절됩니다."
+L["Display Types"] = true
 L["Displayed Currency"] = "표시된 화폐"
 L["Displays a detailed report of every item sold when enabled."] = "활성화하면 판매된 모든 아이템의 상세보고를 표시합니다."
 L["Displays item level on equippable items."] = "착용 가능한 아이템의 경우 아이템 슬롯에 템렙을 표시합니다."

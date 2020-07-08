@@ -371,6 +371,7 @@ L["Display the target of your current cast. Useful for mouseover casts."] = "Aff
 L["Display the unit role in the tooltip."] = true
 L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = true
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "Affichage des marques de graduation (ticks) sur la barre de lancement de sort. Cela s'ajustera automatiquement pour les sorts comme Drain d'âme qui est basé sur la Hâte."
+L["Display Types"] = true
 L["Displayed Currency"] = "Monnaie affichée"
 L["Displays a detailed report of every item sold when enabled."] = true
 L["Displays item level on equippable items."] = "Afficher le niveau d'objet sur les objets qui peuvent être équipés."

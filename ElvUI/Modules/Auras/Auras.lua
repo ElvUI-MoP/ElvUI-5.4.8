@@ -275,9 +275,9 @@ end
 
 function A:UpdateTempEnchant(button, index)
 	local offset = (strmatch(button:GetName(), "2$") and 5) or 2
-
 	local duration, remaining = 600, 0
 	local expiration = select(offset, GetWeaponEnchantInfo())
+
 	if expiration then
 		button.texture:SetTexture(GetInventoryItemTexture("player", index))
 
@@ -349,7 +349,6 @@ function A:UpdateHeader(header)
 	header:SetAttribute("sortDirection", db.sortDir)
 	header:SetAttribute("maxWraps", db.maxWraps)
 	header:SetAttribute("wrapAfter", db.wrapAfter)
-
 	header:SetAttribute("point", DIRECTION_TO_POINT[db.growthDirection])
 
 	if IS_HORIZONTAL_GROWTH[db.growthDirection] then

@@ -371,6 +371,7 @@ L["Display the target of your current cast. Useful for mouseover casts."] = "显
 L["Display the unit role in the tooltip."] = "在鼠标提示中显示单位的职责"
 L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = "在WoW认为可以提升你角色的物品上显示升级图标"
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "若为需引导的法术, 在施法条上显示每跳时间点. 这将针对吸取灵魂这类的法术根据急速自动调整显示每跳时间点和额外跳数."
+L["Display Types"] = true
 L["Displayed Currency"] = "显示的货币"
 L["Displays a detailed report of every item sold when enabled."] = "启用后显示包含每个物品金额的详细报告"
 L["Displays item level on equippable items."] = "显示可装备物品的物品等级"

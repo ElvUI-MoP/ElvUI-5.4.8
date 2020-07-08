@@ -372,6 +372,7 @@ L["Display the target of your current cast. Useful for mouseover casts."] = "Zei
 L["Display the unit role in the tooltip."] = "Zeigt die Rolle des Spielers im Tooltip an."
 L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = "Zeigt ein Aufwertungs-Symbol auf einen Gegenstand, welcher deinen Charakter verbessern würde laut WoW."
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "Anzeige der Zauberbalkenticks für kanalisierte Zauber. Dies ändert sich automatisch für Zauber wie Seelendieb, wenn zusätzliche Ticks durch einen hohen Tempowert entstehen."
+L["Display Types"] = true
 L["Displayed Currency"] = "Angezeigte Währung"
 L["Displays a detailed report of every item sold when enabled."] = "Zeigt einen detaillierten Report von jedem verkauften Gegenstand wenn aktiviert."
 L["Displays item level on equippable items."] = "Zeigt das Itemlevel für ausrüstbare Gegenstände an."

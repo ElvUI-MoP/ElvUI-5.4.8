@@ -371,6 +371,7 @@ L["Display the target of your current cast. Useful for mouseover casts."] = "Mos
 L["Display the unit role in the tooltip."] = true
 L["Display the upgrade icon on items that WoW considers an upgrade for your character."] = true
 L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."] = "Exibir marcas na barra de lançamento para feitiços canalizados. Isto irá se ajustar automaticamente para feitiços como Drenar Alma e adicionará ticks baseado na Aceleração."
+L["Display Types"] = true
 L["Displayed Currency"] = true
 L["Displays a detailed report of every item sold when enabled."] = true
 L["Displays item level on equippable items."] = true
