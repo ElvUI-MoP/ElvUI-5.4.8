@@ -2196,121 +2196,26 @@ local function GetUnitSettings(unit, name)
 			buffsGroup = {
 				order = 3,
 				type = "group",
+				childGroups = "tab",
 				name = L["Buffs"],
-				get = function(info)
-					return E.db.nameplates.units[unit].buffs[info[#info]]
-				end,
-				set = function(info, value)
-					E.db.nameplates.units[unit].buffs[info[#info]] = value
-					NP:ConfigureAll()
-				end,
 				args = {
 					enable = {
 						order = 1,
 						type = "toggle",
-						name = L["ENABLE"]
+						name = L["ENABLE"],
+						get = function(info)
+							return E.db.nameplates.units[unit].buffs[info[#info]]
+						end,
+						set = function(info, value)
+							E.db.nameplates.units[unit].buffs[info[#info]] = value
+							NP:ConfigureAll()
+						end
 					},
-					perrow = {
+					generalGroup = {
 						order = 2,
-						type = "range",
-						name = L["Per Row"],
-						min = 1, max = 20, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					numrows = {
-						order = 3,
-						type = "range",
-						name = L["Num Rows"],
-						min = 1, max = 10, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					size = {
-						order = 4,
-						type = "range",
-						name = L["Icon Size"],
-						min = 6, max = 60, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					spacing = {
-						order = 5,
-						type = "range",
-						name = L["Spacing"],
-						min = 0, max = 60, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					xOffset = {
-						order = 6,
-						type = "range",
-						name = L["X-Offset"],
-						min = -100, max = 100, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					yOffset = {
-						order = 7,
-						type = "range",
-						name = L["Y-Offset"],
-						min = -100, max = 100, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					anchorPoint = {
-						order = 8,
-						type = "select",
-						name = L["Anchor Point"],
-						desc = L["What point to anchor to the frame you set to attach to."],
-						values = positionValues,
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					attachTo = {
-						order = 9,
-						type = "select",
-						name = L["Attach To"],
-						values = {
-							["FRAME"] = L["Nameplate"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					growthX = {
-						order = 10,
-						type = "select",
-						name = L["Growth X-Direction"],
-						values = {
-							["LEFT"] = L["Left"],
-							["RIGHT"] = L["Right"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					growthY = {
-						order = 11,
-						type = "select",
-						name = L["Growth Y-Direction"],
-						values = {
-							["UP"] = L["Up"],
-							["DOWN"] = L["Down"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					cooldownOrientation = {
-						order = 12,
-						type = "select",
-						name = L["Cooldown Orientation"],
-						values = {
-							["VERTICAL"] = L["Vertical"],
-							["HORIZONTAL"] = L["Horizontal"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					reverseCooldown = {
-						order = 13,
-						type = "toggle",
-						name = L["Reverse Cooldown"],
-						disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-					},
-					stacks = {
-						order = 14,
 						type = "group",
-						name = L["Stack Counter"],
-						guiInline = true,
-						get = function(info, value)
+						name = L["General"],
+						get = function(info)
 							return E.db.nameplates.units[unit].buffs[info[#info]]
 						end,
 						set = function(info, value)
@@ -2318,57 +2223,107 @@ local function GetUnitSettings(unit, name)
 							NP:ConfigureAll()
 						end,
 						args = {
-							countFont = {
+							perrow = {
 								order = 1,
-								type = "select",
-								name = L["Font"],
-								dialogControl = "LSM30_Font",
-								values = AceGUIWidgetLSMlists.font,
+								type = "range",
+								name = L["Per Row"],
+								min = 1, max = 20, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
 							},
-							countFontSize = {
+							numrows = {
 								order = 2,
 								type = "range",
-								name = L["FONT_SIZE"],
-								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+								name = L["Num Rows"],
+								min = 1, max = 10, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
 							},
-							countFontOutline = {
+							size = {
 								order = 3,
-								type = "select",
-								name = L["Font Outline"],
-								desc = L["Set the font outline."],
-								values = C.Values.FontFlags,
+								type = "range",
+								name = L["Icon Size"],
+								min = 6, max = 60, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
 							},
-							countPosition = {
+							spacing = {
 								order = 4,
-								type = "select",
-								name = L["Position"],
-								values = textValues,
+								type = "range",
+								name = L["Spacing"],
+								min = 0, max = 60, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
 							},
-							countXOffset = {
+							xOffset = {
 								order = 5,
 								type = "range",
 								name = L["X-Offset"],
 								min = -100, max = 100, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
 							},
-							countYOffset = {
+							yOffset = {
 								order = 6,
 								type = "range",
 								name = L["Y-Offset"],
 								min = -100, max = 100, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							anchorPoint = {
+								order = 7,
+								type = "select",
+								name = L["Anchor Point"],
+								desc = L["What point to anchor to the frame you set to attach to."],
+								values = positionValues,
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							attachTo = {
+								order = 8,
+								type = "select",
+								name = L["Attach To"],
+								values = {
+									["FRAME"] = L["Nameplate"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							growthX = {
+								order = 9,
+								type = "select",
+								name = L["Growth X-Direction"],
+								values = {
+									["LEFT"] = L["Left"],
+									["RIGHT"] = L["Right"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							growthY = {
+								order = 10,
+								type = "select",
+								name = L["Growth Y-Direction"],
+								values = {
+									["UP"] = L["Up"],
+									["DOWN"] = L["Down"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							cooldownOrientation = {
+								order = 11,
+								type = "select",
+								name = L["Cooldown Orientation"],
+								values = {
+									["VERTICAL"] = L["Vertical"],
+									["HORIZONTAL"] = L["Horizontal"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							reverseCooldown = {
+								order = 12,
+								type = "toggle",
+								name = L["Reverse Cooldown"],
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
 							}
 						}
 					},
 					duration = {
-						order = 15,
+						order = 3,
 						type = "group",
 						name = L["Duration"],
-						guiInline = true,
 						get = function(info)
 							return E.db.nameplates.units[unit].buffs[info[#info]]
 						end,
@@ -2423,10 +2378,67 @@ local function GetUnitSettings(unit, name)
 							}
 						}
 					},
-					filtersGroup = {
-						order = 16,
+					stacks = {
+						order = 4,
 						type = "group",
-						guiInline = true,
+						name = L["Stack Counter"],
+						get = function(info, value)
+							return E.db.nameplates.units[unit].buffs[info[#info]]
+						end,
+						set = function(info, value)
+							E.db.nameplates.units[unit].buffs[info[#info]] = value
+							NP:ConfigureAll()
+						end,
+						args = {
+							countFont = {
+								order = 1,
+								type = "select",
+								name = L["Font"],
+								dialogControl = "LSM30_Font",
+								values = AceGUIWidgetLSMlists.font,
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							countFontSize = {
+								order = 2,
+								type = "range",
+								name = L["FONT_SIZE"],
+								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							countFontOutline = {
+								order = 3,
+								type = "select",
+								name = L["Font Outline"],
+								desc = L["Set the font outline."],
+								values = C.Values.FontFlags,
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							countPosition = {
+								order = 4,
+								type = "select",
+								name = L["Position"],
+								values = textValues,
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							countXOffset = {
+								order = 5,
+								type = "range",
+								name = L["X-Offset"],
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							},
+							countYOffset = {
+								order = 6,
+								type = "range",
+								name = L["Y-Offset"],
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+							}
+						}
+					},
+					filtersGroup = {
+						order = 5,
+						type = "group",
 						name = L["FILTERS"],
 						get = function(info)
 							return E.db.nameplates.units[unit].buffs.filters[info[#info]]
@@ -2576,121 +2588,25 @@ local function GetUnitSettings(unit, name)
 				order = 4,
 				type = "group",
 				name = L["Debuffs"],
-				get = function(info)
-					return E.db.nameplates.units[unit].debuffs[info[#info]]
-				end,
-				set = function(info, value)
-					E.db.nameplates.units[unit].debuffs[info[#info]] = value
-					NP:ConfigureAll()
-				end,
+				childGroups = "tab",
 				args = {
 					enable = {
 						order = 1,
 						type = "toggle",
-						name = L["ENABLE"]
+						name = L["ENABLE"],
+						get = function(info)
+							return E.db.nameplates.units[unit].debuffs[info[#info]]
+						end,
+						set = function(info, value)
+							E.db.nameplates.units[unit].debuffs[info[#info]] = value
+							NP:ConfigureAll()
+						end
 					},
-					perrow = {
+					generalGroup = {
 						order = 2,
-						type = "range",
-						name = L["Per Row"],
-						min = 1, max = 20, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					numrows = {
-						order = 3,
-						type = "range",
-						name = L["Num Rows"],
-						min = 1, max = 10, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					size = {
-						order = 4,
-						type = "range",
-						name = L["Icon Size"],
-						min = 6, max = 60, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					spacing = {
-						order = 5,
-						type = "range",
-						name = L["Spacing"],
-						min = 0, max = 60, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					xOffset = {
-						order = 6,
-						type = "range",
-						name = L["X-Offset"],
-						min = -100, max = 100, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					yOffset = {
-						order = 7,
-						type = "range",
-						name = L["Y-Offset"],
-						min = -100, max = 100, step = 1,
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					anchorPoint = {
-						order = 8,
-						type = "select",
-						name = L["Anchor Point"],
-						desc = L["What point to anchor to the frame you set to attach to."],
-						values = positionValues,
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					attachTo = {
-						order = 9,
-						type = "select",
-						name = L["Attach To"],
-						values = {
-							["FRAME"] = L["Nameplate"],
-							["BUFFS"] = L["Buffs"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					growthX = {
-						order = 10,
-						type = "select",
-						name = L["Growth X-Direction"],
-						values = {
-							["LEFT"] = L["Left"],
-							["RIGHT"] = L["Right"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					growthY = {
-						order = 11,
-						type = "select",
-						name = L["Growth Y-Direction"],
-						values = {
-							["UP"] = L["Up"],
-							["DOWN"] = L["Down"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					cooldownOrientation = {
-						order = 12,
-						type = "select",
-						name = L["Cooldown Orientation"],
-						values = {
-							["VERTICAL"] = L["Vertical"],
-							["HORIZONTAL"] = L["Horizontal"]
-						},
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					reverseCooldown = {
-						order = 13,
-						type = "toggle",
-						name = L["Reverse Cooldown"],
-						disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-					},
-					stacks = {
-						order = 14,
 						type = "group",
-						name = L["Stack Counter"],
-						guiInline = true,
-						get = function(info, value)
+						name = L["General"],
+						get = function(info)
 							return E.db.nameplates.units[unit].debuffs[info[#info]]
 						end,
 						set = function(info, value)
@@ -2698,57 +2614,108 @@ local function GetUnitSettings(unit, name)
 							NP:ConfigureAll()
 						end,
 						args = {
-							countFont = {
-								order = 1,
-								type = "select",
-								name = L["Font"],
-								dialogControl = "LSM30_Font",
-								values = AceGUIWidgetLSMlists.font,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							countFontSize = {
+							perrow = {
 								order = 2,
 								type = "range",
-								name = L["FONT_SIZE"],
-								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+								name = L["Per Row"],
+								min = 1, max = 20, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
 							},
-							countFontOutline = {
+							numrows = {
 								order = 3,
-								type = "select",
-								name = L["Font Outline"],
-								desc = L["Set the font outline."],
-								values = C.Values.FontFlags,
+								type = "range",
+								name = L["Num Rows"],
+								min = 1, max = 10, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
 							},
-							countPosition = {
+							size = {
 								order = 4,
-								type = "select",
-								name = L["Position"],
-								values = textValues,
+								type = "range",
+								name = L["Icon Size"],
+								min = 6, max = 60, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
 							},
-							countXOffset = {
+							spacing = {
 								order = 5,
+								type = "range",
+								name = L["Spacing"],
+								min = 0, max = 60, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							xOffset = {
+								order = 6,
 								type = "range",
 								name = L["X-Offset"],
 								min = -100, max = 100, step = 1,
 								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
 							},
-							countYOffset = {
-								order = 6,
+							yOffset = {
+								order = 7,
 								type = "range",
 								name = L["Y-Offset"],
 								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							anchorPoint = {
+								order = 8,
+								type = "select",
+								name = L["Anchor Point"],
+								desc = L["What point to anchor to the frame you set to attach to."],
+								values = positionValues,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							attachTo = {
+								order = 9,
+								type = "select",
+								name = L["Attach To"],
+								values = {
+									["FRAME"] = L["Nameplate"],
+									["BUFFS"] = L["Buffs"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							growthX = {
+								order = 10,
+								type = "select",
+								name = L["Growth X-Direction"],
+								values = {
+									["LEFT"] = L["Left"],
+									["RIGHT"] = L["Right"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							growthY = {
+								order = 11,
+								type = "select",
+								name = L["Growth Y-Direction"],
+								values = {
+									["UP"] = L["Up"],
+									["DOWN"] = L["Down"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							cooldownOrientation = {
+								order = 12,
+								type = "select",
+								name = L["Cooldown Orientation"],
+								values = {
+									["VERTICAL"] = L["Vertical"],
+									["HORIZONTAL"] = L["Horizontal"]
+								},
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							reverseCooldown = {
+								order = 13,
+								type = "toggle",
+								name = L["Reverse Cooldown"],
 								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
 							}
 						}
 					},
 					duration = {
-						order = 15,
+						order = 3,
 						type = "group",
 						name = L["Duration"],
-						guiInline = true,
 						get = function(info)
 							return E.db.nameplates.units[unit].debuffs[info[#info]]
 						end,
@@ -2803,11 +2770,68 @@ local function GetUnitSettings(unit, name)
 							}
 						}
 					},
+					stacks = {
+						order = 4,
+						type = "group",
+						name = L["Stack Counter"],
+						get = function(info, value)
+							return E.db.nameplates.units[unit].debuffs[info[#info]]
+						end,
+						set = function(info, value)
+							E.db.nameplates.units[unit].debuffs[info[#info]] = value
+							NP:ConfigureAll()
+						end,
+						args = {
+							countFont = {
+								order = 1,
+								type = "select",
+								name = L["Font"],
+								dialogControl = "LSM30_Font",
+								values = AceGUIWidgetLSMlists.font,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							countFontSize = {
+								order = 2,
+								type = "range",
+								name = L["FONT_SIZE"],
+								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							countFontOutline = {
+								order = 3,
+								type = "select",
+								name = L["Font Outline"],
+								desc = L["Set the font outline."],
+								values = C.Values.FontFlags,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							countPosition = {
+								order = 4,
+								type = "select",
+								name = L["Position"],
+								values = textValues,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							countXOffset = {
+								order = 5,
+								type = "range",
+								name = L["X-Offset"],
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							},
+							countYOffset = {
+								order = 6,
+								type = "range",
+								name = L["Y-Offset"],
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+							}
+						}
+					},
 					filtersGroup = {
-						order = 16,
+						order = 5,
 						type = "group",
 						name = L["FILTERS"],
-						guiInline = true,
 						get = function(info)
 							return E.db.nameplates.units[unit].debuffs.filters[info[#info]]
 						end,
@@ -3240,7 +3264,7 @@ local function GetUnitSettings(unit, name)
 						["CENTER"] = L["Center"]
 					},
 					disabled = function() return not E.db.nameplates.units[unit].eliteIcon.enable end
-				},
+				}
 			}
 		}
 		group.args.iconFrame = {
