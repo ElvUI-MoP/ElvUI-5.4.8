@@ -2320,124 +2320,133 @@ local function GetUnitSettings(unit, name)
 							}
 						}
 					},
-					duration = {
+					font = {
 						order = 3,
 						type = "group",
-						name = L["Duration"],
-						get = function(info)
-							return E.db.nameplates.units[unit].buffs[info[#info]]
-						end,
-						set = function(info, value)
-							E.db.nameplates.units[unit].buffs[info[#info]] = value
-							NP:ConfigureAll()
-						end,
+						name = L["Font"],
 						args = {
-							durationFont = {
+							duration = {
 								order = 1,
-								type = "select",
-								name = L["Font"],
-								dialogControl = "LSM30_Font",
-								values = AceGUIWidgetLSMlists.font,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+								type = "group",
+								name = L["Duration"],
+								guiInline = true,
+								get = function(info)
+									return E.db.nameplates.units[unit].buffs[info[#info]]
+								end,
+								set = function(info, value)
+									E.db.nameplates.units[unit].buffs[info[#info]] = value
+									NP:ConfigureAll()
+								end,
+								args = {
+									durationFont = {
+										order = 1,
+										type = "select",
+										name = L["Font"],
+										dialogControl = "LSM30_Font",
+										values = AceGUIWidgetLSMlists.font,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									durationFontSize = {
+										order = 2,
+										type = "range",
+										name = L["FONT_SIZE"],
+										min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									durationFontOutline = {
+										order = 3,
+										type = "select",
+										name = L["Font Outline"],
+										desc = L["Set the font outline."],
+										values = C.Values.FontFlags,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									durationPosition = {
+										order = 4,
+										type = "select",
+										name = L["Position"],
+										values = textValues,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									durationXOffset = {
+										order = 5,
+										type = "range",
+										name = L["X-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									durationYOffset = {
+										order = 6,
+										type = "range",
+										name = L["Y-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									}
+								}
 							},
-							durationFontSize = {
+							stacks = {
 								order = 2,
-								type = "range",
-								name = L["FONT_SIZE"],
-								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							durationFontOutline = {
-								order = 3,
-								type = "select",
-								name = L["Font Outline"],
-								desc = L["Set the font outline."],
-								values = C.Values.FontFlags,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							durationPosition = {
-								order = 4,
-								type = "select",
-								name = L["Position"],
-								values = textValues,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							durationXOffset = {
-								order = 5,
-								type = "range",
-								name = L["X-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							durationYOffset = {
-								order = 6,
-								type = "range",
-								name = L["Y-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							}
-						}
-					},
-					stacks = {
-						order = 4,
-						type = "group",
-						name = L["Stack Counter"],
-						get = function(info, value)
-							return E.db.nameplates.units[unit].buffs[info[#info]]
-						end,
-						set = function(info, value)
-							E.db.nameplates.units[unit].buffs[info[#info]] = value
-							NP:ConfigureAll()
-						end,
-						args = {
-							countFont = {
-								order = 1,
-								type = "select",
-								name = L["Font"],
-								dialogControl = "LSM30_Font",
-								values = AceGUIWidgetLSMlists.font,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							countFontSize = {
-								order = 2,
-								type = "range",
-								name = L["FONT_SIZE"],
-								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							countFontOutline = {
-								order = 3,
-								type = "select",
-								name = L["Font Outline"],
-								desc = L["Set the font outline."],
-								values = C.Values.FontFlags,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							countPosition = {
-								order = 4,
-								type = "select",
-								name = L["Position"],
-								values = textValues,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							countXOffset = {
-								order = 5,
-								type = "range",
-								name = L["X-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
-							},
-							countYOffset = {
-								order = 6,
-								type = "range",
-								name = L["Y-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+								type = "group",
+								name = L["Stack Counter"],
+								guiInline = true,
+								get = function(info, value)
+									return E.db.nameplates.units[unit].buffs[info[#info]]
+								end,
+								set = function(info, value)
+									E.db.nameplates.units[unit].buffs[info[#info]] = value
+									NP:ConfigureAll()
+								end,
+								args = {
+									countFont = {
+										order = 1,
+										type = "select",
+										name = L["Font"],
+										dialogControl = "LSM30_Font",
+										values = AceGUIWidgetLSMlists.font,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									countFontSize = {
+										order = 2,
+										type = "range",
+										name = L["FONT_SIZE"],
+										min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									countFontOutline = {
+										order = 3,
+										type = "select",
+										name = L["Font Outline"],
+										desc = L["Set the font outline."],
+										values = C.Values.FontFlags,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									countPosition = {
+										order = 4,
+										type = "select",
+										name = L["Position"],
+										values = textValues,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									countXOffset = {
+										order = 5,
+										type = "range",
+										name = L["X-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									},
+									countYOffset = {
+										order = 6,
+										type = "range",
+										name = L["Y-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].buffs.enable end
+									}
+								}
 							}
 						}
 					},
 					filtersGroup = {
-						order = 5,
+						order = 4,
 						type = "group",
 						name = L["FILTERS"],
 						get = function(info)
@@ -2712,119 +2721,128 @@ local function GetUnitSettings(unit, name)
 							}
 						}
 					},
-					duration = {
+					font = {
 						order = 3,
 						type = "group",
-						name = L["Duration"],
-						get = function(info)
-							return E.db.nameplates.units[unit].debuffs[info[#info]]
-						end,
-						set = function(info, value)
-							E.db.nameplates.units[unit].debuffs[info[#info]] = value
-							NP:ConfigureAll()
-						end,
+						name = L["Font"],
 						args = {
-							durationFont = {
+							duration = {
 								order = 1,
-								type = "select",
-								name = L["Font"],
-								dialogControl = "LSM30_Font",
-								values = AceGUIWidgetLSMlists.font,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+								type = "group",
+								name = L["Duration"],
+								guiInline = true,
+								get = function(info)
+									return E.db.nameplates.units[unit].debuffs[info[#info]]
+								end,
+								set = function(info, value)
+									E.db.nameplates.units[unit].debuffs[info[#info]] = value
+									NP:ConfigureAll()
+								end,
+								args = {
+									durationFont = {
+										order = 1,
+										type = "select",
+										name = L["Font"],
+										dialogControl = "LSM30_Font",
+										values = AceGUIWidgetLSMlists.font,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									durationFontSize = {
+										order = 2,
+										type = "range",
+										name = L["FONT_SIZE"],
+										min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									durationFontOutline = {
+										order = 3,
+										type = "select",
+										name = L["Font Outline"],
+										desc = L["Set the font outline."],
+										values = C.Values.FontFlags,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									durationPosition = {
+										order = 4,
+										type = "select",
+										name = L["Position"],
+										values = textValues,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									durationXOffset = {
+										order = 5,
+										type = "range",
+										name = L["X-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									durationYOffset = {
+										order = 6,
+										type = "range",
+										name = L["Y-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									}
+								}
 							},
-							durationFontSize = {
+							stacks = {
 								order = 2,
-								type = "range",
-								name = L["FONT_SIZE"],
-								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							durationFontOutline = {
-								order = 3,
-								type = "select",
-								name = L["Font Outline"],
-								desc = L["Set the font outline."],
-								values = C.Values.FontFlags,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							durationPosition = {
-								order = 4,
-								type = "select",
-								name = L["Position"],
-								values = textValues,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							durationXOffset = {
-								order = 5,
-								type = "range",
-								name = L["X-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							durationYOffset = {
-								order = 6,
-								type = "range",
-								name = L["Y-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							}
-						}
-					},
-					stacks = {
-						order = 4,
-						type = "group",
-						name = L["Stack Counter"],
-						get = function(info, value)
-							return E.db.nameplates.units[unit].debuffs[info[#info]]
-						end,
-						set = function(info, value)
-							E.db.nameplates.units[unit].debuffs[info[#info]] = value
-							NP:ConfigureAll()
-						end,
-						args = {
-							countFont = {
-								order = 1,
-								type = "select",
-								name = L["Font"],
-								dialogControl = "LSM30_Font",
-								values = AceGUIWidgetLSMlists.font,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							countFontSize = {
-								order = 2,
-								type = "range",
-								name = L["FONT_SIZE"],
-								min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							countFontOutline = {
-								order = 3,
-								type = "select",
-								name = L["Font Outline"],
-								desc = L["Set the font outline."],
-								values = C.Values.FontFlags,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							countPosition = {
-								order = 4,
-								type = "select",
-								name = L["Position"],
-								values = textValues,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							countXOffset = {
-								order = 5,
-								type = "range",
-								name = L["X-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
-							},
-							countYOffset = {
-								order = 6,
-								type = "range",
-								name = L["Y-Offset"],
-								min = -100, max = 100, step = 1,
-								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+								type = "group",
+								name = L["Stack Counter"],
+								guiInline = true,
+								get = function(info, value)
+									return E.db.nameplates.units[unit].debuffs[info[#info]]
+								end,
+								set = function(info, value)
+									E.db.nameplates.units[unit].debuffs[info[#info]] = value
+									NP:ConfigureAll()
+								end,
+								args = {
+									countFont = {
+										order = 1,
+										type = "select",
+										name = L["Font"],
+										dialogControl = "LSM30_Font",
+										values = AceGUIWidgetLSMlists.font,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									countFontSize = {
+										order = 2,
+										type = "range",
+										name = L["FONT_SIZE"],
+										min = 4, max = 20, step = 1, -- max 20 cause otherwise it looks weird
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									countFontOutline = {
+										order = 3,
+										type = "select",
+										name = L["Font Outline"],
+										desc = L["Set the font outline."],
+										values = C.Values.FontFlags,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									countPosition = {
+										order = 4,
+										type = "select",
+										name = L["Position"],
+										values = textValues,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									countXOffset = {
+										order = 5,
+										type = "range",
+										name = L["X-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									},
+									countYOffset = {
+										order = 6,
+										type = "range",
+										name = L["Y-Offset"],
+										min = -100, max = 100, step = 1,
+										disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
+									}
+								}
 							}
 						}
 					},
