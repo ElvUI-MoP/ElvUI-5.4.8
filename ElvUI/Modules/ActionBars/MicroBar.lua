@@ -7,20 +7,15 @@ local CreateFrame = CreateFrame
 local UpdateMicroButtonsParent = UpdateMicroButtonsParent
 local RegisterStateDriver = RegisterStateDriver
 local InCombatLockdown = InCombatLockdown
+local C_StorePublic_IsEnabled = C_StorePublic.IsEnabled
 
-local MICRO_BUTTONS = {
-	"CharacterMicroButton",
-	"SpellbookMicroButton",
-	"TalentMicroButton",
-	"AchievementMicroButton",
-	"QuestLogMicroButton",
-	"GuildMicroButton",
-	"PVPMicroButton",
-	"LFDMicroButton",
-	"EJMicroButton",
-	"CompanionsMicroButton",
-	"StoreMicroButton",
-	"MainMenuMicroButton"
+local MICRO_BUTTONS = MICRO_BUTTONS
+
+local __buttonIndex = {
+	[9] = "CompanionsMicroButton",
+	[10] = "EJMicroButton",
+	[11] = not C_StorePublic_IsEnabled() and "HelpMicroButton" or "StoreMicroButton",
+	[12] = "MainMenuMicroButton"
 }
 
 local function onEnter(button)
@@ -110,10 +105,10 @@ function AB:UpdateMicroPositionDimensions()
 	local offset = E:Scale(E.PixelMode and 1 or 3)
 	local spacing = E:Scale(offset + self.db.microbar.buttonSpacing)
 
-	for i = 1, #MICRO_BUTTONS do
-		local button = _G[MICRO_BUTTONS[i]]
+	for i = 1, #MICRO_BUTTONS - 1 do
+		local button = _G[__buttonIndex[i]] or _G[MICRO_BUTTONS[i]]
 		local lastColumnButton = i - self.db.microbar.buttonsPerRow
-		lastColumnButton = _G[MICRO_BUTTONS[lastColumnButton]]
+		lastColumnButton = _G[__buttonIndex[lastColumnButton]] or _G[MICRO_BUTTONS[lastColumnButton]]
 
 		button:Size(self.db.microbar.buttonSize, self.db.microbar.buttonSize * 1.4)
 		button:ClearAllPoints()
@@ -200,7 +195,6 @@ function AB:SetupMicroBar()
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateMicroButtonsParent")
 
-	--self:SecureHook("VehicleMenuBar_MoveMicroButtons", "UpdateMicroButtonsParent")
 	self:SecureHook("UpdateMicroButtonsParent")
 	self:SecureHook("MoveMicroButtons", "UpdateMicroPositionDimensions")
 	self:SecureHook("UpdateMicroButtons")
