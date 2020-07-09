@@ -7,9 +7,8 @@ local ipairs, select, unpack = ipairs, select, unpack
 local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
 local GetAchievementNumCriteria = GetAchievementNumCriteria
 local hooksecurefunc = hooksecurefunc
-local IsAddOnLoaded = IsAddOnLoaded
 
-local function LoadSkin(preSkin)
+local function LoadSkin(event)
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.achievement then return end
 
 	local function SkinAchievement(Achievement, BiggerIcon)
@@ -87,7 +86,7 @@ local function LoadSkin(preSkin)
 		end
 	end
 
-	if preSkin then
+	if event == "Skin_AchievementUI" then
 		hooksecurefunc("HybridScrollFrame_CreateButtons", function(frame, template)
 			if template == "AchievementCategoryTemplate" then
 				for _, button in ipairs(frame.buttons) do
@@ -125,7 +124,7 @@ local function LoadSkin(preSkin)
 			end
 		end)
 
-		if not IsAddOnLoaded("Blizzard_AchievementUI") then return end
+		return
 	end
 
 	local frames = {
@@ -466,5 +465,5 @@ local function LoadSkin(preSkin)
 	end)
 end
 
-S:AddCallback("Skin_AchievementUI", function() LoadSkin(true) end)
+S:AddCallback("Skin_AchievementUI", LoadSkin)
 S:AddCallbackForAddon("Blizzard_AchievementUI", "Skin_Blizzard_AchievementUI", LoadSkin)
