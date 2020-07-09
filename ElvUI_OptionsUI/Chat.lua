@@ -4,7 +4,6 @@ local CH = E:GetModule("Chat")
 local Bags = E:GetModule("Bags")
 local Layout = E:GetModule("Layout")
 
-local _G = _G
 local gsub, strlower = string.gsub, string.lower
 
 E.Options.args.chat = {
@@ -306,7 +305,7 @@ E.Options.args.chat = {
 						keywordAlerts = {
 							order = 2,
 							type = "group",
-							name = L["Keyword Alerts"],
+							name = L["Keyword Alert"],
 							guiInline = true,
 							args = {
 								keywordSound = {
@@ -408,12 +407,12 @@ E.Options.args.chat = {
 							desc = L["OPTION_TOOLTIP_TIMESTAMPS"],
 							values = {
 								["NONE"] = L["NONE"],
-								["%I:%M "] = "03:27",
-								["%I:%M:%S "] = "03:27:32",
-								["%I:%M %p "] = "03:27 PM",
-								["%I:%M:%S %p "] = "03:27:32 PM",
-								["%H:%M "] = "15:27",
-								["%H:%M:%S "] =	"15:27:32"
+								["%I:%M"] = "03:27",
+								["%I:%M:%S"] = "03:27:32",
+								["%I:%M %p"] = "03:27 PM",
+								["%I:%M:%S %p"] = "03:27:32 PM",
+								["%H:%M"] = "15:27",
+								["%H:%M:%S"] = "15:27:32"
 							}
 						}
 					}
