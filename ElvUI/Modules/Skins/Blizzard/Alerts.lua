@@ -287,8 +287,8 @@ local function LoadSkin()
 
 	-- Bonus Roll Money Alert
 	BonusRollMoneyWonFrame:CreateBackdrop("Transparent")
-	BonusRollMoneyWonFrame.backdrop:Point("TOPLEFT", BonusRollMoneyWonFrame.Icon.backdrop, "TOPLEFT", -4, 4)
-	BonusRollMoneyWonFrame.backdrop:Point("BOTTOMRIGHT", BonusRollMoneyWonFrame.Icon.backdrop, "BOTTOMRIGHT", 180, -4)
+	BonusRollMoneyWonFrame.backdrop:Point("TOPLEFT", BonusRollMoneyWonFrame.Icon, "TOPLEFT", -4, 4)
+	BonusRollMoneyWonFrame.backdrop:Point("BOTTOMRIGHT", BonusRollMoneyWonFrame.Icon, "BOTTOMRIGHT", 180, -4)
 
 	BonusRollMoneyWonFrame.Icon.backdrop = CreateFrame("Frame", nil, BonusRollMoneyWonFrame)
 	BonusRollMoneyWonFrame.Icon.backdrop:SetTemplate()
@@ -302,8 +302,8 @@ local function LoadSkin()
 
 	-- Bonus Roll Loot Alert
 	BonusRollLootWonFrame:CreateBackdrop("Transparent")
-	BonusRollLootWonFrame.backdrop:Point("TOPLEFT", BonusRollLootWonFrame.Icon.backdrop, "TOPLEFT", -4, 4)
-	BonusRollLootWonFrame.backdrop:Point("BOTTOMRIGHT", BonusRollLootWonFrame.Icon.backdrop, "BOTTOMRIGHT", 180, -4)
+	BonusRollLootWonFrame.backdrop:Point("TOPLEFT", BonusRollLootWonFrame.Icon, "TOPLEFT", -4, 4)
+	BonusRollLootWonFrame.backdrop:Point("BOTTOMRIGHT", BonusRollLootWonFrame.Icon, "BOTTOMRIGHT", 180, -4)
 
 	BonusRollLootWonFrame.Icon.backdrop = CreateFrame("Frame", nil, BonusRollLootWonFrame)
 	BonusRollLootWonFrame.Icon.backdrop:SetTemplate()
