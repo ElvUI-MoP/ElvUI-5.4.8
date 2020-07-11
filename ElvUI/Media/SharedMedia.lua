@@ -85,6 +85,7 @@ E.Media = {
 		TyroneBiggums = M..[[ChatLogos\TyroneBiggums.tga]]
 	},
 	Textures = {
+		Alliance = M..[[Textures\Alliance.blp]],
 		Arrow = M..[[Textures\Arrow.tga]],
 		ArrowRight = M..[[Textures\ArrowRight.tga]],
 		ArrowUp = M..[[Textures\ArrowUp.tga]],
@@ -108,6 +109,7 @@ E.Media = {
 		HelloKitty = M..[[Textures\HelloKitty.tga]],
 		HelloKittyChat = M..[[Textures\HelloKittyChat.tga]],
 		Highlight = M..[[Textures\Highlight.tga]],
+		Horde = M..[[Textures\Horde.blp]],
 		Leader = M..[[Textures\Leader.tga]],
 		Logo = M..[[Textures\Logo.tga]],
 		LogoSmall = M..[[Textures\LogoSmall.tga]],
