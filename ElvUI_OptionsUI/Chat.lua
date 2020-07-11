@@ -81,7 +81,7 @@ E.Options.args.chat = {
 					type = "toggle",
 					name = L["Fade Undocked Tabs"],
 					desc = L["Fades the text on chat tabs that are not docked at the left or right chat panel."],
-					set = function(self, value)
+					set = function(info, value)
 						E.db.chat.fadeUndockedTabs = value
 						CH:UpdateChatTabs()
 					end
@@ -91,7 +91,7 @@ E.Options.args.chat = {
 					type = "toggle",
 					name = L["Fade Tabs No Backdrop"],
 					desc = L["Fades the text on chat tabs that are docked in a panel where the backdrop is disabled."],
-					set = function(self, value)
+					set = function(info, value)
 						E.db.chat.fadeTabsNoBackdrop = value
 						CH:UpdateChatTabs()
 					end
@@ -101,7 +101,7 @@ E.Options.args.chat = {
 					type = "toggle",
 					name = L["Use Alt Key"],
 					desc = L["Require holding the Alt key down to move cursor or cycle through messages in the editbox."],
-					set = function(self, value)
+					set = function(info, value)
 						E.db.chat.useAltKey = value
 						CH:UpdateSettings()
 					end
@@ -111,20 +111,36 @@ E.Options.args.chat = {
 					type = "toggle",
 					name = L["Auto-Close Pet Battle Log"],
 				},
-				spacer = {
+				fadeChatToggles = {
 					order = 11,
+					type = "toggle",
+					name = L["Fade Chat Toggles"],
+					desc = L["Fades the buttons that toggle chat windows when that window has been toggled off."],
+					set = function(info, value)
+						E.db.chat.fadeChatToggles = value
+						CH:RefreshToggleButtons()
+					end
+				},
+				spacer = {
+					order = 12,
 					type = "description",
 					name = ""
 				},
 				numAllowedCombatRepeat = {
-					order = 12,
+					order = 13,
 					type = "range",
 					name = L["Allowed Combat Repeat"],
-					desc = L["Number of repeat characters while in combat before the chat editbox is automatically closed."],
-					min = 2, max = 10, step = 1
+					desc = L["Number of repeat characters while in combat before the chat editbox is automatically closed. Set to 0 to disable."],
+					min = 0, max = 10, step = 1,
+					set = function(info, value)
+						if value == 1 then
+							value = 0
+						end
+						E.db.chat[info[#info]] = value
+					end
 				},
 				throttleInterval = {
-					order = 13,
+					order = 14,
 					type = "range",
 					name = L["Spam Interval"],
 					desc = L["Prevent the same messages from displaying in chat more than once within this set amount of seconds, set to zero to disable."],
@@ -137,40 +153,40 @@ E.Options.args.chat = {
 					end
 				},
 				scrollDownInterval = {
-					order = 14,
+					order = 15,
 					type = "range",
 					name = L["Scroll Interval"],
 					desc = L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."],
-					min = 0, max = 120, step = 5,
+					min = 0, max = 120, step = 5
 				},
 				numScrollMessages = {
-					order = 15,
+					order = 16,
 					type = "range",
 					name = L["Scroll Messages"],
 					desc = L["Number of messages you scroll for each step."],
 					min = 1, max = 10, step = 1,
 				},
 				maxLines = {
-					order = 16,
+					order = 17,
 					type = "range",
 					name = L["Max Lines"],
 					min = 10, max = 5000, step = 1,
 					set = function(info, value) E.db.chat[info[#info]] = value CH:SetupChat() end
 				},
 				editboxHistorySize = {
-					order = 17,
+					order = 18,
 					type = "range",
 					name = L["Editbox History Size"],
 					min = 5, max = 50, step = 1
 				},
 				resetHistory = {
-					order = 18,
+					order = 19,
 					type = "execute",
 					name = L["Reset Editbox History"],
 					func = function() CH:ResetEditboxHistory() end
 				},
 				historyGroup = {
-					order = 19,
+					order = 20,
 					type = "group",
 					name = L["History"],
 					set = function(info, value) E.db.chat[info[#info]] = value end,
@@ -222,7 +238,7 @@ E.Options.args.chat = {
 					}
 				},
 				fadingGroup = {
-					order = 20,
+					order = 21,
 					type = "group",
 					name = L["Text Fade"],
 					disabled = function() return not E.Chat.Initialized end,
@@ -245,7 +261,7 @@ E.Options.args.chat = {
 					}
 				},
 				fontGroup = {
-					order = 21,
+					order = 22,
 					type = "group",
 					name = L["Fonts"],
 					set = function(info, value) E.db.chat[info[#info]] = value CH:SetupChat() end,
@@ -291,7 +307,7 @@ E.Options.args.chat = {
 					}
 				},
 				alerts = {
-					order = 22,
+					order = 23,
 					type = "group",
 					name = L["Alerts"],
 					disabled = function() return not E.Chat.Initialized end,
@@ -373,7 +389,7 @@ E.Options.args.chat = {
 					}
 				},
 				timestampGroup = {
-					order = 23,
+					order = 24,
 					type = "group",
 					name = L["TIMESTAMPS_LABEL"],
 					args = {
@@ -417,7 +433,7 @@ E.Options.args.chat = {
 					}
 				},
 				classColorMentionGroup = {
-					order = 24,
+					order = 25,
 					type = "group",
 					name = L["Class Color Mentions"],
 					args = {
@@ -476,7 +492,13 @@ E.Options.args.chat = {
 					type = "toggle",
 					name = L["Lock Positions"],
 					desc = L["Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish."],
-					set = function(info, value) E.db.chat.lockPositions = value CH:PositionChat(true) end
+					set = function(info, value)
+						E.db.chat[info[#info]] = value
+						CH:UpdateDockState()
+						if value then
+							CH:PositionChat(true)
+						end
+					end
 				},
 				panelTabBackdrop = {
 					order = 2,
@@ -569,7 +591,7 @@ E.Options.args.chat = {
 						local t = E.db.chat.panelColor
 						t.r, t.g, t.b, t.a = r, g, b, a
 						CH:Panels_ColorUpdate()
-					end,
+					end
 				},
 				spacer2 = {
 					order = 11,
