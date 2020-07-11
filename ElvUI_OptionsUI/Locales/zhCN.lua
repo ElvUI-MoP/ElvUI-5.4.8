@@ -597,6 +597,7 @@ L["If you have any plugins supporting this feature installed you can find them i
 L["If you unlock actionbars then trying to move a spell might instantly cast it if you cast spells on key press instead of key release."] = "如果不锁定动作条, 那么当你试图移动技能时你可能会在鼠标按下技能键时使用技能"
 L["Ignore mouse events."] = "忽略鼠标事件"
 L["Ignore UI Scale Popup"] = "忽略UI缩放提示"
+L["Ignore Version Popup"] = true
 L["Ignored Items and Search Syntax (Global)"] = "被忽略的物品和搜索语法(全局)"
 L["Ignored Items and Search Syntax (Profile)"] = "被忽略的物品和搜索语法(配置文件)"
 L["Import Profile"] = "导入配置文件"

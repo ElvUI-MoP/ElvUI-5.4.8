@@ -257,6 +257,7 @@ local blacklistedKeys = {
 			UIScale = true,
 			locale = true,
 			version = true,
+			ignoreVersionPopup = true,
 			eyefinity = true,
 			ignoreScalePopup = true,
 			showMissingTalentAlert = true

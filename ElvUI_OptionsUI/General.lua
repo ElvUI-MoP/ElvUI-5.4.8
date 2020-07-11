@@ -89,8 +89,15 @@ E.Options.args.general = {
 					type = "toggle",
 					name = L["Login Message"]
 				},
-				eyefinity = {
+				ignoreVersionPopup = {
 					order = 8,
+					type = "toggle",
+					name = L["Ignore Version Popup"],
+					get = function(info) return E.global.general.ignoreVersionPopup end,
+					set = function(info, value) E.global.general.ignoreVersionPopup = value end
+				},
+				eyefinity = {
+					order = 9,
 					type = "toggle",
 					name = L["Multi-Monitor Support"],
 					desc = L["Attempt to support eyefinity/nvidia surround."],
@@ -98,34 +105,34 @@ E.Options.args.general = {
 					set = function(info, value) E.global.general.eyefinity = value E:StaticPopup_Show("GLOBAL_RL") end
 				},
 				taintLog = {
-					order = 9,
+					order = 10,
 					type = "toggle",
 					name = L["Log Taints"],
 					desc = L["Send ADDON_ACTION_BLOCKED errors to the Lua Error frame. These errors are less important in most cases and will not effect your game performance. Also a lot of these errors cannot be fixed. Please only report these errors if you notice a Defect in gameplay."]
 				},
 				bottomPanel = {
-					order = 10,
+					order = 11,
 					type = "toggle",
 					name = L["Bottom Panel"],
 					desc = L["Display a panel across the bottom of the screen. This is for cosmetic only."],
 					set = function(info, value) E.db.general.bottomPanel = value Layout:BottomPanelVisibility() end
 				},
 				topPanel = {
-					order = 11,
+					order = 12,
 					type = "toggle",
 					name = L["Top Panel"],
 					desc = L["Display a panel across the top of the screen. This is for cosmetic only."],
 					set = function(info, value) E.db.general.topPanel = value Layout:TopPanelVisibility() end
 				},
 				afk = {
-					order = 12,
+					order = 13,
 					type = "toggle",
 					name = L["AFK Mode"],
 					desc = L["When you go AFK display the AFK screen."],
 					set = function(info, value) E.db.general.afk = value AFK:Toggle() end
 				},
 				decimalLength = {
-					order = 13,
+					order = 14,
 					type = "range",
 					name = L["Decimal Length"],
 					desc = L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."],
@@ -137,7 +144,7 @@ E.Options.args.general = {
 					end
 				},
 				numberPrefixStyle = {
-					order = 14,
+					order = 15,
 					type = "select",
 					name = L["Unit Prefix Style"],
 					desc = L["The unit prefixes you want to use when values are shortened in ElvUI. This is mostly used on UnitFrames."],
@@ -156,7 +163,7 @@ E.Options.args.general = {
 					}
 				},
 				smoothingAmount = {
-					order = 15,
+					order = 16,
 					type = "range",
 					isPercent = true,
 					name = L["Smoothing Amount"],
@@ -168,7 +175,7 @@ E.Options.args.general = {
 					end
 				},
 				locale = {
-					order = 16,
+					order = 17,
 					type = "select",
 					name = L["LANGUAGE"],
 					get = function(info) return E.global.general.locale end,

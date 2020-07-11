@@ -786,7 +786,7 @@ do
 					if not E.recievedOutOfDateMessage then
 						print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-MoP"])
 
-						if msg and ((msg - ver) >= 0.01) and not inCombat then
+						if not inCombat and not E.global.general.ignoreVersionPopup then
 							E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
 						end
 

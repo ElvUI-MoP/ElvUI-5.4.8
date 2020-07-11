@@ -598,6 +598,7 @@ L["If you have any plugins supporting this feature installed you can find them i
 L["If you unlock actionbars then trying to move a spell might instantly cast it if you cast spells on key press instead of key release."] = "Wenn du die Aktionsleisten entsperrst und versuchst einen Zauber zu verschieben, wird voraussichtlich der Zauber ausgelöst beim drücken anstatt beim loslassen der Taste."
 L["Ignore mouse events."] = "Ignoriere Maus Events."
 L["Ignore UI Scale Popup"] = "Ignoriere UI Skalierungs-Popup"
+L["Ignore Version Popup"] = true
 L["Ignored Items and Search Syntax (Global)"] = "Ignorierte Gegenstände oder Suchoperatoren (Global)"
 L["Ignored Items and Search Syntax (Profile)"] = "Ignorierte Gegenstände oder Suchoperatoren (Profil)"
 L["Import Profile"] = "Importiere Profil"

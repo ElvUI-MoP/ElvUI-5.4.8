@@ -597,6 +597,7 @@ L["If you have any plugins supporting this feature installed you can find them i
 L["If you unlock actionbars then trying to move a spell might instantly cast it if you cast spells on key press instead of key release."] = "Если вы разблокируете панели, а затем попытаетесь переместить заклинание, оно может быть применено мгновенно, если включено применение при нажатии."
 L["Ignore mouse events."] = "Игнорировать мышь"
 L["Ignore UI Scale Popup"] = "Игнорировать уведомление масштаба"
+L["Ignore Version Popup"] = true
 L["Ignored Items and Search Syntax (Global)"] = "Игнорируемые предметы и синтаксис (Глобальный)"
 L["Ignored Items and Search Syntax (Profile)"] = "Игнорируемые предметы и синтаксис (Профиль)"
 L["Import Profile"] = "Импорт профиля"

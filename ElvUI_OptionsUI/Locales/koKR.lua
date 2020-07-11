@@ -596,6 +596,7 @@ L["If you have any plugins supporting this feature installed you can find them i
 L["If you unlock actionbars then trying to move a spell might instantly cast it if you cast spells on key press instead of key release."] = true
 L["Ignore mouse events."] = "아이콘이 마우스에 전혀 반응하지 않도록 합니다. 클릭 입력도 아이콘을 통과하게 됩니다."
 L["Ignore UI Scale Popup"] = true
+L["Ignore Version Popup"] = true
 L["Ignored Items and Search Syntax (Global)"] = "제외된 아이템 또는 검색구문 (전역)"
 L["Ignored Items and Search Syntax (Profile)"] = "제외된 아이템 또는 검색구문 (프로필)"
 L["Import Profile"] = "프로필 가져오기"

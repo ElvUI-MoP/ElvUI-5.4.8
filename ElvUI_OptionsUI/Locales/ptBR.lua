@@ -596,6 +596,7 @@ L["If you have any plugins supporting this feature installed you can find them i
 L["If you unlock actionbars then trying to move a spell might instantly cast it if you cast spells on key press instead of key release."] = true
 L["Ignore mouse events."] = "Ignorar eventos do rato (mouse)."
 L["Ignore UI Scale Popup"] = true
+L["Ignore Version Popup"] = true
 L["Ignored Items and Search Syntax (Global)"] = true
 L["Ignored Items and Search Syntax (Profile)"] = true
 L["Import Profile"] = true
