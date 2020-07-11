@@ -231,9 +231,8 @@ end
 AceComm.callbacks.OnUsed = nil
 AceComm.callbacks.OnUnused = nil
 
-local function OnEvent(this, event, ...)
+local function OnEvent(self, event, prefix, message, distribution, sender)
 	if event == "CHAT_MSG_ADDON" then
-		local prefix,message,distribution,sender = ...
 		local control, rest = match(message, "^([\001-\009])(.*)")
 		if control then
 			if control==MSG_MULTI_FIRST then

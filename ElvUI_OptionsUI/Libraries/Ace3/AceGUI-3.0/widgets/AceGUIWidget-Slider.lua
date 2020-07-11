@@ -176,6 +176,9 @@ local methods = {
 	end,
 
 	["SetSliderValues"] = function(self, min, max, step)
+		if type(min) == 'function' then min = min() end -- ElvUI
+		if type(max) == 'function' then max = max() end -- ElvUI
+
 		local frame = self.slider
 		frame.setup = true
 		self.min = min

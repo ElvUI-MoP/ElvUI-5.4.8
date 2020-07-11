@@ -130,6 +130,7 @@ local methods = {
 
 	["SetFont"] = function(self, font, height, flags)
 		self.label:SetFont(font, height, flags)
+		UpdateImageAnchor(self)
 	end,
 
 	["SetFontObject"] = function(self, font)
