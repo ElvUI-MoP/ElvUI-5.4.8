@@ -1961,7 +1961,8 @@ local function GetUnitSettings(unit, name)
 									["CURRENT_MAX_PERCENT"] = L["Current - Max | Percent"],
 									["PERCENT"] = L["Percent"],
 									["DEFICIT"] = L["Deficit"]
-								}
+								},
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							},
 							position = {
 								order = 3,
@@ -1973,7 +1974,8 @@ local function GetUnitSettings(unit, name)
 									["TOPRIGHT"] = L["Top Right"],
 									["BOTTOMLEFT"] = L["Bottom Left"],
 									["BOTTOMRIGHT"] = L["Bottom Right"]
-								}
+								},
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							},
 							parent = {
 								order = 4,
@@ -1982,39 +1984,45 @@ local function GetUnitSettings(unit, name)
 								values = {
 									["Nameplate"] = L["Nameplate"],
 									["Health"] = L["HEALTH"]
-								}
+								},
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							},
 							xOffset = {
 								order = 5,
 								type = "range",
 								name = L["X-Offset"],
-								min = -100, max = 100, step = 1
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							},
 							yOffset = {
 								order = 6,
 								type = "range",
 								name = L["Y-Offset"],
-								min = -100, max = 100, step = 1
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							},
 							font = {
 								order = 7,
 								type = "select",
 								name = L["Font"],
 								dialogControl = "LSM30_Font",
-								values = AceGUIWidgetLSMlists.font
+								values = AceGUIWidgetLSMlists.font,
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							},
 							fontSize = {
 								order = 8,
 								type = "range",
 								name = L["FONT_SIZE"],
-								min = 4, max = 32, step = 1
+								min = 4, max = 32, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							},
 							fontOutline = {
 								order = 9,
 								type = "select",
 								name = L["Font Outline"],
 								desc = L["Set the font outline."],
-								values = C.Values.FontFlags
+								values = C.Values.FontFlags,
+								disabled = function() return not E.db.nameplates.units[unit].health.text.enable end
 							}
 						}
 					}
@@ -2155,18 +2163,19 @@ local function GetUnitSettings(unit, name)
 							E.db.nameplates.units[unit].castbar[info[#info]] = value
 							NP:ConfigureAll()
 						end,
-						disabled = function() return not E.db.nameplates.units[unit].castbar.enable end,
 						args = {
 							showIcon = {
 								order = 1,
 								type = "toggle",
-								name = L["ENABLE"]
+								name = L["ENABLE"],
+								disabled = function() return not E.db.nameplates.units[unit].castbar.enable end
 							},
 							iconSize = {
 								order = 2,
 								type = "range",
 								name = L["Icon Size"],
-								min = 4, max = 40, step = 1
+								min = 4, max = 40, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].castbar.showIcon or not E.db.nameplates.units[unit].castbar.enable end
 							},
 							iconPosition = {
 								order = 3,
@@ -2175,19 +2184,22 @@ local function GetUnitSettings(unit, name)
 								values = {
 									["LEFT"] = L["Left"],
 									["RIGHT"] = L["Right"]
-								}
+								},
+								disabled = function() return not E.db.nameplates.units[unit].castbar.showIcon or not E.db.nameplates.units[unit].castbar.enable end
 							},
 							iconOffsetX = {
 								order = 4,
 								type = "range",
 								name = L["X-Offset"],
-								min = -100, max = 100, step = 1
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].castbar.showIcon or not E.db.nameplates.units[unit].castbar.enable end
 							},
 							iconOffsetY = {
 								order = 5,
 								type = "range",
 								name = L["Y-Offset"],
-								min = -100, max = 100, step = 1
+								min = -100, max = 100, step = 1,
+								disabled = function() return not E.db.nameplates.units[unit].castbar.showIcon or not E.db.nameplates.units[unit].castbar.enable end
 							}
 						}
 					}
@@ -3057,7 +3069,8 @@ local function GetUnitSettings(unit, name)
 					abbrev = {
 						order = 2,
 						type = "toggle",
-						name = L["Abbreviation"]
+						name = L["Abbreviation"],
+						disabled = function() return not E.db.nameplates.units[unit].name.enable end
 					},
 					spacer = {
 						order = 3,
