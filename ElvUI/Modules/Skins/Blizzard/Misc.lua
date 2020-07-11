@@ -317,60 +317,65 @@ local function LoadSkin()
 		menuBackdrop:SetTemplate("Transparent")
 	end)
 
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
-		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
-			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
-				local button = _G["DropDownList"..i.."Button"..j]
-				local check = _G["DropDownList"..i.."Button"..j.."Check"]
-				local uncheck = _G["DropDownList"..i.."Button"..j.."UnCheck"]
-				local highlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
-				local colorSwatch = _G["DropDownList"..i.."Button"..j.."ColorSwatch"]
-				local r, g, b = unpack(E.media.rgbvaluecolor)
+	local function dropDownButtonShow(self)
+		if self.notCheckable then
+			self.check.backdrop:Hide()
+		else
+			self.check.backdrop:Show()
+		end
+	end
 
-				if not button.isSkinned then
-					button:CreateBackdrop()
-					button.backdrop:SetOutside(check)
+	local menuLevel, maxButtons = 0, 0
+	local checkBoxSkin = E.private.skins.checkBoxSkin
+	local function skinDropdownMenu()
+		local updateButtons = maxButtons < UIDROPDOWNMENU_MAXBUTTONS
 
-					highlight:SetTexture(E.Media.Textures.Highlight)
-					highlight:SetVertexColor(r, g, b, 0.7)
-					highlight:SetInside()
-					highlight:SetBlendMode("BLEND")
-					highlight:SetDrawLayer("BACKGROUND")
+		if updateButtons or menuLevel < UIDROPDOWNMENU_MAXLEVELS then
+			for i = 1, UIDROPDOWNMENU_MAXLEVELS do
+				if updateButtons then
+					for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
+						local button = _G["DropDownList"..i.."Button"..j]
 
-					check:SetTexture(E.media.normTex)
-					check:SetVertexColor(r, g, b)
-					check:Size(12)
+						if not button.isSkinned then
+							local r, g, b = unpack(E.media.rgbvaluecolor)
+							local highlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
+							highlight:SetTexture(E.Media.Textures.Highlight)
+							highlight:SetVertexColor(r, g, b, 0.7)
+							highlight:SetInside()
+							highlight:SetBlendMode("BLEND")
+							highlight:SetDrawLayer("BACKGROUND")
 
-					uncheck:SetTexture()
+							if checkBoxSkin then
+								local check = _G["DropDownList"..i.."Button"..j.."Check"]
+								check:CreateBackdrop()
+								check:SetTexture(E.media.normTex)
+								check:SetVertexColor(r, g, b)
+								check:SetTexCoord(0, 1, 0, 1)
+								check.SetTexCoord = E.noop
+								check:Point("LEFT", 1, 0)
+								check:Size(12)
 
-					S:HandleColorSwatch(colorSwatch, 12)
+								button.check = check
+								hooksecurefunc(button, "Show", dropDownButtonShow)
 
-					button.isSkinned = true
+								_G["DropDownList"..i.."Button"..j.."UnCheck"]:SetTexture()
+							end
+
+							S:HandleColorSwatch(_G["DropDownList"..i.."Button"..j.."ColorSwatch"], 12)
+
+							button.isSkinned = true
+						end
+					end
 				end
 			end
+
+			menuLevel = UIDROPDOWNMENU_MAXLEVELS
+			maxButtons = UIDROPDOWNMENU_MAXBUTTONS
 		end
-	end)
+	end
 
-	hooksecurefunc("ToggleDropDownMenu", function(level)
-		if not level then level = 1 end
-
-		for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
-			local button = _G["DropDownList"..level.."Button"..i]
-			local check = _G["DropDownList"..level.."Button"..i.."Check"]
-
-			check:SetTexCoord(0, 1, 0, 1)
-
-			if not button.notCheckable then
-				if button.backdrop then
-					button.backdrop:Show()
-				end
-			else
-				if button.backdrop then
-					button.backdrop:Hide()
-				end
-			end
-		end
-	end)
+	skinDropdownMenu()
+	hooksecurefunc("UIDropDownMenu_InitializeHelper", skinDropdownMenu)
 
 	-- Chat Menu
 	for _, frame in pairs({"ChatMenu", "EmoteMenu", "LanguageMenu", "VoiceMacroMenu"}) do

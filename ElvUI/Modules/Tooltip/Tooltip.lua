@@ -266,19 +266,34 @@ function TT:SetUnitText(tt, unit)
 		if TT.db.showElvUIUsers then
 			local addonUser = E.UserList[nameRealm]
 			if addonUser then
-				local v, r, g, b = addonUser == E.version, unpack(E.media.rgbvaluecolor)
+				local r, g
+				if addonUser == E.version then
+					r, g = 0, 1
+				elseif addonUser > E.version then
+					r, g = 1, 1
+				elseif addonUser < E.version then
+					r, g = 1, 0
+				end
 
-				GameTooltip:AddDoubleLine(E.title, format("%s%s", "v", addonUser), r, g, b, v and 0 or 1, v and 1 or 0, 0)
+				GameTooltip:AddDoubleLine(E.title, format("%.02f", addonUser), nil, nil, nil, r, g, 0)
 			end
 
 			-- Support private servers with custom realm name at character's 'name-realm'
 			for _, customRealm in pairs(E.privateServerRealms) do
 				local customRealmName = format("%s-%s", name, customRealm)
 				local customAddonUser = E.UserList[customRealmName]
-				if customAddonUser then
-					local v, r, g, b = customAddonUser == E.version, unpack(E.media.rgbvaluecolor)
 
-					GameTooltip:AddDoubleLine(E.title, format("%s%s", "v", customAddonUser), r, g, b, v and 0 or 1, v and 1 or 0, 0)
+				if customAddonUser then
+					local r, g
+					if customAddonUser == E.version then
+						r, g = 0, 1
+					elseif customAddonUser > E.version then
+						r, g = 1, 1
+					elseif customAddonUser < E.version then
+						r, g = 1, 0
+					end
+
+					GameTooltip:AddDoubleLine(E.title, format("%.02f", customAddonUser), nil, nil, nil, r, g, 0)
 				end
 			end
 		end
