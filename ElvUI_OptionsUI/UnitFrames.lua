@@ -568,7 +568,6 @@ local function GetOptionsTable_Auras(auraType, isGroupFrame, updateFunc, groupNa
 						order = 1,
 						type = "execute",
 						name = L["Cooldowns"],
-						buttonElvUI = true,
 						func = function() ACD:SelectGroup("ElvUI", "cooldown", "unitframe") end,
 					},
 					durationPosition = {
@@ -1751,7 +1750,6 @@ local function GetOptionsTable_HealPrediction(updateFunc, groupName, numGroup)
 				order = 3,
 				type = "execute",
 				name = L["COLORS"],
-				buttonElvUI = true,
 				func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup", "healPrediction") end,
 				disabled = function() return not E.UnitFrames.Initialized end
 			}
