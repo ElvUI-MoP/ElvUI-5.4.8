@@ -368,7 +368,6 @@ function CH:StyleChat(frame)
 		end
 
 		editbox.characterCount:SetText(len > 0 and (255 - len) or "")
-		end
 	end
 
 	--Work around broken SetAltArrowKeyMode API. Code from Prat
