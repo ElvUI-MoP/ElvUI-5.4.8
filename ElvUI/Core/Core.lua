@@ -1329,6 +1329,12 @@ function E:DBConversions()
 			end
 		end
 	end
+
+	-- Arena frames spec icon
+	if type(E.db.unitframe.units.arena.pvpSpecIcon) ~= "table" then
+		E.db.unitframe.units.arena.pvpSpecIcon = {}
+		E.db.unitframe.units.arena.pvpSpecIcon.enable = E.db.unitframe.units.arena.pvpSpecIcon
+	end
 end
 
 function E:RefreshModulesDB()

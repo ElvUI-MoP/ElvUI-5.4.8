@@ -5895,26 +5895,20 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 					desc = L["Middle clicking the unit frame will cause your focus to match the unit."],
 					disabled = function() return IsAddOnLoaded("Clique") end
 				},
-				pvpSpecIcon = {
-					order = 10,
-					type = "toggle",
-					name = L["Spec Icon"],
-					desc = L["Display icon on arena frame indicating the units talent specialization or the units faction if inside a battleground."]
-				},
 				disableMouseoverGlow = {
-					order = 11,
+					order = 10,
 					type = "toggle",
 					name = L["Block Mouseover Glow"],
 					desc = L["Forces Mouseover Glow to be disabled for these frames"]
 				},
 				disableTargetGlow = {
-					order = 12,
+					order = 11,
 					type = "toggle",
 					name = L["Block Target Glow"],
 					desc = L["Forces Target Glow to be disabled for these frames"]
 				},
 				disableFocusGlow = {
-					order = 13,
+					order = 12,
 					type = "toggle",
 					name = L["Block Focus Glow"],
 					desc = L["Forces Focus Glow to be disabled for these frames"]
@@ -5922,7 +5916,6 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 			}
 		},
 		pvpTrinket = {
-			order = 4001,
 			type = "group",
 			name = L["PVP Trinket"],
 			get = function(info) return E.db.unitframe.units.arena.pvpTrinket[info[#info]] end,
@@ -5959,6 +5952,26 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 					type = "range",
 					name = L["Y-Offset"],
 					min = -60, max = 60, step = 1
+				}
+			}
+		},
+		pvpSpecIcon = {
+			type = "group",
+			name = L["Spec Icon"],
+			get = function(info) return E.db.unitframe.units.arena.pvpSpecIcon[info[#info]] end,
+			set = function(info, value) E.db.unitframe.units.arena.pvpSpecIcon[info[#info]] = value UF:CreateAndUpdateUFGroup("arena", 5) end,
+			args = {
+				enable = {
+					order = 1,
+					type = "toggle",
+					name = L["ENABLE"],
+					desc = L["Display icon on arena frame indicating the units talent specialization or the units faction if inside a battleground."]
+				},
+				width = {
+					order = 2,
+					type = "range",
+					name = L["Width"],
+					min = 20, max = 100, step = 1
 				}
 			}
 		},

@@ -3092,7 +3092,6 @@ P.unitframe = {
 			spacing = 25,
 			width = 246,
 			height = 47,
-			pvpSpecIcon = true,
 			healPrediction = {
 				enable = true,
 				showOverAbsorbs = true
@@ -3244,6 +3243,10 @@ P.unitframe = {
 				size = 46,
 				xOffset = 1,
 				yOffset = 0
+			},
+			pvpSpecIcon = {
+				enable = true,
+				width = 50
 			},
 			cutaway = {
 				health = {
