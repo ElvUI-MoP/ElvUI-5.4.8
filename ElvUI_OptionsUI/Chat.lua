@@ -6,6 +6,8 @@ local Layout = E:GetModule("Layout")
 
 local gsub, strlower = string.gsub, string.lower
 
+local tabSelectorTable = {}
+
 E.Options.args.chat = {
 	order = 2,
 	type = "group",
@@ -69,7 +71,7 @@ E.Options.args.chat = {
 				lfgIcons = {
 					order = 6,
 					type = "toggle",
-					name = L["LFG Icons"],
+					name = L["Role Icon"],
 					desc = L["Display LFG Icons in group chat."],
 					set = function(self, value)
 						E.db.chat.lfgIcons = value
@@ -237,8 +239,90 @@ E.Options.args.chat = {
 						}
 					}
 				},
-				fadingGroup = {
+				tabSelection = {
 					order = 21,
+					type = "group",
+					name = L["Tab Selector"],
+					set = function(info, value)
+						E.db.chat[info[#info]] = value
+						CH:UpdateChatTabColors()
+					end,
+					args = {
+						tabSelectedTextEnabled = {
+							order = 1,
+							type = "toggle",
+							name = L["Colorize Selected Text"]
+						},
+						tabSelectedTextColor = {
+							order = 2,
+							type = "color",
+							hasAlpha = false,
+							name = L["Selected Text Color"],
+							disabled = function() return not E.db.chat.tabSelectedTextEnabled end,
+							get = function()
+								local t = E.db.chat.tabSelectedTextColor
+								local d = P.chat.tabSelectedTextColor
+								return t.r, t.g, t.b, t.a, d.r, d.g, d.b
+							end,
+							set = function(_, r, g, b)
+								local t = E.db.chat.tabSelectedTextColor
+								t.r, t.g, t.b = r, g, b
+								CH:UpdateChatTabColors()
+							end
+						},
+						spacer = {
+							order = 3,
+							type = "description",
+							name = ""
+						},
+						tabSelector = {
+							order = 4,
+							type = "select",
+							name = L["Selector Style"],
+							values = function()
+								wipe(tabSelectorTable)
+
+								for key, value in pairs(CH.TabStyles) do
+									if key == "NONE" then
+										tabSelectorTable[key] = "None"
+									else
+										local color = CH.db.tabSelectorColor
+										local hexColor = E:RGBToHex(color.r, color.g, color.b)
+										local selectedColor = E.media.hexvaluecolor
+
+										if CH.db.tabSelectedTextEnabled then
+											color = E.db.chat.tabSelectedTextColor
+											selectedColor = E:RGBToHex(color.r, color.g, color.b)
+										end
+
+										tabSelectorTable[key] = format(value, hexColor, format("%sName|r", selectedColor), hexColor)
+									end
+								end
+
+								return tabSelectorTable
+							end
+						},
+						tabSelectorColor = {
+							order = 5,
+							type = "color",
+							hasAlpha = false,
+							name = L["Selector Color"],
+							disabled = function() return E.db.chat.tabSelector == "NONE" end,
+							get = function()
+								local t = E.db.chat.tabSelectorColor
+								local d = P.chat.tabSelectorColor
+								return t.r, t.g, t.b, t.a, d.r, d.g, d.b
+							end,
+							set = function(_, r, g, b)
+								local t = E.db.chat.tabSelectorColor
+								t.r, t.g, t.b = r, g, b
+								E:UpdateMedia()
+							end
+						}
+					}
+				},
+				fadingGroup = {
+					order = 22,
 					type = "group",
 					name = L["Text Fade"],
 					disabled = function() return not E.Chat.Initialized end,
@@ -261,7 +345,7 @@ E.Options.args.chat = {
 					}
 				},
 				fontGroup = {
-					order = 22,
+					order = 23,
 					type = "group",
 					name = L["Fonts"],
 					set = function(info, value) E.db.chat[info[#info]] = value CH:SetupChat() end,
@@ -307,7 +391,7 @@ E.Options.args.chat = {
 					}
 				},
 				alerts = {
-					order = 23,
+					order = 24,
 					type = "group",
 					name = L["Alerts"],
 					disabled = function() return not E.Chat.Initialized end,
@@ -389,7 +473,7 @@ E.Options.args.chat = {
 					}
 				},
 				timestampGroup = {
-					order = 24,
+					order = 25,
 					type = "group",
 					name = L["TIMESTAMPS_LABEL"],
 					args = {
@@ -433,7 +517,7 @@ E.Options.args.chat = {
 					}
 				},
 				classColorMentionGroup = {
-					order = 25,
+					order = 26,
 					type = "group",
 					name = L["Class Color Mentions"],
 					args = {

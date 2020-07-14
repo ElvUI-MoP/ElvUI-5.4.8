@@ -28,6 +28,7 @@ local CreateFrame = CreateFrame
 local FCFManager_ShouldSuppressMessage = FCFManager_ShouldSuppressMessage
 local FCFManager_ShouldSuppressMessageFlash = FCFManager_ShouldSuppressMessageFlash
 local FCFTab_UpdateAlpha = FCFTab_UpdateAlpha
+local FCF_Close = FCF_Close
 local FCF_GetChatWindowInfo = FCF_GetChatWindowInfo
 local FCF_GetCurrentChatFrame = FCF_GetCurrentChatFrame
 local FCF_SavePositionAndDimensions = FCF_SavePositionAndDimensions
@@ -309,13 +310,6 @@ function CH:StyleChat(frame)
 	end)
 
 	tab.text = _G[name.."TabText"]
-	tab.text:SetTextColor(unpack(E.media.rgbvaluecolor))
-	hooksecurefunc(tab.text, "SetTextColor", function(tt, r, g, b)
-		local rR, gG, bB = unpack(E.media.rgbvaluecolor)
-		if r ~= rR or g ~= gG or b ~= bB then
-			tt:SetTextColor(rR, gG, bB)
-		end
-	end)
 
 	if tab.conversationIcon then
 		tab.text:Point("LEFT", tab.leftTexture, "RIGHT", 10, -5)
@@ -794,12 +788,14 @@ function CH:Panels_ColorUpdate()
 	RightChatPanel.backdrop:SetBackdropColor(panelColor.r, panelColor.g, panelColor.b, panelColor.a)
 end
 
-local function UpdateChatTabColor(_, r, g, b)
-	for id = 1, #CHAT_FRAMES do
-		_G["ChatFrame"..id.."TabText"]:SetTextColor(r, g, b)
+function CH:UpdateChatTabColors()
+	for _, frameName in ipairs(CHAT_FRAMES) do
+		local tab = _G[format("%sTab", frameName)]
+
+		CH:FCFTab_UpdateColors(tab, tab.selected)
 	end
 end
-E.valueColorUpdateFuncs[UpdateChatTabColor] = true
+E.valueColorUpdateFuncs[CH.UpdateChatTabColors] = true
 
 function CH:ScrollToBottom(frame)
 	frame:ScrollToBottom()
@@ -1010,16 +1006,14 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 		end
 
 		local _, _, englishClass, _, _, _, name, realm = pcall(GetPlayerInfoByGUID, arg12)
-		local coloredName = historySavedName or CH:GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
-		local nameWithRealm -- we also use this lower in function to correct mobile to link with the realm as well
-
-		--Cache name->class
-		realm = (realm and realm ~= "") and E:ShortenRealm(realm)
+		local nameWithRealm = strmatch(realm ~= "" and realm or E.myrealm, "%s*(%S+)$")
 		if name and name ~= "" then
+			nameWithRealm = name.."-"..nameWithRealm
 			CH.ClassNames[strlower(name)] = englishClass
-			nameWithRealm = (realm and name.."-"..realm) or name.."-"..PLAYER_REALM
 			CH.ClassNames[strlower(nameWithRealm)] = englishClass
 		end
+
+		local coloredName = historySavedName or CH:GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
 
 		local channelLength = strlen(arg4)
 		local infoType = chatType
@@ -1721,6 +1715,16 @@ function CH:PET_BATTLE_CLOSE()
 	end
 end
 
+function CH:FCF_Close()
+	-- clear these off when it's closed, used by FCFTab_UpdateColors
+	for _, frameName in ipairs(CHAT_FRAMES) do
+		local tab = _G[format("%sTab", frameName)]
+
+		tab.whisperName = nil
+		tab.classColor = nil
+	end
+end
+
 function CH:UpdateFading()
 	for _, frameName in ipairs(CHAT_FRAMES) do
 		local frame = _G[frameName]
@@ -1734,6 +1738,7 @@ function CH:DisplayChatHistory()
 	local data = ElvCharacterDB.ChatHistoryLog
 	if not (data and next(data)) then return end
 
+	CH.SoundTimer = true
 	for _, chat in ipairs(CHAT_FRAMES) do
 		for _, d in ipairs(data) do
 			if type(d) == "table" then
@@ -1749,6 +1754,7 @@ function CH:DisplayChatHistory()
 			end
 		end
 	end
+	CH.SoundTimer = nil
 end
 
 tremove(ChatTypeGroup.GUILD, 2)
@@ -2077,6 +2083,61 @@ function CH:BuildCopyChatFrame()
 	Skins:HandleCloseButton(close)
 end
 
+CH.TabStyles = {
+	NONE	= "%s",
+	ARROW	= "%s>|r%s%s<|r",
+	ARROW1	= "%s>|r %s %s<|r",
+	ARROW2	= "%s<|r%s%s>|r",
+	ARROW3	= "%s<|r %s %s>|r",
+	BOX		= "%s[|r%s%s]|r",
+	BOX1	= "%s[|r %s %s]|r",
+	CURLY	= "%s{|r%s%s}|r",
+	CURLY1	= "%s{|r %s %s}|r",
+	CURVE	= "%s(|r%s%s)|r",
+	CURVE1	= "%s(|r %s %s)|r"
+}
+
+function CH:FCFTab_UpdateColors(tab, selected)
+	local chat = _G[format("ChatFrame%s", tab:GetID())]
+
+	tab.selected = selected
+
+	local whisper = tab.conversationIcon and chat.chatTarget
+
+	if whisper and not tab.whisperName then
+		tab.whisperName = gsub(E:StripMyRealm(chat.name), "([%S]-)%-[%S]+", "%1|cFF999999*|r")
+	end
+
+	if selected and chat.isDocked then
+		if CH.db.tabSelector ~= "NONE" then
+			local color = CH.db.tabSelectorColor
+			local hexColor = E:RGBToHex(color.r, color.g, color.b)
+			tab:SetFormattedText(CH.TabStyles[CH.db.tabSelector] or CH.TabStyles.ARROW1, hexColor, tab.whisperName or chat.name, hexColor)
+		else
+			tab:SetText(tab.whisperName or chat.name)
+		end
+
+		if CH.db.tabSelectedTextEnabled and not whisper then
+			local color = CH.db.tabSelectedTextColor
+			tab:GetFontString():SetTextColor(color.r, color.g, color.b)
+			return
+		end
+	else
+		tab:SetText(tab.whisperName or chat.name)
+	end
+
+	if whisper then
+		local classMatch = CH.ClassNames[strlower(chat.name)]
+		if classMatch then tab.classColor = E:ClassColor(classMatch) end
+
+		if tab.classColor then
+			tab:GetFontString():SetTextColor(tab.classColor.r, tab.classColor.g, tab.classColor.b)
+		end
+	else
+		tab:GetFontString():SetTextColor(unpack(E.media.rgbvaluecolor))
+	end
+end
+
 function CH:ResetEditboxHistory()
 	wipe(ElvCharacterDB.ChatEditHistory)
 end
@@ -2111,7 +2172,9 @@ function CH:Initialize()
 	CH:Panels_ColorUpdate()
 
 	CH:SecureHook("ChatEdit_OnEnterPressed")
+	CH:SecureHook("FCF_Close")
 	CH:SecureHook("FCF_SetWindowAlpha")
+	CH:SecureHook("FCFTab_UpdateColors")
 	CH:SecureHook("FCF_SetChatWindowFontSize", "SetChatFont")
 	CH:SecureHook("FCF_SavePositionAndDimensions", "ON_FCF_SavePositionAndDimensions")
 	CH:RegisterEvent("UPDATE_CHAT_WINDOWS", "SetupChat")
