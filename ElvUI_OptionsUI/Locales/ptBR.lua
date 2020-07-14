@@ -1201,6 +1201,7 @@ L["When true, the header includes the player when not in a raid."] = "Quando ver
 L["When you go AFK display the AFK screen."] = true
 L["Whitelist"] = "Lista Branca"
 L["Width Multiplier"] = "Multiplicador de Comprimento"
+L["Width Override"] = true
 L["Width"] = "Comprimento"
 L["Will attempt to sell another item in set interval after previous one was sold."] = true
 L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."] = true

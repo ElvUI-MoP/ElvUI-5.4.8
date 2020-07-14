@@ -1201,6 +1201,7 @@ L["When true, the header includes the player when not in a raid."] = "若啟用,
 L["When you go AFK display the AFK screen."] = "當你離開時顯示暫離界面"
 L["Whitelist"] = "白名單"
 L["Width Multiplier"] = "寬度倍數"
+L["Width Override"] = true
 L["Width"] = "寬"
 L["Will attempt to sell another item in set interval after previous one was sold."] = "將會嘗試使用設定的時間間格後販賣下一個物品"
 L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."] = "如果沒有debuff則把buff顯示在debuff位置"

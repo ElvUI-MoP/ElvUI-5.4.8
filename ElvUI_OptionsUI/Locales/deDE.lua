@@ -1203,6 +1203,7 @@ L["When true, the header includes the player when not in a raid."] = "Wenn aktiv
 L["When you go AFK display the AFK screen."] = "AFK Bildschirm anzeigen wenn du AFK bist."
 L["Whitelist"] = "Weiße Liste"
 L["Width Multiplier"] = "Breitenmultiplikator"
+L["Width Override"] = true
 L["Width"] = "Breite"
 L["Will attempt to sell another item in set interval after previous one was sold."] = "Versucht einen anderen Gegenstand in einem bestimmten Intervall zu verkaufen, nachdem der vorherige verkauft wurde."
 L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."] = "Zeigt Stärkungszauber auf der Position der Schwächungszauber, wenn kein Schwächungszauber aktiv ist und vice versa."

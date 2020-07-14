@@ -133,7 +133,7 @@ function UF:Update_ArenaFrames(frame, db)
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
-		frame.PVPINFO_WIDTH = (db.pvpSpecIcon and db.pvpSpecIcon.enable) and (db.pvpSpecIcon.width + (frame.BORDER * 2)) or 0
+		frame.PVPINFO_WIDTH = (db.pvpSpecIcon and db.pvpSpecIcon.enable) and ((db.pvpSpecIcon.width > 0 and db.pvpSpecIcon.width or frame.UNIT_HEIGHT) + (frame.BORDER * 2)) or 0
 
 		frame.VARIABLES_SET = true
 	end

@@ -3246,7 +3246,7 @@ P.unitframe = {
 			},
 			pvpSpecIcon = {
 				enable = true,
-				width = 50
+				width = 0
 			},
 			cutaway = {
 				health = {

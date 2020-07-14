@@ -1201,6 +1201,7 @@ L["When true, the header includes the player when not in a raid."] = "활성화�
 L["When you go AFK display the AFK screen."] = "자리비움 시 UI가 자리비움모드로 전환됩니다."
 L["Whitelist"] = "화이트리스트"
 L["Width Multiplier"] = "배경 가로길이 배율"
+L["Width Override"] = true
 L["Width"] = "가로 길이"
 L["Will attempt to sell another item in set interval after previous one was sold."] = true
 L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."] = true
