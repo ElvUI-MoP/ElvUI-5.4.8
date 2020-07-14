@@ -10,7 +10,7 @@ function UF:Construct_PVPSpecIcon(frame)
 	specIcon.bg:SetTemplate("Default", nil, nil, self.thinBorders, true)
 	specIcon.bg:SetFrameLevel(specIcon:GetFrameLevel() - 1)
 
-	specIcon:SetFrameLevel(10)
+	specIcon:SetFrameLevel(50)
 	specIcon:SetInside(specIcon.bg)
 
 	return specIcon
@@ -33,10 +33,10 @@ function UF:Configure_PVPSpecIcon(frame)
 		specIcon.bg:ClearAllPoints()
 		if frame.ORIENTATION == "RIGHT" then
 			specIcon.bg:Point("BOTTOMRIGHT", anchor, "BOTTOMLEFT", -frame.BORDER + (frame.BORDER - frame.SPACING * 3), -frame.BORDER)
-			specIcon.bg:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.PVPINFO_WIDTH, frame.BORDER)
+			specIcon.bg:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.PVPINFO_WIDTH - frame.BORDER, frame.BORDER)
 		else
 			specIcon.bg:Point("BOTTOMLEFT", anchor, "BOTTOMRIGHT", frame.BORDER + (-frame.BORDER + frame.SPACING * 3), -frame.BORDER)
-			specIcon.bg:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.PVPINFO_WIDTH, frame.BORDER)
+			specIcon.bg:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.PVPINFO_WIDTH + frame.BORDER, frame.BORDER)
 		end
 	else
 		if frame:IsElementEnabled("PVPSpecIcon") then

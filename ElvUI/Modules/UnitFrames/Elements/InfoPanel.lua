@@ -19,19 +19,19 @@ function UF:Configure_InfoPanel(frame, noTemplateChange)
 		frame.InfoPanel:Show()
 		frame.InfoPanel:ClearAllPoints()
 
-		if frame.ORIENTATION == "RIGHT" and not (frame.unitframeType == "arena") then
+		if frame.ORIENTATION == "RIGHT" then
 			frame.InfoPanel:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -frame.BORDER - frame.SPACING, frame.BORDER + frame.SPACING)
 			if frame.USE_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED then
-				frame.InfoPanel:Point("TOPLEFT", frame.Power.backdrop, "BOTTOMLEFT", frame.BORDER - frame.STAGGER_WIDTH, -(frame.SPACING*3))
+				frame.InfoPanel:Point("TOPLEFT", frame.Power.backdrop, "BOTTOMLEFT", frame.BORDER - (frame.PVPINFO_WIDTH or 0) - (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
 			else
-				frame.InfoPanel:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER - frame.STAGGER_WIDTH, -(frame.SPACING*3))
+				frame.InfoPanel:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER - (frame.PVPINFO_WIDTH or 0) - (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
 			end
 		else
 			frame.InfoPanel:Point("BOTTOMLEFT", frame, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
 			if frame.USE_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED then
-				frame.InfoPanel:Point("TOPRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", -frame.BORDER + frame.STAGGER_WIDTH, -(frame.SPACING*3))
+				frame.InfoPanel:Point("TOPRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", -frame.BORDER + (frame.PVPINFO_WIDTH or 0) - (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
 			else
-				frame.InfoPanel:Point("TOPRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", -frame.BORDER + frame.STAGGER_WIDTH, -(frame.SPACING*3))
+				frame.InfoPanel:Point("TOPRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", -frame.BORDER + (frame.PVPINFO_WIDTH or 0) - (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
 			end
 		end
 

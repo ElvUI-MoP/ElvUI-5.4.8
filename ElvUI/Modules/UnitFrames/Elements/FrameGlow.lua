@@ -169,6 +169,10 @@ function UF:FrameGlow_PositionGlow(frame, mainGlow, powerGlow)
 		UF:FrameGlow_ClassGlowPosition(frame, "ComboPoints", mainGlow, offset)
 	elseif frame.AlternativePower and (frame.isForced or (frame.unit and frame.unit:find("boss%d"))) then
 		UF:FrameGlow_ClassGlowPosition(frame, "AlternativePower", mainGlow, offset)
+	elseif frame.PVPSpecIcon and frame.PVPSpecIcon:IsShown() then
+		local shownPanel = (frame.InfoPanel and frame.InfoPanel:IsShown() and frame.InfoPanel.backdrop)
+		mainGlow:Point(frame.ORIENTATION == "RIGHT" and "TOPLEFT" or "TOPRIGHT", frame.PVPSpecIcon.bg, frame.ORIENTATION == "RIGHT" and -offset or offset, offset)
+		mainGlow:Point(frame.ORIENTATION == "RIGHT" and "BOTTOMLEFT" or "BOTTOMRIGHT", shownPanel or frame.PVPSpecIcon.bg, frame.ORIENTATION == "RIGHT" and -offset or offset, -offset)
 	end
 end
 
