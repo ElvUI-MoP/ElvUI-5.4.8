@@ -14,9 +14,7 @@ local FCF_GetNumActiveChatFrames = FCF_GetNumActiveChatFrames
 local function GetChatWindowInfo()
 	local ChatTabInfo = {}
 	for i = 1, FCF_GetNumActiveChatFrames() do
-		if i ~= 2 then
-			ChatTabInfo["ChatFrame"..i] = _G["ChatFrame"..i.."Tab"]:GetText()
-		end
+		ChatTabInfo["ChatFrame"..i] = _G["ChatFrame"..i.."Tab"]:GetText()
 	end
 
 	return ChatTabInfo

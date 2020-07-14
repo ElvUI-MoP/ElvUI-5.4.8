@@ -23,10 +23,15 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 local CLASS_SORT_ORDER = CLASS_SORT_ORDER
 local MAX_RAID_MEMBERS = MAX_RAID_MEMBERS
 
-local attributeBlacklist = {["showRaid"] = true, ["showParty"] = true, ["showSolo"] = true}
 local configEnv
 local originalEnvs = {}
 local overrideFuncs = {}
+
+local attributeBlacklist = {
+	showRaid = true,
+	showParty = true,
+	showSolo = true
+}
 
 local function createConfigEnv()
 	if configEnv then return end

@@ -9,19 +9,20 @@ local assert, rawget, rawset, setmetatable, type = assert, rawget, rawset, setme
 local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
 local format, find, match, strrep, strlen, sub, gsub, strjoin = string.format, string.find, string.match, strrep, strlen, string.sub, string.gsub, strjoin
 
-local UnitGUID = UnitGUID
 local CreateFrame = CreateFrame
+local GetAddOnInfo = GetAddOnInfo
 local GetCVar = GetCVar
+local GetNumGroupMembers = GetNumGroupMembers
 local GetSpecialization = GetSpecialization
 local GetSpellInfo = GetSpellInfo
 local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
 local IsInGuild = IsInGuild
-local UnitLevel = UnitLevel
-local UnitFactionGroup = UnitFactionGroup
 local IsInRaid, IsInGroup = IsInRaid, IsInGroup
-local GetNumGroupMembers = GetNumGroupMembers
 local SendAddonMessage = SendAddonMessage
+local UnitFactionGroup = UnitFactionGroup
+local UnitGUID = UnitGUID
+local UnitLevel = UnitLevel
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
@@ -480,14 +481,47 @@ function E:IncompatibleAddOn(addon, module)
 	E:StaticPopup_Show("INCOMPATIBLE_ADDON", addon, module)
 end
 
+function E:IsAddOnEnabled(addon)
+	local _, _, _, enabled, _, reason = GetAddOnInfo(addon)
+	if reason ~= "MISSING" and enabled then
+		return true
+	end
+end
+
 function E:CheckIncompatible()
 	if E.global.ignoreIncompatible then return end
 
-	if IsAddOnLoaded("Prat-3.0") and E.private.chat.enable then E:IncompatibleAddOn("Prat-3.0", "Chat") end
-	if IsAddOnLoaded("Chatter") and E.private.chat.enable then E:IncompatibleAddOn("Chatter", "Chat") end
-	if IsAddOnLoaded("TidyPlates") and E.private.nameplates.enable then E:IncompatibleAddOn("TidyPlates", "NamePlates") end
-	if IsAddOnLoaded("Aloft") and E.private.nameplates.enable then E:IncompatibleAddOn("Aloft", "NamePlates") end
-	if IsAddOnLoaded("Healers-Have-To-Die") and E.private.nameplates.enable then E:IncompatibleAddOn("Healers-Have-To-Die", "NamePlates") end
+	if E.private.actionbar.enable then
+		if E:IsAddOnEnabled("Bartender4") then
+			E:IncompatibleAddOn("Bartender4", "ActionBars")
+		elseif E:IsAddOnEnabled("Dominos") then
+			E:IncompatibleAddOn("Dominos", "ActionBars")
+		end
+	end
+
+	if E.private.chat.enable then
+		if E:IsAddOnEnabled("Prat-3.0") then
+			E:IncompatibleAddOn("Prat-3.0", "Chat")
+		elseif E:IsAddOnEnabled("Chatter") then
+			E:IncompatibleAddOn("Chatter", "Chat")
+		end
+	end
+	
+	if E.private.nameplates.enable then
+		if E:IsAddOnEnabled("Aloft") then
+			E:IncompatibleAddOn("Aloft", "NamePlates")
+		elseif E:IsAddOnEnabled("Healers-Have-To-Die") then
+			E:IncompatibleAddOn("Healers-Have-To-Die", "NamePlates")
+		elseif E:IsAddOnEnabled("Kui_Nameplates") then
+			E:IncompatibleAddOn("Kui_Nameplates", "NamePlates")
+		elseif E:IsAddOnEnabled("TidyPlates") then
+			E:IncompatibleAddOn("TidyPlates", "NamePlates")
+		end
+	end
+
+	if E.private.tooltip.enable and E:IsAddOnEnabled("TipTac") then
+		E:IncompatibleAddOn("TipTac", "Tooltip")
+	end
 end
 
 function E:CopyTable(currentTable, defaultTable)
