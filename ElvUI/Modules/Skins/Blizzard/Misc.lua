@@ -376,6 +376,7 @@ local function LoadSkin()
 	hooksecurefunc("UIDropDownMenu_InitializeHelper", skinDropdownMenu)
 
 	hooksecurefunc("ToggleDropDownMenu", function(level)
+		if not E.private.skins.checkBoxSkin then return end
 		if not level then level = 1 end
 
 		for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
