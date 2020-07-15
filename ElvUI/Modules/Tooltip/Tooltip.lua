@@ -514,7 +514,8 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		if C_PetBattles_IsInBattle() then return end
 
 		local guid = UnitGUID(unit) or ""
-		local id = tonumber(sub(guid, 8, 12), 16)
+		local id = tonumber(sub(guid, 6, 10), 16)
+		
 		if id then
 			tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
 		end
