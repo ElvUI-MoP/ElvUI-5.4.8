@@ -1891,21 +1891,24 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 		set = function(info, value) E.db.unitframe.units[groupName].portrait[info[#info]] = value updateFunc(UF, groupName, numUnits) end,
 		args = {
 			warning = {
-				order = 2,
+				order = 1,
 				type = "description",
 				fontSize = "medium",
 				width = "full",
-				name = function()
-					return (E.db.unitframe.units[groupName].orientation == "MIDDLE" and L["Overlay mode is forced when the Frame Orientation is set to Middle."]) or ""
-				end
+				name = function() return (E.db.unitframe.units[groupName].orientation == "MIDDLE" and L["Overlay mode is forced when the Frame Orientation is set to Middle."]) or "" end
 			},
 			enable = {
-				order = 3,
+				order = 2,
 				type = "toggle",
 				name = L["ENABLE"],
 				desc = L["If you have a lot of 3D Portraits active then it will likely have a big impact on your FPS. Disable some portraits if you experience FPS issues."],
 				confirmText = L["If you have a lot of 3D Portraits active then it will likely have a big impact on your FPS. Disable some portraits if you experience FPS issues."],
-				confirm = true
+				confirm = function() return not E.db.unitframe.units[groupName].portrait.enable end
+			},
+			spacer = {
+				order = 3,
+				type = "description",
+				name = ""
 			},
 			overlay = {
 				order = 4,
@@ -1913,14 +1916,14 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				name = L["Overlay"],
 				desc = L["The Portrait will overlay the Healthbar. This will be automatically happen if the Frame Orientation is set to Middle."],
 				get = function(info) return (E.db.unitframe.units[groupName].orientation == "MIDDLE") or E.db.unitframe.units[groupName].portrait[info[#info]] end,
-				disabled = function() return E.db.unitframe.units[groupName].orientation == "MIDDLE" end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or E.db.unitframe.units[groupName].orientation == "MIDDLE" end
 			},
 			fullOverlay = {
 				order = 5,
 				type = "toggle",
 				name = L["Full Overlay"],
 				desc = L["This option allows the overlay to span the whole health, including the background."],
-				disabled = function() return not (E.db.unitframe.units[groupName].orientation == "MIDDLE" or E.db.unitframe.units[groupName].portrait.overlay) end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or (not E.db.unitframe.units[groupName].portrait.overlay and E.db.unitframe.units[groupName].orientation ~= "MIDDLE") end
 			},
 			style = {
 				order = 6,
@@ -1930,14 +1933,15 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				values = {
 					["2D"] = L["2D"],
 					["3D"] = L["3D"]
-				}
+				},
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable end
 			},
 			width = {
 				order = 7,
 				type = "range",
 				name = L["Width"],
 				min = 15, max = 150, step = 1,
-				disabled = function() return (E.db.unitframe.units[groupName].orientation == "MIDDLE" or E.db.unitframe.units[groupName].portrait.overlay) end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or E.db.unitframe.units[groupName].orientation == "MIDDLE" or E.db.unitframe.units[groupName].portrait.overlay end
 			},
 			overlayAlpha = {
 				order = 8,
@@ -1945,14 +1949,14 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				name = L["Overlay Alpha"],
 				desc = L["Set the alpha level of portrait when frame is overlayed."],
 				min = 0.01, max = 1, step = 0.01,
-				disabled = function() return not (E.db.unitframe.units[groupName].orientation == "MIDDLE" or E.db.unitframe.units[groupName].portrait.overlay) end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or (not E.db.unitframe.units[groupName].portrait.overlay and E.db.unitframe.units[groupName].orientation ~= "MIDDLE") end
 			},
 			rotation = {
 				order = 9,
 				type = "range",
 				name = L["Model Rotation"],
 				min = 0, max = 360, step = 1,
-				disabled = function() return E.db.unitframe.units[groupName].portrait.style ~= "3D" end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or E.db.unitframe.units[groupName].portrait.style ~= "3D" end
 			},
 			camDistanceScale = {
 				order = 10,
@@ -1960,7 +1964,7 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				name = L["Camera Distance Scale"],
 				desc = L["How far away the portrait is from the camera."],
 				min = 0.01, max = 4, step = 0.01,
-				disabled = function() return E.db.unitframe.units[groupName].portrait.style ~= "3D" end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or E.db.unitframe.units[groupName].portrait.style ~= "3D" end
 			},
 			xOffset = {
 				order = 11,
@@ -1968,7 +1972,7 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				name = L["X-Offset"],
 				desc = L["Position the Model horizontally."],
 				min = -1, max = 1, step = 0.01,
-				disabled = function() return E.db.unitframe.units[groupName].portrait.style ~= "3D" end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or E.db.unitframe.units[groupName].portrait.style ~= "3D" end
 			},
 			yOffset = {
 				order = 12,
@@ -1976,7 +1980,7 @@ local function GetOptionsTable_Portrait(updateFunc, groupName, numUnits)
 				name = L["Y-Offset"],
 				desc = L["Position the Model vertically."],
 				min = -1, max = 1, step = 0.01,
-				disabled = function() return E.db.unitframe.units[groupName].portrait.style ~= "3D" end
+				disabled = function() return not E.db.unitframe.units[groupName].portrait.enable or E.db.unitframe.units[groupName].portrait.style ~= "3D" end
 			}
 		}
 	}

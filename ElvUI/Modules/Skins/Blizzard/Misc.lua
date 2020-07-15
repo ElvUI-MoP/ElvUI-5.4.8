@@ -350,8 +350,6 @@ local function LoadSkin()
 								check:CreateBackdrop()
 								check:SetTexture(E.media.normTex)
 								check:SetVertexColor(r, g, b)
-								check:SetTexCoord(0, 1, 0, 1)
-								check.SetTexCoord = E.noop
 								check:Point("LEFT", 1, 0)
 								check:Size(12)
 
@@ -376,6 +374,14 @@ local function LoadSkin()
 
 	skinDropdownMenu()
 	hooksecurefunc("UIDropDownMenu_InitializeHelper", skinDropdownMenu)
+
+	hooksecurefunc("ToggleDropDownMenu", function(level)
+		if not level then level = 1 end
+
+		for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
+			_G["DropDownList"..level.."Button"..i.."Check"]:SetTexCoord(0, 1, 0, 1)
+		end
+	end)
 
 	-- Chat Menu
 	for _, frame in pairs({"ChatMenu", "EmoteMenu", "LanguageMenu", "VoiceMacroMenu"}) do
