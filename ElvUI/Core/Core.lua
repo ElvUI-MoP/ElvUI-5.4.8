@@ -16,7 +16,6 @@ local GetNumGroupMembers = GetNumGroupMembers
 local GetSpecialization = GetSpecialization
 local GetSpellInfo = GetSpellInfo
 local InCombatLockdown = InCombatLockdown
-local IsAddOnLoaded = IsAddOnLoaded
 local IsInGuild = IsInGuild
 local IsInRaid, IsInGroup = IsInRaid, IsInGroup
 local SendAddonMessage = SendAddonMessage
@@ -506,7 +505,7 @@ function E:CheckIncompatible()
 			E:IncompatibleAddOn("Chatter", "Chat")
 		end
 	end
-	
+
 	if E.private.nameplates.enable then
 		if E:IsAddOnEnabled("Aloft") then
 			E:IncompatibleAddOn("Aloft", "NamePlates")
