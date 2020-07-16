@@ -15,23 +15,22 @@ function UF:Construct_BossFrames(frame)
 	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 100)
 
-	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
-	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
-	frame.Name = self:Construct_NameText(frame)
-	frame.Portrait3D = self:Construct_Portrait(frame, "model")
-	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
-	frame.InfoPanel = self:Construct_InfoPanel(frame)
-	frame.Buffs = self:Construct_Buffs(frame)
-	frame.Debuffs = self:Construct_Debuffs(frame)
-	frame.AuraHighlight = self:Construct_AuraHighlight(frame)
-	frame.Castbar = self:Construct_Castbar(frame)
-	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
-	frame.AlternativePower = self:Construct_AltPowerBar(frame)
-	frame.ClassBar = "AlternativePower"
-	frame.Fader = self:Construct_Fader()
-	frame.Cutaway = self:Construct_Cutaway(frame)
-	frame.MouseGlow = self:Construct_MouseGlow(frame)
-	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.Health = UF:Construct_HealthBar(frame, true, true, "RIGHT")
+	frame.Power = UF:Construct_PowerBar(frame, true, true, "LEFT")
+	frame.Power.displayAltPower = true
+	frame.Name = UF:Construct_NameText(frame)
+	frame.Portrait3D = UF:Construct_Portrait(frame, "model")
+	frame.Portrait2D = UF:Construct_Portrait(frame, "texture")
+	frame.InfoPanel = UF:Construct_InfoPanel(frame)
+	frame.Buffs = UF:Construct_Buffs(frame)
+	frame.Debuffs = UF:Construct_Debuffs(frame)
+	frame.AuraHighlight = UF:Construct_AuraHighlight(frame)
+	frame.Castbar = UF:Construct_Castbar(frame)
+	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+	frame.Fader = UF:Construct_Fader()
+	frame.Cutaway = UF:Construct_Cutaway(frame)
+	frame.MouseGlow = UF:Construct_MouseGlow(frame)
+	frame.TargetGlow = UF:Construct_TargetGlow(frame)
 	frame.FocusGlow = UF:Construct_FocusGlow(frame)
 	frame:SetAttribute("type2", "focus")
 	frame.customTexts = {}
@@ -51,7 +50,7 @@ function UF:Update_BossFrames(frame, db)
 		frame.UNIT_WIDTH = db.width
 		frame.UNIT_HEIGHT = db.infoPanel.enable and (db.height + db.infoPanel.height) or db.height
 		frame.USE_POWERBAR = db.power.enable
-		frame.POWERBAR_DETACHED = db.power.detachFromFrame
+		frame.POWERBAR_DETACHED = false
 		frame.USE_INSET_POWERBAR = not frame.POWERBAR_DETACHED and db.power.width == "inset" and frame.USE_POWERBAR
 		frame.USE_MINI_POWERBAR = (not frame.POWERBAR_DETACHED and db.power.width == "spaced" and frame.USE_POWERBAR)
 		frame.USE_POWERBAR_OFFSET = (db.power.width == "offset" and db.power.offset ~= 0) and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
@@ -61,15 +60,6 @@ function UF:Update_BossFrames(frame, db)
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT and (db.portrait.overlay or frame.ORIENTATION == "MIDDLE")
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
-		frame.CAN_HAVE_CLASSBAR = true
-		frame.MAX_CLASS_BAR = 0
-		frame.USE_CLASSBAR = true
-		frame.CLASSBAR_SHOWN = frame.AlternativePower:IsShown()
-		frame.CLASSBAR_DETACHED = false
-		frame.USE_MINI_CLASSBAR = false
-		frame.CLASSBAR_HEIGHT = frame.CLASSBAR_SHOWN and db.power.height or 0
-		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING) * 2) - frame.PORTRAIT_WIDTH  - frame.POWERBAR_OFFSET
-		frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN) and 0 or (frame.CLASSBAR_HEIGHT + frame.SPACING)
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
@@ -99,7 +89,6 @@ function UF:Update_BossFrames(frame, db)
 	UF:Configure_AllAuras(frame)
 	UF:Configure_Castbar(frame)
 	UF:Configure_RaidIcon(frame)
-	UF:Configure_AltPower(frame)
 	UF:Configure_AuraHighlight(frame)
 	UF:Configure_CustomTexts(frame)
 	UF:Configure_Fader(frame)
@@ -113,7 +102,7 @@ function UF:Update_BossFrames(frame, db)
 			frame:Point("LEFT", BossHeaderMover, "LEFT")
 		elseif db.growthDirection == "LEFT" then
 			frame:Point("RIGHT", BossHeaderMover, "RIGHT")
-		else
+		else --Down
 			frame:Point("TOPRIGHT", BossHeaderMover, "TOPRIGHT")
 		end
 	else
@@ -123,7 +112,7 @@ function UF:Update_BossFrames(frame, db)
 			frame:Point("LEFT", _G["ElvUF_Boss"..frame.index-1], "RIGHT", db.spacing, 0)
 		elseif db.growthDirection == "LEFT" then
 			frame:Point("RIGHT", _G["ElvUF_Boss"..frame.index-1], "LEFT", -db.spacing, 0)
-		else
+		else --Down
 			frame:Point("TOPRIGHT", _G["ElvUF_Boss"..frame.index-1], "BOTTOMRIGHT", 0, -db.spacing)
 		end
 	end

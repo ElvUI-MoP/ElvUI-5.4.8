@@ -117,7 +117,7 @@ function B:UpdateAltPowerBar()
 	PlayerPowerBarAlt:UnregisterAllEvents()
 	PlayerPowerBarAlt:Hide()
 
-	local barInfo, minPower, _, _, _, _, _, _, _, _, powerName, powerTooltip = UnitAlternatePowerInfo("player")
+	local barInfo, minPower, _, _, _, _, _, _, _, powerName, powerTooltip = UnitAlternatePowerInfo("player")
 
 	if barInfo then
 		local power = UnitPower("player", ALTERNATE_POWER_INDEX)

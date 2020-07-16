@@ -29,9 +29,9 @@ function UF:Configure_InfoPanel(frame, noTemplateChange)
 		else
 			frame.InfoPanel:Point("BOTTOMLEFT", frame, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
 			if frame.USE_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED then
-				frame.InfoPanel:Point("TOPRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", -frame.BORDER + (frame.PVPINFO_WIDTH or 0) - (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
+				frame.InfoPanel:Point("TOPRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", -frame.BORDER + (frame.PVPINFO_WIDTH or 0) + (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
 			else
-				frame.InfoPanel:Point("TOPRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", -frame.BORDER + (frame.PVPINFO_WIDTH or 0) - (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
+				frame.InfoPanel:Point("TOPRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", -frame.BORDER + (frame.PVPINFO_WIDTH or 0) + (frame.STAGGER_WIDTH or 0), -(frame.SPACING * 3))
 			end
 		end
 

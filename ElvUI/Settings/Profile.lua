@@ -3469,6 +3469,13 @@ P.unitframe = {
 					frameLevel = 1
 				}
 			},
+			classbar = {
+				enable = true,
+				fill = "fill",
+				height = 10,
+				altPowerColor = {r = 0.2, g = 0.4, b = 0.8},
+				altPowerTextFormat = "[altpower:current]"
+			},
 			roleIcon = {
 				enable = true,
 				position = "TOPRIGHT",
@@ -3633,6 +3640,13 @@ P.unitframe = {
 				hideonnpc = false,
 				yOffset = 2,
 				xOffset = -2
+			},
+			classbar = {
+				enable = true,
+				fill = "fill",
+				height = 10,
+				altPowerColor = {r = 0.2, g = 0.4, b = 0.8},
+				altPowerTextFormat = "[altpower:current]"
 			},
 			infoPanel = {
 				enable = false,
@@ -3864,6 +3878,13 @@ P.unitframe = {
 				hideonnpc = false,
 				yOffset = 2,
 				xOffset = -2
+			},
+			classbar = {
+				enable = true,
+				fill = "fill",
+				height = 10,
+				altPowerColor = {r = 0.2, g = 0.4, b = 0.8},
+				altPowerTextFormat = "[altpower:current]"
 			},
 			infoPanel = {
 				enable = false,

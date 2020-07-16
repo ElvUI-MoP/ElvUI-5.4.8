@@ -62,27 +62,27 @@ function UF:Construct_ArenaFrames(frame)
 	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 100)
 
-	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
-	frame.Name = self:Construct_NameText(frame)
+	frame.Health = UF:Construct_HealthBar(frame, true, true, "RIGHT")
+	frame.Name = UF:Construct_NameText(frame)
 
 	if not frame.isChild then
-		frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
-		frame.Portrait3D = self:Construct_Portrait(frame, "model")
-		frame.Portrait2D = self:Construct_Portrait(frame, "texture")
-		frame.Buffs = self:Construct_Buffs(frame)
-		frame.Debuffs = self:Construct_Debuffs(frame)
-		frame.Castbar = self:Construct_Castbar(frame)
-		frame.HealthPrediction = self:Construct_HealComm(frame)
-		frame.MouseGlow = self:Construct_MouseGlow(frame)
-		frame.TargetGlow = self:Construct_TargetGlow(frame)
+		frame.Power = UF:Construct_PowerBar(frame, true, true, "LEFT")
+		frame.Portrait3D = UF:Construct_Portrait(frame, "model")
+		frame.Portrait2D = UF:Construct_Portrait(frame, "texture")
+		frame.Buffs = UF:Construct_Buffs(frame)
+		frame.Debuffs = UF:Construct_Debuffs(frame)
+		frame.Castbar = UF:Construct_Castbar(frame)
+		frame.HealthPrediction = UF:Construct_HealComm(frame)
+		frame.MouseGlow = UF:Construct_MouseGlow(frame)
+		frame.TargetGlow = UF:Construct_TargetGlow(frame)
 		frame.FocusGlow = UF:Construct_FocusGlow(frame)
-		frame.Trinket = self:Construct_Trinket(frame)
-		frame.PVPSpecIcon = self:Construct_PVPSpecIcon(frame)
-		frame.Fader = self:Construct_Fader()
+		frame.Trinket = UF:Construct_Trinket(frame)
+		frame.PVPSpecIcon = UF:Construct_PVPSpecIcon(frame)
+		frame.Fader = UF:Construct_Fader()
 		frame:SetAttribute("type2", "focus")
 
 		frame.customTexts = {}
-		frame.InfoPanel = self:Construct_InfoPanel(frame)
+		frame.InfoPanel = UF:Construct_InfoPanel(frame)
 		frame.unitframeType = "arena"
 
 		-- Arena Preparation
@@ -104,7 +104,7 @@ function UF:Construct_ArenaFrames(frame)
 		frame.PostUpdate = self.PostUpdateArenaFrame -- used to hide arena prep info
 	end
 
-	frame.Cutaway = self:Construct_Cutaway(frame)
+	frame.Cutaway = UF:Construct_Cutaway(frame)
 
 	ArenaHeader:Point("BOTTOMRIGHT", E.UIParent, "RIGHT", -105, -165)
 	E:CreateMover(ArenaHeader, ArenaHeader:GetName().."Mover", L["Arena Frames"], nil, nil, nil, "ALL,ARENA", nil, "unitframe,groupUnits,arena,generalGroup")
@@ -119,7 +119,7 @@ function UF:Update_ArenaFrames(frame, db)
 		frame.UNIT_WIDTH = db.width
 		frame.UNIT_HEIGHT = db.infoPanel.enable and (db.height + db.infoPanel.height) or db.height
 		frame.USE_POWERBAR = db.power.enable
-		frame.POWERBAR_DETACHED = db.power.detachFromFrame
+		frame.POWERBAR_DETACHED = false
 		frame.USE_INSET_POWERBAR = not frame.POWERBAR_DETACHED and db.power.width == "inset" and frame.USE_POWERBAR
 		frame.USE_MINI_POWERBAR = (not frame.POWERBAR_DETACHED and db.power.width == "spaced" and frame.USE_POWERBAR)
 		frame.USE_POWERBAR_OFFSET = (db.power.width == "offset" and db.power.offset ~= 0) and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED

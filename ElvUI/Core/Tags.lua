@@ -340,7 +340,7 @@ for textFormat in pairs(E.GetFormattedTextStyles) do
 		end
 	end
 
-	ElvUF.Tags.Events[format("altpower:%s", tagTextFormat)] = "UNIT_POWER UNIT_POWER_BAR_SHOW UNIT_POWER_BAR_HIDE"
+	ElvUF.Tags.Events[format("altpower:%s", tagTextFormat)] = "UNIT_POWER_FREQUENT UNIT_POWER_BAR_SHOW UNIT_POWER_BAR_HIDE"
 	ElvUF.Tags.Methods[format("altpower:%s", tagTextFormat)] = function(u)
 		local cur = UnitPower(u, ALTERNATE_POWER_INDEX)
 

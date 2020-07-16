@@ -65,10 +65,12 @@ local function Update(self, event, unit, powerType)
 	end
 
 	local cur, max
-	local barType, min, _, _, _, _, _, _, _, _, powerName, powerTooltip = UnitAlternatePowerInfo(unit)
+	local barType, min, _, _, _, _, _, _, _, powerName, powerTooltip = UnitAlternatePowerInfo(unit)
+
 	element.barType = barType
 	element.powerName = powerName
 	element.powerTooltip = powerTooltip
+
 	if(barType) then
 		cur = UnitPower(unit, ALTERNATE_POWER_INDEX)
 		max = UnitPowerMax(unit, ALTERNATE_POWER_INDEX)
@@ -107,14 +109,14 @@ local function Visibility(self, event, unit)
 	local element = self.AlternativePower
 
 	local barType, _, _, _, _, hideFromOthers, showOnRaid = UnitAlternatePowerInfo(unit)
-	if(barType and (showOnRaid and (UnitInParty(unit) or UnitInRaid(unit)) or not hideFromOthers or unit == 'player' or self.realUnit == 'player')) then
-		self:RegisterEvent('UNIT_POWER', Path)
+	if barType and (showOnRaid and (UnitInParty(unit) or UnitInRaid(unit)) or not hideFromOthers or unit == 'player' or self.realUnit == 'player') then
+		self:RegisterEvent('UNIT_POWER_FREQUENT', Path)
 		self:RegisterEvent('UNIT_MAXPOWER', Path)
 
 		element:Show()
 		Path(self, event, unit, 'ALTERNATE')
 	else
-		self:UnregisterEvent('UNIT_POWER', Path)
+		self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
 		self:UnregisterEvent('UNIT_MAXPOWER', Path)
 
 		element:Hide()
@@ -148,6 +150,7 @@ local function Enable(self, unit)
 
 		if(element:IsObjectType('StatusBar') and not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
+			element:SetStatusBarColor(.7, .7, .6)
 		end
 
 		if(element:IsMouseEnabled()) then
@@ -174,8 +177,6 @@ local function Enable(self, unit)
 			PlayerPowerBarAlt:UnregisterEvent('UNIT_POWER_BAR_HIDE')
 			PlayerPowerBarAlt:UnregisterEvent('PLAYER_ENTERING_WORLD')
 		end
-
-		element:Hide()
 
 		return true
 	end
