@@ -41,7 +41,7 @@ function UF:Configure_ClassBar(frame)
 	local CLASSBAR_WIDTH = frame.CLASSBAR_WIDTH
 
 	if frame.USE_MINI_CLASSBAR and not frame.CLASSBAR_DETACHED then
-		if frame.MAX_CLASS_BAR == 1 or frame.ClassBar == "EclipseBar" or frame.ClassBar == "AdditionalPower" or frame.ClassBar == "DemonicFury" then
+		if frame.MAX_CLASS_BAR == 1 or frame.ClassBar == "EclipseBar" or frame.ClassBar == "AdditionalPower" or frame.ClassBar == "AlternativePower" or frame.ClassBar == "DemonicFury" then
 			CLASSBAR_WIDTH = CLASSBAR_WIDTH * 2/3
 		else
 			CLASSBAR_WIDTH = CLASSBAR_WIDTH * (frame.MAX_CLASS_BAR - 1) / frame.MAX_CLASS_BAR
@@ -153,14 +153,14 @@ function UF:Configure_ClassBar(frame)
 
 			bars.Arrow:Point("CENTER", bars.LunarBar:GetStatusBarTexture(), "RIGHT")
 		end
-	elseif frame.ClassBar == "AdditionalPower" or frame.ClassBar == "DemonicFury" then
+	elseif frame.ClassBar == "AdditionalPower" or frame.ClassBar == "AlternativePower" or frame.ClassBar == "DemonicFury" then
 		if frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation then
 			bars:SetOrientation("VERTICAL")
 		else
 			bars:SetOrientation("HORIZONTAL")
 		end
 
-		if E.myclass == "WARLOCK" then
+		if frame.ClassBar == "DemonicFury" then
 			bars:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
 		end
 	end
@@ -266,6 +266,9 @@ function UF:Configure_ClassBar(frame)
 		if frame.SoulShards and not frame:IsElementEnabled("SoulShards") then
 			frame:EnableElement("SoulShards")
 		end
+		if frame.AlternativePower and not frame:IsElementEnabled("AlternativePower") then
+			frame:EnableElement("AlternativePower")
+		end
 	else
 		if frame.ClassPower and frame:IsElementEnabled("ClassPower") then
 			frame:DisableElement("ClassPower")
@@ -291,6 +294,9 @@ function UF:Configure_ClassBar(frame)
 		if frame.SoulShards and frame:IsElementEnabled("SoulShards") then
 			frame:DisableElement("SoulShards")
 		end
+		if frame.AlternativePower and frame:IsElementEnabled("AlternativePower") then
+			frame:DisableElement("AlternativePower")
+		end
 	end
 end
 
@@ -301,23 +307,9 @@ local function ToggleResourceBar(bars, overrideVisibility)
 
 	frame.CLASSBAR_SHOWN = (not not overrideVisibility) or bars:IsShown()
 
-	local height
-	if db.classbar then
-		height = db.classbar.height
-	elseif db.combobar then
-		height = db.combobar.height
-	elseif frame.AlternativePower then
-		height = db.power.height
-	end
+	if bars.text then bars.text:SetAlpha(frame.CLASSBAR_SHOWN and 1 or 0) end
 
-	if bars.text then
-		if frame.CLASSBAR_SHOWN then
-			bars.text:SetAlpha(1)
-		else
-			bars.text:SetAlpha(0)
-		end
-	end
-
+	local height = (db.classbar and db.classbar.height) or (db.combobar and db.combobar.height)
 	frame.CLASSBAR_HEIGHT = (frame.USE_CLASSBAR and (frame.CLASSBAR_SHOWN and height) or 0)
 	frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and ((frame.SPACING+(frame.CLASSBAR_HEIGHT/2))) or (frame.CLASSBAR_HEIGHT - (frame.BORDER-frame.SPACING)))
 
