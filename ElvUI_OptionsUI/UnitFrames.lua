@@ -1744,10 +1744,17 @@ local function GetOptionsTable_HealPrediction(updateFunc, groupName, numGroup)
 			showOverAbsorbs = {
 				order = 2,
 				type = "toggle",
-				name = L["Show Over Absorbs"]
+				name = L["Show Over Absorbs"],
+				disabled = function() return not E.db.unitframe.units[groupName].healPrediction.enable end
+			},
+			showAbsorbAmount = {
+				order = 3,
+				type = "toggle",
+				name = L["Show Absorb Amount"],
+				disabled = function() return not E.db.unitframe.units[groupName].healPrediction.enable or not E.db.unitframe.units[groupName].healPrediction.showOverAbsorbs end
 			},
 			colors = {
-				order = 3,
+				order = 4,
 				type = "execute",
 				name = L["COLORS"],
 				func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup", "healPrediction") end,

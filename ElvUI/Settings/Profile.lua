@@ -1387,6 +1387,7 @@ P.unitframe = {
 			lowmana = 30,
 			healPrediction = {
 				enable = true,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			threatStyle = "GLOW",
@@ -1672,6 +1673,7 @@ P.unitframe = {
 			colorOverride = "USE_DEFAULT",
 			healPrediction = {
 				enable = true,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			middleClickFocus = true,
@@ -2230,6 +2232,7 @@ P.unitframe = {
 			height = 36,
 			healPrediction = {
 				enable = true,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			disableMouseoverGlow = false,
@@ -2594,6 +2597,7 @@ P.unitframe = {
 			height = 36,
 			healPrediction = {
 				enable = true,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			disableMouseoverGlow = false,
@@ -3094,6 +3098,7 @@ P.unitframe = {
 			height = 47,
 			healPrediction = {
 				enable = true,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			colorOverride = "USE_DEFAULT",
@@ -3281,6 +3286,7 @@ P.unitframe = {
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			colorOverride = "USE_DEFAULT",
@@ -3592,6 +3598,7 @@ P.unitframe = {
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			colorOverride = "USE_DEFAULT",
@@ -3830,6 +3837,7 @@ P.unitframe = {
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			colorOverride = "USE_DEFAULT",
@@ -4070,6 +4078,7 @@ P.unitframe = {
 			startFromCenter = false,
 			healPrediction = {
 				enable = true,
+				showAbsorbAmount = false,
 				showOverAbsorbs = true
 			},
 			colorOverride = "USE_DEFAULT",

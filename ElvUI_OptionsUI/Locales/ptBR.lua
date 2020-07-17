@@ -946,6 +946,7 @@ L["Shortcut to Filters section of the config."] = true
 L["Shortcut to global filters."] = true
 L["Shorten the channel names in chat."] = "Abreviar o nome dos canáis no bate-papo."
 L["Should tooltip be anchored to mouse cursor"] = true
+L["Show Absorb Amount"] = true
 L["Show an alert frame if you have unspend talent points."] = true
 L["Show an incoming heal prediction bar on the unitframe. Also display a slightly different colored bar for incoming overheals."] = "Mostra a barra de predicção de cura no quadro de unidade. Também exibe uma barra com uma cor ligeiramente diferente para a predicção de sobrecura."
 L["Shows a frame with needed info for support."] = true

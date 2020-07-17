@@ -946,6 +946,7 @@ L["Shortcut to Filters section of the config."] = "一個到過濾器功能表�
 L["Shortcut to global filters."] = "全局過濾器快速鍵"
 L["Shorten the channel names in chat."] = "在對話視窗中隱藏頻道名稱."
 L["Should tooltip be anchored to mouse cursor"] = "提示錨定在滑鼠"
+L["Show Absorb Amount"] = "顯示吸收量大小"
 L["Show an alert frame if you have unspend talent points."] = "顯示未使用天賦警告."
 L["Show an incoming heal prediction bar on the unitframe. Also display a slightly different colored bar for incoming overheals."] = "在單位框架中顯示即將回复的的預測治療量, 過量治療則以不同顏色顯示. "
 L["Shows a frame with needed info for support."] = "顯示支持訊息。"

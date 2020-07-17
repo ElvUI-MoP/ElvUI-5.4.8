@@ -948,6 +948,7 @@ L["Shortcut to Filters section of the config."] = "Verknüpfung zur Filter Sekti
 L["Shortcut to global filters."] = "Verknüpfung zu Globalen Filter"
 L["Shorten the channel names in chat."] = "Kürze Kanalnamen im Chat."
 L["Should tooltip be anchored to mouse cursor"] = "Soll das Tooltip an den Mauszeiger geankert werden"
+L["Show Absorb Amount"] = "Zeige Absorbierende Menge"
 L["Show an alert frame if you have unspend talent points."] = "Zeigt ein Alarmfenster wenn du unverteilte Talentpunkte hast."
 L["Show an incoming heal prediction bar on the unitframe. Also display a slightly different colored bar for incoming overheals."] = "Zeige eingehende Heilung im Einheitenfenster. Zeigt eine etwas anders farbige Leiste für eingehende Überheilung."
 L["Shows a frame with needed info for support."] = true
