@@ -6008,7 +6008,7 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 				width = {
 					order = 2,
 					type = "range",
-					name = L["Width Override"],
+					name = L["Size Override"],
 					min = 0, max = 150, step = 1,
 					disabled = function() return not E.db.unitframe.units.arena.pvpSpecIcon.enable end
 				}

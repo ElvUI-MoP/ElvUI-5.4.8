@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...))
+local E, _, V, P, G = unpack(select(2, ...))
 local MC = E:GetModule("ModuleCopy")
 
 local pairs, next, type = pairs, next, type
@@ -15,6 +15,8 @@ MC.InternalOptions = {
 --Contains header, general group toggle (shown only if the setting actually exists) and imports button.
 --Usage as seen in ElvUI_OptionsUI\modulecopy.lua
 function MC:CreateModuleConfigGroup(Name, section, pluginSection)
+	local L = E.Libs.ACL:GetLocale("ElvUI", E.global.general.locale or "enUS")
+
 	local config = {
 		order = 10,
 		type = "group",
@@ -70,6 +72,8 @@ function MC:CreateModuleConfigGroup(Name, section, pluginSection)
 end
 
 function MC:CreateMoversConfigGroup()
+	local L = E.Libs.ACL:GetLocale("ElvUI", E.global.general.locale or "enUS")
+
 	local config = {
 		header = {
 			order = 0,
