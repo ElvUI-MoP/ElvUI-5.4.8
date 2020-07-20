@@ -172,7 +172,6 @@ function UF:Update_PartyFrames(frame, db)
 		end
 
 		UF:Configure_HealthBar(frame)
-		UF:Configure_RaidIcon(frame)
 		UF:UpdateNameSettings(frame, frame.childType)
 	else
 		frame:Size(frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
@@ -187,7 +186,6 @@ function UF:Update_PartyFrames(frame, db)
 		UF:Configure_Threat(frame)
 		UF:Configure_RaidDebuffs(frame)
 		UF:Configure_Castbar(frame)
-		UF:Configure_RaidIcon(frame)
 		UF:Configure_ResurrectionIcon(frame)
 		UF:Configure_AuraHighlight(frame)
 		UF:Configure_RoleIcon(frame)

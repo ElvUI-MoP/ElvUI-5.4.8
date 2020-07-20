@@ -2435,7 +2435,8 @@ local function GetOptionsTable_RaidIcon(updateFunc, groupName, numUnits)
 				type = "select",
 				name = L["Attach To"],
 				desc = L["The object you want to attach to."],
-				values = attachToValues
+				values = attachToValues,
+				disabled = function() return not E.db.unitframe.units[groupName].raidicon.enable end
 			},
 			size = {
 				order = 5,

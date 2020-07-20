@@ -430,6 +430,7 @@ function E:ResetMovers(arg)
 
 			if all then
 				E:SaveMoverPosition(name)
+				self.db.movers = nil
 			else
 				if holder.layoutPoint then
 					E:SaveMoverPosition(name)
