@@ -4732,20 +4732,22 @@ E.Options.args.unitframe.args.individualUnits.args.player = {
 			hidden = E.myclass ~= "MONK",
 			args = {
 				enable = {
-					order = 2,
+					order = 1,
 					type = "toggle",
 					name = L["ENABLE"]
 				},
 				autoHide = {
-					order = 3,
+					order = 2,
 					type = "toggle",
-					name = L["Auto Hide"]
+					name = L["Auto Hide"],
+					disabled = function() return not E.db.unitframe.units.player.stagger.enable end
 				},
 				width = {
-					order = 4,
+					order = 3,
 					type = "range",
 					name = L["Width"],
-					min = 5, max = 25, step = 1
+					min = 5, max = 50, step = 1,
+					disabled = function() return not E.db.unitframe.units.player.stagger.enable end
 				}
 			}
 		},

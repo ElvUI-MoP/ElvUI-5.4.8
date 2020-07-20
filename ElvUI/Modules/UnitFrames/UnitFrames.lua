@@ -233,7 +233,6 @@ function UF:Construct_UF(frame, unit)
 	end
 
 	frame.SHADOW_SPACING = 3
-	frame.STAGGER_WIDTH = 0
 	frame.CLASSBAR_YOFFSET = 0 --placeholder
 	frame.BOTTOM_OFFSET = 0 --placeholder
 
@@ -1365,7 +1364,7 @@ function UF:SetStatusBarBackdropPoints(statusBar, statusBarTex, backdropTex, sta
 	end
 end
 
-function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, adjustBackdropPoints, invertColors, reverseFill)
+function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, adjustBackdropPoints, invertColors, reverseFill, noTemplateChange)
 	statusBar.isTransparent = isTransparent
 	statusBar.invertColors = invertColors
 	statusBar.backdropTex = backdropTex
@@ -1379,10 +1378,12 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 	end
 
 	if isTransparent then
-		if statusBar.backdrop then
-			statusBar.backdrop:SetTemplate("Transparent", nil, nil, nil, true)
-		elseif statusBar:GetParent().template then
-			statusBar:GetParent():SetTemplate("Transparent", nil, nil, nil, true)
+		if not noTemplateChange then
+			if statusBar.backdrop then
+				statusBar.backdrop:SetTemplate("Transparent", nil, nil, nil, true)
+			elseif statusBar:GetParent().template then
+				statusBar:GetParent():SetTemplate("Transparent", nil, nil, nil, true)
+			end
 		end
 
 		statusBar:SetStatusBarTexture(0, 0, 0, 0)

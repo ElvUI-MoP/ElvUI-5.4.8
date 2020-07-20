@@ -17,6 +17,9 @@ function UF:Construct_Stagger(frame)
 
 	stagger.PostUpdate = UF.PostUpdateStagger
 
+	stagger:SetScript("OnShow", UF.ToggleStaggerBar)
+	stagger:SetScript("OnHide", UF.ToggleStaggerBar)
+
 	return stagger
 end
 
@@ -26,53 +29,56 @@ function UF:Configure_Stagger(frame)
 	local stagger = frame.Stagger
 	local db = frame.db
 
-	frame.STAGGER_WIDTH = stagger and frame.STAGGER_SHOWN and (db.stagger.width + (frame.BORDER * 3)) or 0
-
 	if db.stagger.enable then
 		if not frame:IsElementEnabled("Stagger") then
 			frame:EnableElement("Stagger")
 		end
 
+		E:SetSmoothing(stagger, UF.db.smoothbars)
+
+		local powerSettings = db.power.enable and not frame.USE_MINI_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED and not frame.USE_POWERBAR_OFFSET
+		local anchor = powerSettings and frame.Power or frame.Health
+
 		stagger:ClearAllPoints()
-		if db.power.enable and not frame.USE_MINI_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED and not frame.USE_POWERBAR_OFFSET then
-			if frame.ORIENTATION == "RIGHT" then
-				stagger:Point("BOTTOMRIGHT", frame.Power, "BOTTOMLEFT", -frame.BORDER * 2 + (frame.BORDER - frame.SPACING * 3), 0)
-				stagger:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.STAGGER_WIDTH, 0)
-			else
-				stagger:Point("BOTTOMLEFT", frame.Power, "BOTTOMRIGHT", frame.BORDER * 2 + (-frame.BORDER + frame.SPACING * 3), 0)
-				stagger:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.STAGGER_WIDTH, 0)
-			end
+		if frame.ORIENTATION == "RIGHT" then
+			stagger:Point("BOTTOMRIGHT", anchor, "BOTTOMLEFT", -frame.BORDER * 2 + (frame.BORDER - frame.SPACING * 3), 0)
+			stagger:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.STAGGER_WIDTH, 0)
 		else
-			if frame.ORIENTATION == "RIGHT" then
-				stagger:Point("BOTTOMRIGHT", frame.Health, "BOTTOMLEFT", -frame.BORDER * 2 + (frame.BORDER - frame.SPACING * 3), 0)
-				stagger:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.STAGGER_WIDTH, 0)
-			else
-				stagger:Point("BOTTOMLEFT", frame.Health, "BOTTOMRIGHT", frame.BORDER * 2 + (-frame.BORDER + frame.SPACING * 3), 0)
-				stagger:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.STAGGER_WIDTH, 0)
-			end
+			stagger:Point("BOTTOMLEFT", anchor, "BOTTOMRIGHT", frame.BORDER * 2 + (-frame.BORDER + frame.SPACING * 3), 0)
+			stagger:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.STAGGER_WIDTH, 0)
 		end
 	elseif frame:IsElementEnabled("Stagger") then
 		frame:DisableElement("Stagger")
 	end
 end
 
-function UF:PostUpdateStagger(maxHealth, stagger, staggerPercent, r, g, b)
+function UF:ToggleStaggerBar()
 	local frame = self:GetParent()
-	local db = frame.db
+	local isShown = self:IsShown()
+	local stateChanged
 
-	if stagger and stagger > 0 then
- 		self:Show()
- 	else
-		if db.stagger.autoHide then
-			self:Hide()
-		else
-			self:Show()
-		end
+	if (frame.STAGGER_SHOWN and not isShown) or (not frame.STAGGER_SHOWN and isShown) then
+		stateChanged = true
 	end
 
-	self.bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
+	frame.STAGGER_SHOWN = isShown
+	frame.STAGGER_WIDTH = frame.USE_STAGGER and frame.STAGGER_SHOWN and (frame.db.stagger.width + (frame.BORDER * 3)) or 0
 
-	local stateChanged = false
+	if stateChanged then
+		UF:Configure_Stagger(frame)
+		UF:Configure_HealthBar(frame)
+		UF:Configure_Power(frame, true)
+		UF:Configure_Threat(frame)
+		UF:Configure_InfoPanel(frame, true)
+	end
+end
+
+function UF:PostUpdateStagger(stagger)
+	local frame = self:GetParent()
+
+	self:SetShown(stagger > 0 or not frame.db.stagger.autoHide)
+
+	local stateChanged
 	local isShown = self:IsShown()
 
 	if (frame.STAGGER_SHOWN and not isShown) or (not frame.STAGGER_SHOWN and isShown) then
@@ -84,7 +90,8 @@ function UF:PostUpdateStagger(maxHealth, stagger, staggerPercent, r, g, b)
 	if stateChanged then
 		UF:Configure_Stagger(frame)
 		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame)
+		UF:Configure_Power(frame, true)
+		UF:Configure_Threat(frame)
 		UF:Configure_InfoPanel(frame, true)
 	end
 end
