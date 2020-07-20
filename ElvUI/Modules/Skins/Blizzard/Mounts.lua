@@ -2,8 +2,9 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local unpack = unpack
+local pairs, select, unpack = pairs, select, unpack
 
+local GetCompanionInfo = GetCompanionInfo
 local C_PetJournal_GetPetStats = C_PetJournal.GetPetStats
 local C_PetJournal_GetPetInfoByIndex = C_PetJournal.GetPetInfoByIndex
 local C_PetJournal_GetPetInfoByPetID = C_PetJournal.GetPetInfoByPetID
@@ -93,18 +94,19 @@ local function LoadSkin()
 		S:HandleButtonHighlight(button)
 		button.handledHighlight:SetInside()
 
-		button.selectedTexture:SetTexture(E.Media.Textures.Highlight)
-		button.selectedTexture:SetAlpha(0.35)
-		button.selectedTexture:SetInside()
-		button.selectedTexture:SetTexCoord(0, 1, 0, 1)
+		for _, object in pairs({button.selectedTexture, button.DragButton.ActiveTexture}) do
+			object:SetTexture(E.Media.Textures.Highlight)
+			object:SetAlpha(0.35)
+			object:SetInside(button)
+			object:SetTexCoord(0, 1, 0, 1)
+		end
 
-		button.stripe = button:CreateTexture(nil, "BACKGROUND")
-		button.stripe:SetTexture(E.Media.Textures.Highlight)
-		button.stripe:SetAlpha(0.10)
-		button.stripe:SetInside()
+		button.selectedTexture:SetVertexColor(unpack(E.media.rgbvaluecolor))
+		button.DragButton.ActiveTexture:SetVertexColor(1, 0.80, 0.10)
 	end
 
-	hooksecurefunc("MountJournal_UpdateMountList", function()
+	local function ColorSelectedMount()
+		MountJournal_UpdateCachedList(MountJournal)
 		local offset = HybridScrollFrame_GetOffset(MountJournal.ListScrollFrame)
 		local buttons = MountJournal.ListScrollFrame.buttons
 
@@ -114,41 +116,27 @@ local function LoadSkin()
 
 			if displayIndex <= #MountJournal.cachedMounts then
 				local index = MountJournal.cachedMounts[displayIndex]
-				local _, _, _, icon = GetCompanionInfo("MOUNT", index)
+				local _, _, spellID, icon, active = GetCompanionInfo("MOUNT", index)
 
 				button.icon:SetTexture(icon)
+
+				if active and E.mylevel >= 20 then
+					button.name:SetTextColor(1, 0.80, 0.10)
+					button.backdrop:SetBackdropBorderColor(1, 0.80, 0.10)
+				elseif MountJournal.selectedSpellID == spellID then
+					button.name:SetTextColor(unpack(E.media.rgbvaluecolor))
+					button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+				else
+					button.name:SetTextColor(1, 1, 1)
+					button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				end
 			else
 				button.icon:SetTexture()
 			end
 		end
-	end)
-
-	local function ColorSelectedMount()
-		local offset = HybridScrollFrame_GetOffset(MountJournal.ListScrollFrame)
-		local buttons = MountJournal.ListScrollFrame.buttons
-
-		for i = 1, #buttons do
-			local button = buttons[i]
-
-			if button.selectedTexture:IsShown() then
-				button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
-				button.name:SetTextColor(unpack(E.media.rgbvaluecolor))
-			else
-				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				button.name:SetTextColor(1, 1, 1)
-			end
-
-			if (i + offset) % 2 == 1 then
-				button.stripe:Show()
-			else
-				button.stripe:Hide()
-			end
-		end
 	end
 	hooksecurefunc("MountJournal_UpdateMountList", ColorSelectedMount)
-
-	MountJournalListScrollFrame:HookScript("OnVerticalScroll", ColorSelectedMount)
-	MountJournalListScrollFrame:HookScript("OnMouseWheel", ColorSelectedMount)
+	hooksecurefunc("HybridScrollFrame_Update", ColorSelectedMount)
 
 	-- Pet Journal
 	PetJournalRightInset:StripTextures()
@@ -214,10 +202,14 @@ local function LoadSkin()
 		S:HandleButtonHighlight(button)
 		button.handledHighlight:SetInside()
 
-		button.selectedTexture:SetTexture(E.Media.Textures.Highlight)
-		button.selectedTexture:SetAlpha(0.35)
-		button.selectedTexture:SetInside()
-		button.selectedTexture:SetTexCoord(0, 1, 0, 1)
+		for _, object in pairs({button.selectedTexture, button.dragButton.ActiveTexture}) do
+			object:SetTexture(E.Media.Textures.Highlight)
+			object:SetAlpha(0.35)
+			object:SetInside(button)
+			object:SetTexCoord(0, 1, 0, 1)
+		end
+
+		button.dragButton.ActiveTexture:SetVertexColor(1, 0.80, 0.10)
 	end
 
 	local function ColorSelectedPet()
@@ -265,9 +257,7 @@ local function LoadSkin()
 		end
 	end
 	hooksecurefunc("PetJournal_UpdatePetList", ColorSelectedPet)
-
-	PetJournalListScrollFrame:HookScript("OnVerticalScroll", ColorSelectedPet)
-	PetJournalListScrollFrame:HookScript("OnMouseWheel", ColorSelectedPet)
+	hooksecurefunc("HybridScrollFrame_Update", ColorSelectedPet)
 
 	-- Loadout Pets
 	PetJournalLoadoutBorder:StripTextures()
@@ -286,10 +276,8 @@ local function LoadSkin()
 		frame.backdrop:SetOutside(frame.icon)
 		frame.backdrop:SetFrameLevel(frame.backdrop:GetFrameLevel() + 1)
 
-		if i == 1 then
-			frame:Point("TOP", 1, 3)
-		elseif i == 2 then
-			frame:Point("TOP", 1, -108)
+		if i == 1 or i == 2 then
+			frame:Point("TOP", 1, i == 1 and 3 or -108)
 		else
 			frame:Point("TOP", 1, -219)
 		end

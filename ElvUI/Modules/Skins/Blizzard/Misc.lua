@@ -271,6 +271,18 @@ local function LoadSkin()
 
 	LevelUpDisplaySpellFrameIconBorder:SetAlpha(0)
 
+	LevelUpDisplaySpellFrame.rarityMiddleHuge:FontTemplate(nil, 22)
+
+	hooksecurefunc(LevelUpDisplaySpellFrame.rarityValue, "Show", function(self)
+		local r, g, b = self:GetTextColor()
+		LevelUpDisplaySpellFrame.backdrop:SetBackdropBorderColor(r, g, b)
+		LevelUpDisplaySpellFrame.rarityMiddleHuge:SetTextColor(r, g, b)
+	end)
+
+	hooksecurefunc(LevelUpDisplaySpellFrame.rarityValue, "Hide", function()
+		LevelUpDisplaySpellFrame.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+	end)
+
 	LevelUpDisplaySide:HookScript("OnShow", function(self)
 		for i = 1, #self.unlockList do
 			local button = _G["LevelUpDisplaySideUnlockFrame"..i]
