@@ -55,8 +55,8 @@ end
 function UF:ToggleStaggerBar()
 	local frame = self:GetParent()
 	local isShown = self:IsShown()
-	local stateChanged
 
+	local stateChanged
 	if (frame.STAGGER_SHOWN and not isShown) or (not frame.STAGGER_SHOWN and isShown) then
 		stateChanged = true
 	end
@@ -74,24 +74,7 @@ function UF:ToggleStaggerBar()
 end
 
 function UF:PostUpdateStagger(stagger)
-	local frame = self:GetParent()
+	self:SetShown(stagger > 0 or not UF.db.units.player.stagger.autoHide)
 
-	self:SetShown(stagger > 0 or not frame.db.stagger.autoHide)
-
-	local stateChanged
-	local isShown = self:IsShown()
-
-	if (frame.STAGGER_SHOWN and not isShown) or (not frame.STAGGER_SHOWN and isShown) then
-		stateChanged = true
-	end
-
-	frame.STAGGER_SHOWN = isShown
-
-	if stateChanged then
-		UF:Configure_Stagger(frame)
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame, true)
-		UF:Configure_Threat(frame)
-		UF:Configure_InfoPanel(frame, true)
-	end
+	UF.ToggleStaggerBar(self)
 end

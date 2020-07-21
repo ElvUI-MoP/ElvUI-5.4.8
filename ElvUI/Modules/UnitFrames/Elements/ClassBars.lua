@@ -130,10 +130,12 @@ function UF:Configure_ClassBar(frame)
 		bars.LunarBar:SetMinMaxValues(0, 0)
 		bars.LunarBar:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][1]))
 		bars.LunarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+		E:SetSmoothing(bars.LunarBar, UF.db.smoothbars)
 
 		bars.SolarBar:SetMinMaxValues(0, 0)
 		bars.SolarBar:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
 		bars.SolarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+		E:SetSmoothing(bars.SolarBar, UF.db.smoothbars)
 
 		bars.SolarBar:ClearAllPoints()
 		bars.Arrow:ClearAllPoints()
@@ -736,22 +738,15 @@ function UF:EclipsePostDirectionChange(direction)
 	local db = frame.db
 	if not db then return end
 
+	local vertical = frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation
 	if direction == "sun" then
-		if frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation then
-			self.Arrow:SetRotation(0)
-		else
-			self.Arrow:SetRotation(-1.57)
-		end
-		self.Arrow:Show()
+		self.Arrow:SetRotation(vertical and 0 or -1.57)
 		self.Arrow:SetVertexColor(unpack(ElvUF.colors.ClassBars[E.myclass][1]))
-	elseif direction == "moon" then
-		if frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation then
-			self.Arrow:SetRotation(3.14)
-		else
-			self.Arrow:SetRotation(1.57)
-		end
 		self.Arrow:Show()
+	elseif direction == "moon" then
+		self.Arrow:SetRotation(vertical and 3.14 or 1.57)
 		self.Arrow:SetVertexColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
+		self.Arrow:Show()
 	else
 		self.Arrow:Hide()
 	end

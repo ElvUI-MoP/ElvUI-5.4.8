@@ -3040,7 +3040,7 @@ local function GetOptionsTable_CombatIconGroup(updateFunc, groupName, numUnits)
 		type = "group",
 		name = L["Combat Icon"],
 		get = function(info) return E.db.unitframe.units[groupName].CombatIcon[info[#info]] end,
-		set = function(info, value) E.db.unitframe.units[groupName].CombatIcon[info[#info]] = value updateFunc(UF, groupName, numUnits) UF:TestingDisplay_CombatIndicator(UF[groupName]) end,
+		set = function(info, value) E.db.unitframe.units[groupName].CombatIcon[info[#info]] = value updateFunc(UF, groupName, numUnits) end,
 		args = {
 			enable = {
 				order = 1,
@@ -3069,7 +3069,6 @@ local function GetOptionsTable_CombatIconGroup(updateFunc, groupName, numUnits)
 					local c = E.db.unitframe.units[groupName].CombatIcon.color
 					c.r, c.g, c.b, c.a = r, g, b, a
 					updateFunc(UF, groupName, numUnits)
-					UF:TestingDisplay_CombatIndicator(UF[groupName])
 				end
 			},
 			size = {
@@ -3129,7 +3128,6 @@ local function GetOptionsTable_CombatIconGroup(updateFunc, groupName, numUnits)
 				set = function(_, value)
 					E.db.unitframe.units[groupName].CombatIcon.customTexture = (value and (not value:match("^%s-$")) and value) or nil
 					updateFunc(UF, groupName, numUnits)
-					UF:TestingDisplay_CombatIndicator(UF[groupName])
 				end
 			}
 		}

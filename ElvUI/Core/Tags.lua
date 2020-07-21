@@ -23,6 +23,7 @@ local GetQuestDifficultyColor = GetQuestDifficultyColor
 local GetQuestGreenRange = GetQuestGreenRange
 local GetQuestLogTitle = GetQuestLogTitle
 local GetRelativeDifficultyColor = GetRelativeDifficultyColor
+local GetShapeshiftFormID = GetShapeshiftFormID
 local GetSpecialization = GetSpecialization
 local GetSpecializationInfo = GetSpecializationInfo
 local GetThreatStatusColor = GetThreatStatusColor
@@ -133,52 +134,43 @@ local function Abbrev(name)
 end
 E.TagFunctions.Abbrev = Abbrev
 
-local Harmony = {
-	[0] = {1, 1, 1},
-	[1] = {0.57, 0.63, 0.35, 1},
-	[2] = {0.47, 0.63, 0.35, 1},
-	[3] = {0.37, 0.63, 0.35, 1},
-	[4] = {0.27, 0.63, 0.33, 1},
-	[5] = {0.17, 0.63, 0.33, 1}
-}
-
 local function GetClassPower(class)
-	local min, max, r, g, b = 0, 0, 0, 0, 0
+	local min, max, r, g, b
 	local spec = GetSpecialization()
 
 	if class == "PALADIN" then
 		min = UnitPower("player", SPELL_POWER_HOLY_POWER)
 		max = UnitPowerMax("player", SPELL_POWER_HOLY_POWER)
-		r, g, b = 0.89, 1, 0.06
+		r, g, b = unpack(ElvUF.colors.ClassBars.PALADIN)
 	elseif class == "MONK" then
 		min = UnitPower("player", SPELL_POWER_CHI)
 		max = UnitPowerMax("player", SPELL_POWER_CHI)
-		r, g, b = unpack(Harmony[min])
-	elseif class == "DRUID" and GetShapeshiftFormID() == MOONKIN_FORM then
-		min = UnitPower("player", SPELL_POWER_ECLIPSE)
-		max = UnitPowerMax("player", SPELL_POWER_ECLIPSE)
-		if GetEclipseDirection() == "moon" then
-			r, g, b = 0.80, 0.82, 0.60
-		else
-			r, g, b = 0.30, 0.52, 0.90
+		r, g, b = unpack(ElvUF.colors.ClassBars.MONK[min])
+	elseif class == "DRUID" then
+		local form = GetShapeshiftFormID()
+		if spec and spec == 1 and (form == MOONKIN_FORM or not form) then
+			min = UnitPower("player", SPELL_POWER_ECLIPSE)
+			max = UnitPowerMax("player", SPELL_POWER_ECLIPSE)
+			local eclipse = GetEclipseDirection() == "moon" and 2 or 1
+			r, g, b = unpack(ElvUF.colors.ClassBars.DRUID[eclipse])
 		end
 	elseif class == "PRIEST" and spec == SPEC_PRIEST_SHADOW and E.mylevel > SHADOW_ORBS_SHOW_LEVEL then
 		min = UnitPower("player", SPELL_POWER_SHADOW_ORBS)
 		max = UnitPowerMax("player", SPELL_POWER_SHADOW_ORBS)
-		r, g, b = 1, 1, 1
+		r, g, b = unpack(ElvUF.colors.ClassBars.PRIEST)
 	elseif class == "WARLOCK" then
 		if spec == SPEC_WARLOCK_DESTRUCTION then
 			min = floor(UnitPower("player", SPELL_POWER_BURNING_EMBERS, true) / 10)
 			max = floor(UnitPowerMax("player", SPELL_POWER_BURNING_EMBERS, true) / 10)
-			r, g, b = 0.90, 0.37, 0.37
+			r, g, b = unpack(ElvUF.colors.ClassBars.WARLOCK[3])
 		elseif spec == SPEC_WARLOCK_AFFLICTION then
 			min = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
 			max = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
-			r, g, b = 0.58, 0.51, 0.79
+			r, g, b = unpack(ElvUF.colors.ClassBars.WARLOCK[1])
 		elseif spec == SPEC_WARLOCK_DEMONOLOGY then
 			min = UnitPower("player", SPELL_POWER_DEMONIC_FURY)
 			max = UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY)
-			r, g, b = 0.58, 0.51, 0.79
+			r, g, b = unpack(ElvUF.colors.ClassBars.WARLOCK[2])
 		end
 	end
 

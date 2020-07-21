@@ -3009,7 +3009,7 @@ P.unitframe = {
 				priority = "Blacklist,CastByUnit,Whitelist", --Boss Buffs
 				xOffset = 0,
 				yOffset = 20,
-				sizeOverride = 0,
+				sizeOverride = 22,
 				spacing = 1
 			},
 			debuffs = {
@@ -3031,7 +3031,7 @@ P.unitframe = {
 				priority = "Blacklist,Personal,RaidDebuffs,CastByUnit,Whitelist", --Boss Debuffs
 				xOffset = 0,
 				yOffset = -3,
-				sizeOverride = 0,
+				sizeOverride = 22,
 				spacing = 1
 			},
 			castbar = {
@@ -3186,7 +3186,7 @@ P.unitframe = {
 				priority = "Blacklist,TurtleBuffs,PlayerBuffs,Dispellable", --Arena Buffs
 				xOffset = 0,
 				yOffset = 16,
-				sizeOverride = 0,
+				sizeOverride = 27,
 				spacing = 1
 			},
 			debuffs = {
@@ -3208,7 +3208,7 @@ P.unitframe = {
 				priority = "Blacklist,blockNoDuration,Personal,CCDebuffs,Whitelist", --Arena Debuffs
 				xOffset = 0,
 				yOffset = -16,
-				sizeOverride = 0,
+				sizeOverride = 27,
 				spacing = 1
 			},
 			castbar = {

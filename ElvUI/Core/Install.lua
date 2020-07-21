@@ -288,6 +288,7 @@ function E:SetupLayout(layout, noDataReset, noDisplayMsg)
 			E.db.unitframe.units.player.infoPanel.enable = true
 			E.db.unitframe.units.player.power.attachTextTo = "InfoPanel"
 			E.db.unitframe.units.player.power.height = 22
+			E.db.unitframe.units.player.stagger.width = 14
 		--Target
 			E.db.unitframe.units.target.aurabar.height = 26
 			E.db.unitframe.units.target.buffs.anchorPoint = "TOPLEFT"

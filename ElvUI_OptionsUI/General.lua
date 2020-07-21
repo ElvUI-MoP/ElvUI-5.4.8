@@ -673,29 +673,12 @@ E.Options.args.general = {
 						return E.db.general.altPowerBar[info[#info]]
 					end,
 					args = {
-						font = {
-							order = 1,
-							type = "select", dialogControl = "LSM30_Font",
-							name = L["Font"],
-							values = AceGUIWidgetLSMlists.font
-						},
-						fontSize = {
-							order = 2,
-							type = "range",
-							name = L["FONT_SIZE"],
-							min = 6, max = 22, step = 1
-						},
-						fontOutline = {
-							order = 3,
-							type = "select",
-							name = L["Font Outline"],
-							values = C.Values.FontFlags
-						},
 						textFormat = {
-							order = 4,
+							order = 1,
 							type = "select",
 							name = L["Text Format"],
 							sortByValue = true,
+							customWidth = 250,
 							values = {
 								NONE = L["NONE"],
 								NAME = L["NAME"],
@@ -706,6 +689,29 @@ E.Options.args.general = {
 								CURMAX = L["Current / Max"],
 								CURMAXPERC = L["Current / Max - Percent"]
 							}
+						},
+						spacer = {
+							order = 2,
+							type = "description",
+							name = ""
+						},
+						font = {
+							order = 3,
+							type = "select", dialogControl = "LSM30_Font",
+							name = L["Font"],
+							values = AceGUIWidgetLSMlists.font
+						},
+						fontSize = {
+							order = 4,
+							type = "range",
+							name = L["FONT_SIZE"],
+							min = 6, max = 22, step = 1
+						},
+						fontOutline = {
+							order = 5,
+							type = "select",
+							name = L["Font Outline"],
+							values = C.Values.FontFlags
 						}
 					}
 				}
