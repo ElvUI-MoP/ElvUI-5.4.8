@@ -16,7 +16,7 @@ L["A raid marker feature is available by pressing Escape -> Keybinds scroll to t
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "A definição que você alterou afetará apenas este personagem. Esta definição que você alterou não será afetada por mudanças de perfil. Alterar esta difinição requer que você recarregue a sua interface."
 L["ABOVE_THREAT_FORMAT"] = "%s: %.0f%% [%.0f%% above |cff%02x%02x%02x%s|r]"
 L["Accepting this will reset the UnitFrame settings for %s. Are you sure?"] = "Aceitar isso irá resetar suas configurações de Quadro de Unidade  para %s. Você tem certeza?"
-L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = "Aceitar isso irá resetar sua lista de Prioridade de Filtros para todas as auras nas Placas de Indentificação. Você tem certeza?"
+L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = "Aceitar isso irá resetar sua lista de Prioridade de Filtros para todas as auras nas Placas de Identificação. Você tem certeza?"
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = "Aceitar isso irá resetar sua lista de Prioridade de Filtros para todas as auras nos Quadros de Unidades. Você tem certeza?"
 L["Adjust the UI Scale to fit your screen, press the autoscale button to set the UI Scale automatically."] = "Ajuste sua escala de interface de usuário para caber na sua tela ou pressione o botão de autoscale para fazê-lo automaticamente"
 L["Alliance: "] = "Aliança: "
@@ -334,7 +334,7 @@ L["You have changed your UIScale, however you still have the AutoScale option en
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = "Você importou configurações que podem requerer um reload na sua interface para surgir efeito. Dar reload agora?"
 L["You must be at a vendor."] = "Tem de estar num vendedor."
 L["You must purchase a bank slot first!"] = "Você deve comprar um espaço no banco primeiro!"
-L["You still have ElvUI_Config installed. ElvUI_Config has been renamed to ElvUI_OptionsUI, please remove it."] = true
+L["You still have ElvUI_Config installed. ElvUI_Config has been renamed to ElvUI_OptionsUI, please remove it."] = "Você ainda tem ElvUI_Config instalado. ElvUI_Config foi renomeado para ElvUI_OptionsUI, por favor remová-o."
 L["Your items have been repaired for: "] = "Seus itens foram reparadas por: "
 L["Your items have been repaired using guild bank funds for: "] = "Seus itens foram reparados usando fundos do banco da guilda por: "
 L["Your profile was successfully recieved by the player."] = "Seu perfil foi recebido com sucesso pelo jogador."
