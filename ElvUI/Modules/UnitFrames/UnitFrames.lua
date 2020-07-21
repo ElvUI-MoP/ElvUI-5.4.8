@@ -58,7 +58,7 @@ UF.headerFunctions = {}
 
 UF.classMaxResourceBar = {
 	DEATHKNIGHT = 6,
-	PALADIN = 5,
+	PALADIN = E.mylevel >= 85 and 5 or 3,
 	MONK = 5,
 	WARLOCK = 4,
 	PRIEST = 3,
