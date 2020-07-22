@@ -2,9 +2,9 @@ local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 
 local RestingTextures = {
-	["DEFAULT"] = [[Interface\CharacterFrame\UI-StateIcon]],
-	["RESTING"] = E.Media.Textures.Resting,
-	["RESTING1"] = E.Media.Textures.Resting1
+	DEFAULT = [[Interface\CharacterFrame\UI-StateIcon]],
+	RESTING = E.Media.Textures.Resting,
+	RESTING1 = E.Media.Textures.Resting1
 }
 
 function UF:Construct_RestingIndicator(frame)

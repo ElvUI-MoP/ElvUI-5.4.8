@@ -2,14 +2,14 @@ local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 
 local CombatTextures = {
-	["DEFAULT"] = [[Interface\CharacterFrame\UI-StateIcon]],
-	["COMBAT"] = E.Media.Textures.Combat,
-	["PLATINUM"] = [[Interface\Challenges\ChallengeMode_Medal_Platinum]],
-	["ATTACK"] = [[Interface\CURSOR\Attack]],
-	["ALERT"] = [[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]],
-	["ALERT2"] = [[Interface\OptionsFrame\UI-OptionsFrame-NewFeatureIcon]],
-	["ARTHAS"] = [[Interface\LFGFRAME\UI-LFR-PORTRAIT]],
-	["SKULL"] = [[Interface\LootFrame\LootPanel-Icon]],
+	COMBAT = E.Media.Textures.Combat,
+	DEFAULT = [[Interface\CharacterFrame\UI-StateIcon]],
+	PLATINUM = [[Interface\Challenges\ChallengeMode_Medal_Platinum]],
+	ATTACK = [[Interface\CURSOR\Attack]],
+	ALERT = [[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]],
+	ALERT2 = [[Interface\OptionsFrame\UI-OptionsFrame-NewFeatureIcon]],
+	ARTHAS = [[Interface\LFGFRAME\UI-LFR-PORTRAIT]],
+	SKULL = [[Interface\LootFrame\LootPanel-Icon]]
 }
 
 function UF:Construct_CombatIndicator(frame)

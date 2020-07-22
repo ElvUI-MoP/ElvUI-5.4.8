@@ -148,7 +148,6 @@ function UF:Configure_ComboPoints(frame)
 			ComboPoints.Holder:Size(db.combobar.detachedWidth, db.combobar.height)
 		end
 
-
 		if not ComboPoints.Holder.mover then
 			ComboPoints:ClearAllPoints()
 			ComboPoints:Point("BOTTOMLEFT", ComboPoints.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
