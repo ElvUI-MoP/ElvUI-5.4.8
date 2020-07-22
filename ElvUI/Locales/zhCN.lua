@@ -151,7 +151,7 @@ L["In Progress"] = "正在进行中"
 L["INCOMPATIBLE_ADDON"] = "插件 %s 不相容于 ElvUI 的 %s 模组, 请停用不相容的插件, 或停用模组."
 L["Installation Complete"] = "安装完成"
 L["Invalid Target"] = "无效的目标"
-L["Interrupted %s's \124cff71d5ff\124Hspell:%d:0\124h[%s]\124h\124r!"] = true
+L["Interrupted %s's \124cff71d5ff\124Hspell:%d:0\124h[%s]\124h\124r!"] = "已打断 %s 的 \124cff71d5ff\124Hspell:%d:0\124h[%s]\124h\124r!"
 L["It appears one of your AddOns have disabled the AddOn Blizzard_CompactRaidFrames. This can cause errors and other issues. The AddOn will now be re-enabled."] = "看起来你使用的一个插件使得Blizzard_CompactRaidFrames停用了。这会产生错误与问题。这个插件现在会被重新启用"
 L["Item level: %.2f"] = "物品等级：%.2f"
 L["Item Level:"] = "物品等级："
@@ -334,7 +334,7 @@ L["You have changed your UIScale, however you still have the AutoScale option en
 L["You have imported settings which may require a UI reload to take effect. Reload now?"] = "你导入的设置可能需要重载界面才能生效。确认重载？"
 L["You must be at a vendor."] = "你必需以商人为目标."
 L["You must purchase a bank slot first!"] = "你必需购买一个银行背包栏位"
-L["You still have ElvUI_Config installed. ElvUI_Config has been renamed to ElvUI_OptionsUI, please remove it."] = true
+L["You still have ElvUI_Config installed. ElvUI_Config has been renamed to ElvUI_OptionsUI, please remove it."] = "你仍然安装有ElvUI_Config. ElvUI_Config已经被重命名为ElvUI_OptionsUI, 请删除原文件夹."
 L["Your items have been repaired for: "] = "装备已修复: "
 L["Your items have been repaired using guild bank funds for: "] = "物品已使用公会银行资金修复: "
 L["Your profile was successfully recieved by the player."] = "你的配置文件已被其他玩家成功接收."
