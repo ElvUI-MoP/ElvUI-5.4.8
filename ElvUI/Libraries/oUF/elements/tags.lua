@@ -412,13 +412,6 @@ local tagStrings = {
 		end
 	end]],
 
-	['stagger'] = [[function()
-		local stagger = UnitStagger('player')
-		if stagger and stagger > 0 then
-			return stagger
-		end
-	end]],
-
 	['status'] = [[function(u)
 		if(UnitIsDead(u)) then
 			return 'Dead'
@@ -549,7 +542,6 @@ local tagEvents = {
 	['shortclassification'] = 'UNIT_CLASSIFICATION_CHANGED',
 	['smartlevel']          = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED',
 	['soulshards']          = 'UNIT_POWER',
-	['stagger']             = 'UNIT_AURA',
 	['status']              = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT PLAYER_UPDATE_RESTING UNIT_CONNECTION',
 	['threat']              = 'UNIT_THREAT_SITUATION_UPDATE',
 	['threatcolor']         = 'UNIT_THREAT_SITUATION_UPDATE',

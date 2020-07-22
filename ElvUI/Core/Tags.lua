@@ -84,6 +84,8 @@ local SPEC_WARLOCK_AFFLICTION = SPEC_WARLOCK_AFFLICTION
 local SPEC_WARLOCK_DEMONOLOGY = SPEC_WARLOCK_DEMONOLOGY
 local SHADOW_ORBS_SHOW_LEVEL = SHADOW_ORBS_SHOW_LEVEL
 local MOONKIN_FORM = MOONKIN_FORM
+local STAGGER_YELLOW_TRANSITION = STAGGER_YELLOW_TRANSITION
+local STAGGER_RED_TRANSITION = STAGGER_RED_TRANSITION
 
 local C_PetJournal_GetPetTeamAverageLevel = C_PetJournal.GetPetTeamAverageLevel
 
@@ -134,7 +136,7 @@ local function Abbrev(name)
 end
 E.TagFunctions.Abbrev = Abbrev
 
-local function GetClassPower(class)
+local function GetClassPower(class, stagger)
 	local min, max, r, g, b
 	local spec = GetSpecialization()
 
@@ -143,9 +145,25 @@ local function GetClassPower(class)
 		max = UnitPowerMax("player", SPELL_POWER_HOLY_POWER)
 		r, g, b = unpack(ElvUF.colors.ClassBars.PALADIN)
 	elseif class == "MONK" then
-		min = UnitPower("player", SPELL_POWER_CHI)
-		max = UnitPowerMax("player", SPELL_POWER_CHI)
-		r, g, b = unpack(ElvUF.colors.ClassBars.MONK[min])
+		if stagger and spec == SPEC_MONK_BREWMASTER then
+			min = UnitStagger("player")
+			if min then
+				local staggerRatio = min / UnitHealthMax("player")
+
+				if staggerRatio >= STAGGER_RED_TRANSITION then
+					r, g, b = unpack(ElvUF.colors.power.STAGGER[3])
+				elseif staggerRatio >= STAGGER_YELLOW_TRANSITION then
+					r, g, b = unpack(ElvUF.colors.power.STAGGER[2])
+				else
+					r, g, b = unpack(ElvUF.colors.power.STAGGER[1])
+				end
+			end
+		else
+			min = UnitPower("player", SPELL_POWER_CHI)
+			max = UnitPowerMax("player", SPELL_POWER_CHI)
+			local color = ElvUF.colors.ClassBars[class][min]
+			if color then r, g, b = unpack(color) end
+		end
 	elseif class == "DRUID" then
 		local form = GetShapeshiftFormID()
 		if spec and spec == 1 and (form == MOONKIN_FORM or not form) then
@@ -174,8 +192,9 @@ local function GetClassPower(class)
 		end
 	end
 
-	return min, max, r, g, b
+	return min or 0, max or 0, r or 1, g or 1, b or 1
 end
+
 E.TagFunctions.GetClassPower = GetClassPower
 
 ElvUF.Tags.Events["altpowercolor"] = "UNIT_POWER UNIT_POWER_BAR_SHOW UNIT_POWER_BAR_HIDE"
@@ -472,6 +491,21 @@ ElvUF.Tags.Methods["mana:max"] = function(unit)
 	local max = UnitPowerMax(unit, SPELL_POWER_MANA)
 
 	return E:GetFormattedText("CURRENT", max, max)
+end
+
+ElvUF.Tags.Events["staggercolor"] = "UNIT_AURA"
+ElvUF.Tags.Methods["staggercolor"] = function()
+	local _, _, r, g, b = GetClassPower(E.myclass, true)
+
+	return Hex(r, g, b)
+end
+
+ElvUF.Tags.Events["stagger"] = "UNIT_AURA"
+ElvUF.Tags.Methods["stagger"] = function()
+	local stagger = GetClassPower(E.myclass, true)
+	if stagger and stagger ~= 0 then
+		return E:GetFormattedText("CURRENT", stagger)
+	end
 end
 
 ElvUF.Tags.Events["difficultycolor"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
@@ -1153,7 +1187,6 @@ E.TagInfo = {
 	["rare"] = {category = "Classification", description = "Displays 'Rare' when the unit is a rare or rareelite"},
 	["plus"] = {category = "Classification", description = "Displays the character '+' if the unit is an elite or rare-elite"},
 	--Classpower
-	["arcanecharges"] = {category = "Classpower", description = "Displays the arcane charges (Mage)"},
 	["chi"] = {category = "Classpower", description = "Displays the chi points (Monk)"},
 	["shadoworbs"] = {category = "Classpower", description = "Displays the shadow orbs (Priest)"},
 	["pereclipse"] = {category = "Classpower", description = "Displays the eclipse power (Druid)"},
@@ -1177,6 +1210,7 @@ E.TagInfo = {
 	["healthcolor"] = {category = "Colors", description = "Changes the text color, depending on the unit's current health"},
 	["threatcolor"] = {category = "Colors", description = "Changes the text color, depending on the unit's threat situation"},
 	["classpowercolor"] = {category = "Colors", description = "Changes the color of the special power based upon its type"},
+	["staggercolor"] = {category = "Colors", description = "Changes the text color, depending on the unit's current stagger"},
 	["classificationcolor"] = {category = "Colors", description = "Changes the text color, depending on the unit's classification"},
 	["manacolor"] = {category = "Colors", description = "Changes the text color to a light-blue mana color"},
 	["difficulty"] = {category = "Colors", description = "Changes color of the next tag based on how difficult the unit is compared to the players level"},
@@ -1316,14 +1350,14 @@ E.TagInfo = {
 	["realm:dash"] = {category = "Realm", description = "Displays the server name with a dash in front (e.g. -Realm)"},
 	["realm:dash:translit"] = {category = "Realm", description = "Displays the server name with transliteration for cyrillic letters and a dash in front"},
 	--Speed
-	["speed:percent"] = {category = "Speed", description = ""},
-	["speed:percent-raw"] = {category = "Speed", description = ""},
-	["speed:yardspersec"] = {category = "Speed", description = ""},
-	["speed:percent-moving"] = {category = "Speed", description = ""},
-	["speed:yardspersec-moving"] = {category = "Speed", description = ""},
-	["speed:percent-moving-raw"] = {category = "Speed", description = ""},
-	["speed:yardspersec-moving-raw"] = {category = "Speed", description = ""},
-	["speed:yardspersec-raw"] = {category = "Speed", description = ""},
+	["speed:percent"] = {category = "Speed"},
+	["speed:percent-raw"] = {category = "Speed"},
+	["speed:yardspersec"] = {category = "Speed"},
+	["speed:percent-moving"] = {category = "Speed"},
+	["speed:yardspersec-moving"] = {category = "Speed"},
+	["speed:percent-moving-raw"] = {category = "Speed"},
+	["speed:yardspersec-moving-raw"] = {category = "Speed"},
+	["speed:yardspersec-raw"] = {category = "Speed"},
 	--Status
 	["status"] = {category = "Status", description = "Displays zzz, dead, ghost, offline"},
 	["status:icon"] = {category = "Status", description = "Displays AFK/DND as an orange(afk) / red(dnd) icon"},
