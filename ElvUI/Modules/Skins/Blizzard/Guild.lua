@@ -136,9 +136,11 @@ local function LoadSkin()
 
 					button.backdrop:SetBackdropBorderColor(r, g, b)
 					button.name:SetTextColor(r, g, b)
+					button.handledHighlight:SetVertexColor(r, g, b)
 				else
 					button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					button.name:SetTextColor(1, 1, 1)
+					button.handledHighlight:SetVertexColor(1, 1, 1)
 				end
 			end
 
