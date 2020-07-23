@@ -55,7 +55,13 @@ local function customFilter(element, _, button, _, _, _, _, _, _, _, _, _, _, sp
 	button.onlyShowMissing = setting.onlyShowMissing
 	button.anyUnit = setting.anyUnit
 
-	return setting.enabled and (not setting.onlyShowMissing or setting.anyUnit or button.isPlayer)
+	if setting.enabled and not setting.onlyShowMissing then
+		if (setting.anyUnit and (button.isPlayer or not button.isPlayer)) or (not setting.anyUnit and button.isPlayer) then
+			return true
+		end
+	end
+
+	return false
 end
 
 local function updateIcon(element, unit, index, offset, filter, isDebuff, visible)
@@ -75,7 +81,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 		button.filter = filter
 		button.isDebuff = isDebuff
 		button.debuffType = debuffType
-		button.isPlayer = caster == 'player'
+		button.isPlayer = (caster == 'player' or caster == 'vehicle')
 		button.spellID = spellID
 
 		local show = (element.CustomFilter or customFilter) (element, unit, button, name, rank, texture, count, debuffType, duration, expiration, caster, isStealable, shouldConsolidate, spellID, canApply, isBossDebuff)
@@ -142,7 +148,7 @@ local function onlyShowMissingIcon(element, unit, offset)
 	wipe(missing)
 
 	for SpellID, setting in pairs(element.watched) do
-		if setting.onlyShowMissing then
+		if setting.enabled and setting.onlyShowMissing then
 			missing[SpellID] = setting
 		end
 	end
