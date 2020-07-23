@@ -120,6 +120,12 @@ local function LoadSkin()
 		button.handledHighlight:Point("TOPLEFT", 38, 0)
 		button.handledHighlight:Point("BOTTOMRIGHT", -2, 0)
 
+		button.selectedTex:SetTexture(E.Media.Textures.Highlight)
+		button.selectedTex:SetVertexColor(1, 0.80, 0.10, 0.35)
+		button.selectedTex:SetTexCoord(0, 1, 0, 1)
+		button.selectedTex:Point("TOPLEFT", 38, 0)
+		button.selectedTex:Point("BOTTOMRIGHT", -2, 0)
+
 		button.icon:Size(38)
 		button.icon:SetTexCoord(unpack(E.TexCoords))
 		button.icon:SetParent(button.backdrop)
