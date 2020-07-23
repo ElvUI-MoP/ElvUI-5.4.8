@@ -195,35 +195,6 @@ local function LoadSkin2()
 		local petType = C_PetBattles_GetPetType(PetBattlePrimaryUnitTooltip.petOwner, PetBattlePrimaryUnitTooltip.petIndex)
 		PetBattlePrimaryUnitTooltip.PetType.Icon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
 	end)
-
-	hooksecurefunc("PetBattleAbilityTooltip_Show", function()
-		if anchor == nil or (ElvUI_ContainerFrame and anchor == ElvUI_ContainerFrame) or anchor == RightChatPanel or anchor == TooltipMover or anchor == UIParent or anchor == E.UIParent then
-			GameTooltip_Hide()
-
-			PetBattlePrimaryAbilityTooltip:ClearAllPoints()
-
-			if not E:HasMoverBeenMoved("TooltipMover") then
-				if ElvUI_ContainerFrame and ElvUI_ContainerFrame:IsShown() then
-					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", ElvUI_ContainerFrame, "TOPRIGHT", 0, 18)
-				elseif RightChatPanel:GetAlpha() == 1 and RightChatPanel:IsShown() then
-					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", RightChatPanel, "TOPRIGHT", 0, 18)
-				else
-					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 18)
-				end
-			else
-				local point = E:GetScreenQuadrant(TooltipMover)
-				if point == "TOPLEFT" then
-					PetBattlePrimaryAbilityTooltip:Point("TOPLEFT", TooltipMover, "BOTTOMLEFT", 1, -4)
-				elseif point == "TOPRIGHT" then
-					PetBattlePrimaryAbilityTooltip:Point("TOPRIGHT", TooltipMover, "BOTTOMRIGHT", -1, -4)
-				elseif point == "BOTTOMLEFT" or point == "LEFT" then
-					PetBattlePrimaryAbilityTooltip:Point("BOTTOMLEFT", TooltipMover, "TOPLEFT", 1, 18)
-				else
-					PetBattlePrimaryAbilityTooltip:Point("BOTTOMRIGHT", TooltipMover, "TOPRIGHT", -1, 18)
-				end
-			end
-		end
-	end)
 end
 
 S:AddCallback("SkinTooltip", LoadSkin)

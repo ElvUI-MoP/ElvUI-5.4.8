@@ -241,6 +241,32 @@ local function LoadSkin()
 	end)
 
 	-- Auras
+	local function SkinAuras(frame)
+		if frame.isSkinned then return end
+
+		frame:CreateBackdrop()
+		frame.backdrop:SetOutside(frame.Icon)
+		frame:SetHitRectInsets(15, 15, -2, 18)
+
+		frame.Icon:SetTexCoord(unpack(E.TexCoords))
+
+		frame.DebuffBorder:SetAlpha(0)
+
+		frame.Duration:FontTemplate(E.media.normFont, 12, "OUTLINE")
+		frame.Duration:ClearAllPoints()
+		frame.Duration:Point("TOP", frame.Icon, "BOTTOM", 1, -4)
+
+		frame.highlight = frame:CreateTexture(nil, "OVERLAY")
+		frame.highlight:SetTexture(1, 1, 1, 0.35)
+		frame.highlight:SetInside(frame.backdrop)
+		frame.highlight:Hide()
+
+		frame:HookScript("OnEnter", function() frame.highlight:Show() end)
+		frame:HookScript("OnLeave", function() frame.highlight:Hide() end)
+
+		frame.isSkinned = true
+	end
+
 	hooksecurefunc("PetBattleAuraHolder_Update", function(self)
 		if not self.petOwner or not self.petIndex then return end
 
@@ -251,26 +277,9 @@ local function LoadSkin()
 			if (isBuff and self.displayBuffs) or (not isBuff and self.displayDebuffs) then
 				local frame = self.frames[nextFrame]
 
-				if not frame.isSkinned then
-					frame:CreateBackdrop()
-					frame.backdrop:SetOutside(frame.Icon)
+				SkinAuras(frame)
 
-					frame.Icon:SetTexCoord(unpack(E.TexCoords))
-
-					frame.Duration:FontTemplate(E.media.normFont, 12, "OUTLINE")
-					frame.Duration:ClearAllPoints()
-					frame.Duration:Point("TOP", frame.Icon, "BOTTOM", 1, -4)
-
-					frame.DebuffBorder:SetAlpha(0)
-
-					frame.isSkinned = true
-				end
-
-				if isBuff then
-					frame.backdrop:SetBackdropBorderColor(0, 1, 0)
-				else
-					frame.backdrop:SetBackdropBorderColor(1, 0, 0)
-				end
+				frame.backdrop:SetBackdropBorderColor(isBuff and 0 or 1, isBuff and 1 or 0, 0)
 
 				if turnsRemaining > 0 then
 					frame.Duration:SetText(turnsRemaining)
@@ -326,11 +335,11 @@ local function LoadSkin()
 
 	bf.TurnTimer.SkipButton:Width(bar:GetWidth())
 	bf.TurnTimer.SkipButton:ClearAllPoints()
-	bf.TurnTimer.SkipButton:Point("BOTTOM", bar, "TOP", 0, E.PixelMode and -1 or 1)
+	bf.TurnTimer.SkipButton:Point("BOTTOM", bar, "TOP", 0, E.PixelMode and 1 or 3)
 	hooksecurefunc(bf.TurnTimer.SkipButton, "SetPoint", function(_, point, _, anchorPoint, xOffset, yOffset)
-		if point ~= "BOTTOM" or anchorPoint ~= "TOP" or xOffset ~= 0 or yOffset ~= (E.PixelMode and -1 or 1) then
+		if point ~= "BOTTOM" or anchorPoint ~= "TOP" or xOffset ~= 0 or yOffset ~= (E.PixelMode and 1 or 3) then
 			bf.TurnTimer.SkipButton:ClearAllPoints()
-			bf.TurnTimer.SkipButton:SetPoint("BOTTOM", bar, "TOP", 0, E.PixelMode and -1 or 1)
+			bf.TurnTimer.SkipButton:SetPoint("BOTTOM", bar, "TOP", 0, E.PixelMode and 1 or 3)
 		end
 	end)
 
@@ -345,9 +354,9 @@ local function LoadSkin()
 
 	bf.xpBar:SetParent(bar)
 	bf.xpBar:Width(bar:GetWidth() - (E.Border * 2))
-	bf.xpBar:CreateBackdrop()
+	bf.xpBar:CreateBackdrop("Transparent")
 	bf.xpBar:ClearAllPoints()
-	bf.xpBar:Point("BOTTOM", bf.TurnTimer.SkipButton, "TOP", 0, E.PixelMode and 0 or 3)
+	bf.xpBar:Point("BOTTOM", bf.TurnTimer.SkipButton, "TOP", 0, E.PixelMode and 2 or 5)
 	bf.xpBar:SetScript("OnShow", function(self)
 		self:StripTextures()
 		self:SetStatusBarTexture(E.media.normTex)
