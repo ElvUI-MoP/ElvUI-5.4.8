@@ -31,7 +31,6 @@ G.unitframe.aurafilters.CCDebuffs = {
 	spells = {
 	-- Death Knight
 		[47476] = Defaults(),	-- Strangulate
-		[49203] = Defaults(),	-- Hungering Cold
 		[91800] = Defaults(),	-- Gnaw (Pet)
 		[91807] = Defaults(),	-- Shambling Rush (Pet)
 		[91797] = Defaults(),	-- Monstrous Blow (Pet)
