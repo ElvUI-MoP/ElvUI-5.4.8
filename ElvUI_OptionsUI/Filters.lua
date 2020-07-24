@@ -321,6 +321,7 @@ E.Options.args.filters = {
 					type = "select",
 					name = L["Remove Spell"],
 					desc = L["Remove a spell from the filter. Use the spell ID if you see the ID as part of the spell name in the filter."],
+					width = "double",
 					confirm = function(info, value)
 						local spellName = tonumber(value) and GetSpellInfo(value)
 						local name = (spellName and format("%s |cFF888888(%s)|r", spellName, value)) or tostring(value)
@@ -533,7 +534,7 @@ E.Options.args.filters = {
 						elseif selectedFilter == "AuraBar Colors" then
 							return E.global.unitframe.AuraBarColors[spell].enable
 						else
-							return E.global.unitframe.aurafilters[selectedFilter].spells[spell].enable
+							return E.global.unitframe.aurafilters[selectedFilter].spells[spell] and E.global.unitframe.aurafilters[selectedFilter].spells[spell].enable
 						end
 					end,
 					set = function(info, value)
