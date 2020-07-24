@@ -95,7 +95,7 @@ function UF:Update_PetFrame(frame, db)
 	UF:Configure_AuraBars(frame)
 	UF:Configure_Cutaway(frame)
 	UF:Configure_CustomTexts(frame)
-	UF:Configure_AuraWatch(frame, true)
+	UF:UpdateAuraWatch(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

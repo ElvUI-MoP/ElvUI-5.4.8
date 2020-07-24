@@ -46,15 +46,15 @@ function UF:Construct_Debuffs(frame)
 end
 
 function UF:Aura_OnClick()
-	local keyDown = IsShiftKeyDown() and 'SHIFT' or IsAltKeyDown() and 'ALT' or IsControlKeyDown() and 'CTRL'
+	local keyDown = IsShiftKeyDown() and "SHIFT" or IsAltKeyDown() and "ALT" or IsControlKeyDown() and "CTRL"
 	if not keyDown then return end
 
 	local spellName, spellID = self.name, self.spellID
 	local listName = UF.db.modifiers[keyDown]
-	if spellName and spellID and listName ~= 'NONE' then
+	if spellName and spellID and listName ~= "NONE" then
 		if not E.global.unitframe.aurafilters[listName].spells[spellID] then
 			E:Print(format(L["The spell '%s' has been added to the '%s' unitframe aura filter."], spellName, listName))
-			E.global.unitframe.aurafilters[listName].spells[spellID] = { enable = true, priority = 0 }
+			E.global.unitframe.aurafilters[listName].spells[spellID] = {enable = true, priority = 0}
 		else
 			E.global.unitframe.aurafilters[listName].spells[spellID].enable = true
 		end
@@ -275,7 +275,7 @@ local function SortAurasByTime(a, b)
 			local sortDirection = a:GetParent().db.sortDirection
 			local aTime = a.noTime and huge or a.expiration or -1
 			local bTime = b.noTime and huge or b.expiration or -1
-			if (aTime and bTime) then
+			if aTime and bTime then
 				if sortDirection == "DESCENDING" then
 					return aTime < bTime
 				else

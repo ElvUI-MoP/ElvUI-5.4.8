@@ -1,300 +1,347 @@
--- Original work by Astromech
--- Rewritten based on Auras by Azilroka
+--[[------------------------------------------------------------------------------------------------------
+oUF_AuraWatch by Astromech
+Please leave comments, suggestions, and bug reports on this addon's WoWInterface page
+
+To setup, create a table named AuraWatch in your unit frame. There are several options
+you can specify, as explained below.
+
+	icons 
+		Mandatory!
+		A table of frames to be used as icons. oUF_Aurawatch does not position
+		these frames, so you must do so yourself. Each icon needs a spellID entry,
+		which is the spell ID of the aura to watch. Table should be set up
+		such that values are icon frames, but the keys can be anything.
+		
+		Note each icon can have several options set as well. See below.
+	strictMatching
+		Default: false
+		If true, AuraWatch will only show an icon if the specific aura
+		with the specified spell id is on the unit. If false, AuraWatch
+		will show the icon if any aura with the same name and icon texture
+		is on the unit. Strict matching can be undesireable because most
+		ranks of an aura have different spell ids.
+	missingAlpha
+		Default 0.75
+		The alpha value for icons of auras which have faded from the unit.
+	presentAlpha
+		Default 1
+		The alpha value for icons or auras present on the unit.
+	onlyShowMissing
+		Default false
+		If this is true, oUF_AW will hide icons if they are present on the unit.
+	onlyShowPresent
+		Default false
+		If this is true, oUF_AW will hide icons if they have expired from the unit.
+	hideCooldown
+		Default false
+		If this is true, oUF_AW will not create a cooldown frame
+	hideCount
+		Default false
+		If this is true, oUF_AW will not create a count fontstring
+	fromUnits
+		Default {["player"] = true, ["pet"] = true, ["vehicle"] = true}
+		A table of units from which auras can originate. Have the units be the keys
+		and "true" be the values.
+	anyUnit
+		Default false
+		Set to true for oUF_AW to to show an aura no matter what unit it 
+		originates from. This will override any fromUnits setting.
+	PostCreateIcon
+		Default nil
+		A function to call when an icon is created to modify it, such as adding
+		a border or repositioning the count fontstring. Leave as nil to ignore.
+		The arguements are: AuraWatch table, icon, auraSpellID, auraName, unitFrame
+
+Below are options set on a per icon basis. Set these as fields in the icon frames.
+
+The following settings can be overridden from the AuraWatch table on a per-aura basis:
+	onlyShowMissing
+	onlyShowPresent
+	hideCooldown
+	hideCount
+	fromUnits
+	anyUnit
+
+The following settings are unique to icons:
+
+	spellID
+		Mandatory!
+		The spell id of the aura, as explained above.
+	icon
+		Default aura texture
+		A texture value for this icon.
+	overlay
+		Default Blizzard aura overlay
+		An overlay for the icon. This is not created if a custom icon texture is created.
+	count
+		Default A fontstring
+		An fontstring to show the stack count of an aura.
+
+Here is an example of how to set oUF_AW up:
+
+	local createAuraWatch = function(self, unit)
+		local auras = {}
+
+		-- A table of spellIDs to create icons for
+		-- To find spellIDs, look up a spell on www.wowhead.com and look at the URL
+		-- http://www.wowhead.com/?spell=SPELL_ID
+		local spellIDs = { ... }
+
+		auras.presentAlpha = 1
+		auras.missingAlpha = .7
+		auras.PostCreateIcon = myCustomIconSkinnerFunction
+		-- Set any other AuraWatch settings
+		auras.icons = {}
+		for i, sid in pairs(spellIDs) do
+			local icon = CreateFrame("Frame", nil, auras)
+			icon.spellID = sid
+			-- set the dimensions and positions
+			icon:SetWidth(24)
+			icon:SetHeight(24)
+			icon:SetPoint("BOTTOM", self, "BOTTOM", 0, 28 * i)
+			auras.icons[sid] = icon
+			-- Set any other AuraWatch icon settings
+		end
+		self.AuraWatch = auras
+	end
+-----------------------------------------------------------------------------------------------------------]]
 
 local _, ns = ...
-local oUF = ns.oUF
+local oUF = oUF or ns.oUF
+assert(oUF, "oUF_AuraWatch cannot find an instance of oUF. If your oUF is embedded into a layout, it may not be embedded properly.")
 
-local pairs = pairs
-local min = math.min
-local tinsert, wipe = table.insert, wipe
+local CreateFrame = CreateFrame
+local GetSpellInfo = GetSpellInfo
+local UnitBuff, UnitDebuff, UnitGUID = UnitBuff, UnitDebuff, UnitGUID
 
-local GetSpellTexture = GetSpellTexture
-local UnitAura = UnitAura
-local UnitIsUnit = UnitIsUnit
+local GUIDs = {}
 
-local VISIBLE, HIDDEN = 1, 0
+local PLAYER_UNITS = {
+	player = true,
+	vehicle = true,
+	pet = true,
+}
 
-local function createAuraIcon(element, index)
-	local button = CreateFrame('Button', 'AuraWatchButton' .. index, element)
-	button:EnableMouse(false)
-	button:Hide()
+local setupGUID
+do 
+	local cache = setmetatable({}, {__type = "k"})
 
-	local cd = CreateFrame('Cooldown', '$parentCooldown', button, 'CooldownFrameTemplate')
-	cd:SetAllPoints()
-	cd:SetReverse(true)
-
-	local icon = button:CreateTexture(nil, 'ARTWORK')
-	icon:SetAllPoints()
-
-	local countFrame = CreateFrame('Frame', nil, button)
-	countFrame:SetAllPoints(button)
-	countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
-
-	local count = countFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
-	count:SetPoint('BOTTOMRIGHT', countFrame, 'BOTTOMRIGHT', -1, 0)
-
-	local overlay = button:CreateTexture(nil, 'OVERLAY')
-	overlay:SetTexture([[Interface\Buttons\UI-Debuff-Overlays]])
-	overlay:SetAllPoints()
-	overlay:SetTexCoord(.296875, .5703125, 0, .515625)
-
-	button.overlay = overlay
-	button.icon = icon
-	button.count = count
-	button.cd = cd
-
-	if(element.PostCreateIcon) then element:PostCreateIcon(button) end
-
-	return button
-end
-
-local function customFilter(element, _, button, _, _, _, _, _, _, _, _, _, _, spellID)
-	local setting = element.watched[spellID]
-	if not setting then return false end
-
-	button.onlyShowMissing = setting.onlyShowMissing
-	button.anyUnit = setting.anyUnit
-
-	if setting.enabled and not setting.onlyShowMissing then
-		if (setting.anyUnit and (button.isPlayer or not button.isPlayer)) or (not setting.anyUnit and button.isPlayer) then
-			return true
+	local frame = CreateFrame"Frame"
+	frame:SetScript("OnEvent", function(self, event)
+		for k,t in pairs(GUIDs) do
+			GUIDs[k] = nil
+			for a in pairs(t) do
+				t[a] = nil
+			end
+			cache[t] = true
 		end
+	end)
+	frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	
+	function setupGUID(guid)
+		local t = next(cache)
+		if t then
+			cache[t] = nil
+		else
+			t = {}
+		end
+		GUIDs[guid] = t
 	end
-
-	return false
 end
 
-local function updateIcon(element, unit, index, offset, filter, isDebuff, visible)
-	local name, rank, texture, count, debuffType, duration, expiration, caster, isStealable, shouldConsolidate, spellID, canApply, isBossDebuff = UnitAura(unit, index, filter)
+local function resetIcon(icon, frame, count, duration, remaining)
+	if icon.onlyShowMissing then
+		icon:Hide()
+	else
+		icon:Show()
 
-	if(name) then
-		local position = visible + offset + 1
-		local button = element[position]
-		if(not button) then
-			button = (element.CreateIcon or createAuraIcon) (element, position)
-
-			tinsert(element, button)
-			element.createdIcons = element.createdIcons + 1
-		end
-
-		button.caster = caster
-		button.filter = filter
-		button.isDebuff = isDebuff
-		button.debuffType = debuffType
-		button.isPlayer = (caster == 'player' or caster == 'vehicle')
-		button.spellID = spellID
-
-		local show = (element.CustomFilter or customFilter) (element, unit, button, name, rank, texture, count, debuffType, duration, expiration, caster, isStealable, shouldConsolidate, spellID, canApply, isBossDebuff)
-
-		if(show) then
-			local setting = element.watched[spellID]
-
-			if(button.cd) then
-				if(duration and duration > 0) then
-					button.cd:SetCooldown(expiration - duration, duration)
-					button.cd:Show()
-				else
-					button.cd:Hide()
-				end
-			end
-
-			if(button.overlay) then
-				if((isDebuff and element.showDebuffType) or (not isDebuff and element.showBuffType) or element.showType) then
-					local color = element.__owner.colors.debuff[debuffType] or element.__owner.colors.debuff.none
-
-					button.overlay:SetVertexColor(color[1], color[2], color[3])
-					button.overlay:Show()
-				else
-					button.overlay:Hide()
-				end
-			end
-
-			if(button.stealable) then
-				if(not isDebuff and isStealable and element.showStealableBuffs and not UnitIsUnit('player', unit)) then
-					button.stealable:Show()
-				else
-					button.stealable:Hide()
-				end
-			end
-
-			if(button.icon) then button.icon:SetTexture(texture) end
-			if(button.count) then button.count:SetText(count > 1 and count) end
-
-			if setting.sizeOffset == 0 then
-				button:SetSize(element.size, element.size)
+		if icon.cd then
+			if duration and duration > 0 and icon.style ~= 'NONE' then
+				icon.cd:SetCooldown(remaining - duration, duration)
+				icon.cd:Show()
 			else
-				button:SetSize(setting.sizeOffset + element.size, setting.sizeOffset + element.size)
+				icon.cd:Hide()
+			end
+		end
+
+		if icon.count then
+			icon.count:SetText((count > 1 and count))
+		end
+
+		if icon.overlay then
+			icon.overlay:Hide()
+		end
+
+		icon:SetAlpha(icon.presentAlpha)
+	end
+end
+
+local function expireIcon(icon, frame)
+	if icon.onlyShowPresent then
+		icon:Hide()
+	else
+		if (icon.cd) then icon.cd:Hide() end
+		if (icon.count) then icon.count:SetText() end
+		icon:SetAlpha(icon.missingAlpha)
+		if icon.overlay then
+			icon.overlay:Show()
+		end
+		icon:Show()
+	end
+end
+
+local found = {}
+local function Update(frame, event, unit)
+	if frame.unit ~= unit or not unit then return end
+	local watch = frame.AuraWatch
+	local index, icons = 1, watch.watched
+	local _, name, texture, count, duration, remaining, caster, key, icon, spellID
+	local filter = "HELPFUL"
+	local guid = UnitGUID(unit)
+	if not guid then return end
+	if not GUIDs[guid] then setupGUID(guid) end
+
+	for key, icon in pairs(icons) do
+		if not icon.onlyShowMissing then
+			icon:Hide()
+		else
+			icon:Show()
+		end
+	end
+
+	while true do
+		name, _, texture, count, _, duration, remaining, caster, _, _, spellID = UnitAura(unit, index, filter)
+		if not name then 
+			if filter == "HELPFUL" then
+				filter = "HARMFUL"
+				index = 1
+			else
+				break
+			end
+		else
+			if watch.strictMatching then
+				key = spellID
+			else
+				key = name..texture
+			end
+			icon = icons[key]
+
+			if icon and (icon.anyUnit or (caster and icon.fromUnits and icon.fromUnits[caster])) then
+				resetIcon(icon, watch, count, duration, remaining)
+				GUIDs[guid][key] = true
+				found[key] = true
+			end
+			index = index + 1
+		end
+	end
+
+	for key in pairs(GUIDs[guid]) do
+		if icons[key] and not found[key] then
+			expireIcon(icons[key], watch)
+		end
+	end
+
+	for k in pairs(found) do
+		found[k] = nil
+	end
+end
+
+local function setupIcons(self)
+
+	local watch = self.AuraWatch
+	local icons = watch.icons
+	watch.watched = {}
+
+	for _, icon in pairs(icons) do
+
+		local name, _, image = GetSpellInfo(icon.spellID)
+
+		if name then
+			icon.name = name
+
+			if not icon.cd and not (watch.hideCooldown or icon.hideCooldown) then
+				local cd = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")
+				cd:SetAllPoints(icon)
+				icon.cd = cd
 			end
 
-			button:SetID(index)
-			button:Show()
-			button:ClearAllPoints()
-			button:SetPoint(setting.point, setting.xOffset, setting.yOffset)
+			if not icon.icon then
+				local tex = icon:CreateTexture(nil, "BACKGROUND")
+				tex:SetAllPoints(icon)
+				tex:SetTexture(image)
+				icon.icon = tex
 
-			if(element.PostUpdateIcon) then
-				element:PostUpdateIcon(unit, button, index, position, duration, expiration, debuffType, isStealable)
+				if not icon.overlay then
+					local overlay = icon:CreateTexture(nil, "OVERLAY")
+					overlay:SetTexture"Interface\\Buttons\\UI-Debuff-Overlays"
+					overlay:SetAllPoints(icon)
+					overlay:SetTexCoord(.296875, .5703125, 0, .515625)
+					overlay:SetVertexColor(1, 0, 0)
+					icon.overlay = overlay
+				end
 			end
 
-			return VISIBLE
+			if not icon.count and not (watch.hideCount or icon.hideCount) then
+				local count = icon:CreateFontString(nil, "OVERLAY")
+				count:SetFontObject(NumberFontNormal)
+				count:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", -1, 0)
+				icon.count = count
+			end
+
+			if icon.onlyShowMissing == nil then
+				icon.onlyShowMissing = watch.onlyShowMissing
+			end
+			if icon.onlyShowPresent == nil then
+				icon.onlyShowPresent = watch.onlyShowPresent
+			end
+			if icon.presentAlpha == nil then
+				icon.presentAlpha = watch.presentAlpha
+			end
+			if icon.missingAlpha == nil then
+				icon.missingAlpha = watch.missingAlpha
+			end
+			if icon.fromUnits == nil then
+				icon.fromUnits = watch.fromUnits or PLAYER_UNITS
+			end
+			if icon.anyUnit == nil then
+				icon.anyUnit = watch.anyUnit
+			end
+
+			if watch.strictMatching then
+				watch.watched[icon.spellID] = icon
+			else
+				watch.watched[name..image] = icon
+			end
+
+			if watch.PostCreateIcon then watch:PostCreateIcon(icon, icon.spellID, name, self) end
 		else
-			button.isFiltered = true
-			return HIDDEN
+			print("oUF_AuraWatch error: no spell with "..tostring(icon.spellID).." spell ID exists")
 		end
 	end
-end
-
-local missing = {}
-local function onlyShowMissingIcon(element, unit, offset)
-	wipe(missing)
-
-	for SpellID, setting in pairs(element.watched) do
-		if setting.enabled and setting.onlyShowMissing then
-			missing[SpellID] = setting
-		end
-	end
-
-	for i = 1, #element do
-		local button = element[i]
-		if button.isFiltered and missing[button.spellID] then
-			missing[button.spellID] = nil
-		end
-	end
-
-	local visible = 0
-	for SpellID, setting in pairs(missing) do
-		local position = visible + offset + 1
-		local button = element[position]
-
-		if(not button) then
-			button = (element.CreateIcon or createAuraIcon) (element, position)
-			tinsert(element, button)
-			element.createdIcons = element.createdIcons + 1
-		end
-
-		if(button.cd) then button.cd:Hide() end
-		if(button.icon) then button.icon:SetTexture(GetSpellTexture(SpellID)) end
-		if(button.overlay) then button.overlay:Hide() end
-
-		if setting.sizeOffset == 0 then
-			button:SetSize(element.size, element.size)
-		else
-			button:SetSize(setting.sizeOffset + element.size, setting.sizeOffset + element.size)
-		end
-
-		button:SetID(position)
-		button.spellID = SpellID
-
-		button:Show()
-		button:ClearAllPoints()
-		button:SetPoint(setting.point, setting.xOffset, setting.yOffset)
-
-		if(element.PostUpdateIcon) then
-			element:PostUpdateIcon(unit, button, nil, position)
-		end
-
-		visible = visible + 1
-	end
-
-	return visible
-end
-
-local function filterIcons(element, unit, filter, limit, isDebuff, offset, dontHide)
-	if (not offset) then offset = 0 end
-	local index, visible, hidden = 1, 0, 0
-
-	while (visible < limit) do
-		local result = updateIcon(element, unit, index, offset, filter, isDebuff, visible)
-		if (not result) then
-			break
-		elseif (result == VISIBLE) then
-			visible = visible + 1
-		elseif (result == HIDDEN) then
-			hidden = hidden + 1
-		end
-
-		index = index + 1
-	end
-
-	if (not dontHide) then
-		for i = visible + offset + 1, #element do
-			element[i]:Hide()
-		end
-	end
-
-	return visible, hidden
-end
-
-local function UpdateAuras(self, event, unit)
-	if(self.unit ~= unit) then return end
-
-	local element = self.AuraWatch
-	if(element) then
-		if(element.PreUpdate) then element:PreUpdate(unit) end
-
-		local numBuffs = element.numBuffs or 32
-		local numDebuffs = element.numDebuffs or 16
-		local max = element.numTotal or numBuffs + numDebuffs
-
-		for i = 1, #element do element[i].isFiltered = false end
-
-		local visibleBuffs, hiddenBuffs = filterIcons(element, unit, element.buffFilter or element.filter or 'HELPFUL', min(numBuffs, max), nil, 0, true)
-
-		local visibleDebuffs, hiddenDebuffs = filterIcons(element, unit, element.buffFilter or element.filter or 'HARMFUL', min(numDebuffs, max - visibleBuffs), true, visibleBuffs)
-
-		element.visibleDebuffs = visibleDebuffs
-		element.visibleBuffs = visibleBuffs
-
-		element.visibleAuras = visibleBuffs + visibleDebuffs
-		element.allAuras = visibleBuffs + visibleDebuffs + hiddenBuffs + hiddenDebuffs
-
-		onlyShowMissingIcon(element, unit, element.visibleAuras)
-
-		if(element.PostUpdate) then element:PostUpdate(unit) end
-	end
-end
-
-local function Update(self, event, unit)
-	if(self.unit ~= unit) then return end
-
-	UpdateAuras(self, event, unit)
-end
-
-local function ForceUpdate(element)
-	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
-end
-
-local function SetNewTable(element, table)
-	element.watched = table or {}
 end
 
 local function Enable(self)
 	local element = self.AuraWatch
 
-	if(element) then
-		element.__owner = self
-		element.SetNewTable = SetNewTable
-		element.ForceUpdate = ForceUpdate
-
-		element.watched = element.watched or {}
-		element.createdIcons = element.createdIcons or 0
-		element.anchoredIcons = 0
-		element.size = 8
-
-		self:RegisterEvent('UNIT_AURA', UpdateAuras)
-		element:Show()
+	if element then
+		element.Update = setupIcons
+		self:RegisterEvent("UNIT_AURA", Update)
+		setupIcons(self)
 
 		return true
+	else
+		return false
 	end
 end
 
 local function Disable(self)
-	local element = self.AuraWatch
+	if self.AuraWatch then
+		self:UnregisterEvent("UNIT_AURA", Update)
 
-	if(element) then
-		self:UnregisterEvent('UNIT_AURA', UpdateAuras)
-
-		element:Hide()
+		for _, icon in pairs(self.AuraWatch.icons) do
+			icon:Hide()
+		end
 	end
 end
-
-oUF:AddElement('AuraWatch', Update, Enable, Disable)
+oUF:AddElement("AuraWatch", Update, Enable, Disable)

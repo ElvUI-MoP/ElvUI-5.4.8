@@ -1122,11 +1122,10 @@ function E:InitializeModules()
 end
 
 local function buffwatchConvert(spell)
-	if spell.sizeOverride then spell.sizeOverride = nil end
-	if spell.size then spell.size = nil end
+	if spell.sizeOffset then spell.sizeOffset = nil end
 
-	if not spell.sizeOffset then
-		spell.sizeOffset = 0
+	if not spell.sizeOverride then
+		spell.sizeOverride = 0
 	end
 
 	if spell.styleOverride then

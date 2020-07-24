@@ -806,7 +806,13 @@ local function GetOptionsTable_AuraWatch(updateFunc, groupName, numGroup)
 				name = "",
 				guiInline = true,
 				get = function(info) return BuffIndicator_ApplyToAll(info, nil, E.db.unitframe.units[groupName].buffIndicator.profileSpecific) end,
-				set = function(info, value) BuffIndicator_ApplyToAll(info, value, E.db.unitframe.units[groupName].buffIndicator.profileSpecific) end,
+				set = function(info, value)
+					BuffIndicator_ApplyToAll(info, value, E.db.unitframe.units[groupName].buffIndicator.profileSpecific)
+					UF:UpdateAuraWatchFromHeader("raid")
+					UF:UpdateAuraWatchFromHeader("raid40")
+					UF:UpdateAuraWatchFromHeader("party")
+					UF:UpdateAuraWatchFromHeader("raidpet", true)
+				end,
 				args = {
 					header = {
 						order = 1,
@@ -5279,7 +5285,6 @@ E.Options.args.unitframe.args.individualUnits.args.focus = {
 			}
 		},
 		aurabar = GetOptionsTable_AuraBars(UF.CreateAndUpdateUF, "focus"),
-		buffIndicator = GetOptionsTable_AuraWatch(UF.CreateAndUpdateUF, "focus"),
 		buffs = GetOptionsTable_Auras("buffs", UF.CreateAndUpdateUF, "focus"),
 		castbar = GetOptionsTable_Castbar(false, UF.CreateAndUpdateUF, "focus"),
 		CombatIcon = GetOptionsTable_CombatIconGroup(UF.CreateAndUpdateUF, "focus"),

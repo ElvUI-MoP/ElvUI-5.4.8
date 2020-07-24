@@ -192,12 +192,12 @@ function UF:Update_PartyFrames(frame, db)
 		UF:Configure_HealComm(frame)
 		UF:Configure_GPS(frame)
 		UF:Configure_RaidRoleIcons(frame)
-		UF:Configure_AuraWatch(frame)
 		UF:Configure_ReadyCheckIcon(frame)
 		UF:Configure_ClassBar(frame)
 		UF:Configure_AltPowerBar(frame)
 		UF:Configure_CustomTexts(frame)
 		UF:UpdateNameSettings(frame)
+		UF:UpdateAuraWatch(frame)
 	end
 
 	UF:Configure_RaidIcon(frame)

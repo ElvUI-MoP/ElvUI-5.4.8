@@ -108,9 +108,9 @@ function UF:Update_RaidpetFrames(frame, db)
 	UF:Configure_AuraHighlight(frame)
 	UF:Configure_HealComm(frame)
 	UF:Configure_Fader(frame)
-	UF:Configure_AuraWatch(frame, true)
 	UF:Configure_Cutaway(frame)
 	UF:Configure_CustomTexts(frame)
+	UF:UpdateAuraWatch(frame, true)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

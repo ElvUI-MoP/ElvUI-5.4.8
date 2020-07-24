@@ -667,7 +667,7 @@ E.ReverseTimer = {
 }
 
 -- BuffWatch: List of personal spells to show on unitframes as icon
-function UF:AuraWatch_AddSpell(id, point, color, anyUnit, onlyShowMissing, displayText, textThreshold, xOffset, yOffset)
+function UF:AuraWatch_AddSpell(id, point, color, anyUnit, onlyShowMissing, displayText, textThreshold, xOffset, yOffset, sizeOverride, countFontSize)
 	local r, g, b = 1, 1, 1
 	if color then r, g, b = unpack(color) end
 
@@ -683,7 +683,8 @@ function UF:AuraWatch_AddSpell(id, point, color, anyUnit, onlyShowMissing, displ
 		xOffset = xOffset or 0,
 		yOffset = yOffset or 0,
 		style = "coloredIcon",
-		sizeOffset = 0
+		sizeOverride = sizeOverride or 0,
+		countFontSize = countFontSize or 10
 	}
 end
 
@@ -701,7 +702,7 @@ G.unitframe.buffwatch = {
 	DRUID = {
 		[774]		= UF:AuraWatch_AddSpell(774, "TOPRIGHT", {0.8, 0.4, 0.8}),				-- Rejuvenation
 		[8936]		= UF:AuraWatch_AddSpell(8936, "BOTTOMLEFT", {0.2, 0.8, 0.2}),			-- Regrowth
-		[33763]		= UF:AuraWatch_AddSpell(94447, "TOPLEFT", {0.4, 0.8, 0.2}),				-- Lifebloom
+		[33763]		= UF:AuraWatch_AddSpell(33763, "TOPLEFT", {0.4, 0.8, 0.2}),				-- Lifebloom
 		[48438]		= UF:AuraWatch_AddSpell(48438, "BOTTOMRIGHT", {0.8, 0.4, 0}),			-- Wild Growth
 		[102342]	= UF:AuraWatch_AddSpell(102342, "LEFT", {0.45, 0.3, 0.2}, true),		-- Ironbark
 		[102351]	= UF:AuraWatch_AddSpell(102351, "RIGHT", {0.4, 0.9, 0.4}),				-- Cenarion Ward
@@ -741,6 +742,7 @@ G.unitframe.buffwatch = {
 	DEATHKNIGHT = {
 		[49016]		= UF:AuraWatch_AddSpell(49016, "TOPRIGHT", {0.89, 0.09, 0.05})			-- Unholy Frenzy
 	},
+	HUNTER = {},
 	PET = {
 		[136]		= UF:AuraWatch_AddSpell(136, 'TOPRIGHT', {0.2, 0.8, 0.2}, true),		-- Mend Pet
 		[19615]		= UF:AuraWatch_AddSpell(19615, 'TOPLEFT', {0.89, 0.09, 0.05}, true)		-- Frenzy
