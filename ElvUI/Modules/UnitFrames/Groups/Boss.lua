@@ -32,6 +32,8 @@ function UF:Construct_BossFrames(frame)
 	frame.MouseGlow = UF:Construct_MouseGlow(frame)
 	frame.TargetGlow = UF:Construct_TargetGlow(frame)
 	frame.FocusGlow = UF:Construct_FocusGlow(frame)
+	frame.AlternativePower = UF:Construct_AltPowerBar(frame)
+	frame.ClassBar = "AlternativePower"
 	frame:SetAttribute("type2", "focus")
 	frame.customTexts = {}
 
@@ -60,6 +62,15 @@ function UF:Update_BossFrames(frame, db)
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT and (db.portrait.overlay or frame.ORIENTATION == "MIDDLE")
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
+		frame.CAN_HAVE_CLASSBAR = true
+		frame.MAX_CLASS_BAR = 0
+		frame.USE_CLASSBAR = db.classbar.enable and frame.CAN_HAVE_CLASSBAR
+		frame.CLASSBAR_SHOWN = frame.CAN_HAVE_CLASSBAR and frame[frame.ClassBar] and frame[frame.ClassBar]:IsShown()
+		frame.CLASSBAR_DETACHED = false
+		frame.USE_MINI_CLASSBAR = db.classbar.fill == "spaced" and frame.USE_CLASSBAR
+		frame.CLASSBAR_HEIGHT = frame.USE_CLASSBAR and db.classbar.height or 0
+		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2) - frame.PORTRAIT_WIDTH - (frame.ORIENTATION == "MIDDLE" and (frame.POWERBAR_OFFSET * 2) or frame.POWERBAR_OFFSET)
+		frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and (frame.SPACING + (frame.CLASSBAR_HEIGHT / 2)) or (frame.CLASSBAR_HEIGHT - (frame.BORDER - frame.SPACING)))
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
@@ -93,6 +104,8 @@ function UF:Update_BossFrames(frame, db)
 	UF:Configure_CustomTexts(frame)
 	UF:Configure_Fader(frame)
 	UF:Configure_Cutaway(frame)
+	UF:Configure_ClassBar(frame)
+	UF:Configure_AltPowerBar(frame)
 
 	frame:ClearAllPoints()
 	if frame.index == 1 then

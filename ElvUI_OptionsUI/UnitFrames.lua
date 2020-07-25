@@ -2724,7 +2724,7 @@ local function GetOptionsTable_ClassBar(updateFunc, groupName, numUnits)
 		}
 	}
 
-	if groupName == "party" or groupName == "raid" or groupName == "raid40" then
+	if groupName == "party" or groupName == "raid" or groupName == "raid40" or groupName == "boss" then
 		config.args.altPowerColor = {
 			order = 5,
 			type = "color",
@@ -5818,12 +5818,14 @@ E.Options.args.unitframe.args.groupUnits.args.boss = {
 		portrait = GetOptionsTable_Portrait(UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES),
 		fader = GetOptionsTable_Fader(UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES),
 		buffs = GetOptionsTable_Auras("buffs", UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES),
+		classbar = GetOptionsTable_ClassBar(UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES),
 		debuffs = GetOptionsTable_Auras("debuffs", UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES),
 		castbar = GetOptionsTable_Castbar(false, UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES),
 		raidicon = GetOptionsTable_RaidIcon(UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES),
 		cutaway = GetOptionsTable_Cutaway(UF.CreateAndUpdateUFGroup, "boss", MAX_BOSS_FRAMES)
 	}
 }
+E.Options.args.unitframe.args.groupUnits.args.boss.args.classbar.name = L["Alternative Power"]
 
 --Arena Frames
 E.Options.args.unitframe.args.groupUnits.args.arena = {

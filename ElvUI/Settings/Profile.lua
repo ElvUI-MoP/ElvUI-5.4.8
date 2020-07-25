@@ -2962,6 +2962,13 @@ P.unitframe = {
 				xOffset = -2,
 				attachTextTo = "Health"
 			},
+			classbar = {
+				enable = true,
+				fill = "fill",
+				height = 10,
+				altPowerColor = {r = 0.2, g = 0.4, b = 0.8},
+				altPowerTextFormat = "[altpower:current]"
+			},
 			portrait = {
 				enable = false,
 				width = 35,
