@@ -739,17 +739,11 @@ function UF:EclipsePostDirectionChange(direction)
 	if not db then return end
 
 	local vertical = frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation
-	if direction == "sun" then
-		self.Arrow:SetRotation(vertical and 0 or -1.57)
-		self.Arrow:SetVertexColor(unpack(ElvUF.colors.ClassBars[E.myclass][1]))
-		self.Arrow:Show()
-	elseif direction == "moon" then
-		self.Arrow:SetRotation(vertical and 3.14 or 1.57)
-		self.Arrow:SetVertexColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
-		self.Arrow:Show()
-	else
-		self.Arrow:Hide()
-	end
+	local arrowRotation = direction == "sun" and (vertical and 0 or -1.57) or (vertical and 3.14 or 1.57)
+
+	self.Arrow:SetRotation(arrowRotation)
+	self.Arrow:SetVertexColor(unpack(ElvUF.colors.ClassBars[E.myclass][direction == "sun" and 1 or 2]))
+	self.Arrow:SetShown(direction == "sun" or direction == "moon")
 end
 
 function UF:EclipsePostUpdateVisibility(enabled, stateChanged)

@@ -506,7 +506,6 @@ _ENV._VARS = vars
 -- ElvUI sets UNIT_HEALTH to UNIT_HEALTH_FREQUENT in tagEvents
 local tagEvents = {
 	['affix']               = 'UNIT_CLASSIFICATION_CHANGED',
-	['arcanecharges']       = 'UNIT_POWER PLAYER_TALENT_UPDATE',
 	['arenaspec']           = 'ARENA_PREP_OPPONENT_SPECIALIZATIONS',
 	['chi']                 = 'UNIT_POWER PLAYER_TALENT_UPDATE',
 	['classification']      = 'UNIT_CLASSIFICATION_CHANGED',
