@@ -145,6 +145,16 @@ function S:HandleButtonHighlight(frame, override, r, g, b, a)
 	frame.handledHighlight = highlightTexture
 end
 
+function S:HandleFrameHighlight(frame, point)
+	frame.highlightTexture = frame:CreateTexture(nil, "HIGHLIGHT")
+	frame.highlightTexture:SetTexture(1, 1, 1, 0.35)
+	frame.highlightTexture:SetInside(point or nil)
+	frame.highlightTexture:Hide()
+
+	frame:HookScript("OnEnter", function() frame.highlightTexture:Show() end)
+	frame:HookScript("OnLeave", function() frame.highlightTexture:Hide() end)
+end
+
 local function GrabScrollBarElement(frame, element)
 	local FrameName = frame:GetName()
 	return frame[element] or FrameName and (_G[FrameName..element] or strfind(FrameName, element)) or nil

@@ -450,6 +450,8 @@ local function LoadSkin(event)
 				end
 				mini.SetPoint = E.noop
 
+				S:HandleFrameHighlight(mini)
+
 				icon:SetTexCoord(unpack(E.TexCoords))
 				icon:SetInside()
 

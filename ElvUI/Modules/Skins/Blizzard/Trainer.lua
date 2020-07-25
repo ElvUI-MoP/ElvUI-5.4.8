@@ -74,14 +74,14 @@ local function LoadSkin()
 		button:StripTextures()
 
 		button.selectedTex:SetTexture(E.Media.Textures.Highlight)
-		button.selectedTex:SetAlpha(0.35)
+		button.selectedTex:SetVertexColor(1, 0.8, 0.1, 0.35)
 		button.selectedTex:SetTexCoord(0, 1, 0, 1)
 		button.selectedTex.SetTexCoord = E.noop
-		button.selectedTex:Point("TOPLEFT", 0, -(E.PixelMode and 1 or 3))
+		button.selectedTex:Point("TOPLEFT", 48, -(E.PixelMode and 1 or 3))
 		button.selectedTex:Point("BOTTOMRIGHT")
 
 		S:HandleButtonHighlight(button)
-		button.handledHighlight:Point("TOPLEFT", 0, -(E.PixelMode and 1 or 3))
+		button.handledHighlight:Point("TOPLEFT", 48, -(E.PixelMode and 1 or 3))
 		button.handledHighlight:Point("BOTTOMRIGHT")
 
 		button.bg = CreateFrame("Frame", nil, button)

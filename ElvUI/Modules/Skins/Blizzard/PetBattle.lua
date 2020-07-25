@@ -256,13 +256,7 @@ local function LoadSkin()
 		frame.Duration:ClearAllPoints()
 		frame.Duration:Point("TOP", frame.Icon, "BOTTOM", 1, -4)
 
-		frame.highlight = frame:CreateTexture(nil, "OVERLAY")
-		frame.highlight:SetTexture(1, 1, 1, 0.35)
-		frame.highlight:SetInside(frame.backdrop)
-		frame.highlight:Hide()
-
-		frame:HookScript("OnEnter", function() frame.highlight:Show() end)
-		frame:HookScript("OnLeave", function() frame.highlight:Hide() end)
+		S:HandleFrameHighlight(frame, frame.backdrop)
 
 		frame.isSkinned = true
 	end

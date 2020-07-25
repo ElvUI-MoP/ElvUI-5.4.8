@@ -81,8 +81,10 @@ local function LoadSkin()
 			local button = _G["GossipTitleButton"..i]
 
 			if button:GetFontString() then
-				if button:GetText() and find(button:GetText(), "|cff000000") then
-					button:SetText(gsub(button:GetText(), "|cff000000", "|cffFFFF00"))
+				local text = button:GetText()
+
+				if text and find(text, "|cff000000") then
+					button:SetText(gsub(text, "|cff000000", "|cffFFFF00"))
 				end
 			end
 		end

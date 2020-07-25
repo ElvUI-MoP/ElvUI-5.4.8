@@ -36,22 +36,24 @@ local function LoadSkin()
 	PetStablePetInfo.backdrop:SetOutside(PetStableSelectedPetIcon)
 
 	PetStableSelectedPetIcon:SetTexCoord(unpack(E.TexCoords))
-	PetStableSelectedPetIcon:Point("TOPLEFT", PetStablePetInfo, "TOPLEFT", 0, 2)
+	PetStableSelectedPetIcon:Point("TOPLEFT", PetStablePetInfo, 0, E.PixelMode and 2 or 4)
 
 	PetStableDiet:StripTextures()
 	PetStableDiet:CreateBackdrop()
-	PetStableDiet:Point("TOPRIGHT", 42, 2)
+	PetStableDiet:Point("TOPRIGHT", E.PixelMode and 42 or 43, E.PixelMode and 2 or 4)
 	PetStableDiet:Size(40)
 
-	PetStableDiet.icon = PetStableDiet:CreateTexture(nil, "OVERLAY")
+	S:HandleFrameHighlight(PetStableDiet, PetStableDiet.backdrop)
+
+	PetStableDiet.icon = PetStableDiet:CreateTexture(nil, "ARTWORK")
 	PetStableDiet.icon:SetTexture("Interface\\Icons\\Ability_Hunter_BeastTraining")
 	PetStableDiet.icon:SetTexCoord(unpack(E.TexCoords))
 	PetStableDiet.icon:SetInside(PetStableDiet.backdrop)
 
 	PetStableBottomInset:StripTextures()
 	PetStableBottomInset:CreateBackdrop()
-	PetStableBottomInset.backdrop:Point("TOPLEFT", 4, 40)
-	PetStableBottomInset.backdrop:Point("BOTTOMRIGHT", -4, 6)
+	PetStableBottomInset.backdrop:Point("TOPLEFT", 4, 42)
+	PetStableBottomInset.backdrop:Point("BOTTOMRIGHT", -4, 0)
 
 	S:HandleCloseButton(PetStableFrameCloseButton)
 
@@ -102,28 +104,19 @@ local function LoadSkin()
 
 		PetButtons("PetStableStabledPet"..i)
 
-		if i > 1 then
-			button:ClearAllPoints()
-			button:Point("LEFT", _G["PetStableStabledPet"..i - 1], "RIGHT", 7, 0)
-		end
+		button:Size(32)
+		button:ClearAllPoints()
 
-		button:Size(28)
+		if i ~= 1 and i ~= 11 and i ~= 21 and i ~= 31 and i ~= 41 then
+			button:Point("LEFT", _G["PetStableStabledPet"..i - 1], "RIGHT", 3, 0)
+		end
 	end
 
-	PetStableStabledPet1:ClearAllPoints()
-	PetStableStabledPet1:Point("TOPLEFT", PetStableBottomInset, 10, 34)
-
-	PetStableStabledPet11:ClearAllPoints()
-	PetStableStabledPet11:Point("TOPLEFT", PetStableStabledPet1, "BOTTOMLEFT", 0, -5)
-
-	PetStableStabledPet21:ClearAllPoints()
-	PetStableStabledPet21:Point("TOPLEFT", PetStableStabledPet11, "BOTTOMLEFT", 0, -5)
-
-	PetStableStabledPet31:ClearAllPoints()
-	PetStableStabledPet31:Point("TOPLEFT", PetStableStabledPet21, "BOTTOMLEFT", 0, -5)
-
-	PetStableStabledPet41:ClearAllPoints()
-	PetStableStabledPet41:Point("TOPLEFT", PetStableStabledPet31, "BOTTOMLEFT", 0, -5)
+	PetStableStabledPet1:Point("TOPLEFT", PetStableBottomInset, 8, 38)
+	PetStableStabledPet11:Point("TOPLEFT", PetStableStabledPet1, "BOTTOMLEFT", 0, -3)
+	PetStableStabledPet21:Point("TOPLEFT", PetStableStabledPet11, "BOTTOMLEFT", 0, -3)
+	PetStableStabledPet31:Point("TOPLEFT", PetStableStabledPet21, "BOTTOMLEFT", 0, -3)
+	PetStableStabledPet41:Point("TOPLEFT", PetStableStabledPet31, "BOTTOMLEFT", 0, -3)
 end
 
 S:AddCallback("Stable", LoadSkin)

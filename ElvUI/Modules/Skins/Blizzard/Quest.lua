@@ -382,17 +382,23 @@ local function LoadSkin()
 		S:HandleButtonHighlight(button)
 	end
 
-	QuestFrameGreetingPanel:HookScript("OnShow", function()
+	QuestFrameGreetingPanel:HookScript("OnEvent", function(frame)
+		if not frame:IsShown() then return end
+
 		for i = 1, MAX_NUM_QUESTS do
 			local button = _G["QuestTitleButton"..i]
 
 			if button:GetFontString() then
-				if button:GetText() and find(button:GetText(), "|cff000000") then
-					button:SetText(gsub(button:GetText(), "|cff000000", "|cffFFFF00"))
+				local text = button:GetText()
+
+				if text and find(text, "|cff000000") then
+					button:SetText(gsub(text, "|cff000000", "|cffFFFF00"))
 				end
 			end
 		end
 	end)
+	QuestFrameGreetingPanel:RegisterEvent("QUEST_GREETING")
+	QuestFrameGreetingPanel:RegisterEvent("QUEST_LOG_UPDATE")
 
 	-- Quest Detail Frame
 	QuestFrameDetailPanel:StripTextures(true)

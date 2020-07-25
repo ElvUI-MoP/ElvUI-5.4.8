@@ -80,6 +80,9 @@ local function LoadSkin()
 	S:HandleDropDownBox(FriendsFrameStatusDropDown, 70)
 	FriendsFrameStatusDropDown:Point("TOPLEFT", 5, -25)
 
+	FriendsFrameStatusDropDownStatus:Point("LEFT", 13, 0)
+	FriendsFrameStatusDropDownStatus:Size(20)
+
 	S:HandleScrollBar(FriendsFrameFriendsScrollFrameScrollBar, 5)
 	FriendsFrameFriendsScrollFrameScrollBar:ClearAllPoints()
 	FriendsFrameFriendsScrollFrameScrollBar:Point("TOPRIGHT", FriendsFrameFriendsScrollFrame, "TOPRIGHT", 24, -10)
