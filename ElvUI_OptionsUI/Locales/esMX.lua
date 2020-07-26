@@ -697,6 +697,7 @@ L["Middle clicking the unit frame will cause your focus to match the unit."] = "
 L["middle"] = "Medio"
 L["Middle"] = "Medio"
 L["Min Alpha"] = true
+L["Minimap Buttons"] = true
 L["Minimap Mouseover"] = "Ratón por encima del Minimapa"
 L["Minimap Panels"] = "Paneles del Minimapa"
 L["Minimum Duration"] = true

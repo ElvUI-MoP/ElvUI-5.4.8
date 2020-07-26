@@ -696,6 +696,7 @@ L["Middle clicking the unit frame will cause your focus to match the unit."] = "
 L["middle"] = "중앙"
 L["Middle"] = "중간"
 L["Min Alpha"] = true
+L["Minimap Buttons"] = "미니맵 버튼"
 L["Minimap Mouseover"] = "마우스오버 때만 표시"
 L["Minimap Panels"] = "미니맵 정보문자 사용"
 L["Minimum Duration"] = "최소 지속시간"
