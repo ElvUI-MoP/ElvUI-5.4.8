@@ -598,7 +598,7 @@ G.unitframe.aurafilters.RaidDebuffs = {
 		-- Fallen Protectors
 		[143434] = Defaults(),	-- Shadow Word: Bane
 		[143198] = Defaults(),	-- Garrote
-		[143842] = Defaults(),	-- Mark of Anguish
+		[143840] = Defaults(),	-- Mark of Anguish
 		[147383] = Defaults(),	-- Debilitation
 		-- Norushen
 		[146124] = Defaults(),	-- Self Doubt
