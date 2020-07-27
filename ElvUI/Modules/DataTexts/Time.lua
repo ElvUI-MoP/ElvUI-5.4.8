@@ -232,7 +232,7 @@ local function OnEnter(self)
 				if DT.tooltip:NumLines() > 0 then
 					DT.tooltip:AddLine(" ")
 				end
-				DT.tooltip:AddLine(WORLD_BOSSES_TEXT)
+				DT.tooltip:AddLine(RAID_INFO_WORLD_BOSS.."(s)")
 				addedLine = true
 			end
 			DT.tooltip:AddDoubleLine(name, SecondsToTime(reset, true, nil, 3), 1, 1, 1, 0.8, 0.8, 0.8)
