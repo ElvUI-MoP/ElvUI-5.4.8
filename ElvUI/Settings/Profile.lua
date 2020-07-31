@@ -24,6 +24,7 @@ P.general = {
 	watchFrameAutoHide = true,
 	vehicleSeatIndicatorSize = 128,
 	resurrectSound = false,
+	questRewardMostValueIcon = true,
 	durabilityScale = 1,
 	afk = true,
 	numberPrefixStyle = "ENGLISH",

@@ -782,8 +782,14 @@ E.Options.args.general = {
 					name = L["Resurrect Sound"],
 					desc = L["Enable to hear sound if you receive a resurrect."]
 				},
-				vehicleSeatIndicatorSize = {
+				questRewardMostValueIcon = {
 					order = 10,
+					type = "toggle",
+					name = L["Mark Quest Reward"],
+					desc = L["Marks the most valuable quest reward with a gold coin."]
+				},
+				vehicleSeatIndicatorSize = {
+					order = 11,
 					type = "range",
 					name = L["Vehicle Seat Indicator Size"],
 					min = 64, max = 128, step = 4,
@@ -791,7 +797,7 @@ E.Options.args.general = {
 					set = function(info, value) E.db.general.vehicleSeatIndicatorSize = value Blizzard:UpdateVehicleFrame() end
 				},
 				durabilityScale = {
-					order = 11,
+					order = 12,
 					type = "range",
 					name = L["Durability Scale"],
 					min = 0.5, max = 8, step = 0.5,
@@ -799,7 +805,7 @@ E.Options.args.general = {
 					set = function(info, value) E.db.general.durabilityScale = value E:StaticPopup_Show("CONFIG_RL") end
 				},
 				itemLevelInfo = {
-					order = 12,
+					order = 13,
 					type = "group",
 					name = L["Item Level"],
 					guiInline = true,
@@ -861,7 +867,7 @@ E.Options.args.general = {
 					}
 				},
 				objectiveFrameGroup = {
-					order = 13,
+					order = 14,
 					type = "group",
 					guiInline = true,
 					name = L["Objective Frame"],

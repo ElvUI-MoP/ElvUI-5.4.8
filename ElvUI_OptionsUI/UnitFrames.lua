@@ -1712,7 +1712,7 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 
 	if isGroupFrame then
 		config.args.orientation = {
-			order = 8,
+			order = 6,
 			type = "select",
 			name = L["Statusbar Fill Orientation"],
 			desc = L["Direction the health bar moves when gaining/losing health."],
