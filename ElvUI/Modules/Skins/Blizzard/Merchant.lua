@@ -40,42 +40,34 @@ local function LoadSkin()
 		local item = _G["MerchantItem"..i]
 		local button = _G["MerchantItem"..i.."ItemButton"]
 		local icon = _G["MerchantItem"..i.."ItemButtonIconTexture"]
-		local stock = _G["MerchantItem"..i.."ItemButtonStock"]
 		local money = _G["MerchantItem"..i.."MoneyFrame"]
-		local currency = _G["MerchantItem"..i.."AltCurrencyFrame"]
 
 		item:StripTextures(true)
-		item:CreateBackdrop("Default")
+		item:CreateBackdrop()
 
 		button:StripTextures()
-		button:StyleButton()
 		button:SetTemplate("Default", true)
+		button:StyleButton()
 		button:Size(40)
 		button:Point("TOPLEFT", 2, -2)
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside()
 
-		stock:Point("TOPLEFT", 2, -2)
+		_G["MerchantItem"..i.."ItemButtonStock"]:Point("TOPLEFT", 2, -2)
 
 		money:ClearAllPoints()
 		money:Point("BOTTOMLEFT", button, "BOTTOMRIGHT", 3, 0)
 
 		for j = 1, 2 do
-			local currencyItem = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j]
+			local currency = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j]
 			local currencyIcon = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"]
 
-			if j == 1 then
-				currencyItem:Point("LEFT", currency, "LEFT", 15, 4)
-			end
-
-			currencyIcon.backdrop = CreateFrame("Frame", nil, currencyItem)
-			currencyIcon.backdrop:SetTemplate("Default")
-			currencyIcon.backdrop:SetFrameLevel(currencyItem:GetFrameLevel())
-			currencyIcon.backdrop:SetOutside(currencyIcon)
+			currency:CreateBackdrop()
+			currency.backdrop:SetOutside(currencyIcon)
 
 			currencyIcon:SetTexCoord(unpack(E.TexCoords))
-			currencyIcon:SetParent(currencyIcon.backdrop)
+			currencyIcon:SetParent(currency.backdrop)
 		end
 	end
 
@@ -104,8 +96,10 @@ local function LoadSkin()
 
 	S:HandleButton(MerchantRepairItemButton)
 	MerchantRepairItemButton:StyleButton()
-	MerchantRepairItemButton:GetRegions():SetTexCoord(0.04, 0.24, 0.07, 0.5)
-	MerchantRepairItemButton:GetRegions():SetInside()
+
+	local merchantRegions = MerchantRepairItemButton:GetRegions()
+	merchantRegions:SetTexCoord(0.04, 0.24, 0.07, 0.5)
+	merchantRegions:SetInside()
 
 	S:HandleButton(MerchantGuildBankRepairButton)
 	MerchantGuildBankRepairButton:StyleButton()
@@ -154,15 +148,24 @@ local function LoadSkin()
 
 	hooksecurefunc("MerchantFrame_UpdateMerchantInfo", function()
 		local numMerchantItems = GetMerchantNumItems()
-		local index, button, name
+		local _, index, button, currency, price, extendedCost
 
 		for i = 1, BUYBACK_ITEMS_PER_PAGE do
 			index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
 			button = _G["MerchantItem"..i.."ItemButton"]
-			name = _G["MerchantItem"..i.."Name"]
+			currency = _G["MerchantItem"..i.."AltCurrencyFrame"]
 
 			if index <= numMerchantItems then
-				MerchantQualityColors(button, name, button.link)
+				_, _, price, _, _, _, extendedCost = GetMerchantItemInfo(index)
+
+				currency:ClearAllPoints()
+				if extendedCost and price <= 0 then
+					currency:Point("BOTTOMLEFT", _G["MerchantItem"..i.."NameFrame"], 2, 34)
+				elseif extendedCost and price > 0 then
+					currency:Point("LEFT", _G["MerchantItem"..i.."MoneyFrame"], "RIGHT", -12, 0)
+				end
+
+				MerchantQualityColors(button, _G["MerchantItem"..i.."Name"], button.link)
 			end
 
 			MerchantQualityColors(MerchantBuyBackItemItemButton, MerchantBuyBackItemName, GetBuybackItemInfo(GetNumBuybackItems()))
@@ -171,14 +174,10 @@ local function LoadSkin()
 
 	hooksecurefunc("MerchantFrame_UpdateBuybackInfo", function()
 		local numBuybackItems = GetNumBuybackItems()
-		local button, name
 
 		for i = 1, BUYBACK_ITEMS_PER_PAGE do
-			button = _G["MerchantItem"..i.."ItemButton"]
-			name = _G["MerchantItem"..i.."Name"]
-
 			if i <= numBuybackItems then
-				MerchantQualityColors(button, name, GetBuybackItemInfo(i))
+				MerchantQualityColors(_G["MerchantItem"..i.."ItemButton"], _G["MerchantItem"..i.."Name"], GetBuybackItemInfo(i))
 			end
 		end
 	end)

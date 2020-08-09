@@ -146,12 +146,11 @@ local function LoadSkin()
 		tab:SetTemplate("Transparent")
 		tab:Size(45, 40)
 
-		local normal, pushed, highlight, disabled = tab:GetNormalTexture(), tab:GetPushedTexture(), tab:GetHighlightTexture(), tab:GetDisabledTexture()
+		tab:GetNormalTexture():SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
+		tab:GetPushedTexture():SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
+		tab:GetDisabledTexture():SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
 
-		normal:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
-		pushed:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
-		disabled:SetTexture("Interface\\EncounterJournal\\UI-EncounterJournalTextures")
-
+		local highlight = tab:GetHighlightTexture()
 		highlight:SetTexture(1, 1, 1, 0.3)
 		highlight:SetInside()
 	end
@@ -225,6 +224,7 @@ local function LoadSkin()
 
 		while bossID do
 			bossButton = _G["EncounterJournalBossButton"..bossIndex]
+
 			if bossButton and not bossButton.isSkinned then
 				S:HandleButton(bossButton)
 				bossButton.creature:ClearAllPoints()
@@ -293,18 +293,18 @@ local function LoadSkin()
 	end
 
 	local function SkinLootItems()
-		local scrollFrame = EncounterJournal.encounter.info.lootScroll
-		local offset = HybridScrollFrame_GetOffset(scrollFrame)
-		local buttons = scrollFrame.buttons
-		local item, index
+		local offset = HybridScrollFrame_GetOffset(EncounterJournal.encounter.info.lootScroll)
+		local buttons = EncounterJournal.encounter.info.lootScroll.buttons
 		local numLoot = EJ_GetNumLoot()
+		local _, item, index, itemID, quality
 
 		for i = 1, #buttons do
 			item = buttons[i]
 			index = offset + i
+
 			if index <= numLoot then
-				local _, _, _, _, itemID = EJ_GetLootInfoByIndex(index)
-				local quality = select(3, GetItemInfo(itemID))
+				_, _, _, _, itemID = EJ_GetLootInfoByIndex(index)
+				quality = select(3, GetItemInfo(itemID))
 
 				item.IconBackdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
@@ -349,11 +349,7 @@ local function LoadSkin()
 				header.isSkinned = true
 			end
 
-			if header.button.abilityIcon:IsShown() then
-				header.button.bg:Show()
-			else
-				header.button.bg:Hide()
-			end
+			header.button.bg:SetShown(header.button.abilityIcon:IsShown())
 
 			index = index + 1
 			header = _G["EncounterJournalInfoHeader"..index]
@@ -379,26 +375,27 @@ local function LoadSkin()
 	end
 
 	local function SkinSearchUpdate()
-		local scrollFrame = EncounterJournal.searchResults.scrollFrame
-		local offset = HybridScrollFrame_GetOffset(scrollFrame)
-		local results = scrollFrame.buttons
-		local result, index
+		local offset = HybridScrollFrame_GetOffset(EncounterJournal.searchResults.scrollFrame)
+		local results = EncounterJournal.searchResults.scrollFrame.buttons
 		local numResults = EJ_GetNumSearchResults()
+		local _, result, index, itemID, stype, quality, r, g, b
 
 		for i = 1, #results do
 			result = results[i]
 			index = offset + i
 			if index <= numResults then
-				local _, _, _, _, _, itemID, stype = EncounterJournal_GetSearchDisplay(index)
+				_, _, _, _, _, itemID, stype = EncounterJournal_GetSearchDisplay(index)
 
-				local quality, r, g, b
 				if itemID then
 					quality = select(3, GetItemInfo(itemID))
+
 					if quality then
 						r, g, b = GetItemQualityColor(quality)
 					else
 						r, g, b = unpack(E.media.bordercolor)
 					end
+				else
+					r, g, b = unpack(E.media.bordercolor)
 				end
 
 				if stype == 4 then

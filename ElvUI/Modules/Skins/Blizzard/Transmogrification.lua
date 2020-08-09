@@ -71,22 +71,11 @@ local function LoadSkin()
 		end
 	end
 
-	hooksecurefunc("EquipmentFlyoutPopoutButton_SetReversed", function(self, isReversed)
-		if self:GetParent():GetParent() ~= TransmogrifyFrame then return end
+	hooksecurefunc("EquipmentFlyoutPopoutButton_SetReversed", function(button, isReversed)
+		local flyout = button:GetParent()
+		if flyout:GetParent() ~= TransmogrifyFrame then return end
 
-		if self:GetParent().verticalFlyout then
-			if isReversed then
-				self.icon:SetRotation(0)
-			else
-				self.icon:SetRotation(3.14)
-			end
-		else
-			if isReversed then
-				self.icon:SetRotation(1.57)
-			else
-				self.icon:SetRotation(-1.57)
-			end
-		end
+		button.icon:SetRotation(flyout.verticalFlyout and (isReversed and 0 or 3.14) or (isReversed and 1.57 or -1.57))
 	end)
 
 	-- Confirmation Popup

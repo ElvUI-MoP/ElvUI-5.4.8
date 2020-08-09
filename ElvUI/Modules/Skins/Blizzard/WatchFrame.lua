@@ -70,14 +70,16 @@ local function LoadSkin()
 		for i = 1, #WATCHFRAME_ACHIEVEMENTLINES do
 			WATCHFRAME_ACHIEVEMENTLINES[i].color = nil
 		end
+
 		-- WatchFrame Items
 		for i = 1, WATCHFRAME_NUM_ITEMS do
 			local button = _G["WatchFrameItem"..i]
-			local icon = _G["WatchFrameItem"..i.."IconTexture"]
-			local normal = _G["WatchFrameItem"..i.."NormalTexture"]
-			local cooldown = _G["WatchFrameItem"..i.."Cooldown"]
 
 			if button and not button.isSkinned then
+				local icon = _G["WatchFrameItem"..i.."IconTexture"]
+				local normal = _G["WatchFrameItem"..i.."NormalTexture"]
+				local cooldown = _G["WatchFrameItem"..i.."Cooldown"]
+
 				button:CreateBackdrop()
 				button.backdrop:SetAllPoints()
 				button:StyleButton()
@@ -97,53 +99,37 @@ local function LoadSkin()
 		-- WatchFrame Quest PopUp
 		for i = 1, GetNumAutoQuestPopUps() do
 			local frame = _G["WatchFrameAutoQuestPopUp"..i]
-			local child = _G["WatchFrameAutoQuestPopUp"..i.."ScrollChild"]
 
 			if frame and not frame.isSkinned then
-				local name = child:GetName()
+				local child = _G["WatchFrameAutoQuestPopUp"..i.."ScrollChild"]
 
 				frame:CreateBackdrop("Transparent")
 				frame.backdrop:Point("TOPLEFT", 0, -2)
 				frame.backdrop:Point("BOTTOMRIGHT", 0, 2)
+				frame:SetHitRectInsets(0, 0, 2, 2)
 
-				frame:SetHitRectInsets(2, 2, 2, 2)
+				child:StripTextures()
 
 				child.TopText:ClearAllPoints()
-				child.TopText:Point("TOP", frame.backdrop, "TOP", 0, -10)
+				child.TopText:Point("TOP", frame.backdrop, 0, -8)
 				child.TopText.SetPoint = E.noop
 
 				child.QuestName:ClearAllPoints()
-				child.QuestName:Point("CENTER", frame.backdrop, "CENTER", 0, 0)
+				child.QuestName:Point("LEFT", frame.backdrop, 2, 0)
+				child.QuestName:Point("RIGHT", frame.backdrop, -2, 0)
 				child.QuestName.SetPoint = E.noop
 
 				child.BottomText:ClearAllPoints()
-				child.BottomText:Point("BOTTOM", frame.backdrop, "BOTTOM", 0, 10)
+				child.BottomText:Point("BOTTOM", frame.backdrop, 0, 8)
 				child.BottomText.SetPoint = E.noop
 
-				child.QuestionMark:ClearAllPoints()
-				child.QuestionMark:Point("RIGHT", child.QuestName, "LEFT", -2, 0)
-				child.QuestionMark:SetParent(frame.backdrop)
-				child.QuestionMark:SetDrawLayer("OVERLAY", 7)
-
-				child.Exclamation:ClearAllPoints()
-				child.Exclamation:Point("RIGHT", child.QuestName, "LEFT", -2, 0)
-				child.Exclamation:SetParent(frame.backdrop)
-				child.Exclamation:SetDrawLayer("OVERLAY", 7)
-
-				_G[name.."Bg"]:Kill()
-				_G[name.."QuestIconBg"]:Kill()
-				_G[name.."Flash"]:Kill()
-				_G[name.."Shine"]:Kill()
-				_G[name.."IconShine"]:Kill()
-				_G[name.."FlashIconFlash"]:Kill()
-				_G[name.."BorderBotLeft"]:Kill()
-				_G[name.."BorderBotRight"]:Kill()
-				_G[name.."BorderBottom"]:Kill()
-				_G[name.."BorderLeft"]:Kill()
-				_G[name.."BorderRight"]:Kill()
-				_G[name.."BorderTop"]:Kill()
-				_G[name.."BorderTopLeft"]:Kill()
-				_G[name.."BorderTopRight"]:Kill()
+				for _, object in pairs({child.QuestionMark, child.Exclamation}) do
+					object:ClearAllPoints()
+					object:Point("RIGHT", child.TopText, "LEFT", -2, 0)
+					object:SetParent(frame.backdrop)
+					object:SetTexture("Interface\\QuestFrame\\AutoQuest-Parts")
+					object:Size(16, 22)
+				end
 
 				frame:HookScript("OnEnter", function(self)
 					self.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
