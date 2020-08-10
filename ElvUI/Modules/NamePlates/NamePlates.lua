@@ -41,7 +41,7 @@ local RaidIconCoordinate = {
 
 NP.CreatedPlates = {}
 NP.VisiblePlates = {}
-NP.GUIDByName = {}
+NP.GUIDList = {}
 
 NP.ENEMY_PLAYER = {}
 NP.FRIENDLY_PLAYER = {}
@@ -298,7 +298,9 @@ function NP:GetUnitByName(frame, unitType)
 end
 
 function NP:GetUnitClassByGUID(frame, guid)
-	if not guid then guid = self.GUIDByName[frame.UnitName] end
+	if not guid then
+		guid = self:GetGUIDByName(frame.UnitName, frame.UnitType)
+	end
 
 	if guid then
 		local _, _, class = pcall(GetPlayerInfoByGUID, guid)
@@ -316,14 +318,13 @@ end
 
 function NP:UnitClass(frame, unitType)
 	if unitType == "FRIENDLY_PLAYER" then
-		local unit = self[unitType][frame.UnitName]
-		if unit then
-			local _, class = UnitClass(unit)
+		if frame.unit then
+			local _, class = UnitClass(frame.unit)
 			if class then
 				return class
 			end
 		else
-			return NP:GetUnitClassByGUID(frame)
+			return NP:GetUnitClassByGUID(frame, frame.guid)
 		end
 	elseif unitType == "ENEMY_PLAYER" then
 		local _, _, b = frame.oldHealthBar:GetStatusBarColor()
@@ -384,6 +385,29 @@ function NP:GetUnitInfo(frame)
 	return 3, "ENEMY_PLAYER"
 end
 
+function NP:GetUnitTypeFromUnit(unit)
+	local reaction = UnitReaction("player", unit)
+	local isPlayer = UnitIsPlayer(unit)
+
+	if isPlayer and UnitIsFriend("player", unit) and reaction and reaction >= 5 then
+		return "FRIENDLY_PLAYER"
+	elseif not isPlayer and (reaction and reaction >= 5) or UnitFactionGroup(unit) == "Neutral" then
+		return "FRIENDLY_NPC"
+	elseif not isPlayer and (reaction and reaction <= 4) then
+		return "ENEMY_NPC"
+	else
+		return "ENEMY_PLAYER"
+	end
+end
+
+function NP:GetGUIDByName(name, unitType)
+	for guid, info in pairs(self.GUIDList) do
+		if info.name == name and info.unitType == unitType then
+			return guid
+		end
+	end
+end
+
 function NP:OnShow(isConfig, dontHideHighlight)
 	local frame = self.UnitFrame
 
@@ -395,7 +419,9 @@ function NP:OnShow(isConfig, dontHideHighlight)
 
 	local reaction, unitType = NP:GetUnitInfo(frame)
 	local unit = NP:GetUnitByName(frame, unitType)
+	local oldUnitType = frame.UnitType
 
+	frame.UnitType = unitType
 	frame.UnitName = gsub(frame.oldName:GetText(), FSPAT, "")
 	frame.UnitReaction = reaction
 	frame.UnitClass = NP:UnitClass(frame, unitType)
@@ -404,18 +430,12 @@ function NP:OnShow(isConfig, dontHideHighlight)
 	if unit then
 		frame.unit = unit
 		frame.isGroupUnit = true
-
-		local guid = NP.GUIDByName[frame.UnitName] or UnitGUID(unit)
-		if guid then
-			frame.guid = guid
-		end
-	elseif unitType ~= "ENEMY_NPC" then
-		frame.guid = NP.GUIDByName[frame.UnitName]
+		frame.guid = UnitGUID(unit)
+	else
+		frame.guid = NP:GetGUIDByName(frame.UnitName, unitType)
 	end
 
-	if (unitType ~= frame.UnitType) or isConfig then
-		frame.UnitType = unitType
-
+	if unitType ~= oldUnitType or isConfig then
 		NP:Update_HealthBar(frame)
 
 		NP:Configure_CPoints(frame, true)
@@ -456,8 +476,8 @@ end
 
 function NP:OnHide(isConfig, dontHideHighlight)
 	local frame = self.UnitFrame
-	NP.VisiblePlates[frame] = nil
 
+	NP.VisiblePlates[frame] = nil
 	frame.unit = nil
 	frame.isGroupUnit = nil
 
@@ -862,7 +882,7 @@ local function findNewPlate(...)
 		local frame = select(i, ...)
 		local name = frame:GetName()
 
-		if name and find(name, "NamePlate%d") then
+		if name and find(name, "NamePlate%d") and not NP.CreatedPlates[frame] then
 			NP:OnCreated(frame)
 		end
 	end
@@ -886,9 +906,9 @@ function NP:OnUpdate()
 		NP:SetMouseoverFrame(frame)
 		NP:SetTargetFrame(frame)
 
-        if frame.UnitReaction ~= NP:GetUnitInfo(frame) then
-            NP:UpdateAllFrame(frame, nil, true)
-        end
+		if frame.UnitReaction ~= NP:GetUnitInfo(frame) then
+			NP:UpdateAllFrame(frame, nil, true)
+		end
 
 		local status = NP:UnitDetailedThreatSituation(frame)
 		if frame.ThreatStatus ~= status then
@@ -910,7 +930,7 @@ end
 
 function NP:SearchNameplateByGUID(guid)
 	for frame in pairs(self.VisiblePlates) do
-		if frame and frame:IsShown() and frame.guid == guid then
+		if frame.guid == guid then
 			return frame
 		end
 	end
@@ -920,7 +940,7 @@ function NP:SearchNameplateByName(sourceName)
 	if not sourceName then return end
 	local SearchFor = split("-", sourceName)
 	for frame in pairs(self.VisiblePlates) do
-		if frame and frame:IsShown() and frame.UnitName == SearchFor and RAID_CLASS_COLORS[frame.UnitClass] then
+		if frame.UnitName == SearchFor and RAID_CLASS_COLORS[frame.UnitClass] then
 			return frame
 		end
 	end
@@ -929,7 +949,7 @@ end
 function NP:SearchNameplateByIconName(raidIcon)
 	for frame in pairs(self.VisiblePlates) do
 		self:CheckRaidIcon(frame)
-		if frame and frame:IsShown() and frame.RaidIcon:IsShown() and (frame.RaidIconType == raidIcon) then
+		if frame.RaidIcon:IsShown() and (frame.RaidIconType == raidIcon) then
 			return frame
 		end
 	end
@@ -1011,16 +1031,17 @@ function NP:PLAYER_TARGET_CHANGED()
 end
 
 function NP:UPDATE_MOUSEOVER_UNIT()
-	if UnitIsPlayer("mouseover")then
+	if not UnitIsUnit("mouseover", "player") and UnitIsPlayer("mouseover") then
 		local name = UnitName("mouseover")
+		local guid = UnitGUID("mouseover")
+		local unitType = self:GetUnitTypeFromUnit("mouseover")
 
-		for frame in pairs(NP.VisiblePlates) do
-			if frame.UnitName == name then
-				local guid = UnitGUID("mouseover")
-
-				if NP.GUIDByName[name] ~= guid then
-					NP.GUIDByName[name] = guid
-					NP.OnShow(frame:GetParent(), nil, true)
+		for frame in pairs(self.VisiblePlates) do
+			if frame.UnitName == name and frame.UnitType == unitType then
+				if not self.GUIDList[guid] then
+					self.GUIDList[guid] = {name = name, unitType = frame.UnitType}
+					self.OnShow(frame:GetParent(), nil, true)
+					break
 				end
 			end
 		end
@@ -1130,6 +1151,14 @@ end
 
 function NP:CacheGroupPetUnits()
 	twipe(self.FRIENDLY_NPC)
+	twipe(self.ENEMY_NPC)
+
+	for i = 1, 5 do
+		if UnitExists("arenapet"..i) then
+			local unit = format("arenapet%d", i)
+			self.ENEMY_NPC[UnitName(unit)] = unit
+		end
+	end
 
 	if GetNumGroupMembers() > 0 then
 		if IsInRaid() then
@@ -1153,7 +1182,7 @@ end
 function NP:Initialize()
 	self.db = E.db.nameplates
 
-	if E.private.nameplates.enable ~= true then return end
+	if not E.private.nameplates.enable then return end
 
 	self.Initialized = true
 
