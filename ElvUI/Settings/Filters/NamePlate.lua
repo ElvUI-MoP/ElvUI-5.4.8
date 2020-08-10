@@ -142,10 +142,10 @@ E.StyleFilterDefaults = {
 		},
 		totems = {
 			enable = false,
-			e1 = true, e2 = true, e3 = true, e4 = true,
+			e1 = true, e2 = true, e3 = true, e4 = true, e5 = true,
 			f1 = true, f2 = true, f3 = true,
-			w1 = true, w2 = true,
-			a1 = true, a2 = true, a3 = true, a4 = true,
+			w1 = true, w2 = true, w3 = true,
+			a1 = true, a2 = true, a3 = true, a4 = true, a5 = true,
 			o1 = true
 		},
 		uniqueUnits = {

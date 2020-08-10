@@ -56,7 +56,8 @@ local totemTypes = {
 		[2062] = "e1",		-- Earth Elemental Totem
 		[2484] = "e2",		-- Earthbind Totem
 		[8143] = "e3",		-- Tremor Totem
-		[108270] = "e4"		-- Stone Bulwark Totem
+		[51485] = "e4",		-- Earthgrab Totem
+		[108270] = "e5"		-- Stone Bulwark Totem
 	},
 	fire = {
 		[2894] = "f1",		-- Fire Elemental Totem
@@ -65,13 +66,15 @@ local totemTypes = {
 	},
 	water = {
 		[5394] = "w1",		-- Healing Stream Totem
-		[108280] = "w2" 	-- Healing Tide Totem
+		[16190] = "w2",		-- Mana Tide Totem
+		[108280] = "w3" 	-- Healing Tide Totem
 	},
 	air = {
 		[8177] = "a1",		-- Grounding Totem
-		[120668] = "a2",	-- Stormlash Totem
-		[108269] = "a3",	-- Capacitor Totem
-		[108273] = "a4"		-- Windwalk Totem
+		[98008] = "a2",		-- Spirit Link Totem
+		[120668] = "a3",	-- Stormlash Totem
+		[108269] = "a4",	-- Capacitor Totem
+		[108273] = "a5"		-- Windwalk Totem
 	},
 	other = {
 		[724] = "o1"		-- Lightwell
