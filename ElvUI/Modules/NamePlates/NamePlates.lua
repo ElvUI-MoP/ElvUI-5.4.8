@@ -48,6 +48,8 @@ NP.FRIENDLY_PLAYER = {}
 NP.ENEMY_NPC = {}
 NP.FRIENDLY_NPC = {}
 
+NP.ResizeQueue = {}
+
 NP.Totems = {}
 NP.UniqueUnits = {}
 
@@ -438,6 +440,8 @@ function NP:OnShow(isConfig, dontHideHighlight)
 
 	NP:UpdateElement_All(frame, nil, true)
 
+	NP:SetSize(self)
+
 	if not frame.isAlphaChanged then
 		if not dontHideHighlight then
 			NP:PlateFade(frame, NP.db.fadeIn and 1 or 0, 0, 1)
@@ -588,6 +592,40 @@ function NP:UpdateElement_All(frame, noTargetFrame, filterIgnore)
 	end
 end
 
+function NP:SetSize(frame)
+	if InCombatLockdown() then
+		NP.ResizeQueue[frame] = true
+	else
+		local plate = frame:GetChildren()
+		local trivial = plate:GetScale() < 1
+		local trivialMult = trivial and 2.6 or 1
+		local unitFrame = frame.UnitFrame
+		local unitType = unitFrame.UnitType
+
+		unitType = (unitType == "FRIENDLY_PLAYER" or unitType == "FRIENDLY_NPC") and "friendly" or "enemy"
+
+		if trivial and NP.db.trivial then
+			if NP.db.clickThrough.trivial then
+				plate:SetSize(0.001, 0.001)
+			else
+				plate:SetSize(NP.db.plateSize.trivialWidth * 2.6, NP.db.plateSize.trivialHeight * 2.6)
+			end
+		else
+			if NP.db.clickThrough[unitType] then
+				plate:SetSize(0.001, 0.001)
+			else
+				if unitType == "friendly" then
+					plate:SetSize(NP.db.plateSize.friendlyWidth * trivialMult, NP.db.plateSize.friendlyHeight * trivialMult)
+				else
+					plate:SetSize(NP.db.plateSize.enemyWidth * trivialMult, NP.db.plateSize.enemyHeight * trivialMult)
+				end
+			end
+		end
+
+		NP.ResizeQueue[frame] = nil
+	end
+end
+
 local plateID = 0
 function NP:OnCreated(frame)
 	plateID = plateID + 1
@@ -651,6 +689,7 @@ function NP:OnCreated(frame)
 	unitFrame.EliteIcon = EliteIcon
 
 	self.OnShow(frame, true)
+	self:SetSize(frame)
 
 	frame:HookScript("OnShow", self.OnShow)
 	frame:HookScript("OnHide", self.OnHide)
@@ -1011,6 +1050,12 @@ function NP:PLAYER_REGEN_DISABLED()
 end
 
 function NP:PLAYER_REGEN_ENABLED()
+	if next(self.ResizeQueue) then
+		for frame in pairs(self.ResizeQueue) do
+			self:SetSize(frame)
+		end
+	end
+
 	if self.db.showFriendlyCombat == "TOGGLE_ON" then
 		SetCVar("nameplateShowFriends", 0)
 	elseif self.db.showFriendlyCombat == "TOGGLE_OFF" then
