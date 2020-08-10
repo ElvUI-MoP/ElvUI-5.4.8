@@ -3949,7 +3949,8 @@ E.Options.args.nameplate = {
 						trivial = {
 							order = 3,
 							type = "toggle",
-							name = L["Trivial"]
+							name = L["Trivial"],
+							disabled = function() return not E.db.nameplates.trivial end
 						}
 					}
 				},
@@ -4028,6 +4029,7 @@ E.Options.args.nameplate = {
 								E.db.nameplates.plateSize[info[#info]] = value
 								NP:ConfigureAll()
 							end,
+							disabled = function() return not E.db.nameplates.trivial end,
 							args = {
 								trivialWidth = {
 									order = 1,

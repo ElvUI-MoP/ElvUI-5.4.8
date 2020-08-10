@@ -167,16 +167,8 @@ function NP:Configure_CastBar(frame, configuring)
 	castBar.Name:FontTemplate(LSM:Fetch("font", db.font), db.fontSize, db.fontOutline)
 	castBar.Time:FontTemplate(LSM:Fetch("font", db.font), db.fontSize, db.fontOutline)
 
-	if db.hideSpellName then
-		castBar.Name:Hide()
-	else
-		castBar.Name:Show()
-	end
-	if db.hideTime then
-		castBar.Time:Hide()
-	else
-		castBar.Time:Show()
-	end
+	castBar.Name:SetShown(not db.hideSpellName)
+	castBar.Time:SetShown(not db.hideTime)
 
 	castBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar))
 
