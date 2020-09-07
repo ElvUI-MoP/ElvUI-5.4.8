@@ -32,24 +32,27 @@ local ticks = {}
 function UF:Construct_Castbar(frame, moverName)
 	local castbar = CreateFrame("StatusBar", nil, frame)
 	castbar:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 30) --Make it appear above everything else
-	self.statusbars[castbar] = true
-	castbar.CustomDelayText = self.CustomCastDelayText
-	castbar.CustomTimeText = self.CustomTimeText
-	castbar.PostCastStart = self.PostCastStart
-	castbar.PostCastStop = self.PostCastStop
-	castbar.PostCastInterruptible = self.PostCastInterruptible
+	UF.statusbars[castbar] = true
+	castbar.CustomDelayText = UF.CustomCastDelayText
+	castbar.CustomTimeText = UF.CustomTimeText
+	castbar.PostCastStart = UF.PostCastStart
+	castbar.PostCastStop = UF.PostCastStop
+	castbar.PostCastInterruptible = UF.PostCastInterruptible
+	castbar.PostCastFail = UF.PostCastFail
+
 	castbar:SetClampedToScreen(true)
-	castbar:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
+	castbar:CreateBackdrop("Default", nil, nil, UF.thinBorders, true)
 
 	castbar.Time = castbar:CreateFontString(nil, "OVERLAY")
-	self:Configure_FontString(castbar.Time)
+	UF:Configure_FontString(castbar.Time)
 	castbar.Time:Point("RIGHT", castbar, "RIGHT", -4, 0)
 	castbar.Time:SetTextColor(0.84, 0.75, 0.65)
 	castbar.Time:SetJustifyH("RIGHT")
 
 	castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
-	self:Configure_FontString(castbar.Text)
+	UF:Configure_FontString(castbar.Text)
 	castbar.Text:Point("LEFT", castbar, "LEFT", 4, 0)
+	castbar.Text:Point("RIGHT", castbar.Time, "LEFT", -4, 0)
 	castbar.Text:SetTextColor(0.84, 0.75, 0.65)
 	castbar.Text:SetJustifyH("LEFT")
 	castbar.Text:SetWordWrap(false)
@@ -72,7 +75,7 @@ function UF:Construct_Castbar(frame, moverName)
 
 	local button = CreateFrame("Frame", nil, castbar)
 	local holder = CreateFrame("Frame", nil, castbar)
-	button:SetTemplate("Default", nil, nil, self.thinBorders, true)
+	button:SetTemplate("Default", nil, nil, UF.thinBorders, true)
 
 	castbar.Holder = holder
 	--these are placeholder so the mover can be created.. it will be changed.
@@ -288,6 +291,8 @@ function UF:CustomCastDelayText(duration)
 			self.Time:SetFormattedText("%.1f / %.1f |cffaf5050%s %.1f|r", abs(duration - self.max), self.max, "+", self.delay)
 		end
 	end
+
+	self.Time:SetWidth(self.Time:GetStringWidth())
 end
 
 function UF:CustomTimeText(duration)
@@ -316,6 +321,8 @@ function UF:CustomTimeText(duration)
 			self.Time:SetFormattedText("%.1f / %.1f", abs(duration - self.max), self.max)
 		end
 	end
+
+	self.Time:SetWidth(self.Time:GetStringWidth())
 end
 
 function UF:HideTicks()
@@ -340,9 +347,9 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 			ticks[i]:Width(frame.tickWidth)
 		end
 
-		ticks[i]:Height(frame.tickHeight)
 		ticks[i]:ClearAllPoints()
 		ticks[i]:Point("RIGHT", frame, "LEFT", d * i, 0)
+		ticks[i]:Height(frame.tickHeight)
 		ticks[i]:Show()
 	end
 end
@@ -353,26 +360,11 @@ function UF:PostCastStart(unit)
 
 	if unit == "vehicle" then unit = "player" end
 
+	self.unit = unit
+
 	if db.castbar.displayTarget and self.curTarget then
 		self.Text:SetText(self.spellName.." > "..self.curTarget)
 	end
-
-	-- Get length of Time, then calculate available length for Text
-	local timeWidth = self.Time:GetStringWidth()
-	local textWidth = self:GetWidth() - timeWidth - 10
-	local textStringWidth = self.Text:GetStringWidth()
-
-	if timeWidth == 0 or textStringWidth == 0 then
-		E:Delay(0.05, function() -- Delay may need tweaking
-			textWidth = self:GetWidth() - self.Time:GetStringWidth() - 10
-			textStringWidth = self.Text:GetStringWidth()
-			if textWidth > 0 then self.Text:Width(min(textWidth, textStringWidth)) end
-		end)
-	else
-		self.Text:Width(min(textWidth, textStringWidth))
-	end
-
-	self.unit = unit
 
 	if self.channeling and db.castbar.ticks and unit == "player" then
 		local unitframe = E.global.unitframe
@@ -433,6 +425,10 @@ function UF:PostCastStart(unit)
 		if t then r, g, b = t[1], t[2], t[3] end
 	end
 
+	if self.SafeZone then
+		self.SafeZone:Show()
+	end
+
 	self:SetStatusBarColor(r, g, b)
 end
 
@@ -440,6 +436,14 @@ function UF:PostCastStop(unit)
 	if self.hadTicks and unit == "player" then
 		UF:HideTicks()
 		self.hadTicks = false
+	end
+end
+
+function UF:PostCastFail()
+	self:SetStatusBarColor(UF.db.colors.castInterruptedColor.r, UF.db.colors.castInterruptedColor.g, UF.db.colors.castInterruptedColor.b)
+
+	if self.SafeZone then
+		self.SafeZone:Hide()
 	end
 end
 

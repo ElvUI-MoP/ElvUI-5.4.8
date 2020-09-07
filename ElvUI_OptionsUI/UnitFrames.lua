@@ -4084,6 +4084,11 @@ E.Options.args.unitframe = {
 									order = 10,
 									type = "color",
 									name = L["Non-Interruptable"]
+								},
+								castInterruptedColor = {
+									order = 11,
+									type = "color",
+									name = L["Interrupted"]
 								}
 							}
 						},
