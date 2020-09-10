@@ -285,7 +285,7 @@ E.Options.args.skins = {
 					type = "toggle",
 					name = L["RAID_CONTROL"],
 					desc = L["TOGGLESKIN_DESC"],
-					disabled = function() return E.private.unitframe.disabledBlizzardFrames.raid and E.private.unitframe.disabledBlizzardFrames.party end
+					disabled = function() return E.private.unitframe.enable and E.private.unitframe.disabledBlizzardFrames.raid and E.private.unitframe.disabledBlizzardFrames.party end
 				},
 				reforge = {
 					type = "toggle",

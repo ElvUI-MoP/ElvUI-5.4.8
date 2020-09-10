@@ -4088,7 +4088,7 @@ E.Options.args.unitframe = {
 								castInterruptedColor = {
 									order = 11,
 									type = "color",
-									name = L["Interrupted"]
+									name = L["INTERRUPTED"]
 								}
 							}
 						},
@@ -5010,11 +5010,7 @@ E.Options.args.unitframe.args.individualUnits.args.targettarget = {
 					type = "select",
 					name = L["Smart Aura Position"],
 					desc = L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."],
-					values = {
-						["DISABLED"] = L["DISABLE"],
-						["BUFFS_ON_DEBUFFS"] = L["Position Buffs on Debuffs"],
-						["DEBUFFS_ON_BUFFS"] = L["Position Debuffs on Buffs"]
-					}
+					values = smartAuraPositionValues
 				},
 				orientation = {
 					order = 7,
@@ -6252,6 +6248,7 @@ E.Options.args.unitframe.args.groupUnits.args.party = {
 							type = "select",
 							name = L["Group By"],
 							desc = L["Set the order that the group will sort."],
+							customWidth = 250,
 							values = {
 								["CLASS"] = L["CLASS"],
 								["CLASSROLE"] = L["CLASS"].." & "..L["ROLE"],

@@ -26,6 +26,7 @@ function UF:Construct_PartyFrames()
 		self.FocusGlow = UF:Construct_FocusGlow(self)
 		self.Name = UF:Construct_NameText(self)
 		self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
+		self.AuraHighlight = UF:Construct_AuraHighlight(self)
 
 		self.originalParent = self:GetParent()
 
@@ -187,7 +188,6 @@ function UF:Update_PartyFrames(frame, db)
 		UF:Configure_RaidDebuffs(frame)
 		UF:Configure_Castbar(frame)
 		UF:Configure_ResurrectionIcon(frame)
-		UF:Configure_AuraHighlight(frame)
 		UF:Configure_RoleIcon(frame)
 		UF:Configure_HealComm(frame)
 		UF:Configure_GPS(frame)
@@ -203,6 +203,7 @@ function UF:Update_PartyFrames(frame, db)
 	UF:Configure_RaidIcon(frame)
 	UF:Configure_Fader(frame)
 	UF:Configure_Cutaway(frame)
+	UF:Configure_AuraHighlight(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

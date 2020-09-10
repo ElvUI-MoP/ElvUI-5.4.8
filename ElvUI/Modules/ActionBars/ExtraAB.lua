@@ -6,12 +6,15 @@ local _G = _G
 local CreateFrame = CreateFrame
 local GetActionCooldown = GetActionCooldown
 local HasExtraActionBar = HasExtraActionBar
+local hooksecurefunc = hooksecurefunc
 
 local ExtraActionBarHolder
 
-local function FixExtraActionCD(cd)
-	local start, duration = GetActionCooldown(cd:GetParent().action)
-	E.OnSetCooldown(cd, start, duration, 0, 0)
+local function FixExtraActionCD(button)
+	if button.cooldown and button.action then
+		local start, duration = GetActionCooldown(button.action)
+		E.OnSetCooldown(button.cooldown, start, duration)
+	end
 end
 
 function AB:Extra_SetAlpha()
@@ -44,7 +47,7 @@ function AB:SetupExtraButton()
 	ExtraActionBarFrame:SetParent(ExtraActionBarHolder)
 	ExtraActionBarFrame:ClearAllPoints()
 	ExtraActionBarFrame:Point("CENTER", ExtraActionBarHolder, "CENTER")
-	ExtraActionBarFrame.ignoreFramePositionManager  = true
+	UIPARENT_MANAGED_FRAME_POSITIONS.ExtraActionBarFrame = nil
 
 	for i = 1, ExtraActionBarFrame:GetNumChildren() do
 		local button = _G["ExtraActionButton"..i]
@@ -73,7 +76,7 @@ function AB:SetupExtraButton()
 			if button.cooldown then
 				button.cooldown.CooldownOverride = "actionbar"
 				E:RegisterCooldown(button.cooldown)
-				button.cooldown:HookScript("OnShow", FixExtraActionCD)
+				button:HookScript("OnShow", FixExtraActionCD)
 			end
 		end
 	end

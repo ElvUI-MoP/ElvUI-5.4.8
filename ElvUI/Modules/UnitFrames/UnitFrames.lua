@@ -572,7 +572,7 @@ function UF:CreateAndUpdateUFGroup(group, numGroup)
 			frame:Enable()
 
 			if group == "arena" then
-				frame:SetAttribute('oUF-enableArenaPrep', true)
+				frame:SetAttribute("oUF-enableArenaPrep", true)
 			end
 
 			frame.Update()

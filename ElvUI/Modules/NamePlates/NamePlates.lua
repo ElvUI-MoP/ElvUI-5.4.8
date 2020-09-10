@@ -619,8 +619,7 @@ function NP:SetSize(frame)
 		local plate = frame:GetChildren()
 		local trivial = plate:GetScale() < 1
 		local trivialMult = trivial and 2.6 or 1
-		local unitFrame = frame.UnitFrame
-		local unitType = unitFrame.UnitType
+		local unitType = frame.UnitFrame.UnitType
 
 		unitType = (unitType == "FRIENDLY_PLAYER" or unitType == "FRIENDLY_NPC") and "friendly" or "enemy"
 
@@ -1096,11 +1095,13 @@ function NP:SPELL_UPDATE_COOLDOWN(...)
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "SPELL_UPDATE_COOLDOWN")
 end
 
-function NP:UNIT_HEALTH()
+function NP:UNIT_HEALTH(_, unit)
+	if unit ~= "player" then return end
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_HEALTH")
 end
 
-function NP:UNIT_POWER()
+function NP:UNIT_POWER(_, unit)
+	if unit ~= "player" then return end
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_POWER")
 end
 

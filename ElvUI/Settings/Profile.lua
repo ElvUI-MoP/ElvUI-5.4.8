@@ -318,7 +318,7 @@ P.nameplates = {
 		enemyWidth = 150,
 		enemyHeight = 30,
 		trivialWidth = 60,
-		trivialHeight = 10
+		trivialHeight = 20
 	},
 	colors = {
 		glowColor = {r = 1, g = 1, b = 1, a = 1},

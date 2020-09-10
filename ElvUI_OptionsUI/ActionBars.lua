@@ -696,7 +696,7 @@ E.Options.args.actionbar = {
 					name = L["Alpha"],
 					isPercent = true,
 					desc = L["Change the alpha level of the frame."],
-					min = 0, max = 1, step = 0.1,
+					min = 0, max = 1, step = 0.01,
 					disabled = function() return not E.db.actionbar.microbar.enabled end
 				},
 				visibility = {

@@ -33,8 +33,13 @@ local function LoadSkin()
 	GuildXPBar:CreateBackdrop()
 	GuildXPBar.backdrop:Point("TOPLEFT", GuildXPBar.progress, -1, 1)
 	GuildXPBar.backdrop:Point("BOTTOMRIGHT", GuildXPBar, 3, 1)
-
 	GuildXPBar.progress:SetTexture(E.media.normTex)
+
+	GuildXPBarCap:SetTexture(E.media.normTex)
+
+	GuildXPBarCapMarker:Size(4, 14)
+	GuildXPBarCapMarker:SetTexture(E.media.blankTex)
+	GuildXPBarCapMarker:SetVertexColor(0, 0.29, 0.06)
 
 	-- Faction Bar
 	GuildFactionFrame:CreateBackdrop()
@@ -202,11 +207,7 @@ local function LoadSkin()
 			end
 
 			if button.backdrop then
-				if button.icon:IsShown() then
-					button.backdrop:Show()
-				else
-					button.backdrop:Hide()
-				end
+				button.backdrop:SetShown(button.icon:IsShown())
 			end
 		end
 	end
@@ -304,8 +305,10 @@ local function LoadSkin()
 
 	S:HandleScrollBar(GuildInfoFrameApplicantsContainerScrollBar)
 	GuildInfoFrameApplicantsContainerScrollBar:ClearAllPoints()
-	GuildInfoFrameApplicantsContainerScrollBar:Point("TOPRIGHT", GuildInfoFrameApplicantsContainer, "TOPRIGHT", 24, -15)
-	GuildInfoFrameApplicantsContainerScrollBar:Point("BOTTOMRIGHT", GuildInfoFrameApplicantsContainer, "BOTTOMRIGHT", 0, 13)
+	GuildInfoFrameApplicantsContainerScrollBar:Point("TOPRIGHT", GuildInfoFrameApplicantsContainer, 24, -15)
+	GuildInfoFrameApplicantsContainerScrollBar:Point("BOTTOMRIGHT", GuildInfoFrameApplicantsContainer, 0, 13)
+	GuildInfoFrameApplicantsContainerScrollBar:Show()
+	GuildInfoFrameApplicantsContainerScrollBar.Hide = E.noop
 
 	S:HandleScrollBar(GuildInfoDetailsFrameScrollBar, 4)
 

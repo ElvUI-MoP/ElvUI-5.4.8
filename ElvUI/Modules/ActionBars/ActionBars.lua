@@ -14,7 +14,6 @@ local GetOverrideBarIndex = GetOverrideBarIndex
 local GetVehicleBarIndex = GetVehicleBarIndex
 local hooksecurefunc = hooksecurefunc
 local InCombatLockdown = InCombatLockdown
-local MainMenuBarVehicleLeaveButton_OnEnter = MainMenuBarVehicleLeaveButton_OnEnter
 local PetDismiss = PetDismiss
 local RegisterStateDriver = RegisterStateDriver
 local SetClampedTextureRotation = SetClampedTextureRotation
@@ -462,43 +461,6 @@ function AB:UpdateBar1Paging()
 		AB.barDefaults.bar1.conditions = format("[vehicleui] %d; [possessbar] %d; [overridebar] %d; [shapeshift] 13; [form,noform] 0; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;", GetVehicleBarIndex(), GetVehicleBarIndex(), GetOverrideBarIndex())
 	else
 		AB.barDefaults.bar1.conditions = format("[vehicleui] %d; [possessbar] %d; [overridebar] %d; [shapeshift] 13; [form,noform] 0; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;", GetVehicleBarIndex(), GetVehicleBarIndex(), GetOverrideBarIndex())
-	end
-
-	if (not E.private.actionbar.enable or InCombatLockdown()) or not AB.Initialized then return end
-
-	local bar2Option = InterfaceOptionsActionBarsPanelBottomRight
-	local bar3Option = InterfaceOptionsActionBarsPanelBottomLeft
-	local bar4Option = InterfaceOptionsActionBarsPanelRightTwo
-	local bar5Option = InterfaceOptionsActionBarsPanelRight
-
-	if (AB.db.bar2.enabled and not bar2Option:GetChecked()) or (not AB.db.bar2.enabled and bar2Option:GetChecked()) then
-		bar2Option:Click()
-	end
-
-	if (AB.db.bar3.enabled and not bar3Option:GetChecked()) or (not AB.db.bar3.enabled and bar3Option:GetChecked()) then
-		bar3Option:Click()
-	end
-
-	if not AB.db.bar5.enabled and not AB.db.bar4.enabled then
-		if bar4Option:GetChecked() then
-			bar4Option:Click()
-		end
-
-		if bar5Option:GetChecked() then
-			bar5Option:Click()
-		end
-	elseif not AB.db.bar5.enabled then
-		if not bar5Option:GetChecked() then
-			bar5Option:Click()
-		end
-
-		if not bar4Option:GetChecked() then
-			bar4Option:Click()
-		end
-	elseif (AB.db.bar4.enabled and not bar4Option:GetChecked()) or (not AB.db.bar4.enabled and bar4Option:GetChecked()) then
-		bar4Option:Click()
-	elseif (AB.db.bar5.enabled and not bar5Option:GetChecked()) or (not AB.db.bar5.enabled and bar5Option:GetChecked()) then
-		bar5Option:Click()
 	end
 end
 
@@ -1030,12 +992,13 @@ function AB:StyleFlyout(button)
 	local actionbar = button:GetParent()
 	local parent = actionbar and actionbar:GetParent()
 	local parentName = parent and parent:GetName()
+
 	if parentName == "SpellBookSpellIconsFrame" then
 		return
 	elseif actionbar then
 		-- Change arrow direction depending on what bar the button is on
 		local arrowDistance = 2
-		if _G.SpellFlyout:IsShown() and _G.SpellFlyout:GetParent() == button then
+		if SpellFlyout:IsShown() and SpellFlyout:GetParent() == button then
 			arrowDistance = 5
 		end
 

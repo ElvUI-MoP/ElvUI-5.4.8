@@ -392,11 +392,7 @@ function UF:UpdateClassBar(current, maxBars, hasMaxChanged)
 			self[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
 		end
 
-		if maxBars and (i <= maxBars) then
-			self[i].bg:Show()
-		else
-			self[i].bg:Hide()
-		end
+		self[i].bg:SetShown(maxBars and (i <= maxBars))
 	end
 end
 
@@ -457,11 +453,7 @@ function UF:UpdateSpecPower(_, charges, maxCharges)
 			self[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
 		end
 
-		if maxCharges and (i <= maxCharges) then
-			self[i].bg:Show()
-		else
-			self[i].bg:Hide()
-		end
+		self[i].bg:SetShown(maxCharges and (i <= maxCharges))
 	end
 end
 
@@ -559,11 +551,7 @@ function UF:UpdateBurningEmbers(_, _, max)
 			self[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
 		end
 
-		if max and (i <= max) then
-			self[i].bg:Show()
-		else
-			self[i].bg:Hide()
-		end
+		self[i].bg:SetShown(max and (i <= max))
 	end
 end
 
@@ -625,11 +613,7 @@ function UF:UpdateSoulShards(_, _, max)
 			self[i].BG:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
 		end
 
-		if max and (i <= max) then
-			self[i].BG:Show()
-		else
-			self[i].BG:Hide()
-		end
+		self[i].BG:SetShown(max and (i <= max))
 	end
 end
 

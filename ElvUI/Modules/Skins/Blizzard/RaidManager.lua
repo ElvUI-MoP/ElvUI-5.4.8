@@ -4,8 +4,8 @@ local S = E:GetModule("Skins")
 local _G = _G
 
 local function LoadSkin()
-	if E.private.unitframe.disabledBlizzardFrames.raid and E.private.unitframe.disabledBlizzardFrames.party then return end
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.RaidManager then return end
+	if (E.private.unitframe.enable and E.private.unitframe.disabledBlizzardFrames.raid and E.private.unitframe.disabledBlizzardFrames.party) then return end
 
 	CompactRaidFrameManager:StripTextures()
 	CompactRaidFrameManager:SetTemplate("Transparent")
