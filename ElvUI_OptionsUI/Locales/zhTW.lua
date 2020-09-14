@@ -257,6 +257,7 @@ L["Configure Auras"] = "設置光環"
 L["Consolidated Buffs"] = "整合增益"
 L["Control enemy nameplates toggling on or off when in combat."] = "控制戰鬥中敵對姓名板的開啟和關閉"
 L["Control friendly nameplates toggling on or off when in combat."] = "控制戰鬥中友方姓名板的開啟和關閉"
+L["Controls how big of an area on the screen will accept clicks to target unit."] = "決定屏幕上一個多大的光環才允許通過點擊選定到目標框架上"
 L["Controls the text displayed. Tags are available in the Available Tags section of the config."] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = "控制在血條和單位框架等元件的小數位數"
 L["Controls the speed at which smoothed bars will be updated."] = "控制平滑條更新的速度."

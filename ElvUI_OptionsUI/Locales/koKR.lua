@@ -257,6 +257,7 @@ L["Configure Auras"] = "오라 설정"
 L["Consolidated Buffs"] = "시너지버프 모음"
 L["Control enemy nameplates toggling on or off when in combat."] = "적군 이름표의 전투중 표시여부를 조절합니다."
 L["Control friendly nameplates toggling on or off when in combat."] = "아군 이름표의 전투중 표시여부를 조절합니다."
+L["Controls how big of an area on the screen will accept clicks to target unit."] = "해당 유닛의 표시부에서 클릭이 수용되는 영역의 크기를 조절합니다."
 L["Controls the text displayed. Tags are available in the Available Tags section of the config."] = true
 L["Controls the amount of decimals used in values displayed on elements like NamePlates and UnitFrames."] = "이름표와 유닛프레임 등에 구성요소로 표시되는 수치들이 소숫점 몇 자리까지 나타낼지 조정합니다."
 L["Controls the speed at which smoothed bars will be updated."] = true

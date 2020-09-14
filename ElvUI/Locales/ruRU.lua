@@ -52,6 +52,7 @@ L["Binds Discarded"] = "Назначения отменены"
 L["Binds Saved"] = "Назначения сохранены"
 L["BNet Frame"] = "Оповещения BNet"
 L["BoE"] = "ПпН"
+L["BoP"] = true
 L["Boss Button"] = "Кнопка босса"
 L["Boss Frames"] = "Боссы"
 L["BoU"] = "ПпИ"

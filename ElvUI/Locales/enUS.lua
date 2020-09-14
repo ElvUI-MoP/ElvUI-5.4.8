@@ -52,6 +52,7 @@ L["Binds Discarded"] = true
 L["Binds Saved"] = true
 L["BNet Frame"] = true
 L["BoE"] = true
+L["BoP"] = true
 L["Boss Button"] = true
 L["Boss Frames"] = true
 L["BoU"] = true

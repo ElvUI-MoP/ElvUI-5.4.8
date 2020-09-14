@@ -52,6 +52,7 @@ L["Binds Discarded"] = "Raccourcis annulés"
 L["Binds Saved"] = "Raccourcis sauvegardés"
 L["BNet Frame"] = "Cadre BNet"
 L["BoE"] = true
+L["BoP"] = true
 L["Boss Button"] = "Bouton du Boss"
 L["Boss Frames"] = "Cadre du Boss"
 L["BoU"] = true
