@@ -2,7 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 
 local unpack, tonumber = unpack, tonumber
-local abs, min = abs, math.min
+local abs = abs
 
 local CreateFrame = CreateFrame
 local UnitSpellHaste = UnitSpellHaste
