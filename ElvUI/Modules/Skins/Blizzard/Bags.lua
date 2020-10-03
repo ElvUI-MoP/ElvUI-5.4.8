@@ -12,7 +12,7 @@ local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 local hooksecurefunc = hooksecurefunc
 
-local C_NewItemsIsNewItem = C_NewItems.IsNewItem
+local C_NewItems_IsNewItem = C_NewItems.IsNewItem
 
 local BACKPACK_TOOLTIP = BACKPACK_TOOLTIP
 local BANK_CONTAINER = BANK_CONTAINER
@@ -79,7 +79,7 @@ local function LoadSkin()
 
 			item.newItemGlow = item:CreateTexture(nil, "OVERLAY")
 			item.newItemGlow:SetInside()
-			item.newItemGlow:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\bagNewItemGlow.tga")
+			item.newItemGlow:SetTexture(E.Media.Textures.BagNewItemGlow)
 			item.newItemGlow:Hide()
 
 			cooldown.CooldownOverride = "bags"
@@ -95,7 +95,7 @@ local function LoadSkin()
 	for i = 1, MAX_WATCHED_TOKENS do
 		local token = _G["BackpackTokenFrameToken"..i]
 
-		token:CreateBackdrop("Default")
+		token:CreateBackdrop()
 		token.backdrop:SetOutside(token.icon)
 
 		token.icon:SetTexCoord(unpack(E.TexCoords))
@@ -179,7 +179,7 @@ local function LoadSkin()
 				item.ignoreBorderColors = true
 			end
 
-			if C_NewItemsIsNewItem(id, item:GetID()) then
+			if C_NewItems_IsNewItem(id, item:GetID()) then
 				item.newItemGlow:Show()
 				E:Flash(item.newItemGlow, 0.5, true)
 			else
@@ -221,9 +221,9 @@ local function LoadSkin()
 	end
 
 	BankFrame.itemBackdrop = CreateFrame("Frame", "BankFrameItemBackdrop", BankFrame)
-	BankFrame.itemBackdrop:SetTemplate("Default")
-	BankFrame.itemBackdrop:Point("TOPLEFT", BankFrameItem1, "TOPLEFT", -6, 6)
-	BankFrame.itemBackdrop:Point("BOTTOMRIGHT", BankFrameItem28, "BOTTOMRIGHT", 6, -6)
+	BankFrame.itemBackdrop:SetTemplate()
+	BankFrame.itemBackdrop:Point("TOPLEFT", BankFrameItem1, -6, 6)
+	BankFrame.itemBackdrop:Point("BOTTOMRIGHT", BankFrameItem28, 6, -6)
 	BankFrame.itemBackdrop:SetFrameLevel(BankFrame:GetFrameLevel())
 
 	for i = 1, NUM_BANKBAGSLOTS, 1 do
@@ -243,9 +243,9 @@ local function LoadSkin()
 	end
 
 	BankFrame.bagBackdrop = CreateFrame("Frame", "BankFrameBagBackdrop", BankFrame)
-	BankFrame.bagBackdrop:SetTemplate("Default")
-	BankFrame.bagBackdrop:Point("TOPLEFT", BankFrameBag1, "TOPLEFT", -6, 6)
-	BankFrame.bagBackdrop:Point("BOTTOMRIGHT", BankFrameBag7, "BOTTOMRIGHT", 6, -6)
+	BankFrame.bagBackdrop:SetTemplate()
+	BankFrame.bagBackdrop:Point("TOPLEFT", BankFrameBag1, -6, 6)
+	BankFrame.bagBackdrop:Point("BOTTOMRIGHT", BankFrameBag7, 6, -6)
 	BankFrame.bagBackdrop:SetFrameLevel(BankFrame:GetFrameLevel())
 
 	S:HandleButton(BankFramePurchaseButton)

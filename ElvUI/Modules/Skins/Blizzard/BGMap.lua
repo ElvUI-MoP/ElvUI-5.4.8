@@ -13,7 +13,7 @@ local function LoadSkin()
 	BattlefieldMinimapTabMiddle:Kill()
 	BattlefieldMinimapTabRight:Kill()
 
-	BattlefieldMinimap:CreateBackdrop("Default")
+	BattlefieldMinimap:CreateBackdrop()
 	BattlefieldMinimap.backdrop:Point("BOTTOMRIGHT", -4, 2)
 	BattlefieldMinimap:SetFrameStrata("MEDIUM")
 	BattlefieldMinimap:SetFrameLevel(25)

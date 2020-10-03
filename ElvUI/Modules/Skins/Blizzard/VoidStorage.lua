@@ -24,20 +24,20 @@ local function LoadSkin()
 	VoidStorageFrame:Size(675, 410)
 
 	VoidStoragePurchaseFrame:StripTextures()
-	VoidStoragePurchaseFrame:SetTemplate("Default")
+	VoidStoragePurchaseFrame:SetTemplate()
 
 	VoidStorageDepositFrame:StripTextures()
-	VoidStorageDepositFrame:CreateBackdrop("Default")
+	VoidStorageDepositFrame:CreateBackdrop()
 	VoidStorageDepositFrame.backdrop:Point("TOPLEFT", 3, -3)
 	VoidStorageDepositFrame.backdrop:Point("BOTTOMRIGHT", -3, 3)
 
 	VoidStorageWithdrawFrame:StripTextures()
-	VoidStorageWithdrawFrame:CreateBackdrop("Default")
+	VoidStorageWithdrawFrame:CreateBackdrop()
 	VoidStorageWithdrawFrame.backdrop:Point("TOPLEFT", 3, -3)
 	VoidStorageWithdrawFrame.backdrop:Point("BOTTOMRIGHT", -3, 3)
 
 	VoidStorageStorageFrame:StripTextures()
-	VoidStorageStorageFrame:CreateBackdrop("Default")
+	VoidStorageStorageFrame:CreateBackdrop()
 	VoidStorageStorageFrame.backdrop:Point("TOPLEFT", 3, -3)
 	VoidStorageStorageFrame.backdrop:Point("BOTTOMRIGHT", -31, 3)
 
@@ -49,7 +49,7 @@ local function LoadSkin()
 	VoidStorageHelpBox:SetTemplate()
 
 	VoidItemSearchBox:StripTextures()
-	VoidItemSearchBox:CreateBackdrop("Overlay")
+	VoidItemSearchBox:CreateBackdrop()
 	VoidItemSearchBox.backdrop:Point("TOPLEFT", 10, -1)
 	VoidItemSearchBox.backdrop:Point("BOTTOMRIGHT", 4, 1)
 
