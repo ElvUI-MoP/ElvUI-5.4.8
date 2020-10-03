@@ -5709,7 +5709,6 @@ E.Options.args.unitframe.args.groupUnits.args.boss = {
 			name = L["Copy From"],
 			desc = L["Select a unit to copy settings from."],
 			values = {
-				["boss"] = L["BOSS"],
 				["arena"] = L["ARENA"]
 			},
 			set = function(info, value) UF:MergeUnitSettings(value, "boss") end
@@ -5861,8 +5860,7 @@ E.Options.args.unitframe.args.groupUnits.args.arena = {
 			name = L["Copy From"],
 			desc = L["Select a unit to copy settings from."],
 			values = {
-				["boss"] = L["BOSS"],
-				["arena"] = L["ARENA"]
+				["boss"] = L["BOSS"]
 			},
 			set = function(info, value) UF:MergeUnitSettings(value, "arena") end
 		},

@@ -251,7 +251,7 @@ E.Options.args.bags = {
 							type = "range",
 							name = L["Item Level Threshold"],
 							desc = L["The minimum item level required for it to be shown."],
-							min = 1, max = 1000, step = 1,
+							min = 1, max = 616, step = 1,
 							disabled = function() return not E.db.bags.itemLevel end,
 							set = function(info, value) E.db.bags.itemLevelThreshold = value B:UpdateItemLevelDisplay() end
 						},

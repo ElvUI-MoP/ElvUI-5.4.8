@@ -16,11 +16,12 @@ function B:WorldStateAlwaysUpFrame_Update()
 
 	for i = 1, NUM_ALWAYS_UP_UI_FRAMES do
 		local frame = _G["AlwaysUpFrame"..i]
-		local text = _G["AlwaysUpFrame"..i.."Text"]
-		local icon = _G["AlwaysUpFrame"..i.."Icon"]
-		local dynamic = _G["AlwaysUpFrame"..i.."DynamicIconButton"]
 
 		if frame then
+			local text = _G["AlwaysUpFrame"..i.."Text"]
+			local icon = _G["AlwaysUpFrame"..i.."Icon"]
+			local dynamic = _G["AlwaysUpFrame"..i.."DynamicIconButton"]
+
 			if i == 1 then
 				frame:ClearAllPoints()
 				frame:Point("CENTER", PvPHolder, "CENTER", 0, 5)

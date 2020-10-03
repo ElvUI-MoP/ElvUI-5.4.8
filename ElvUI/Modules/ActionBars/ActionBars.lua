@@ -421,6 +421,7 @@ function AB:ReassignBindings(event)
 	if event == "UPDATE_BINDINGS" then
 		AB:UpdatePetBindings()
 		AB:UpdateStanceBindings()
+		AB:UpdateExtraBindings()
 	end
 
 	AB:UnregisterEvent("PLAYER_REGEN_DISABLED")
@@ -489,6 +490,7 @@ function AB:UpdateButtonSettings()
 
 	AB:UpdatePetBindings()
 	AB:UpdateStanceBindings()
+	AB:UpdateExtraBindings()
 	AB:UpdateFlyoutButtons()
 
 	for barName, bar in pairs(AB.handledBars) do

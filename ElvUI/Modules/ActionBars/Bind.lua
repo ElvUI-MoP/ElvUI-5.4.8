@@ -188,14 +188,14 @@ function AB:BindUpdate(button, spellmacro)
 		GameTooltip:AddLine(bind.button.name, 1, 1, 1)
 
 		bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
-			if #bind.button.bindings == 0 then
-				GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
-			else
-				GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
-				for i = 1, #bind.button.bindings do
-					GameTooltip:AddDoubleLine(L["Binding"]..i, bind.button.bindings[i], 1, 1, 1)
-				end
+		if #bind.button.bindings == 0 then
+			GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
+		else
+			GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+			for i = 1, #bind.button.bindings do
+				GameTooltip:AddDoubleLine(L["Binding"]..i, bind.button.bindings[i], 1, 1, 1)
 			end
+		end
 		GameTooltip:Show()
 	elseif spellmacro == "STANCE" or spellmacro == "PET" then
 		bind.button.name = button:GetName()

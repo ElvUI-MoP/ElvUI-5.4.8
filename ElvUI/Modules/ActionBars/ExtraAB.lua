@@ -39,6 +39,21 @@ function AB:Extra_SetScale()
 	end
 end
 
+function AB:UpdateExtraBindings()
+	local color = AB.db.fontColor
+
+	for i = 1, ExtraActionBarFrame:GetNumChildren() do
+		local button = _G["ExtraActionButton"..i]
+		if button then
+			local hotKey = _G["ExtraActionButton"..i.."HotKey"]
+
+			hotKey:SetShown(AB.db.hotkeytext)
+			hotKey:SetTextColor(color.r, color.g, color.b)
+			AB:FixKeybindText(button)
+		end
+	end
+end
+
 function AB:SetupExtraButton()
 	ExtraActionBarHolder = CreateFrame("Frame", nil, E.UIParent)
 	ExtraActionBarHolder:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 150)
@@ -60,6 +75,8 @@ function AB:SetupExtraButton()
 			button.checked = true
 
 			button.icon:SetDrawLayer("ARTWORK")
+
+			_G["ExtraActionButton"..i.."HotKey"].SetVertexColor = E.noop
 
 			if E.private.skins.cleanBossButton and button.style then -- Hide the Artwork
 				button.style:SetTexture()
@@ -89,4 +106,5 @@ function AB:SetupExtraButton()
 
 	AB:Extra_SetAlpha()
 	AB:Extra_SetScale()
+	AB:UpdateExtraBindings()
 end
