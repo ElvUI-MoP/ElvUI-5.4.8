@@ -741,7 +741,9 @@ G.unitframe.buffwatch = {
 	DEATHKNIGHT = {
 		[49016]		= UF:AuraWatch_AddSpell(49016, "TOPRIGHT", {0.89, 0.09, 0.05})			-- Unholy Frenzy
 	},
-	HUNTER = {},
+	HUNTER = {
+		[34477]	= UF:AuraWatch_AddSpell(34477, "TOPRIGHT", {0.2, 0.8, 0.2}, true)			-- Misdirection
+	},
 	PET = {
 		[136]		= UF:AuraWatch_AddSpell(136, 'TOPRIGHT', {0.2, 0.8, 0.2}, true),		-- Mend Pet
 		[19615]		= UF:AuraWatch_AddSpell(19615, 'TOPLEFT', {0.89, 0.09, 0.05}, true)		-- Frenzy
