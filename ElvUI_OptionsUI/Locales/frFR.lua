@@ -669,6 +669,7 @@ L["Log Taints"] = "Journal des corruptions"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Active la fenêtre principale de l'historique de discussion. Ainsi quand vous rechargez l'interface ou effectuez une connexion / déconnexion, vous voyez l'historique de la dernière session"
 L["Login Message"] = "Message de connexion"
 L["Loot Frames"] = "Fenêtre de butin"
+L["Loot History"] = true
 L["Loot Roll"] = "Cadre de butin"
 L["Low Health Threshold"] = "Seuil vie faible"
 L["Low Threshold"] = "Seuil minimal"

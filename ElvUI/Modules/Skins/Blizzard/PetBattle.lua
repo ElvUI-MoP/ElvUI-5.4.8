@@ -158,7 +158,7 @@ local function LoadSkin()
 
 			infoBar.Name:Point("BOTTOMRIGHT", infoBar.ActualHealthBar, "TOPRIGHT", 0, 10)
 
-			infoBar.PetTypeFrame:Point("BOTTOMLEFT",infoBar.HealthBarBackdrop, "TOPLEFT", 2, 4)
+			infoBar.PetTypeFrame:Point("BOTTOMLEFT", infoBar.HealthBarBackdrop, "TOPLEFT", 2, 4)
 
 			infoBar.FirstAttack:SetTexture(E.Media.Textures.ArrowUp)
 			infoBar.FirstAttack:Point("RIGHT", infoBar.HealthBarBackdrop, "LEFT", -5, 0)

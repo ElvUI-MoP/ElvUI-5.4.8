@@ -670,6 +670,7 @@ L["Log Taints"] = "Log Fehler"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Sichert den Chatverlauf der Hauptchatfenster. Wenn du dein UI neulädst oder einloggst, siehst du den Chatverlauf der letzten Sitzung."
 L["Login Message"] = "Login Nachricht"
 L["Loot Frames"] = "Beutefenster"
+L["Loot History"] = true
 L["Loot Roll"] = "Würfelfenster"
 L["Low Health Threshold"] = "Niedrige Lebensbedrohung"
 L["Low Threshold"] = "Niedrige CD-Schwelle"

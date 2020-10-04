@@ -669,6 +669,7 @@ L["Log Taints"] = "Registro Exhaustivo"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Guardar el historial de los marcos de chat principales. Así cuando recargues la interfaz o reconectes verás el historial de chat de tu última sesión."
 L["Login Message"] = "Mensaje de inicio"
 L["Loot Frames"] = "Despojo"
+L["Loot History"] = true
 L["Loot Roll"] = "Marco de Botín"
 L["Low Health Threshold"] = "Umbral de Salud Baja"
 L["Low Threshold"] = "Umbral Bajo"

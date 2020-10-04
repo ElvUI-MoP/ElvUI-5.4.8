@@ -88,6 +88,7 @@ V.skins = {
 		itemUpgrade = true,
 		lfg = true,
 		loot = true,
+		lootHistory = true,
 		lootRoll = true,
 		losscontrol = true,
 		lfguild = true,

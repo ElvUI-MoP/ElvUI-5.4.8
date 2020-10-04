@@ -4,47 +4,32 @@ local Misc = E:GetModule("Misc")
 
 local _G = _G
 local pairs = pairs
-
-local AlertFrame_FixAnchors = AlertFrame_FixAnchors
-local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES
+local format = format
 
 local POSITION, ANCHOR_POINT, YOFFSET = "TOP", "BOTTOM", -10
 
-function E:PostAlertMove(screenQuadrant)
+function E:PostAlertMove()
 	local _, y = AlertFrameMover:GetCenter()
 	local screenHeight = E.UIParent:GetTop()
+	local screenY = y > (screenHeight / 2)
 
-	if y > (screenHeight / 2) then
-		POSITION = "TOP"
-		ANCHOR_POINT = "BOTTOM"
-		YOFFSET = -10
-		AlertFrameMover:SetText(AlertFrameMover.textString.." [Grow Down]")
-	else
-		POSITION = "BOTTOM"
-		ANCHOR_POINT = "TOP"
-		YOFFSET = 10
-		AlertFrameMover:SetText(AlertFrameMover.textString.." [Grow Up]")
-	end
+	POSITION = screenY and "TOP" or "BOTTOM"
+	ANCHOR_POINT = screenY and "BOTTOM" or "TOP"
+	YOFFSET = screenY and -10 or 10
 
-	local rollBars = Misc.RollBars
+	local directionText = screenY and "(Grow Down)" or "(Grow Up)"
+	AlertFrameMover:SetText(format("%s %s", AlertFrameMover.textString, directionText))
+
 	if E.private.general.lootRoll then
 		local lastframe, lastShownFrame
 
-		for i, frame in pairs(rollBars) do
+		for i, frame in pairs(Misc.RollBars) do
+			local alertAnchor = i ~= 1 and lastframe or AlertFrameHolder
+			local yOffset = screenY and -4 or 4
+
 			frame:ClearAllPoints()
-			if i ~= 1 then
-				if POSITION == "TOP" then
-					frame:Point("TOP", lastframe, "BOTTOM", 0, -4)
-				else
-					frame:Point("BOTTOM", lastframe, "TOP", 0, 4)
-				end
-			else
-				if POSITION == "TOP" then
-					frame:Point("TOP", AlertFrameHolder, "BOTTOM", 0, -4)
-				else
-					frame:Point("BOTTOM", AlertFrameHolder, "TOP", 0, 4)
-				end
-			end
+			frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, yOffset)
+
 			lastframe = frame
 
 			if frame:IsShown() then
@@ -53,85 +38,46 @@ function E:PostAlertMove(screenQuadrant)
 		end
 
 		AlertFrame:ClearAllPoints()
+		GroupLootContainer:ClearAllPoints()
+
 		if lastShownFrame then
 			AlertFrame:SetAllPoints(lastShownFrame)
+			GroupLootContainer:Point(POSITION, lastShownFrame, ANCHOR_POINT, 0, YOFFSET)
 		else
 			AlertFrame:SetAllPoints(AlertFrameHolder)
-		end
-	elseif E.private.skins.blizzard.enable and E.private.skins.blizzard.lootRoll then
-		local lastframe, lastShownFrame
-		for i = 1, NUM_GROUP_LOOT_FRAMES do
-			local frame = _G["GroupLootFrame"..i]
-
-			if frame then
-				frame:ClearAllPoints()
-				if i ~= 1 then
-					if POSITION == "TOP" then
-						frame:Point("TOP", lastframe, "BOTTOM", 0, -4)
-					else
-						frame:Point("BOTTOM", lastframe, "TOP", 0, 4)
-					end
-				else
-					if POSITION == "TOP" then
-						frame:Point("TOP", AlertFrameHolder, "BOTTOM", 0, -4)
-					else
-						frame:Point("BOTTOM", AlertFrameHolder, "TOP", 0, 4)
-					end
-				end
-				lastframe = frame
-
-				if frame:IsShown() then
-					lastShownFrame = frame
-				end
-			end
-		end
-
-		AlertFrame:ClearAllPoints()
-		if lastShownFrame then
-			AlertFrame:SetAllPoints(lastShownFrame)
-		else
-			AlertFrame:SetAllPoints(AlertFrameHolder)
+			GroupLootContainer:Point(POSITION, AlertFrameHolder, ANCHOR_POINT, 0, YOFFSET)
 		end
 	else
 		AlertFrame:ClearAllPoints()
 		AlertFrame:SetAllPoints(AlertFrameHolder)
-	end
 
-	if screenQuadrant then
-		AlertFrame_FixAnchors()
+		GroupLootContainer:ClearAllPoints()
+		GroupLootContainer:Point(POSITION, AlertFrameHolder, ANCHOR_POINT, 0, YOFFSET)
 	end
 end
 
 function B:AlertFrame_SetLootAnchors(alertAnchor)
 	if MissingLootFrame:IsShown() then
 		MissingLootFrame:ClearAllPoints()
-		MissingLootFrame:Point(POSITION, alertAnchor, ANCHOR_POINT)
+		MissingLootFrame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
 
 		if GroupLootContainer:IsShown() then
 			GroupLootContainer:ClearAllPoints()
 			GroupLootContainer:Point(POSITION, MissingLootFrame, ANCHOR_POINT, 0, YOFFSET)
 		end
-	elseif GroupLootContainer:IsShown() or FORCE_POSITION then
+	elseif GroupLootContainer:IsShown() then
 		GroupLootContainer:ClearAllPoints()
-		GroupLootContainer:Point(POSITION, alertAnchor, ANCHOR_POINT)
+		GroupLootContainer:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
 	end
 end
 
-function B:AlertFrame_SetAchievementAnchors()
-	local alertAnchor
-	for i = 1, MAX_ACHIEVEMENT_ALERTS do
-		local frame = _G["AchievementAlertFrame"..i]
+function B:AlertFrame_SetStorePurchaseAnchors(alertAnchor)
+	local frame = StorePurchaseAlertFrame
 
-		if frame then
-			frame:ClearAllPoints()
-			if alertAnchor and alertAnchor:IsShown() then
-				frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
-			else
-				frame:Point(POSITION, AlertFrame, ANCHOR_POINT)
-			end
-
-			alertAnchor = frame
-		end
+	if frame:IsShown() then
+		frame:ClearAllPoints()
+		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+		alertAnchor = frame
 	end
 end
 
@@ -153,7 +99,19 @@ function B:AlertFrame_SetMoneyWonAnchors(alertAnchor)
 
 		if frame:IsShown() then
 			frame:ClearAllPoints()
-			frame:SetPoint(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+			frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+			alertAnchor = frame
+		end
+	end
+end
+
+function B:AlertFrame_SetAchievementAnchors(alertAnchor)
+	for i = 1, MAX_ACHIEVEMENT_ALERTS do
+		local frame = _G["AchievementAlertFrame"..i]
+
+		if frame and frame:IsShown() then
+			frame:ClearAllPoints()
+			frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
 			alertAnchor = frame
 		end
 	end
@@ -179,6 +137,7 @@ function B:AlertFrame_SetChallengeModeAnchors(alertAnchor)
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+		alertAnchor = frame
 	end
 end
 
@@ -188,15 +147,7 @@ function B:AlertFrame_SetDungeonCompletionAnchors(alertAnchor)
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
-	end
-end
-
-function B:AlertFrame_SetStorePurchaseAnchors(alertAnchor)
-	local frame = StorePurchaseAlertFrame
-
-	if frame:IsShown() then
-		frame:ClearAllPoints()
-		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+		alertAnchor = frame
 	end
 end
 
@@ -206,6 +157,7 @@ function B:AlertFrame_SetScenarioAnchors(alertAnchor)
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+		alertAnchor = frame
 	end
 end
 
@@ -215,23 +167,26 @@ function B:AlertFrame_SetGuildChallengeAnchors(alertAnchor)
 	if frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+		alertAnchor = frame
 	end
 end
 
 function B:AlertFrame_SetDigsiteCompleteToastFrameAnchors(alertAnchor)
 	local frame = DigsiteCompleteToastFrame
 
-	if frame:IsShown() then
+	if frame and frame:IsShown() then
 		frame:ClearAllPoints()
 		frame:Point(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET)
+		alertAnchor = frame
 	end
 end
 
 function B:AlertMovers()
 	local AlertFrameHolder = CreateFrame("Frame", "AlertFrameHolder", E.UIParent)
-	AlertFrameHolder:Width(180)
-	AlertFrameHolder:Height(20)
+	AlertFrameHolder:Size(250, 20)
 	AlertFrameHolder:Point("TOP", E.UIParent, "TOP", 0, -18)
+
+	UIPARENT_MANAGED_FRAME_POSITIONS.GroupLootContainer = nil
 
 	self:SecureHook("AlertFrame_FixAnchors", E.PostAlertMove)
 	self:SecureHook("AlertFrame_SetLootAnchors")

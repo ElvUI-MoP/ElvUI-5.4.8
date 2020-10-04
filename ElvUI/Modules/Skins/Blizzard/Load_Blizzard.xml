@@ -29,6 +29,8 @@
 	<Script file="LFG.lua"/>
 	<Script file="LFGuild.lua"/>
 	<Script file="Loot.lua"/>
+	<Script file="LootHistory.lua"/>
+	<Script file="LootRoll.lua"/>
 	<Script file="LossControl.lua"/>
 	<Script file="Macro.lua"/>
 	<Script file="Mail.lua"/>

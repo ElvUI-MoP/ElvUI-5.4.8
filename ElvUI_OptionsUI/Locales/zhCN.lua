@@ -669,6 +669,7 @@ L["Log Taints"] = "错误记录"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "进行聊天记录,当你重载,登录和退出时会恢复你最后一次会话"
 L["Login Message"] = "登陆信息"
 L["Loot Frames"] = "拾取"
+L["Loot History"] = true
 L["Loot Roll"] = "掷骰"
 L["Low Health Threshold"] = "低生命值阈值"
 L["Low Threshold"] = "冷却时间阈值"

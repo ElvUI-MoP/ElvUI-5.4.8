@@ -668,6 +668,7 @@ L["Log Taints"] = "Capturar Problemas"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "Armazenar o histórico dos quadros principais do bate-papo. Para que possa ver o histórico de sua última sessão ao relogar ou conectar e desconectar."
 L["Login Message"] = "Mensagem de Entrada"
 L["Loot Frames"] = "Saques"
+L["Loot History"] = true
 L["Loot Roll"] = "Disputa de Saques"
 L["Low Health Threshold"] = "Limiar de Vida Baixa"
 L["Low Threshold"] = "Baixo Limiar"

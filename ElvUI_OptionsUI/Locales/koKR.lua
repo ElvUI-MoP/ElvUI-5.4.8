@@ -669,6 +669,7 @@ L["Log Taints"] = "Taint 에러 표시"
 L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."] = "애드온 리로드나 로그아웃 이전의 채팅내역을 보존하여 접속했을 때 보여줍니다."
 L["Login Message"] = "로그인 메세지 표시"
 L["Loot Frames"] = "루팅 창"
+L["Loot History"] = true
 L["Loot Roll"] = "주사위 굴림창"
 L["Low Health Threshold"] = "낮은 생명력 임계점"
 L["Low Threshold"] = "초읽기 시작 시점"

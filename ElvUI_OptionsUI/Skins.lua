@@ -202,14 +202,17 @@ E.Options.args.skins = {
 				loot = {
 					type = "toggle",
 					name = L["Loot Frames"],
-					desc = L["TOGGLESKIN_DESC"],
-					disabled = function() return E.private.general.loot end
+					desc = L["TOGGLESKIN_DESC"]
+				},
+				lootHistory = {
+					type = "toggle",
+					name = L["Loot History"],
+					desc = L["TOGGLESKIN_DESC"]
 				},
 				lootRoll = {
 					type = "toggle",
 					name = L["Loot Roll"],
-					desc = L["TOGGLESKIN_DESC"],
-					disabled = function() return E.private.general.lootRoll end
+					desc = L["TOGGLESKIN_DESC"]
 				},
 				losscontrol = {
 					type = "toggle",
