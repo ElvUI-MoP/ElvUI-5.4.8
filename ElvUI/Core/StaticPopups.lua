@@ -166,8 +166,14 @@ E.PopupDialogs.TUKUI_ELVUI_INCOMPATIBLE = {
 
 E.PopupDialogs.DISABLE_INCOMPATIBLE_ADDON = {
 	text = L["Do you swear not to post in technical support about something not working without first disabling the addon/module combination first?"],
-	OnAccept = function() E.global.ignoreIncompatible = true end,
-	OnCancel = function() E:StaticPopup_Hide("DISABLE_INCOMPATIBLE_ADDON") E:StaticPopup_Show("INCOMPATIBLE_ADDON", E.PopupDialogs.INCOMPATIBLE_ADDON.addon, E.PopupDialogs.INCOMPATIBLE_ADDON.module) end,
+	OnAccept = function()
+		E.global.ignoreIncompatible = true
+	end,
+	OnCancel = function()
+		local popup = E.PopupDialogs.INCOMPATIBLE_ADDON
+		E:StaticPopup_Hide('DISABLE_INCOMPATIBLE_ADDON')
+		E:StaticPopup_Show('INCOMPATIBLE_ADDON', popup.button1, popup.button2)
+	end,
 	button1 = L["I Swear"],
 	button2 = DECLINE,
 	whileDead = 1,
@@ -176,8 +182,8 @@ E.PopupDialogs.DISABLE_INCOMPATIBLE_ADDON = {
 
 E.PopupDialogs.INCOMPATIBLE_ADDON = {
 	text = L["INCOMPATIBLE_ADDON"],
-	OnAccept = function() DisableAddOn(E.PopupDialogs.INCOMPATIBLE_ADDON.addon) ReloadUI() end,
-	OnCancel = function() E.private[strlower(E.PopupDialogs.INCOMPATIBLE_ADDON.module)].enable = false ReloadUI() end,
+	OnAccept = function() local popup = E.PopupDialogs.INCOMPATIBLE_ADDON popup.accept(popup) end,
+	OnCancel = function() local popup = E.PopupDialogs.INCOMPATIBLE_ADDON popup.cancel(popup) end,
 	button3 = L["Disable Warning"],
 	OnAlt = function ()
 		E:StaticPopup_Hide("INCOMPATIBLE_ADDON")
@@ -501,10 +507,10 @@ E.PopupDialogs.SCRIPT_PROFILE = {
 }
 
 E.PopupDialogs.ELVUI_CONFIG_FOUND = {
-    text = L["You still have ElvUI_Config installed. ElvUI_Config has been renamed to ElvUI_OptionsUI, please remove it."],
-    button1 = ACCEPT,
-    whileDead = 1,
-    hideOnEscape = false
+	text = L["You still have ElvUI_Config installed. ElvUI_Config has been renamed to ElvUI_OptionsUI, please remove it."],
+	button1 = ACCEPT,
+	whileDead = 1,
+	hideOnEscape = false
 }
 
 local MAX_STATIC_POPUPS = 4
@@ -921,14 +927,15 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 	local text = _G[name.."Text"]
 	text:SetFormattedText(info.text, text_arg1, text_arg2)
 
+	-- Show or hide the close button
 	if info.closeButton then
 		local closeButton = _G[name.."CloseButton"]
 		if info.closeButtonIsHide then
-			closeButton:SetNormalTexture("Interface\\Buttons\\UI-Panel-HideButton-Up")
-			closeButton:SetPushedTexture("Interface\\Buttons\\UI-Panel-HideButton-Down")
+			closeButton:SetNormalTexture([[Interface\Buttons\UI-Panel-HideButton-Up]])
+			closeButton:SetPushedTexture([[Interface\Buttons\UI-Panel-HideButton-Down]])
 		else
-			closeButton:SetNormalTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Up")
-			closeButton:SetPushedTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Down")
+			closeButton:SetNormalTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Up]])
+			closeButton:SetPushedTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Down]])
 		end
 		closeButton:Show()
 	else

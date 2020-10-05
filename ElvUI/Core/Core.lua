@@ -10,6 +10,7 @@ local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
 local format, find, match, strrep, strlen, sub, gsub, strjoin = string.format, string.find, string.match, strrep, strlen, string.sub, string.gsub, strjoin
 
 local CreateFrame = CreateFrame
+local DisableAddOn = DisableAddOn
 local GetAddOnInfo = GetAddOnInfo
 local GetCVar = GetCVar
 local GetNumGroupMembers = GetNumGroupMembers
@@ -47,6 +48,7 @@ local UnitFrames = E:GetModule("UnitFrames")
 --Constants
 E.noop = function() end
 E.title = format("|cff00fcceE|r|cffe5e3e3lvUI|r")
+E.version = tonumber(GetAddOnMetadata("ElvUI", "Version"))
 E.myfaction, E.myLocalizedFaction = UnitFactionGroup("player")
 E.mylevel = UnitLevel("player")
 E.myLocalizedClass, E.myclass, E.myClassID = UnitClass("player")
@@ -55,13 +57,13 @@ E.myname = UnitName("player")
 E.myrealm = GetRealmName()
 E.mynameRealm = format("%s - %s", E.myname, E.myrealm) -- contains spaces/dashes in realm (for profile keys)
 E.myspec = GetSpecialization()
-E.version = tonumber(GetAddOnMetadata("ElvUI", "Version"))
 E.wowpatch, E.wowbuild = GetBuildInfo()
 E.wowbuild = tonumber(E.wowbuild)
 E.resolution = GetCVar("gxResolution")
 E.screenheight = tonumber(match(E.resolution, "%d+x(%d+)"))
 E.screenwidth = tonumber(match(E.resolution, "(%d+)x+%d"))
 E.isMacClient = IsMacClient()
+E.TexturePath = [[Interface\AddOns\ElvUI\Media\Textures\]]
 E.InfoColor = "|cfffe7b2c"
 
 -- oUF Defines
@@ -193,7 +195,7 @@ function E:ColorizedName(name, arg2)
 end
 
 function E:Print(...)
-	(_G[E.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", E:ColorizedName("ElvUI", true), ...)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
+	(E.db and _G[E.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", E:ColorizedName("ElvUI", true), ...)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
 end
 
 function E:GrabColorPickerValues(r, g, b)
@@ -328,9 +330,19 @@ function E:UpdateMedia()
 		E.db.general.valuecolor.b = value.b
 	end
 
+	-- Chat Tab Selector Color
+	local selectorColor = E.db.chat.tabSelectorColor
+	if E:CheckClassColor(selectorColor.r, selectorColor.g, selectorColor.b) then
+		selectorColor = E:ClassColor(E.myclass, true)
+		E.db.chat.tabSelectorColor.r = selectorColor.r
+		E.db.chat.tabSelectorColor.g = selectorColor.g
+		E.db.chat.tabSelectorColor.b = selectorColor.b
+	end
+
 	E.media.hexvaluecolor = E:RGBToHex(value.r, value.g, value.b)
 	E.media.rgbvaluecolor = {value.r, value.g, value.b}
 
+	--  Chat Panel Background Texture
 	if LeftChatPanel and LeftChatPanel.tex and RightChatPanel and RightChatPanel.tex then
 		LeftChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameLeft)
 		RightChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameRight)
@@ -472,12 +484,23 @@ function E:UpdateStatusBars()
 	end
 end
 
-function E:IncompatibleAddOn(addon, module)
-	E.PopupDialogs.INCOMPATIBLE_ADDON.button1 = addon
-	E.PopupDialogs.INCOMPATIBLE_ADDON.button2 = "ElvUI "..module
-	E.PopupDialogs.INCOMPATIBLE_ADDON.addon = addon
-	E.PopupDialogs.INCOMPATIBLE_ADDON.module = module
-	E:StaticPopup_Show("INCOMPATIBLE_ADDON", addon, module)
+do
+	local cancel = function(popup)
+		DisableAddOn(popup.addon)
+		ReloadUI()
+	end
+
+	function E:IncompatibleAddOn(addon, module, info)
+		local popup = E.PopupDialogs.INCOMPATIBLE_ADDON
+		popup.button2 = info.name or module
+		popup.button1 = addon
+		popup.module = module
+		popup.addon = addon
+		popup.accept = info.accept
+		popup.cancel = info.cancel or cancel
+
+		E:StaticPopup_Show("INCOMPATIBLE_ADDON", popup.button1, popup.button2)
+	end
 end
 
 function E:IsAddOnEnabled(addon)
@@ -487,56 +510,87 @@ function E:IsAddOnEnabled(addon)
 	end
 end
 
-function E:CheckIncompatible()
-	if E.global.ignoreIncompatible then return end
-
-	if E.private.actionbar.enable then
-		if E:IsAddOnEnabled("Bartender4") then
-			E:IncompatibleAddOn("Bartender4", "ActionBars")
-		elseif E:IsAddOnEnabled("Dominos") then
-			E:IncompatibleAddOn("Dominos", "ActionBars")
+function E:IsIncompatible(module, addons)
+	for _, addon in ipairs(addons) do
+		if E:IsAddOnEnabled(addon) then
+			E:IncompatibleAddOn(addon, module, addons.info)
+			return true
 		end
-	end
-
-	if E.private.chat.enable then
-		if E:IsAddOnEnabled("Prat-3.0") then
-			E:IncompatibleAddOn("Prat-3.0", "Chat")
-		elseif E:IsAddOnEnabled("Chatter") then
-			E:IncompatibleAddOn("Chatter", "Chat")
-		end
-	end
-
-	if E.private.nameplates.enable then
-		if E:IsAddOnEnabled("Aloft") then
-			E:IncompatibleAddOn("Aloft", "NamePlates")
-		elseif E:IsAddOnEnabled("Healers-Have-To-Die") then
-			E:IncompatibleAddOn("Healers-Have-To-Die", "NamePlates")
-		elseif E:IsAddOnEnabled("Kui_Nameplates") then
-			E:IncompatibleAddOn("Kui_Nameplates", "NamePlates")
-		elseif E:IsAddOnEnabled("TidyPlates") then
-			E:IncompatibleAddOn("TidyPlates", "NamePlates")
-		end
-	end
-
-	if E.private.tooltip.enable and E:IsAddOnEnabled("TipTac") then
-		E:IncompatibleAddOn("TipTac", "Tooltip")
 	end
 end
 
-function E:CopyTable(currentTable, defaultTable)
-	if type(currentTable) ~= "table" then currentTable = {} end
+do
+	local ADDONS = {
+		ActionBar = {
+			info = {
+				enabled = function() return E.private.actionbar.enable end,
+				accept = function() E.private.actionbar.enable = false ReloadUI() end,
+				name = "ElvUI ActionBars"
+			},
+			"Bartender4",
+			"Dominos"
+		},
+		Chat = {
+			info = {
+				enabled = function() return E.private.chat.enable end,
+				accept = function() E.private.chat.enable = false ReloadUI() end,
+				name = "ElvUI Chat"
+			},
+			"Prat-3.0",
+			"Chatter"
+		},
+		NamePlates = {
+			info = {
+				enabled = function() return E.private.nameplates.enable end,
+				accept = function() E.private.nameplates.enable = false ReloadUI() end,
+				name = "ElvUI NamePlates"
+			},
+			"TidyPlates",
+			"Healers-Have-To-Die",
+			"Kui_Nameplates",
+			"Aloft"
+		},
+		ToolTip = {
+			info = {
+				enabled = function() return E.private.tooltip.enable end,
+				accept = function() E.private.tooltip.enable = false ReloadUI() end,
+				name = "ElvUI ToolTip"
+			},
+			"TipTac"
+		}
+	}
 
-	if type(defaultTable) == "table" then
-		for option, value in pairs(defaultTable) do
-			if type(value) == "table" then
-				value = E:CopyTable(currentTable[option], value)
-			end
+	E.INCOMPATIBLE_ADDONS = ADDONS -- let addons have the ability to alter this list to trigger our popup if they want
 
-			currentTable[option] = value
+	function E:AddIncompatible(module, addonName)
+		if ADDONS[module] then
+			tinsert(ADDONS[module], addonName)
+		else
+			print(module, "is not in the incompatibility list.")
 		end
 	end
 
-	return currentTable
+	function E:CheckIncompatible()
+		if E.global.ignoreIncompatible then return end
+
+		for module, addons in pairs(ADDONS) do
+			if addons[1] and addons.info.enabled() and E:IsIncompatible(module, addons) then
+				break
+			end
+		end
+	end
+end
+
+function E:CopyTable(current, default)
+	if type(current) ~= "table" then current = {} end
+
+	if type(default) == "table" then
+		for option, value in pairs(default) do
+			current[option] = (type(value) == "table" and E:CopyTable(current[option], value)) or value
+		end
+	end
+
+	return current
 end
 
 function E:RemoveEmptySubTables(tbl)
@@ -1232,7 +1286,7 @@ function E:DBConversions()
 	end
 
 	--Heal Prediction is now a table instead of a bool
-	for _, unit in pairs({"player", "target", "focus", "pet", "arena", "party", "raid", "raid40", "raidpet"}) do
+	for _, unit in ipairs({"player", "target", "focus", "pet", "arena", "party", "raid", "raid40", "raidpet"}) do
 		if type(E.db.unitframe.units[unit].healPrediction) ~= "table" then
 			local enabled = E.db.unitframe.units[unit].healPrediction
 			E.db.unitframe.units[unit].healPrediction = {}
@@ -1416,6 +1470,10 @@ function E:Initialize()
 	if E.db.general.kittys then
 		E:CreateKittys()
 		E:Delay(5, E.Print, E, L["Type /hellokitty to revert to old settings."])
+	end
+
+	if GetCVarBool("scriptProfile") then
+		E:StaticPopup_Show("SCRIPT_PROFILE")
 	end
 
 	if E.db.general.loginmessage then
