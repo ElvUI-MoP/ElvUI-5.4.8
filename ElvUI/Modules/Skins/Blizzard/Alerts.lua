@@ -110,6 +110,8 @@ local function LoadSkin()
 
 	-- Dungeon / Scenario / Challenge Alerts
 	local function SkinRewards(frame)
+		if frame.isSkinned then return end
+
 		frame:SetTemplate()
 		frame:Size(24)
 		S:HandleFrameHighlight(frame, frame.backdrop)
@@ -118,6 +120,8 @@ local function LoadSkin()
 		frame.texture:SetTexCoord(unpack(E.TexCoords))
 
 		_G[frame:GetName().."Border"]:Hide()
+		
+		frame.isSkinned = true
 	end
 
 	for _, frame in pairs({DungeonCompletionAlertFrame1, ScenarioAlertFrame1, ChallengeModeAlertFrame1}) do
@@ -142,7 +146,7 @@ local function LoadSkin()
 
 		local reward = _G[frame:GetName().."Reward1"] or frame.reward1
 		SkinRewards(reward)
-		reward:Point("TOPLEFT", frame, 64, 8)
+		reward:Point("TOPLEFT", frame, 64, 7)
 		reward.SetPoint = E.noop
 
 		for i = 1, frame:GetNumRegions() do
@@ -166,18 +170,18 @@ local function LoadSkin()
 	ChallengeModeAlertFrame1.medalIcon:Point("RIGHT", -2, 0)
 	ChallengeModeAlertFrame1.medalIcon.SetPoint = E.noop
 
-	hooksecurefunc("DungeonCompletionAlertFrameReward_SetReward", function(frame)
-		if not frame.isSkinned then
-			SkinRewards(frame)
-			frame.isSkinned = true
-		end
+	hooksecurefunc("DungeonCompletionAlertFrameReward_SetReward", function(frame, index)
+		SkinRewards(frame)
+
+		SetPortraitToTexture(frame.texture, nil)
+		frame.texture:SetTexture(GetLFGCompletionRewardItem(index))
 	end)
 
-	hooksecurefunc("ChallengeModeAlertFrameReward_SetReward", function(frame)
-		if not frame.isSkinned then
-			SkinRewards(frame)
-			frame.isSkinned = true
-		end
+	hooksecurefunc("ChallengeModeAlertFrameReward_SetReward", function(frame, index)
+		SkinRewards(frame)
+
+		SetPortraitToTexture(frame.texture, nil)
+		frame.texture:SetTexture(select(3, GetChallengeModeCompletionReward(index)))
 	end)
 
 	-- Guild Challenge Alerts
