@@ -6,7 +6,7 @@ local min = math.min
 local hooksecurefunc = hooksecurefunc
 local GetScreenHeight = GetScreenHeight
 
-local hideRule = "[@arena1,exists][@arena2,exists][@arena3,exists][@arena4,exists][@arena5,exists][@boss1,exists][@boss2,exists][@boss3,exists][@boss4,exists]"
+local hideRule = "[@arena1,exists][@arena2,exists][@arena3,exists][@arena4,exists][@arena5,exists][@boss1,exists][@boss2,exists][@boss3,exists][@boss4,exists] hide;show"
 
 function B:SetObjectiveFrameAutoHide()
 	if E.db.general.watchFrameAutoHide then
