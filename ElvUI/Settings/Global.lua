@@ -175,7 +175,8 @@ G.unitframe = {
 				[2094] = true	-- Blind
 			},
 			longEnemySpells = {
-				[1725] = true	-- Distract
+				[1725] = true,	-- Distract
+				[114014] = true	-- Shuriken Toss
 			},
 			friendlySpells = {
 				[57934] = true	-- Tricks of the Trade

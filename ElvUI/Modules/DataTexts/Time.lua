@@ -32,6 +32,7 @@ local RAID_INFO_WORLD_BOSS = RAID_INFO_WORLD_BOSS
 
 local timeDisplayFormat, dateDisplayFormat = "", ""
 local lockoutInfoFormat = "%s%s %s |cffaaaaaa(%s, |cfff04000%s/%s|r|cffaaaaaa)"
+local lockoutInfoFormatClear = "%s%s %s |cffaaaaaa(%s, |cff66ff66%s/%s|r|cffaaaaaa)"
 local lockoutInfoFormatNoEnc = "%s%s %s |cffaaaaaa(%s)"
 local formatBattleGroundInfo = "%s: "
 local lockoutColorExtended, lockoutColorNormal = {r = 0.3, g = 1, b = 0.3}, {r = 0.8, g = 0.8, b = 0.8}
@@ -173,7 +174,7 @@ local function OnEnter(self)
 		end
 	end
 
-	local reset, maxPlayers, numEncounters, encounterProgress, lockoutColor
+	local reset, maxPlayers, numEncounters, encounterProgress, lockoutColor, cleared
 	if next(lockedInstances.raids) then
 		if DT.tooltip:NumLines() > 0 then
 			DT.tooltip:AddLine(" ")
@@ -189,7 +190,8 @@ local function OnEnter(self)
 
 			lockoutColor = extended and lockoutColorExtended or lockoutColorNormal
 			if (numEncounters and numEncounters > 0) and (encounterProgress and encounterProgress > 0) then
-				DT.tooltip:AddDoubleLine(format(lockoutInfoFormat, buttonImg, maxPlayers, difficultyLetter, name, encounterProgress, numEncounters), SecondsToTime(reset, false, nil, 3), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
+				cleared = numEncounters == encounterProgress and lockoutInfoFormatClear or lockoutInfoFormat
+				DT.tooltip:AddDoubleLine(format(cleared, buttonImg, maxPlayers, difficultyLetter, name, encounterProgress, numEncounters), SecondsToTime(reset, false, nil, 3), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
 			else
 				DT.tooltip:AddDoubleLine(format(lockoutInfoFormatNoEnc, buttonImg, maxPlayers, difficultyLetter, name), SecondsToTime(reset, false, nil, 3), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
 			end
@@ -211,7 +213,8 @@ local function OnEnter(self)
 
 			lockoutColor = extended and lockoutColorExtended or lockoutColorNormal
 			if (numEncounters and numEncounters > 0) and (encounterProgress and encounterProgress > 0) then
-				DT.tooltip:AddDoubleLine(format(lockoutInfoFormat, buttonImg, maxPlayers, difficultyLetter, name, encounterProgress, numEncounters), SecondsToTime(reset, false, nil, 3), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
+				cleared = numEncounters == encounterProgress and lockoutInfoFormatClear or lockoutInfoFormat
+				DT.tooltip:AddDoubleLine(format(cleared, buttonImg, maxPlayers, difficultyLetter, name, encounterProgress, numEncounters), SecondsToTime(reset, false, nil, 3), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
 			else
 				DT.tooltip:AddDoubleLine(format(lockoutInfoFormatNoEnc, buttonImg, maxPlayers, difficultyLetter, name), SecondsToTime(reset, false, nil, 3), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
 			end
