@@ -203,27 +203,11 @@ local function LoadSkin()
 
 	S:HandleButton(RolePollPopupAcceptButton)
 
-	local roleCheckIcons = {
-		"RolePollPopupRoleButtonTank",
-		"RolePollPopupRoleButtonHealer",
-		"RolePollPopupRoleButtonDPS"
-	}
+	S:HandleRoleButton(RolePollPopupRoleButtonTank, 60)
+	S:HandleRoleButton(RolePollPopupRoleButtonHealer, 60)
+	S:HandleRoleButton(RolePollPopupRoleButtonDPS, 60)
 
-	for i = 1, #roleCheckIcons do
-		_G[roleCheckIcons[i]]:StripTextures()
-		_G[roleCheckIcons[i]]:CreateBackdrop()
-		_G[roleCheckIcons[i]].backdrop:Point("TOPLEFT", 7, -7)
-		_G[roleCheckIcons[i]].backdrop:Point("BOTTOMRIGHT", -7, 7)
-
-		_G[roleCheckIcons[i]]:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		_G[roleCheckIcons[i]]:GetNormalTexture():SetInside(_G[roleCheckIcons[i]].backdrop)
-	end
-
-	RolePollPopupRoleButtonTank:Point("TOPLEFT", 32, -35)
-
-	RolePollPopupRoleButtonTank:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	RolePollPopupRoleButtonHealer:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	RolePollPopupRoleButtonDPS:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	RolePollPopupRoleButtonTank:Point("TOPLEFT", 45, -45)
 
 	-- Report Player
 	ReportCheatingDialog:StripTextures()

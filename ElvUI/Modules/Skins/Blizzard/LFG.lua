@@ -5,7 +5,57 @@ local _G = _G
 local pairs, unpack, select = pairs, unpack, select
 local find = string.find
 
-local function SkinLFGRewards(button, link, index)
+local function getLFGDungeonRewardLinkFix(dungeonID, rewardIndex)
+	local _, link = GetLFGDungeonRewardLink(dungeonID, rewardIndex)
+
+	if not link then
+		E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+		E.ScanTooltip:SetLFGDungeonReward(dungeonID, rewardIndex)
+		_, link = E.ScanTooltip:GetItem()
+		E.ScanTooltip:Hide()
+	end
+
+	return link
+end
+
+local function SkinReadyDialogRewards(button, dungeonID)
+	if not button.isSkinned then
+		button:DisableDrawLayer("OVERLAY")
+		button:SetTemplate()
+		button:Size(26)
+		S:HandleFrameHighlight(button)
+
+		button.texture:SetInside()
+		button.texture:SetTexCoord(unpack(E.TexCoords))
+
+		button.isSkinned = true
+	end
+
+	local texturePath
+	if button.rewardType == "misc" then
+		texturePath = "Interface\\Icons\\inv_misc_coin_02"
+		button:SetBackdropBorderColor(unpack(E.media.bordercolor))
+	elseif dungeonID and button.rewardType == "shortage" then
+		texturePath = select(2, GetLFGDungeonShortageRewardInfo(dungeonID, button.rewardArg, button.rewardID))
+		local color = ITEM_QUALITY_COLORS[7]
+		button:SetBackdropBorderColor(color.r, color.g, color.b)
+	elseif dungeonID and button.rewardType == "reward" then
+		texturePath = select(2, GetLFGDungeonRewardInfo(dungeonID, button.rewardID))
+		local link = getLFGDungeonRewardLinkFix(dungeonID, button.rewardID)
+		if link then
+			button:SetBackdropBorderColor(GetItemQualityColor(select(3, GetItemInfo(link))))
+		else
+			button:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		end
+	end
+
+	if texturePath then
+		SetPortraitToTexture(button.texture, nil)
+		button.texture:SetTexture(texturePath)
+	end
+end
+
+local function SkinLFGRewards(button, dungeonID, index)
 	if not button then return end
 
 	local buttonName = button:GetName()
@@ -49,12 +99,13 @@ local function SkinLFGRewards(button, link, index)
 
 	icon:SetTexture(texture)
 
-	if button.shortageBorder and button.shortageBorder:IsShown() then
+	if button.shortageIndex then
 		local color = ITEM_QUALITY_COLORS[7]
 		button:SetBackdropBorderColor(color.r, color.g, color.b)
 		button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 		name:SetTextColor(color.r, color.g, color.b)
 	else
+		local link = getLFGDungeonRewardLinkFix(dungeonID, index)
 		if link then
 			local quality = select(3, GetItemInfo(link))
 			if quality then
@@ -72,45 +123,6 @@ local function SkinLFGRewards(button, link, index)
 			button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			name:SetTextColor(1, 1, 1)
 		end
-	end
-end
-
-local function SkinRoleButton(btn)
-	btn:StripTextures()
-	btn:CreateBackdrop()
-	btn.backdrop:Point("TOPLEFT", 3, -3)
-	btn.backdrop:Point("BOTTOMRIGHT", -3, 3)
-
-	local checkbox = btn.checkButton or btn:GetChildren()
-	S:HandleCheckBox(checkbox)
-	checkbox:SetFrameLevel(checkbox:GetFrameLevel() + 2)
-
-	local roleTexture
-	local btnName = btn:GetName()
-	if find(btnName, "Tank") then
-		roleTexture = "Interface\\Icons\\Ability_Defend"
-	elseif find(btnName, "DPS") then
-		roleTexture = "Interface\\Icons\\INV_Knife_1H_Common_B_01"
-	elseif find(btnName, "Healer") then
-		roleTexture = "Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH"
-	elseif find(btnName, "Leader") then
-		roleTexture = "Interface\\Icons\\Ability_Vehicle_LaunchPlayer"
-	end
-
-	local icon = btn:GetNormalTexture()
-	icon:SetTexture(roleTexture)
-	icon:SetTexCoord(unpack(E.TexCoords))
-	icon:SetInside(btn.backdrop)
-
-	if btn.incentiveIcon then
-		btn.incentiveIcon:StripTextures()
-		btn.incentiveIcon:SetTemplate()
-		btn.incentiveIcon:Size(20)
-		btn.incentiveIcon:Point("BOTTOMRIGHT", 9, 36)
-		btn.incentiveIcon:SetFrameLevel(btn.incentiveIcon:GetFrameLevel() + 2)
-
-		btn.incentiveIcon.texture:SetTexCoord(unpack(E.TexCoords))
-		btn.incentiveIcon.texture:SetInside(btn.incentiveIcon)
 	end
 end
 
@@ -168,19 +180,6 @@ local function SkinSpecificList(button)
 	end)
 
 	button.isSkinned = true
-end
-
-local function getLFGDungeonRewardLinkFix(dungeonID, rewardIndex)
-	local _, link = GetLFGDungeonRewardLink(dungeonID, rewardIndex)
-
-	if not link then
-		E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		E.ScanTooltip:SetLFGDungeonReward(dungeonID, rewardIndex)
-		_, link = E.ScanTooltip:GetItem()
-		E.ScanTooltip:Hide()
-	end
-
-	return link
 end
 
 local function SkinLFG()
@@ -265,10 +264,7 @@ local function SkinLFG()
 		if type(dungeonID) ~= "number" then return end
 
 		for i = 1, LFD_MAX_REWARDS do
-			local button = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i]
-			local link = getLFGDungeonRewardLinkFix(dungeonID, i)
-
-			SkinLFGRewards(button, link, i)
+			SkinLFGRewards(_G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i], dungeonID, i)
 		end
 	end)
 
@@ -307,10 +303,7 @@ local function SkinLFG()
 		if type(dungeonID) ~= "number" then return end
 
 		for i = 1, LFD_MAX_REWARDS do
-			local button = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i]
-			local link = getLFGDungeonRewardLinkFix(dungeonID, i)
-
-			SkinLFGRewards(button, link, i)
+			SkinLFGRewards(_G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i], dungeonID, i)
 		end
 	end)
 
@@ -395,49 +388,12 @@ local function SkinLFG()
 
 	S:HandleCloseButton(LFGDungeonReadyDialogCloseButton)
 
-	local function SkinReadyDialogRewards(button)
-		if button.isSkinned then return end
-
-		button:DisableDrawLayer("OVERLAY")
-		button:SetTemplate()
-		button:Size(26)
-		S:HandleFrameHighlight(button)
-
-		button.texture:SetInside()
-		button.texture:SetTexCoord(unpack(E.TexCoords))
-
-		button.isSkinned = true
-	end
-
 	hooksecurefunc("LFGDungeonReadyDialogReward_SetMisc", function(button)
 		SkinReadyDialogRewards(button)
-		SetPortraitToTexture(button.texture, nil)
-		button.texture:SetTexture("Interface\\Icons\\inv_misc_coin_02")
 	end)
 
-	hooksecurefunc("LFGDungeonReadyDialogReward_SetReward", function(button, dungeonID, rewardIndex, rewardType, rewardArg)
-		SkinReadyDialogRewards(button)
-
-		local texturePath
-		if rewardType == "reward" then
-			local link = getLFGDungeonRewardLinkFix(dungeonID, rewardIndex)
-			if link then
-				local quality = select(3, GetItemInfo(link))
-				button:SetBackdropBorderColor(GetItemQualityColor(quality))
-			else
-				button:SetBackdropBorderColor(unpack(E.media.bordercolor))
-			end
-			texturePath = select(2, GetLFGDungeonRewardInfo(dungeonID, rewardIndex))
-		elseif rewardType == "shortage" then
-			local color = ITEM_QUALITY_COLORS[7]
-			button:SetBackdropBorderColor(color.r, color.g, color.b)
-			texturePath = select(2, GetLFGDungeonShortageRewardInfo(dungeonID, rewardArg, rewardIndex))
-		end
-
-		if texturePath then
-			SetPortraitToTexture(button.texture, nil)
-			button.texture:SetTexture(texturePath)
-		end
+	hooksecurefunc("LFGDungeonReadyDialogReward_SetReward", function(button, dungeonID)
+		SkinReadyDialogRewards(button, dungeonID)
 	end)
 
 	hooksecurefunc("LFGDungeonReadyDialog_UpdateRewards", function()
@@ -460,7 +416,7 @@ local function SkinLFG()
 	LFGDungeonReadyDialogRoleIconTexture:SetParent(LFGDungeonReadyDialogRoleIcon.backdrop)
 
 	hooksecurefunc("LFGDungeonReadyPopup_Update", function()
-		local _, _, _, subtypeID, _, _, role = GetLFGProposal()
+		local _, _, _, _, _, _, role = GetLFGProposal()
 
 		if role == "DAMAGER" then
 			LFGDungeonReadyDialogRoleIconTexture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
@@ -531,7 +487,7 @@ local function SkinLFG()
 	}
 
 	for _, btn in pairs(roleButtons) do
-		SkinRoleButton(btn)
+		S:HandleRoleButton(btn)
 	end
 
 	hooksecurefunc("LFG_SetRoleIconIncentive", function(roleButton, incentiveIndex)
@@ -656,8 +612,10 @@ local function SkinLFR()
 	LFRQueueFrameSpecificListScrollFrameScrollBar:Point("BOTTOMRIGHT", LFRQueueFrameSpecificListScrollFrame, 0, 18)
 
 	for _, btn in pairs({LFRQueueFrameRoleButtonTank, LFRQueueFrameRoleButtonDPS, LFRQueueFrameRoleButtonHealer}) do
-		SkinRoleButton(btn)
+		S:HandleRoleButton(btn)
 	end
+
+	LFRQueueFrameRoleButtonTank:Point("TOPLEFT", 58, -40)
 
 	for i = 1, NUM_LFR_CHOICE_BUTTONS do
 		SkinSpecificList(_G["LFRQueueFrameSpecificListButton"..i])

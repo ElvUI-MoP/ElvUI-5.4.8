@@ -16,7 +16,7 @@ local function LoadSkin()
 
 	ScriptErrorsFrameScrollFrameText:FontTemplate(nil, 13)
 
-	ScriptErrorsFrameScrollFrame:CreateBackdrop("Default")
+	ScriptErrorsFrameScrollFrame:CreateBackdrop()
 	ScriptErrorsFrameScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -3)
 	ScriptErrorsFrameScrollFrame:SetFrameLevel(ScriptErrorsFrameScrollFrame:GetFrameLevel() + 2)
 

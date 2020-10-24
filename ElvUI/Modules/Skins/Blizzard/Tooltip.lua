@@ -78,7 +78,9 @@ local function LoadSkin2()
 		frame.BorderBottomRight:SetTexture()
 		frame.BorderBottomLeft:SetTexture()
 
-		frame:SetTemplate("Transparent", nil, true)
+		TT:SecureHookScript(frame, "OnShow", "SetStyle")
+		TT:SecureHookScript(frame, "OnSizeChanged", "CheckBackdropColor")
+		TT:SecureHookScript(frame, "OnUpdate", "CheckBackdropColor")
 
 		if frame.Delimiter1 then
 			frame.Delimiter1:SetTexture()
@@ -194,6 +196,34 @@ local function LoadSkin2()
 
 		local petType = C_PetBattles_GetPetType(PetBattlePrimaryUnitTooltip.petOwner, PetBattlePrimaryUnitTooltip.petIndex)
 		PetBattlePrimaryUnitTooltip.PetType.Icon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
+	end)
+
+	hooksecurefunc("PetBattleAbilityButton_OnEnter", function(self)
+		GameTooltip_Hide()
+
+		local anchorPoint, anchorTo, relativePoint, xOffset, yOffset
+		if not E:HasMoverBeenMoved("TooltipMover") then
+			if ElvUI_ContainerFrame and ElvUI_ContainerFrame:IsShown() then
+				anchorPoint, anchorTo, relativePoint, xOffset, yOffset = "BOTTOMRIGHT", ElvUI_ContainerFrame, "TOPRIGHT", 0, 18
+			elseif RightChatPanel:GetAlpha() == 1 and RightChatPanel:IsShown() then
+				anchorPoint, anchorTo, relativePoint, xOffset, yOffset = "BOTTOMRIGHT", RightChatPanel, "TOPRIGHT", 0, 18
+			else
+				anchorPoint, anchorTo, relativePoint, xOffset, yOffset = "BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 18
+			end
+		else
+			local point = E:GetScreenQuadrant(TooltipMover)
+			if point == "TOPLEFT" then
+				anchorPoint, anchorTo, relativePoint, xOffset, yOffset = "TOPLEFT", TooltipMover, "BOTTOMLEFT", 1, -4
+			elseif point == "TOPRIGHT" then
+				anchorPoint, anchorTo, relativePoint, xOffset, yOffset = "TOPRIGHT", TooltipMover, "BOTTOMRIGHT", -1, -4
+			elseif point == "BOTTOMLEFT" or point == "LEFT" then
+				anchorPoint, anchorTo, relativePoint, xOffset, yOffset = "BOTTOMLEFT", TooltipMover, "TOPLEFT", 1, 18
+			else
+				anchorPoint, anchorTo, relativePoint, xOffset, yOffset = "BOTTOMRIGHT", TooltipMover, "TOPRIGHT", -1, 18
+			end
+		end
+
+		PetBattleAbilityTooltip_Show(anchorPoint, anchorTo, relativePoint, xOffset, yOffset)
 	end)
 end
 

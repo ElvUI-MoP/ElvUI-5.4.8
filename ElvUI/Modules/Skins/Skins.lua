@@ -220,7 +220,7 @@ function S:HandleTab(tab)
 	end
 
 	tab.backdrop = CreateFrame("Frame", nil, tab)
-	tab.backdrop:SetTemplate("Default")
+	tab.backdrop:SetTemplate()
 	tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
 	tab.backdrop:Point("TOPLEFT", 10, E.PixelMode and -1 or -3)
 	tab.backdrop:Point("BOTTOMRIGHT", -10, 3)
@@ -288,7 +288,7 @@ function S:HandleNextPrevButton(btn, arrowDir, color, noBackdrop, stipTexts)
 end
 
 function S:HandleRotateButton(btn)
-	btn:SetTemplate("Default")
+	btn:SetTemplate()
 	btn:Size(btn:GetWidth() - 14, btn:GetHeight() - 14)
 
 	btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
@@ -314,7 +314,7 @@ function S:HandleEditBox(frame)
 			frame[Region]:SetAlpha(0)
 		end
 	end
-	frame:CreateBackdrop("Default")
+	frame:CreateBackdrop()
 	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
 
 	if EditBoxName then
@@ -381,10 +381,10 @@ function S:HandleCheckBox(frame, noBackdrop, noReplaceTextures, forceSaturation)
 	frame.forceSaturation = forceSaturation
 
 	if noBackdrop then
-		frame:SetTemplate("Default")
+		frame:SetTemplate()
 		frame:Size(16)
 	else
-		frame:CreateBackdrop("Default")
+		frame:CreateBackdrop()
 		frame.backdrop:SetInside(nil, 4, 4)
 	end
 
@@ -527,7 +527,7 @@ function S:HandleIcon(icon, parent)
 	parent = parent or icon:GetParent()
 
 	icon:SetTexCoord(unpack(E.TexCoords))
-	parent:CreateBackdrop("Default")
+	parent:CreateBackdrop()
 	icon:SetParent(parent.backdrop)
 	parent.backdrop:SetOutside(icon)
 end
@@ -617,7 +617,7 @@ function S:HandleSliderFrame(frame)
 
 	frame:StripTextures()
 	if not frame.backdrop then
-		frame:CreateBackdrop("Default")
+		frame:CreateBackdrop()
 		frame.backdrop:SetAllPoints()
 	end
 
@@ -704,11 +704,83 @@ function S:HandleIconSelectionFrame(frame, numIcons, buttonNameTemplate, frameNa
 		local button = _G[buttonNameTemplate..i]
 		local icon = _G[button:GetName().."Icon"]
 		button:StripTextures()
-		button:SetTemplate("Default")
+		button:SetTemplate()
 		button:StyleButton(nil, true)
 
 		icon:SetInside()
 		icon:SetTexCoord(unpack(E.TexCoords))
+	end
+end
+
+function S:HandleRoleButton(btn, size, role)
+	btn:StripTextures()
+	btn:CreateBackdrop()
+	S:HandleFrameHighlight(btn, btn.backdrop)
+
+	if size then
+		btn:Size(size)
+	end
+
+	local tankTex = [[Interface\Icons\Ability_Defend]]
+	local healerTex = [[Interface\Icons\SPELL_NATURE_HEALINGTOUCH]]
+	local damagerTex = [[Interface\Icons\INV_Knife_1H_Common_B_01]]
+	local leaderTex = [[Interface\Icons\Ability_Vehicle_LaunchPlayer]]
+
+	local roleTexture
+	if role then
+		if role == "Tank" then
+			roleTexture = tankTex
+		elseif role == "Healer" then
+			roleTexture = healerTex
+		elseif role == "Damager" then
+			roleTexture = damagerTex
+		elseif role == "Leader" then
+			roleTexture = leaderTex
+		end
+	else
+		local btnName = btn:GetName()
+		if btnName then
+			if strfind(btnName, "Tank") then
+				roleTexture = tankTex
+			elseif strfind(btnName, "Healer") then
+				roleTexture = healerTex
+			elseif strfind(btnName, "DPS") or strfind(btnName, "Damager") then
+				roleTexture = damagerTex
+			elseif strfind(btnName, "Leader") then
+				roleTexture = leaderTex
+			end
+
+			local roleText = _G[btnName.."Text"]
+			if roleText then
+				roleText:ClearAllPoints()
+				roleText:Point("BOTTOM", btn, "TOP", 0, 3)
+			end
+		end
+	end
+
+	local icon = btn:GetNormalTexture()
+	icon:SetTexture(roleTexture)
+	icon:SetTexCoord(unpack(E.TexCoords))
+	icon:SetInside(btn.backdrop)
+
+	local checkbox = btn.checkButton or btn:GetChildren()
+	if checkbox then
+		S:HandleCheckBox(checkbox)
+		checkbox:SetFrameLevel(checkbox:GetFrameLevel() + 2)
+		checkbox:ClearAllPoints()
+		checkbox:Point("BOTTOMLEFT", btn, -10, -10)
+	end
+
+	if btn.incentiveIcon then
+		btn.incentiveIcon:StripTextures()
+		btn.incentiveIcon:SetTemplate()
+		btn.incentiveIcon:Size(20)
+		btn.incentiveIcon:ClearAllPoints()
+		btn.incentiveIcon:Point("TOPRIGHT", 10, 10)
+		btn.incentiveIcon:SetFrameLevel(btn.incentiveIcon:GetFrameLevel() + 2)
+
+		btn.incentiveIcon.texture:SetTexCoord(unpack(E.TexCoords))
+		btn.incentiveIcon.texture:SetInside(btn.incentiveIcon)
 	end
 end
 

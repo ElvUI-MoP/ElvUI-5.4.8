@@ -58,7 +58,7 @@ local function LoadSkin()
 	GuildBankTransactionsScrollFrameScrollBar:Point("TOPLEFT", GuildBankTransactionsScrollFrame, "TOPRIGHT", -2, 0)
 
 	GuildBankFrame.inset = CreateFrame("Frame", nil, GuildBankFrame)
-	GuildBankFrame.inset:SetTemplate("Default")
+	GuildBankFrame.inset:SetTemplate()
 	GuildBankFrame.inset:Point("TOPLEFT", 25, -65)
 	GuildBankFrame.inset:Point("BOTTOMRIGHT", -25, 47)
 

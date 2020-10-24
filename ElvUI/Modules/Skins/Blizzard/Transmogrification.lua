@@ -89,11 +89,9 @@ local function LoadSkin()
 	S:HandleItemButton(TransmogrifyConfirmationPopupItemFrame1, true)
 	S:HandleItemButton(TransmogrifyConfirmationPopupItemFrame2, true)
 
-	hooksecurefunc("TransmogrifyConfirmationPopup_SetItem", function(itemFrame, itemLink)
-		local _, _, itemQuality = GetItemInfo(itemLink)
-		local r, g, b = GetItemQualityColor(itemQuality or 1)
-
-		itemFrame.backdrop:SetBackdropBorderColor(r, g, b)
+	hooksecurefunc("TransmogrifyConfirmationPopup_SetItem", function(frame, link)
+		local r, g, b = GetItemQualityColor(select(3, GetItemInfo(link)) or 1)
+		frame.backdrop:SetBackdropBorderColor(r, g, b)
 	end)
 
 	-- Control Frame

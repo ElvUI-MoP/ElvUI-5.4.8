@@ -228,7 +228,7 @@ local function LoadSkin()
 	AuctionProgressFrameCancelButton:Point("LEFT", AuctionProgressBar, "RIGHT", 8, 0)
 
 	AuctionProgressBarIcon.backdrop = CreateFrame("Frame", nil, AuctionProgressBarIcon:GetParent())
-	AuctionProgressBarIcon.backdrop:SetTemplate("Default")
+	AuctionProgressBarIcon.backdrop:SetTemplate()
 	AuctionProgressBarIcon.backdrop:SetOutside(AuctionProgressBarIcon)
 
 	AuctionProgressBarIcon:SetTexCoord(unpack(E.TexCoords))
@@ -238,7 +238,7 @@ local function LoadSkin()
 	AuctionProgressBarText:SetPoint("CENTER")
 
 	AuctionProgressBar:StripTextures()
-	AuctionProgressBar:CreateBackdrop("Default")
+	AuctionProgressBar:CreateBackdrop()
 	AuctionProgressBar:SetStatusBarTexture(E.media.normTex)
 	AuctionProgressBar:SetStatusBarColor(1, 1, 0)
 

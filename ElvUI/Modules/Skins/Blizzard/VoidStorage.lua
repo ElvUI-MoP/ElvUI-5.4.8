@@ -111,30 +111,20 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("VoidStorage_ItemsUpdate", function(doDeposit, doContents)
-		local button, itemID
 		if doDeposit then
 			for i = 1, 9 do
-				button = _G["VoidStorageDepositButton"..i]
-				itemID = GetVoidTransferDepositInfo(i)
-
-				VoidQualityColors(button, itemID)
+				VoidQualityColors(_G["VoidStorageDepositButton"..i], GetVoidTransferDepositInfo(i))
 			end
 		end
 
 		if doContents then
 			for i = 1, 9 do
-				button = _G["VoidStorageWithdrawButton"..i]
-				itemID = GetVoidTransferWithdrawalInfo(i)
-
-				VoidQualityColors(button, itemID)
+				VoidQualityColors(_G["VoidStorageWithdrawButton"..i], GetVoidTransferWithdrawalInfo(i))
 			end
 
 			E:Delay(0.05, function()
 				for i = 1, 80 do
-					button = _G["VoidStorageStorageButton"..i]
-					itemID = GetVoidItemInfo(i)
-
-					VoidQualityColors(button, itemID)
+					VoidQualityColors(_G["VoidStorageStorageButton"..i], GetVoidItemInfo(i))
 				end
 			end)
 		end

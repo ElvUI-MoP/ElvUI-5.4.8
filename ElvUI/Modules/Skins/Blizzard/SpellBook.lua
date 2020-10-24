@@ -2,7 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local select, unpack = select, unpack
+local pairs, select, unpack = pairs, select, unpack
 
 local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
@@ -20,14 +20,14 @@ local function LoadSkin()
 	SpellBookPageNavigationFrame:StripTextures(true)
 
 	SpellBookPageText:SetTextColor(1, 1, 1)
-	SpellBookPageText:Point("BOTTOMRIGHT", SpellBookFrame, "BOTTOMRIGHT", -90, 15)
+	SpellBookPageText:Point("BOTTOMRIGHT", SpellBookFrame, -90, 15)
 
 	S:HandleNextPrevButton(SpellBookPrevPageButton)
-	SpellBookPrevPageButton:Point("BOTTOMRIGHT", SpellBookFrame, "BOTTOMRIGHT", -45, 10)
+	SpellBookPrevPageButton:Point("BOTTOMRIGHT", SpellBookFrame, -45, 10)
 	SpellBookPrevPageButton:Size(24)
 
 	S:HandleNextPrevButton(SpellBookNextPageButton)
-	SpellBookNextPageButton:Point("BOTTOMRIGHT", SpellBookPageNavigationFrame, "BOTTOMRIGHT", -10, 10)
+	SpellBookNextPageButton:Point("BOTTOMRIGHT", SpellBookPageNavigationFrame, -10, 10)
 	SpellBookNextPageButton:Size(24)
 
 	SpellBookFrameTutorialButton:Hide()
@@ -43,8 +43,8 @@ local function LoadSkin()
 
 		for j = 1, button:GetNumRegions() do
 			local region = select(j, button:GetRegions())
-			if region:GetObjectType() == "Texture" then
-				if region:GetTexture() ~= "Interface\\Buttons\\ActionBarFlyoutButton" then
+			if region.IsObjectType and region:IsObjectType("Texture") then
+				if region:GetTexture() ~= [[Interface\Buttons\ActionBarFlyoutButton]] then
 					region:SetTexture(nil)
 				end
 			end
@@ -63,7 +63,7 @@ local function LoadSkin()
 
 		highlight:SetAllPoints()
 		hooksecurefunc(highlight, "SetTexture", function(self, texture)
-			if texture == "Interface\\Buttons\\ButtonHilight-Square" or texture == "Interface\\Buttons\\UI-PassiveHighlight" then
+			if texture == [[Interface\Buttons\ButtonHilight-Square]] or texture == [[Interface\Buttons\UI-PassiveHighlight]] then
 				self:SetTexture(1, 1, 1, 0.3)
 			end
 		end)
@@ -71,13 +71,12 @@ local function LoadSkin()
 		E:RegisterCooldown(cooldown)
 
 		if i == 1 then
-			button:Point("TOPLEFT", SpellBookSpellIconsFrame, "TOPLEFT", 15, -75)
+			button:Point("TOPLEFT", SpellBookSpellIconsFrame, 15, -75)
 		elseif i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 then
-			button:Point("TOPLEFT", _G["SpellButton"..i - 1], "TOPLEFT", 225, 0)
+			button:Point("TOPLEFT", _G["SpellButton"..i - 1], 225, 0)
 		elseif i == 3 or i == 5 or i == 7 or i == 9 or i == 11 then
 			button:Point("TOPLEFT", _G["SpellButton"..i - 2], "BOTTOMLEFT", 0, -27)
 		end
-
 	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function(self)
@@ -107,15 +106,15 @@ local function LoadSkin()
 	-- Skill Line Tabs
 	for i = 1, MAX_SKILLLINE_TABS do
 		local tab = _G["SpellBookSkillLineTab"..i]
-		local flash = _G["SpellBookSkillLineTab"..i.."Flash"]
 
 		tab:StripTextures()
 		tab:SetTemplate()
 		tab:StyleButton(nil, true)
 		tab.pushed = true
 
-		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		tab:GetNormalTexture():SetInside()
+		local normal = tab:GetNormalTexture()
+		normal:SetTexCoord(unpack(E.TexCoords))
+		normal:SetInside()
 
 		if i == 1 then
 			tab:Point("TOPLEFT", SpellBookSideTabsFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -40)
@@ -129,7 +128,7 @@ local function LoadSkin()
 			if texPath ~= nil then self:SetHighlightTexture(nil) end
 		end)
 
-		flash:Kill()
+		_G["SpellBookSkillLineTab"..i.."Flash"]:Kill()
 	end
 
 	-- Bottom Tabs
@@ -205,7 +204,7 @@ local function LoadSkin()
 				button.checked:SetAllPoints()
 				button.highlightTexture:SetAllPoints()
 				hooksecurefunc(button.highlightTexture, "SetTexture", function(self, texture)
-					if texture == "Interface\\Buttons\\ButtonHilight-Square" or texture == "Interface\\Buttons\\UI-PassiveHighlight" then
+					if texture == [[Interface\Buttons\ButtonHilight-Square]] or texture == [[Interface\Buttons\UI-PassiveHighlight]] then
 						self:SetTexture(1, 1, 1, 0.3)
 					end
 				end)

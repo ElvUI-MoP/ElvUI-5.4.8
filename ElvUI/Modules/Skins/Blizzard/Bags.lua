@@ -2,7 +2,8 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local unpack = unpack
+local select, tonumber, unpack = select, tonumber, unpack
+local match = string.match
 
 local CreateFrame = CreateFrame
 local GetContainerItemLink = GetContainerItemLink
@@ -123,6 +124,20 @@ local function LoadSkin()
 		end
 	end
 
+	local function getQuality(link)
+		local isBattlePet = match(link, "battlepet:(%d+)")
+		local quality
+
+		if isBattlePet then
+			local petQuality = select(4, match(link, "(%l+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)"))
+			quality = tonumber(petQuality)
+		else
+			quality = select(3, GetItemInfo(link))
+		end
+
+		return quality
+	end
+
 	hooksecurefunc("ContainerFrame_Update", function(frame)
 		local id = frame:GetID()
 		local _, bagType = GetContainerNumFreeSlots(id)
@@ -157,7 +172,7 @@ local function LoadSkin()
 				item.ignoreBorderColors = true
 			elseif link then
 				local isQuestItem, questId, isActive = GetContainerItemQuestInfo(id, item:GetID())
-				local _, _, quality = GetItemInfo(link)
+				local quality = getQuality(link)
 
 				if questId and not isActive then
 					item:SetBackdropBorderColor(unpack(QuestColors.questStarter))
@@ -282,7 +297,7 @@ local function LoadSkin()
 
 			if link then
 				isQuestItem, questId, isActive = GetContainerItemQuestInfo(BANK_CONTAINER, id)
-				quality = select(3, GetItemInfo(link))
+				quality = getQuality(link)
 
 				if questId and not isActive then
 					button:SetBackdropBorderColor(unpack(QuestColors.questStarter))

@@ -2,9 +2,8 @@ local E, _, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local ipairs, select = ipairs, select
-local format = format
-local strmatch = strmatch
+local ipairs, select, unpack = ipairs, select, unpack
+local format, strmatch = format, strmatch
 
 local hooksecurefunc = hooksecurefunc
 
@@ -317,8 +316,8 @@ function S:Ace3_RegisterAsWidget(widget)
 		editbox:SetTemplate()
 		editbox:Height(15)
 		editbox:Point("TOP", frame, "BOTTOM", 0, -1)
-		editbox:HookScript("OnEnter", function(box) box:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor)) end)
-		editbox:HookScript("OnLeave", function(box) box:SetBackdropBorderColor(unpack(E.media.bordercolor)) end)
+		editbox:HookScript("OnEnter", S.SetModifiedBackdrop)
+		editbox:HookScript("OnLeave", S.SetOriginalBackdrop)
 
 		lowtext:Point("TOPLEFT", frame, "BOTTOMLEFT", 2, -2)
 		hightext:Point("TOPRIGHT", frame, "BOTTOMRIGHT", -2, -2)

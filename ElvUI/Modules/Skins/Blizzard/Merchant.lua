@@ -79,9 +79,15 @@ local function LoadSkin()
 				token:CreateBackdrop()
 				token.backdrop:SetOutside(token.icon)
 
+				if i ~= 1 then
+					token:Point("RIGHT", _G["MerchantToken"..i - 1], "LEFT", -6, 0)
+				else
+					token:Point("BOTTOMRIGHT", -9, 8)
+				end
+
 				token.icon:Size(16)
 				token.icon:SetTexCoord(unpack(E.TexCoords))
-				token.icon:Point("LEFT", token.count, "RIGHT", 2, 0)
+				token.icon:Point("LEFT", token.count, "RIGHT", 3, 0)
 
 				token.isSkinned = true
 			end
@@ -159,9 +165,9 @@ local function LoadSkin()
 				_, _, price, _, _, _, extendedCost = GetMerchantItemInfo(index)
 
 				currency:ClearAllPoints()
-				if extendedCost and price <= 0 then
+				if extendedCost and (price and price <= 0) then
 					currency:Point("BOTTOMLEFT", _G["MerchantItem"..i.."NameFrame"], 2, 34)
-				elseif extendedCost and price > 0 then
+				elseif extendedCost and (price and price > 0) then
 					currency:Point("LEFT", _G["MerchantItem"..i.."MoneyFrame"], "RIGHT", -12, 0)
 				end
 

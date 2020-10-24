@@ -228,14 +228,14 @@ local function OnEnter(self)
 		tinsert(worldbossLockoutList, {name, reset})
 	end
 	tsort(worldbossLockoutList, sortFunc)
-	for i = 1,#worldbossLockoutList do
+	for i = 1, #worldbossLockoutList do
 		name, reset = unpack(worldbossLockoutList[i])
 		if reset then
 			if not addedLine then
 				if DT.tooltip:NumLines() > 0 then
 					DT.tooltip:AddLine(" ")
 				end
-				DT.tooltip:AddLine(RAID_INFO_WORLD_BOSS.."(s)")
+				DT.tooltip:AddLine(RAID_INFO_WORLD_BOSS)
 				addedLine = true
 			end
 			DT.tooltip:AddDoubleLine(name, SecondsToTime(reset, true, nil, 3), 1, 1, 1, 0.8, 0.8, 0.8)

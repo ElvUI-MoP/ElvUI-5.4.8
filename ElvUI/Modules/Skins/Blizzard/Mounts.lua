@@ -38,7 +38,7 @@ local function LoadSkin()
 	MountJournal.MountCount:Point("TOPLEFT", 4, -25)
 
     MountJournal.MountDisplay:CreateBackdrop()
-	MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 0, -32)
+	MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 2, -32)
 	MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 0, 0)
 
 	MountJournal.MountDisplay.ShadowOverlay:SetInside(MountJournal.MountDisplay.backdrop)
@@ -52,8 +52,8 @@ local function LoadSkin()
 
 	MountJournal.MountDisplay.ModelFrame:ClearAllPoints()
 	MountJournal.MountDisplay.ModelFrame:SetInside(MountJournal.MountDisplay.backdrop)
-	MountJournal.MountDisplay.ModelFrame:Point("TOPLEFT", MountJournal.MountDisplay.backdrop, 2, -3)
-	MountJournal.MountDisplay.ModelFrame:Point("BOTTOMRIGHT", MountJournal.MountDisplay.backdrop, -3, 3)
+	MountJournal.MountDisplay.ModelFrame:Point("TOPLEFT", MountJournal.MountDisplay.backdrop, 1, -1)
+	MountJournal.MountDisplay.ModelFrame:Point("BOTTOMRIGHT", MountJournal.MountDisplay.backdrop, -2, 2)
 
 	S:HandleButton(MountJournalMountButton)
 	MountJournalMountButton:ClearAllPoints()
@@ -202,6 +202,11 @@ local function LoadSkin()
 		S:HandleButtonHighlight(button)
 		button.handledHighlight:SetInside()
 
+		button.petTypeIcon:SetTexCoord(0, 1, 0, 1)
+		button.petTypeIcon:SetAlpha(0.2)
+		button.petTypeIcon:Size(46, 40)
+		button.petTypeIcon:Point("BOTTOMRIGHT", 0, 3)
+
 		for _, object in pairs({button.selectedTexture, button.dragButton.ActiveTexture}) do
 			object:SetTexture(E.Media.Textures.Highlight)
 			object:SetAlpha(0.35)
@@ -221,7 +226,15 @@ local function LoadSkin()
 			local index = button.index
 			if not index then break end
 
-			local petID, _, _, customName = C_PetJournal_GetPetInfoByIndex(index, isWild)
+			local petID, _, isOwned, customName, _, _, isRevoked, _, _, petType = C_PetJournal_GetPetInfoByIndex(index, isWild)
+
+			button.petTypeIcon:SetTexture(E.Media.BattlePetTypes[PET_TYPE_SUFFIX[petType]])
+
+			if isOwned then
+				button.petTypeIcon:SetDesaturated(isRevoked and true or false)
+			else
+				button.petTypeIcon:SetDesaturated(true)
+			end
 
 			if petID ~= nil then
 				local quality = select(5, C_PetJournal_GetPetStats(petID))
@@ -272,7 +285,7 @@ local function LoadSkin()
 		frame:Width(405)
 		frame:StripTextures()
 		frame:SetTemplate("Transparent")
-		frame:CreateBackdrop(nil, true)
+		frame:CreateBackdrop()
 		frame.backdrop:SetOutside(frame.icon)
 		frame.backdrop:SetFrameLevel(frame.backdrop:GetFrameLevel() + 1)
 

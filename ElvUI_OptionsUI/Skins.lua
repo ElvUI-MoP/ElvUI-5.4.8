@@ -82,7 +82,7 @@ E.Options.args.skins = {
 					type = "toggle",
 					name = L["Bags"],
 					desc = L["TOGGLESKIN_DESC"],
-					disabled = function() return E.private.bags.enable end
+					disabled = function() return E.private.bags.enable or not E.private.skins.blizzard.enable end
 				},
 				barber = {
 					type = "toggle",
@@ -288,7 +288,7 @@ E.Options.args.skins = {
 					type = "toggle",
 					name = L["RAID_CONTROL"],
 					desc = L["TOGGLESKIN_DESC"],
-					disabled = function() return E.private.unitframe.enable and E.private.unitframe.disabledBlizzardFrames.raid and E.private.unitframe.disabledBlizzardFrames.party end
+					disabled = function() return (E.private.unitframe.enable and E.private.unitframe.disabledBlizzardFrames.raid and E.private.unitframe.disabledBlizzardFrames.party) or not E.private.skins.blizzard.enable end
 				},
 				reforge = {
 					type = "toggle",

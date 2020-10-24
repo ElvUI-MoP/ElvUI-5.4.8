@@ -29,31 +29,14 @@ local function LoadSkin()
 		S:HandleCheckBox(_G[v])
 	end
 
-	local roleIcons = {
-		"LookingForGuildTankButton",
-		"LookingForGuildHealerButton",
-		"LookingForGuildDamagerButton"
-	}
+	S:HandleRoleButton(LookingForGuildTankButton, 36)
+	LookingForGuildTankButton:Point("TOPLEFT", 30, -37)
 
-	for i = 1, #roleIcons do
-		local frame = _G[roleIcons[i]]
-		local icon = frame:GetNormalTexture()
+	S:HandleRoleButton(LookingForGuildHealerButton, 36)
+	LookingForGuildHealerButton:Point("TOP", 1, -37)
 
-		frame:StripTextures()
-		frame:CreateBackdrop()
-		frame.backdrop:Point("TOPLEFT", 3, -3)
-		frame.backdrop:Point("BOTTOMRIGHT", -3, 3)
-
-		icon:SetTexCoord(unpack(E.TexCoords))
-		icon:SetInside(frame.backdrop)
-
-		S:HandleCheckBox(frame.checkButton)
-		frame.checkButton:SetFrameLevel(frame.checkButton:GetFrameLevel() + 2)
-	end
-
-	LookingForGuildTankButton:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	LookingForGuildHealerButton:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	LookingForGuildDamagerButton:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	S:HandleRoleButton(LookingForGuildDamagerButton, 36)
+	LookingForGuildDamagerButton:Point("TOPRIGHT", -30, -37)
 
 	LookingForGuildCommentInputFrame:StripTextures()
 	LookingForGuildCommentInputFrame:CreateBackdrop("Transparent")
@@ -66,8 +49,8 @@ local function LoadSkin()
 
 	S:HandleScrollBar(LookingForGuildBrowseFrameContainerScrollBar)
 	LookingForGuildBrowseFrameContainerScrollBar:ClearAllPoints()
-	LookingForGuildBrowseFrameContainerScrollBar:Point("TOPRIGHT", LookingForGuildBrowseFrameContainer, "TOPRIGHT", 22, -15)
-	LookingForGuildBrowseFrameContainerScrollBar:Point("BOTTOMRIGHT", LookingForGuildBrowseFrameContainer, "BOTTOMRIGHT", 0, 14)
+	LookingForGuildBrowseFrameContainerScrollBar:Point("TOPRIGHT", LookingForGuildBrowseFrameContainer, 22, -15)
+	LookingForGuildBrowseFrameContainerScrollBar:Point("BOTTOMRIGHT", LookingForGuildBrowseFrameContainer, 0, 14)
 
 	S:HandleButton(LookingForGuildRequestButton)
 	LookingForGuildRequestButton:Point("BOTTOMLEFT", LookingForGuildFrame, 7, 3)

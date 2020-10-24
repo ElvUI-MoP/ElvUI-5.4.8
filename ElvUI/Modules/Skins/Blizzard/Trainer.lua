@@ -93,7 +93,7 @@ local function LoadSkin()
 		button.icon:Point("TOPLEFT", E.PixelMode and 3 or 6, -(E.PixelMode and 2 or 3))
 		button.icon:SetParent(button.bg)
 
-		button.money:Point("TOPRIGHT", 9, -6)
+		button.money:Point("TOPRIGHT", 9, -2)
 	end
 end
 

@@ -42,7 +42,7 @@ local function LoadSkin()
 
 	S:HandleNextPrevButton(CalendarFilterButton)
 
-	CalendarFilterFrame:CreateBackdrop("Default")
+	CalendarFilterFrame:CreateBackdrop()
 	CalendarFilterFrame.backdrop:Point("TOPLEFT", 20, 4)
 	CalendarFilterFrame.backdrop:Point("BOTTOMRIGHT", CalendarFilterButton, "BOTTOMRIGHT", 2, -2)
 
@@ -163,7 +163,7 @@ local function LoadSkin()
 	CalendarCreateEventTypeDropDown:Point("TOPRIGHT", -5, -87)
 
 	CalendarCreateEventDescriptionContainer:StripTextures()
-	CalendarCreateEventDescriptionContainer:SetTemplate("Default")
+	CalendarCreateEventDescriptionContainer:SetTemplate()
 
 	S:HandleCloseButton(CalendarCreateEventCloseButton)
 
@@ -206,7 +206,7 @@ local function LoadSkin()
 			local icon = button:GetNormalTexture()
 			local tcoords = CLASS_ICON_TCOORDS[class]
 			button:StripTextures()
-			button:CreateBackdrop("Default")
+			button:CreateBackdrop()
 			button:Size(23)
 
 			icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
@@ -216,7 +216,7 @@ local function LoadSkin()
 		CalendarClassButton1:Point("TOPLEFT", E.PixelMode and 2 or 5, 0)
 
 		CalendarClassTotalsButton:StripTextures()
-		CalendarClassTotalsButton:CreateBackdrop("Default")
+		CalendarClassTotalsButton:CreateBackdrop()
 		CalendarClassTotalsButton:Size(23)
 	end)
 

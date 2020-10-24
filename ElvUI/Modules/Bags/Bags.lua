@@ -407,6 +407,12 @@ function B:UpdateSlot(frame, bagID, slotID)
 	elseif clink then
 		local iLvl, iType, itemEquipLoc, itemPrice
 		slot.name, _, slot.rarity, iLvl, _, iType, _, _, itemEquipLoc, _, itemPrice = GetItemInfo(clink)
+		slot.isBattlePet = select(2, B:ConvertLinkToID(clink))
+
+		if slot.isBattlePet then
+			local petQuality = select(4, strmatch(clink, "(%l+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)"))
+			slot.rarity = tonumber(petQuality)
+		end
 
 		local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID)
 		local r, g, b
@@ -472,7 +478,6 @@ function B:UpdateSlot(frame, bagID, slotID)
 
 		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
 		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
-		slot.isBattlePet = select(2, B:ConvertLinkToID(clink))
 
 		-- Battle Pet Icon
 		if E.db.bags.battlePetIcon and slot.isBattlePet then

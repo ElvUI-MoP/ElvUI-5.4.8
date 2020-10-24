@@ -8,7 +8,6 @@ local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 local HybridScrollFrame_GetOffset = HybridScrollFrame_GetOffset
 local C_BlackMarket_GetNumItems = C_BlackMarket.GetNumItems
-local C_BlackMarket_GetItemInfoByIndex = C_BlackMarket.GetItemInfoByIndex
 local C_BlackMarket_GetHotItem = C_BlackMarket.GetHotItem
 
 local function LoadSkin()
@@ -54,45 +53,29 @@ local function LoadSkin()
 			local button = buttons[i]
 			local index = offset + i
 
-			if not button.isSkinned then
-				S:HandleItemButton(button.Item)
-				button:StripTextures()
-
-				S:HandleButtonHighlight(button)
-				button.handledHighlight:SetInside()
-
-				button.Item:Size(E.PixelMode and 33 or 30)
-				button.Item:Point("TOPLEFT", -3, -(E.PixelMode and 2 or 3))
-
-				button.Selection:SetTexture(E.Media.Textures.Highlight)
-				button.Selection:SetAlpha(0.35)
-				button.Selection:SetInside()
-
-				button.isSkinned = true
-			end
-
 			if type(numItems) == "number" and index <= numItems then
-				local _, texture, _, _, _, _, _, _, _, _, _, _, _, _, link = C_BlackMarket_GetItemInfoByIndex(index)
+				if not button.isSkinned then
+					S:HandleItemButton(button.Item)
+					button:StripTextures()
 
-				if link then
-					local quality = select(3, GetItemInfo(link))
+					S:HandleButtonHighlight(button)
+					button.handledHighlight:SetInside()
 
-					button.Item.IconTexture:SetTexture(texture)
+					button.Item:Size(E.PixelMode and 33 or 30)
+					button.Item:Point("TOPLEFT", -3, -(E.PixelMode and 2 or 3))
 
-					if quality then
-						local r, g, b = GetItemQualityColor(quality)
+					button.Selection:SetTexture(E.Media.Textures.Highlight)
+					button.Selection:SetAlpha(0.35)
+					button.Selection:SetInside()
 
-						button.Name:SetTextColor(r, g, b)
-						button.handledHighlight:SetVertexColor(r, g, b)
-						button.Selection:SetVertexColor(r, g, b)
-						button.Item.backdrop:SetBackdropBorderColor(r, g, b)
-					else
-						button.Name:SetTextColor(1, 1, 1)
-						button.handledHighlight:SetVertexColor(1, 1, 1)
-						button.Selection:SetVertexColor(1, 1, 1)
-						button.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-					end
+					button.isSkinned = true
 				end
+
+				local r, g, b = GetItemQualityColor(select(3, GetItemInfo(button.itemLink)))
+				button.Name:SetTextColor(r, g, b)
+				button.handledHighlight:SetVertexColor(r, g, b)
+				button.Selection:SetVertexColor(r, g, b)
+				button.Item.backdrop:SetBackdropBorderColor(r, g, b)
 			end
 		end
 	end
@@ -124,13 +107,8 @@ local function LoadSkin()
 		if link then
 			local quality = select(3, GetItemInfo(link))
 
-			if quality then
-				self.HotDeal.Name:SetTextColor(GetItemQualityColor(quality))
-				self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-			else
-				self.HotDeal.Name:SetTextColor(1, 1, 1)
-				self.HotDeal.Item.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-			end
+			self.HotDeal.Name:SetTextColor(GetItemQualityColor(quality))
+			self.HotDeal.Item.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 		end
 	end)
 

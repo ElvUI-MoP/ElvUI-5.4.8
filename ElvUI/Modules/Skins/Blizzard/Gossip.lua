@@ -53,7 +53,7 @@ local function LoadSkin()
 	GossipGreetingScrollFrame:StripTextures()
 
 	GossipFrameNpcNameText:ClearAllPoints()
-	GossipFrameNpcNameText:Point("TOP", GossipFrame, "TOP", 1, -1)
+	GossipFrameNpcNameText:Point("TOP", GossipFrame, 1, -1)
 
 	GossipGreetingText:SetTextColor(1, 1, 1)
 

@@ -56,22 +56,9 @@ local function LoadSkin()
 	HonorFrame.Inset:StripTextures()
 	HonorFrame.RoleInset:StripTextures()
 
-	for _, frame in pairs({"DPSIcon", "TankIcon", "HealerIcon"}) do
-		local button = HonorFrame.RoleInset[frame]
-		local icon = button:GetNormalTexture()
-
-		button:StripTextures()
-		button:CreateBackdrop()
-
-		icon:SetTexCoord(unpack(E.TexCoords))
-		icon:SetInside(button.backdrop)
-
-		S:HandleCheckBox(button.checkButton, true)
-	end
-
-	HonorFrame.RoleInset.TankIcon:SetNormalTexture("Interface\\Icons\\Ability_Defend")
-	HonorFrame.RoleInset.HealerIcon:SetNormalTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
-	HonorFrame.RoleInset.DPSIcon:SetNormalTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+	S:HandleRoleButton(HonorFrame.RoleInset.TankIcon, 44, "Tank")
+	S:HandleRoleButton(HonorFrame.RoleInset.HealerIcon, 44, "Healer")
+	S:HandleRoleButton(HonorFrame.RoleInset.DPSIcon, 44, "Damager")
 
 	S:HandleDropDownBox(HonorFrameTypeDropDown)
 	HonorFrameTypeDropDown:Width(200)

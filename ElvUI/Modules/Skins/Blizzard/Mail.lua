@@ -17,6 +17,7 @@ local function LoadSkin()
 	-- Inbox Frame
 	MailFrame:StripTextures(true)
 	MailFrame:SetTemplate("Transparent")
+	MailFrame:SetHitRectInsets(0, 0, 0, 0)
 	MailFrame:EnableMouseWheel(true)
 	MailFrame:SetScript("OnMouseWheel", function(_, value)
 		if value > 0 then
@@ -76,10 +77,10 @@ local function LoadSkin()
 				local packageIcon, _, _, _, _, _, _, _, _, _, _, _, isGM = GetInboxHeaderInfo(index)
 
 				if packageIcon and not isGM then
-					local ItemLink = GetInboxItemLink(index, 1)
+					local link = GetInboxItemLink(index, 1)
 
-					if ItemLink then
-						local quality = select(3, GetItemInfo(ItemLink))
+					if link then
+						local quality = select(3, GetItemInfo(link))
 
 						if quality then
 							button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
@@ -101,13 +102,13 @@ local function LoadSkin()
 	end)
 
 	InboxTitleText:ClearAllPoints()
-	InboxTitleText:Point("TOP", InboxFrame, "TOP", 0, -5)
+	InboxTitleText:Point("TOP", MailFrame, 0, -5)
 
 	SendMailTitleText:ClearAllPoints()
-	SendMailTitleText:Point("TOP", SendMailFrame, "TOP", 0, -5)
+	SendMailTitleText:Point("TOP", MailFrame, 0, -5)
 
 	InboxTooMuchMail:ClearAllPoints()
-	InboxTooMuchMail:Point("TOP", SendMailFrame, "TOP", -10, -30)
+	InboxTooMuchMail:Point("TOP", MailFrame, -10, -24)
 
 	S:HandleNextPrevButton(InboxPrevPageButton, nil, nil, true)
 	InboxPrevPageButton:Size(32)
@@ -120,10 +121,7 @@ local function LoadSkin()
 	S:HandleCloseButton(MailFrameCloseButton, MailFrame.backdrop)
 
 	for i = 1, 2 do
-		local tab = _G["MailFrameTab"..i]
-
-		tab:StripTextures()
-		S:HandleTab(tab)
+		S:HandleTab(_G["MailFrameTab"..i])
 	end
 
 	-- Send Mail Frame
@@ -139,7 +137,7 @@ local function LoadSkin()
 		for i = 1, ATTACHMENTS_MAX_SEND do
 			local button = _G["SendMailAttachment"..i]
 			local icon = button:GetNormalTexture()
-			local name = GetSendMailItem(i)
+			local link = GetSendMailItem(i)
 
 			if not button.isSkinned then
 				button:StripTextures()
@@ -149,8 +147,8 @@ local function LoadSkin()
 				button.isSkinned = true
 			end
 
-			if name then
-				local quality = select(3, GetItemInfo(name))
+			if link then
+				local quality = select(3, GetItemInfo(link))
 
 				if quality then
 					button:SetBackdropBorderColor(GetItemQualityColor(quality))
@@ -170,8 +168,8 @@ local function LoadSkin()
 
 	S:HandleScrollBar(SendMailScrollFrameScrollBar)
 	SendMailScrollFrameScrollBar:ClearAllPoints()
-	SendMailScrollFrameScrollBar:Point("TOPRIGHT", SendMailScrollFrame, "TOPRIGHT", 20, -18)
-	SendMailScrollFrameScrollBar:Point("BOTTOMRIGHT", SendMailScrollFrame, "BOTTOMRIGHT", 0, 18)
+	SendMailScrollFrameScrollBar:Point("TOPRIGHT", SendMailScrollFrame, 20, -18)
+	SendMailScrollFrameScrollBar:Point("BOTTOMRIGHT", SendMailScrollFrame, 0, 18)
 
 	S:HandleEditBox(SendMailNameEditBox)
 	SendMailNameEditBox:Height(18)
@@ -208,7 +206,6 @@ local function LoadSkin()
 	for i = 1, ATTACHMENTS_MAX_SEND do
 		local button = _G["OpenMailAttachmentButton"..i]
 		local icon = _G["OpenMailAttachmentButton"..i.."IconTexture"]
-		local count = _G["OpenMailAttachmentButton"..i.."Count"]
 
 		button:StripTextures()
 		button:SetTemplate("Default", true)
@@ -219,17 +216,17 @@ local function LoadSkin()
 			icon:SetDrawLayer("ARTWORK")
 			icon:SetInside()
 
-			count:SetDrawLayer("OVERLAY")
+			_G["OpenMailAttachmentButton"..i.."Count"]:SetDrawLayer("OVERLAY")
 		end
 	end
 
 	hooksecurefunc("OpenMailFrame_UpdateButtonPositions", function()
 		for i = 1, ATTACHMENTS_MAX_RECEIVE do
-			local ItemLink = GetInboxItemLink(InboxFrame.openMailID, i)
+			local link = GetInboxItemLink(InboxFrame.openMailID, i)
 			local button = _G["OpenMailAttachmentButton"..i]
 
-			if ItemLink then
-				local quality = select(3, GetItemInfo(ItemLink))
+			if link then
+				local quality = select(3, GetItemInfo(link))
 
 				if quality then
 					button:SetBackdropBorderColor(GetItemQualityColor(quality))
@@ -256,9 +253,12 @@ local function LoadSkin()
 	S:HandleButton(OpenMailCancelButton)
 
 	OpenMailScrollFrame:StripTextures(true)
-	OpenMailScrollFrame:SetTemplate("Default")
+	OpenMailScrollFrame:SetTemplate()
 
 	S:HandleScrollBar(OpenMailScrollFrameScrollBar)
+	OpenMailScrollFrameScrollBar:ClearAllPoints()
+	OpenMailScrollFrameScrollBar:Point("TOPRIGHT", OpenMailScrollFrame, 24, -18)
+	OpenMailScrollFrameScrollBar:Point("BOTTOMRIGHT", OpenMailScrollFrame, 0, 18)
 
 	OpenMailBodyText:SetTextColor(1, 1, 1)
 	InvoiceTextFontNormal:SetFont(E.media.normFont, 13)

@@ -131,6 +131,10 @@ local function LoadSkin()
 					object:Size(16, 22)
 				end
 
+				local name = child:GetName()
+				_G[name.."Flash"]:Kill()
+				_G[name.."FlashIconFlash"]:Kill()
+
 				frame:HookScript("OnEnter", function(self)
 					self.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 				end)
