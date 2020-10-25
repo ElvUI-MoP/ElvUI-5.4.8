@@ -1387,6 +1387,10 @@ function E:DBConversions()
 		E.db.unitframe.units.arena.pvpSpecIcon = {}
 		E.db.unitframe.units.arena.pvpSpecIcon.enable = E.db.unitframe.units.arena.pvpSpecIcon
 	end
+
+	if E.db.nameplates.units.TARGET ~= nil then
+		E.db.nameplates.units.TARGET = nil
+	end
 end
 
 function E:RefreshModulesDB()

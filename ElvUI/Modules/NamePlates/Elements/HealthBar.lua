@@ -145,6 +145,7 @@ end
 
 function NP:Configure_HealthBarScale(frame, scale, noPlayAnimation)
 	local db = NP.db.units[frame.UnitType].health
+	if not db then return end
 
 	local trivial = frame.UnitTrivial and NP.db.trivial
 	local width = trivial and NP.db.trivialWidth or db.width

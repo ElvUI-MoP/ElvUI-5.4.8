@@ -105,8 +105,9 @@ end
 
 function NP:Configure_CastBarScale(frame, scale, noPlayAnimation)
 	if frame.currentScale == scale then return end
+
 	local db = self.db.units[frame.UnitType].castbar
-	if not db.enable then return end
+	if not db or (db and not db.enable) then return end
 
 	local castBar = frame.CastBar
 

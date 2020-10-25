@@ -263,12 +263,11 @@ function NP:StyleFilterSetChanges(frame, actions, HealthColorChanged, BorderChan
 		NP:Update_IconFrame(frame, true)
 		if frame.CastBar:IsShown() then frame.CastBar:Hide() end
 		if frame.Health:IsShown() then frame.Health:Hide() end
-		frame.Level:Hide()
-		frame.Name:Hide()
+		frame.Level:SetText()
+		frame.Name:SetText()
 		NP:Configure_Glow(frame)
 		NP:Update_Glow(frame)
 		NP:Update_RaidIcon(frame)
-		NP:Configure_IconOnlyGlow(frame)
 		NP:Configure_NameOnlyGlow(frame)
 	end
 end
@@ -357,8 +356,6 @@ function NP:StyleFilterClearChanges(frame, HealthColorChanged, BorderChanged, Fl
 			NP:Update_Glow(frame)
 		end
 		if NP.db.units[frame.UnitType].name.enable then
-			frame.Name:Show()
-			frame.Level:Show()
 			frame.Name:ClearAllPoints()
 			frame.Level:ClearAllPoints()
 			NP:Update_Level(frame)
@@ -367,7 +364,6 @@ function NP:StyleFilterClearChanges(frame, HealthColorChanged, BorderChanged, Fl
 			frame.Name:SetText()
 		end
 		NP:Update_RaidIcon(frame)
-		NP:Configure_IconOnlyGlow(frame)
 		NP:Configure_NameOnlyGlow(frame)
 	end
 end

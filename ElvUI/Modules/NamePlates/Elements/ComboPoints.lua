@@ -18,10 +18,14 @@ function NP:Update_CPoints(frame)
 	if numPoints and numPoints > 0 then
 		frame.CPoints:Show()
 		for i = 1, MAX_COMBO_POINTS do
-			if i <= numPoints then
-				frame.CPoints[i]:Show()
+			if NP.db.units[frame.UnitType].comboPoints.hideEmpty then
+				frame.CPoints[i]:SetShown(i <= numPoints)
 			else
-				frame.CPoints[i]:Hide()
+				local r, g, b = unpack(E:GetColorTable(self.db.colors.comboPoints[i]))
+				local mult = i <= numPoints and 1 or 0.35
+
+				frame.CPoints[i]:SetStatusBarColor(r * mult, g * mult, b * mult)
+				frame.CPoints[i]:Show()
 			end
 		end
 	else
@@ -31,9 +35,9 @@ end
 
 function NP:Configure_CPointsScale(frame, scale, noPlayAnimation)
 	if frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "FRIENDLY_NPC" then return end
-	if not NP.db.units then return end
+
 	local db = self.db.units[frame.UnitType].comboPoints
-	if not db.enable then return end
+	if not db or (db and not db.enable) then return end
 
 	if noPlayAnimation then
 		frame.CPoints:SetWidth(((db.width * 5) + (db.spacing * 4)) * scale)

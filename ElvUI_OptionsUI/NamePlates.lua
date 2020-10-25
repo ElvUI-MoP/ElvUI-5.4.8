@@ -1873,7 +1873,7 @@ local ORDER = 100
 local function GetUnitSettings(unit, name)
 	local copyValues = {}
 	for x, y in pairs(NP.db.units) do
-		if type(y) == "table" and (x ~= unit) and (x ~= "TARGET") then
+		if type(y) == "table" and (x ~= unit) then
 			copyValues[x] = L[x]
 		end
 	end
@@ -3191,36 +3191,47 @@ local function GetUnitSettings(unit, name)
 						type = "toggle",
 						name = L["ENABLE"]
 					},
-					width = {
+					hideEmpty = {
 						order = 2,
+						type = "toggle",
+						name = L["Hide Empty"],
+						disabled = function() return not E.db.nameplates.units.ENEMY_PLAYER.comboPoints.enable end
+					},
+					spacer = {
+						order = 3,
+						type = "description",
+						name = " "
+					},
+					width = {
+						order = 4,
 						type = "range",
 						name = L["Width"],
 						min = 4, max = 30, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_PLAYER.comboPoints.enable end
 					},
 					height = {
-						order = 3,
+						order = 5,
 						type = "range",
 						name = L["Height"],
 						min = 4, max = 30, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_PLAYER.comboPoints.enable end
 					},
 					spacing = {
-						order = 4,
+						order = 6,
 						type = "range",
 						name = L["Spacing"],
-						min = 3, max = 20, step = 1,
+						min = 1, max = 20, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_PLAYER.comboPoints.enable end
 					},
 					xOffset = {
-						order = 5,
+						order = 7,
 						type = "range",
 						name = L["X-Offset"],
 						min = -100, max = 100, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_PLAYER.comboPoints.enable end
 					},
 					yOffset = {
-						order = 6,
+						order = 8,
 						type = "range",
 						name = L["Y-Offset"],
 						min = -100, max = 100, step = 1,
@@ -3360,36 +3371,47 @@ local function GetUnitSettings(unit, name)
 						type = "toggle",
 						name = L["ENABLE"]
 					},
-					width = {
+					hideEmpty = {
 						order = 2,
+						type = "toggle",
+						name = L["Hide Empty"],
+						disabled = function() return not E.db.nameplates.units.ENEMY_NPC.comboPoints.enable end
+					},
+					spacer = {
+						order = 3,
+						type = "description",
+						name = " "
+					},
+					width = {
+						order = 4,
 						type = "range",
 						name = L["Width"],
 						min = 4, max = 30, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_NPC.comboPoints.enable end
 					},
 					height = {
-						order = 3,
+						order = 5,
 						type = "range",
 						name = L["Height"],
 						min = 4, max = 30, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_NPC.comboPoints.enable end
 					},
 					spacing = {
-						order = 4,
+						order = 6,
 						type = "range",
 						name = L["Spacing"],
-						min = 3, max = 20, step = 1,
+						min = 1, max = 20, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_NPC.comboPoints.enable end
 					},
 					xOffset = {
-						order = 5,
+						order = 7,
 						type = "range",
 						name = L["X-Offset"],
 						min = -100, max = 100, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_NPC.comboPoints.enable end
 					},
 					yOffset = {
-						order = 6,
+						order = 8,
 						type = "range",
 						name = L["Y-Offset"],
 						min = -100, max = 100, step = 1,
@@ -3551,13 +3573,6 @@ E.Options.args.nameplate = {
 					order = 12,
 					type = "group",
 					name = L["TARGET"],
-					get = function(info)
-						return E.db.nameplates.units.TARGET[info[#info]]
-					end,
-					set = function(info, value)
-						E.db.nameplates.units.TARGET[info[#info]] = value
-						NP:ConfigureAll()
-					end,
 					disabled = function() return not E.NamePlates.Initialized end,
 					args = {
 						useTargetScale = {
@@ -3617,7 +3632,12 @@ E.Options.args.nameplate = {
 								["style6"] = L["Background Glow"].." + "..L["Top Arrow"],
 								["style7"] = L["Border Glow"].." + "..L["Side Arrows"],
 								["style8"] = L["Background Glow"].." + "..L["Side Arrows"]
-							}
+							},
+							get = function(info) return E.db.nameplates.glowStyle end,
+							set = function(info, value)
+								E.db.nameplates.glowStyle = value
+								NP:ConfigureAll()
+							end
 						},
 						alwaysShowTargetHealth = {
 							order = 6,
