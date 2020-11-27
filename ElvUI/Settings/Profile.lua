@@ -201,6 +201,8 @@ P.bags = {
 	transparent = false,
 	questIcon = true,
 	professionBagColors = true,
+	professionBagColorsStyle = "BORDER",
+	professionBagColorsMult = 0.35,
 	questItemColors = true,
 	colors = {
 		profession = {
@@ -279,6 +281,7 @@ P.bags = {
 		backdropSpacing = 4,
 		showBackdrop = false,
 		mouseover = false,
+		transparent = false,
 		visibility = "[petbattle] hide; show",
 	}
 }

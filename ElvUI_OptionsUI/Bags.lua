@@ -106,14 +106,14 @@ E.Options.args.bags = {
 					order = 9,
 					type = "toggle",
 					name = L["Desaturate Junk Items"],
-					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end,
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
 				},
 				newItemGlow = {
 					order = 10,
 					type = "toggle",
 					name = L["Show New Item Glow"],
 					desc = L["Display the New Item Glow"],
-					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end,
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
 				},
 				qualityColors = {
 					order = 11,
@@ -363,61 +363,91 @@ E.Options.args.bags = {
 								B:UpdateAllBagSlots()
 							end
 						},
-						spacer = {
+						professionBagColorsStyle = {
 							order = 2,
+							type = "select",
+							name = L["Style"],
+							values = {
+								["BACKDROP"] = L["Backdrop"],
+								["BORDER"] = L["Border"],
+								["BOTH"] = L["Both"]
+							},
+							get = function(info) return E.db.bags[info[#info]] end,
+							set = function(info, value)
+								E.db.bags[info[#info]] = value
+								if not E.Bags.Initialized then return end
+								B:UpdateAllBagSlots()
+							end,
+							disabled = function() return not E.db.bags.professionBagColors end
+						},
+						professionBagColorsMult = {
+							order = 3,
+							type = "range",
+							name = L["Backdrop Multiplier"],
+							min = 0.10, max = 0.75, step = 0.01,
+							get = function(info) return E.db.bags[info[#info]] end,
+							set = function(info, value)
+								E.db.bags[info[#info]] = value
+								if not E.Bags.Initialized then return end
+								B:UpdateAllBagSlots()
+							end,
+							disabled = function() return not E.db.bags.professionBagColors or E.db.bags.professionBagColorsStyle == "BORDER" end
+						},
+						spacer = {
+							order = 4,
 							type = "description",
 							name = ""
 						},
 						leatherworking = {
-							order = 3,
+							order = 5,
 							type = "color",
 							name = L["Leatherworking"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						inscription = {
-							order = 4,
+							order = 6,
 							type = "color",
 							name = L["INSCRIPTION"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						herbs = {
-							order = 5,
+							order = 7,
 							type = "color",
 							name = L["Herbalism"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						enchanting = {
-							order = 6,
+							order = 8,
 							type = "color",
 							name = L["Enchanting"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						engineering = {
-							order = 7,
+							order = 9,
 							type = "color",
 							name = L["Engineering"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						gems = {
-							order = 8,
+							order = 10,
 							type = "color",
 							name = L["Gems"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						mining = {
-							order = 9,
+							order = 11,
 							type = "color",
 							name = L["Mining"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						fishing = {
-							order = 10,
+							order = 12,
 							type = "color",
 							name = L["PROFESSIONS_FISHING"],
 							disabled = function() return not E.db.bags.professionBagColors end
 						},
 						cooking = {
-							order = 11,
+							order = 13,
 							type = "color",
 							name = L["PROFESSIONS_COOKING"],
 							disabled = function() return not E.db.bags.professionBagColors end
@@ -482,52 +512,39 @@ E.Options.args.bags = {
 			set = function(info, value) E.db.bags.bagBar[info[#info]] = value B:SizeAndPositionBagBar() end,
 			args = {
 				enable = {
-					order = 2,
+					order = 1,
 					type = "toggle",
 					name = L["ENABLE"],
 					desc = L["Enable/Disable the Bag-Bar."],
 					get = function(info) return E.private.bags.bagBar end,
 					set = function(info, value) E.private.bags.bagBar = value E:StaticPopup_Show("PRIVATE_RL") end
 				},
-				showBackdrop = {
-					order = 3,
-					type = "toggle",
-					name = L["Backdrop"],
-					disabled = function() return not E.private.bags.bagBar end
+				spacer = {
+					order = 2,
+					type = "description",
+					name = ""
 				},
 				mouseover = {
-					order = 4,
+					order = 3,
 					type = "toggle",
 					name = L["Mouse Over"],
 					desc = L["The frame is not shown unless you mouse over the frame."],
 					disabled = function() return not E.private.bags.bagBar end
 				},
-				size = {
+				showBackdrop = {
+					order = 4,
+					type = "toggle",
+					name = L["Backdrop"],
+					disabled = function() return not E.private.bags.bagBar end
+				},
+				transparent = {
 					order = 5,
-					type = "range",
-					name = L["Button Size"],
-					desc = L["Set the size of your bag buttons."],
-					min = 24, max = 60, step = 1,
-					disabled = function() return not E.private.bags.bagBar end
-				},
-				spacing = {
-					order = 6,
-					type = "range",
-					name = L["Button Spacing"],
-					desc = L["The spacing between buttons."],
-					min = -1, max = 10, step = 1,
-					disabled = function() return not E.private.bags.bagBar end
-				},
-				backdropSpacing = {
-					order = 7,
-					type = "range",
-					name = L["Backdrop Spacing"],
-					desc = L["The spacing between the backdrop and the buttons."],
-					min = 0, max = 10, step = 1,
-					disabled = function() return not E.private.bags.bagBar end
+					type = "toggle",
+					name = L["Transparent Backdrop"],
+					disabled = function() return not E.private.bags.bagBar or not E.db.bags.bagBar.showBackdrop end
 				},
 				sortDirection = {
-					order = 8,
+					order = 6,
 					type = "select",
 					name = L["Sort Direction"],
 					desc = L["The direction that the bag frames will grow from the anchor."],
@@ -537,8 +554,32 @@ E.Options.args.bags = {
 					},
 					disabled = function() return not E.private.bags.bagBar end
 				},
-				growthDirection = {
+				size = {
+					order = 7,
+					type = "range",
+					name = L["Button Size"],
+					desc = L["Set the size of your bag buttons."],
+					min = 24, max = 60, step = 1,
+					disabled = function() return not E.private.bags.bagBar end
+				},
+				spacing = {
+					order = 8,
+					type = "range",
+					name = L["Button Spacing"],
+					desc = L["The spacing between buttons."],
+					min = -1, max = 10, step = 1,
+					disabled = function() return not E.private.bags.bagBar end
+				},
+				backdropSpacing = {
 					order = 9,
+					type = "range",
+					name = L["Backdrop Spacing"],
+					desc = L["The spacing between the backdrop and the buttons."],
+					min = 0, max = 10, step = 1,
+					disabled = function() return not E.private.bags.bagBar end
+				},
+				growthDirection = {
+					order = 10,
 					type = "select",
 					name = L["Bar Direction"],
 					desc = L["The direction that the bag frames be (Horizontal or Vertical)."],
@@ -549,7 +590,7 @@ E.Options.args.bags = {
 					disabled = function() return not E.private.bags.bagBar end
 				},
 				visibility = {
-					order = 10,
+					order = 11,
 					type = "input",
 					name = L["Visibility State"],
 					desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
@@ -574,26 +615,27 @@ E.Options.args.bags = {
 			set = function(info, value) E.db.bags.split[info[#info]] = value B:UpdateAll() end,
 			disabled = function() return not E.Bags.Initialized end,
 			args = {
-				bagSpacing = {
-					order = 2,
-					type = "range",
-					name = L["Bag Spacing"],
-					min = 0, max = 20, step = 1
-				},
 				player = {
-					order = 3,
+					order = 1,
 					type = "toggle",
 					name = L["Bag"],
 					set = function(info, value) E.db.bags.split[info[#info]] = value B:Layout() end
 				},
 				bank = {
-					order = 4,
+					order = 2,
 					type = "toggle",
 					name = L["Bank"],
 					set = function(info, value) E.db.bags.split[info[#info]] = value B:Layout(true) end
 				},
+				bagSpacing = {
+					order = 3,
+					type = "range",
+					name = L["Bag Spacing"],
+					min = 0, max = 20, step = 1,
+					disabled = function() return not E.db.bags.split.player and not E.db.bags.split.bank end
+				},
 				splitbags = {
-					order = 5,
+					order = 4,
 					type = "group",
 					name = L["PLAYER"],
 					get = function(info) return E.db.bags.split[info[#info]] end,
@@ -624,7 +666,7 @@ E.Options.args.bags = {
 					}
 				},
 				splitbank = {
-					order = 6,
+					order = 5,
 					type = "group",
 					name = L["Bank"],
 					get = function(info) return E.db.bags.split[info[#info]] end,

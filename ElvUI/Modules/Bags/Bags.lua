@@ -330,7 +330,7 @@ function B:UpdateBagTypes(isBank)
 end
 
 function B:UpdateAllBagSlots()
-	if E.private.bags.enable ~= true then return end
+	if not E.private.bags.enable then return end
 
 	for _, bagFrame in pairs(B.BagFrames) do
 		B:UpdateAllSlots(bagFrame)
@@ -370,6 +370,41 @@ local function hideNewItemGlow(slot)
 	B:NewItemGlowSlotSwitch(slot)
 end
 
+local function ColorizeProfessionBagSlots(slot, profR, profG, profB, qualityR, qualityG, qualityB)
+	local fadeR, fadeG, fadeB, fadeA = unpack(E.media.backdropfadecolor)
+
+	slot.newItemGlow:SetVertexColor(profR, profG, profB)
+
+	if B.db.professionBagColorsStyle == "BACKDROP" or B.db.professionBagColorsStyle == "BOTH" then
+		local mult = B.db.professionBagColorsMult
+		if E.db.bags.transparent then
+			slot:SetBackdropColor(profR * mult, profG * mult, profB * mult, fadeA)
+		else
+			slot.backdropTexture:SetVertexColor(profR * mult, profG * mult, profB * mult, 1)
+		end
+	else
+		if E.db.bags.transparent then
+			slot:SetBackdropColor(fadeR, fadeG, fadeB, fadeA)
+		else
+			slot.backdropTexture:SetVertexColor(unpack(E.media.backdropcolor))
+		end
+	end
+
+	if B.db.professionBagColorsStyle == "BORDER" or B.db.professionBagColorsStyle == "BOTH" then
+		slot:SetBackdropBorderColor(profR, profG, profB)
+		slot.ignoreBorderColors = true
+	else
+		if B.db.qualityColors and (slot.rarity and slot.rarity > 1) then
+			slot.newItemGlow:SetVertexColor(qualityR, qualityG, qualityB)
+			slot:SetBackdropBorderColor(qualityR, qualityG, qualityB)
+			slot.ignoreBorderColors = true
+		else
+			slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			slot.ignoreBorderColors = nil
+		end
+	end
+end
+
 function B:UpdateSlot(frame, bagID, slotID)
 	if (frame.Bags[bagID] and frame.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not frame.Bags[bagID] or not frame.Bags[bagID][slotID] then return end
 
@@ -399,12 +434,11 @@ function B:UpdateSlot(frame, bagID, slotID)
 		E.ScanTooltip:Show()
 	end
 
-	if B.db.professionBagColors and B.ProfessionColors[bagType] then
-		local r, g, b = unpack(B.ProfessionColors[bagType])
-		slot.newItemGlow:SetVertexColor(r, g, b)
-		slot:SetBackdropBorderColor(r, g, b)
-		slot.ignoreBorderColors = true
-	elseif clink then
+	local borderR, borderG, borderB = unpack(E.media.bordercolor)
+	local fadeR, fadeG, fadeB, fadeA = unpack(E.media.backdropfadecolor)
+	local backdropR, backdropG, backdropB = unpack(E.media.backdropcolor)
+
+	if clink then
 		local iLvl, iType, itemEquipLoc, itemPrice
 		slot.name, _, slot.rarity, iLvl, _, iType, _, _, itemEquipLoc, _, itemPrice = GetItemInfo(clink)
 		slot.isBattlePet = select(2, B:ConvertLinkToID(clink))
@@ -415,10 +449,10 @@ function B:UpdateSlot(frame, bagID, slotID)
 		end
 
 		local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID)
-		local r, g, b
+		local qualityR, qualityG, qualityB
 
 		if slot.rarity then
-			r, g, b = GetItemQualityColor(slot.rarity)
+			qualityR, qualityG, qualityB = GetItemQualityColor(slot.rarity)
 		end
 
 		if slot.rarity and slot.rarity > 1 and (B.db.showBindType or B.db.upgradeIcon) then
@@ -453,7 +487,7 @@ function B:UpdateSlot(frame, bagID, slotID)
 
 			if BoE or BoU then
 				slot.bindType:SetText(BoE and L["BoE"] or L["BoU"])
-				slot.bindType:SetVertexColor(r, g, b)
+				slot.bindType:SetVertexColor(qualityR, qualityG, qualityB)
 			end
 
 			slot.isUpgradable = curUpgrade and (curUpgrade ~= maxUpgrade)
@@ -471,7 +505,7 @@ function B:UpdateSlot(frame, bagID, slotID)
 				if B.db.itemLevelCustomColorEnable then
 					slot.itemLevel:SetTextColor(B.db.itemLevelCustomColor.r, B.db.itemLevelCustomColor.g, B.db.itemLevelCustomColor.b)
 				else
-					slot.itemLevel:SetTextColor(r, g, b)
+					slot.itemLevel:SetTextColor(qualityR, qualityG, qualityB)
 				end
 			end
 		end
@@ -502,32 +536,49 @@ function B:UpdateSlot(frame, bagID, slotID)
 		local color = E.db.bags.countFontColor
 		slot.Count:SetTextColor(color.r, color.g, color.b)
 
-		-- color slot according to item quality
-		if B.db.questItemColors and (questId and not isActiveQuest) then
-			slot.newItemGlow:SetVertexColor(unpack(B.QuestColors.questStarter))
-			slot:SetBackdropBorderColor(unpack(B.QuestColors.questStarter))
+		if B.db.professionBagColors and B.ProfessionColors[bagType] then -- Profession Bags with Item
+			local profR, profG, profB = unpack(B.ProfessionColors[bagType])
+			ColorizeProfessionBagSlots(slot, profR, profG, profB, qualityR, qualityG, qualityB)
+		elseif B.db.questItemColors and (questId and not isActiveQuest) then -- Quest Starter Item
+			local starterR, starterG, starterB = unpack(B.QuestColors.questStarter)
+			slot.newItemGlow:SetVertexColor(starterR, starterG, starterB)
+			slot:SetBackdropBorderColor(starterR, starterG, starterB)
 			slot.ignoreBorderColors = true
-		elseif B.db.questItemColors and (questId or isQuestItem) then
-			slot.newItemGlow:SetVertexColor(unpack(B.QuestColors.questItem))
-			slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
+		elseif B.db.questItemColors and (questId or isQuestItem) then -- Quest Item
+			local questR, questG, questB = unpack(B.QuestColors.questItem)
+			slot.newItemGlow:SetVertexColor(questR, questG, questB)
+			slot:SetBackdropBorderColor(questR, questG, questB)
 			slot.ignoreBorderColors = true
-		elseif B.db.qualityColors and (slot.rarity and slot.rarity > 1) then
-			slot.newItemGlow:SetVertexColor(r, g, b)
-			slot:SetBackdropBorderColor(r, g, b)
+		elseif B.db.qualityColors and (slot.rarity and slot.rarity > 1) then -- Color slot according to item quality
+			slot.newItemGlow:SetVertexColor(qualityR, qualityG, qualityB)
+			slot:SetBackdropBorderColor(qualityR, qualityG, qualityB)
 			slot.ignoreBorderColors = true
 		else
 			slot.newItemGlow:SetVertexColor(1, 1, 1)
-			local rr, gg, bb = unpack(E.media.bordercolor)
-			slot:SetBackdropBorderColor(rr, gg, bb)
-			slot:SetBackdropColor(unpack(E.db.bags.transparent and E.media.backdropfadecolor or E.media.backdropcolor))
+			slot:SetBackdropBorderColor(borderR, borderG, borderB)
 			slot.ignoreBorderColors = nil
 		end
+
+		if E.db.bags.transparent then
+			slot:SetBackdropColor(fadeR, fadeG, fadeB, fadeA)
+		else
+			slot.backdropTexture:SetVertexColor(backdropR, backdropG, backdropB)
+		end
 	else
-		slot.newItemGlow:SetVertexColor(1, 1, 1)
-		local rr, gg, bb = unpack(E.media.bordercolor)
-		slot:SetBackdropBorderColor(rr, gg, bb)
-		slot:SetBackdropColor(unpack(E.db.bags.transparent and E.media.backdropfadecolor or E.media.backdropcolor))
-		slot.ignoreBorderColors = nil
+		if B.db.professionBagColors and B.ProfessionColors[bagType] then -- Profession Bags without Item
+			local profR, profG, profB = unpack(B.ProfessionColors[bagType])
+			ColorizeProfessionBagSlots(slot, profR, profG, profB)
+		else -- Empty
+			if E.db.bags.transparent then
+				slot:SetBackdropColor(fadeR, fadeG, fadeB, fadeA)
+			else
+				slot.backdropTexture:SetVertexColor(backdropR, backdropG, backdropB)
+			end
+
+			slot.newItemGlow:SetVertexColor(1, 1, 1)
+			slot:SetBackdropBorderColor(borderR, borderG, borderB)
+			slot.ignoreBorderColors = nil
+		end
 	end
 
 	E.ScanTooltip:Hide()
