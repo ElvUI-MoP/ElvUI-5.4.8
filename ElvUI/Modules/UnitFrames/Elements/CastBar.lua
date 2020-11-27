@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
+local LSM = E.Libs.LSM
 
 local unpack, tonumber = unpack, tonumber
 local abs = abs
@@ -30,7 +31,7 @@ local INVERT_ANCHORPOINT = {
 local ticks = {}
 
 function UF:Construct_Castbar(frame, moverName)
-	local castbar = CreateFrame("StatusBar", nil, frame)
+	local castbar = CreateFrame("StatusBar", "$parent_CastBar", frame)
 	castbar:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 30) --Make it appear above everything else
 	UF.statusbars[castbar] = true
 	castbar.CustomDelayText = UF.CustomCastDelayText
@@ -44,13 +45,11 @@ function UF:Construct_Castbar(frame, moverName)
 	castbar:CreateBackdrop("Default", nil, nil, UF.thinBorders, true)
 
 	castbar.Time = castbar:CreateFontString(nil, "OVERLAY")
-	UF:Configure_FontString(castbar.Time)
 	castbar.Time:Point("RIGHT", castbar, "RIGHT", -4, 0)
 	castbar.Time:SetTextColor(0.84, 0.75, 0.65)
 	castbar.Time:SetJustifyH("RIGHT")
 
 	castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
-	UF:Configure_FontString(castbar.Text)
 	castbar.Text:Point("LEFT", castbar, "LEFT", 4, 0)
 	castbar.Text:Point("RIGHT", castbar.Time, "LEFT", -4, 0)
 	castbar.Text:SetTextColor(0.84, 0.75, 0.65)
@@ -81,7 +80,7 @@ function UF:Construct_Castbar(frame, moverName)
 	--these are placeholder so the mover can be created.. it will be changed.
 	castbar.Holder:Point("TOPLEFT", frame, "BOTTOMLEFT", 0, -(frame.BORDER - frame.SPACING))
 	castbar:Point("BOTTOMLEFT", castbar.Holder, "BOTTOMLEFT", frame.BORDER, frame.BORDER)
-	button:Point("RIGHT", castbar, "LEFT", -E.Spacing*3, 0)
+	button:Point("RIGHT", castbar, "LEFT", -E.Spacing * 3, 0)
 
 	if moverName then
 		local name = frame:GetName()
@@ -90,8 +89,7 @@ function UF:Construct_Castbar(frame, moverName)
 	end
 
 	local icon = button:CreateTexture(nil, "ARTWORK")
-	local offset = frame.BORDER --use frame.BORDER since it may be different from E.Border due to forced thin borders
-	icon:SetInside(nil, offset, offset)
+	icon:SetInside(nil, frame.BORDER, frame.BORDER)
 	icon.bg = button
 
 	--Set to castbar.Icon
@@ -105,8 +103,8 @@ function UF:Configure_Castbar(frame)
 	local castbar = frame.Castbar
 	local db = frame.db.castbar
 
-	castbar:Width(db.width - ((frame.BORDER+frame.SPACING)*2))
-	castbar:Height(db.height - ((frame.BORDER+frame.SPACING)*2))
+	castbar:Width(db.width - ((frame.BORDER + frame.SPACING) * 2))
+	castbar:Height(db.height - ((frame.BORDER + frame.SPACING) * 2))
 	castbar.Holder:Size(db.width, db.height)
 
 	local oSC = castbar.Holder:GetScript("OnSizeChanged")
@@ -133,21 +131,32 @@ function UF:Configure_Castbar(frame)
 		castbar.LatencyTexture:Hide()
 	end
 
-	--Text
+	--Font Options
 	local textColor = db.textColor
-	castbar.Text:SetTextColor(textColor.r, textColor.g, textColor.b, textColor.a)
-	castbar.Time:SetTextColor(textColor.r, textColor.g, textColor.b, textColor.a)
+	local customTextFont = db.customTextFont
+	local customTimeFont = db.customTimeFont
 
-	castbar.Text:Point("LEFT", castbar, "LEFT", db.xOffsetText, db.yOffsetText)
-	castbar.Time:Point("RIGHT", castbar, "RIGHT", db.xOffsetTime, db.yOffsetTime)
-
-	if db.hidetext then
-		castbar.Text:Hide()
-		castbar.Time:Hide()
+	if customTextFont.enable then
+		castbar.Text:FontTemplate(LSM:Fetch("font", customTextFont.font), customTextFont.fontSize, customTextFont.fontStyle)
 	else
-		castbar.Text:Show()
-		castbar.Time:Show()
+		UF:Update_FontString(castbar.Text)
 	end
+
+	castbar.Text:SetTextColor(textColor.r, textColor.g, textColor.b, textColor.a)
+	castbar.Text:Point("LEFT", castbar, "LEFT", db.xOffsetText, db.yOffsetText)
+	castbar.Text:SetWidth(castbar.Text:GetStringWidth())
+	castbar.Text:SetShown(not db.hidetext)
+
+	if customTimeFont.enable then
+		castbar.Time:FontTemplate(LSM:Fetch("font", customTimeFont.font), customTimeFont.fontSize, customTimeFont.fontStyle)
+	else
+		UF:Update_FontString(castbar.Time)
+	end
+
+	castbar.Time:SetTextColor(textColor.r, textColor.g, textColor.b, textColor.a)
+	castbar.Time:Point("RIGHT", castbar, "RIGHT", db.xOffsetTime, db.yOffsetTime)
+	castbar.Time:SetWidth(castbar.Time:GetStringWidth())
+	castbar.Time:SetShown(not db.hidetext)
 
 	--Icon
 	if db.icon then
@@ -211,10 +220,10 @@ function UF:Configure_Castbar(frame)
 		end
 
 		if frame.ORIENTATION ~= "RIGHT" then
-			castbar:Point("BOTTOMRIGHT", castbar.Holder, "BOTTOMRIGHT", -(frame.BORDER+frame.SPACING), frame.BORDER+frame.SPACING)
+			castbar:Point("BOTTOMRIGHT", castbar.Holder, "BOTTOMRIGHT", -(frame.BORDER + frame.SPACING), frame.BORDER+frame.SPACING)
 			if not isMoved then castbar.Holder.mover:Point("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -(frame.BORDER - frame.SPACING)) end
 		else
-			castbar:Point("BOTTOMLEFT", castbar.Holder, "BOTTOMLEFT", frame.BORDER+frame.SPACING, frame.BORDER+frame.SPACING)
+			castbar:Point("BOTTOMLEFT", castbar.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
 			if not isMoved then castbar.Holder.mover:Point("TOPLEFT", frame, "BOTTOMLEFT", 0, -(frame.BORDER - frame.SPACING)) end
 		end
 	end
@@ -247,8 +256,13 @@ function UF:Configure_Castbar(frame)
 		end
 	end
 
-	castbar.custom_backdrop = UF.db.colors.customcastbarbackdrop and UF.db.colors.castbar_backdrop
-	UF:ToggleTransparentStatusBar(UF.db.colors.transparentCastbar, castbar, castbar.bg, nil, UF.db.colors.invertCastbar)
+	if db.customColor and db.customColor.enable then
+		castbar.custom_backdrop = db.customColor.useCustomBackdrop and db.customColor.colorBackdrop
+		UF:ToggleTransparentStatusBar(db.customColor.transparent, castbar, castbar.bg, nil, db.customColor.invertColors)
+	else
+		castbar.custom_backdrop = UF.db.colors.customcastbarbackdrop and UF.db.colors.castbar_backdrop
+		UF:ToggleTransparentStatusBar(UF.db.colors.transparentCastbar, castbar, castbar.bg, nil, UF.db.colors.invertCastbar)
+	end
 
 	if castbar.Holder.mover then
 		if db.overlayOnFrame ~= "None" or not db.enable then
@@ -334,15 +348,16 @@ end
 function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 	extraTickRatio = extraTickRatio or 0
 	UF:HideTicks()
+
 	if numTicks and numTicks <= 0 then return end
+
 	local w = frame:GetWidth()
 	local d = w / (numTicks + extraTickRatio)
 
-	for i = 1, numTicks do
+	for i = 1, numTicks - 1 do
 		if not ticks[i] then
 			ticks[i] = frame:CreateTexture(nil, "OVERLAY")
 			ticks[i]:SetTexture(E.media.normTex)
-			E:RegisterStatusBar(ticks[i])
 			ticks[i]:SetVertexColor(frame.tickColor.r, frame.tickColor.g, frame.tickColor.b, frame.tickColor.a)
 			ticks[i]:Width(frame.tickWidth)
 		end
@@ -352,6 +367,36 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 		ticks[i]:Height(frame.tickHeight)
 		ticks[i]:Show()
 	end
+end
+
+function UF:GetInterruptColor(db, unit)
+	local colors = ElvUF.colors
+	local customColor = db and db.castbar and db.castbar.customColor
+	local custom, r, g, b = customColor and customColor.enable and customColor
+
+	if custom then
+		r, g, b = customColor.color.r, customColor.color.g, customColor.color.b
+	else
+		r, g, b = colors.castColor[1], colors.castColor[2], colors.castColor[3]
+	end
+
+	if self.notInterruptible and unit ~= "player" and UnitCanAttack("player", unit) then
+		if custom and custom.colorNoInterrupt then
+			r, g, b = custom.colorNoInterrupt.r, custom.colorNoInterrupt.g, custom.colorNoInterrupt.b
+		else
+			r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
+		end
+	elseif ((custom and custom.useClassColor) or (not custom and UF.db.colors.castClassColor)) and UnitIsPlayer(unit) then
+		local _, class = UnitClass(unit)
+		local t = class and colors.class[class]
+		if t then r, g, b = t[1], t[2], t[3] end
+	elseif (custom and custom.useReactionColor) or (not custom and UF.db.colors.castReactionColor) then
+		local reaction = UnitReaction(unit, "player")
+		local t = reaction and colors.reaction[reaction]
+		if t then r, g, b = t[1], t[2], t[3] end
+	end
+
+	return r, g, b
 end
 
 function UF:PostCastStart(unit)
@@ -369,8 +414,11 @@ function UF:PostCastStart(unit)
 	if self.channeling and db.castbar.ticks and unit == "player" then
 		local unitframe = E.global.unitframe
 		local baseTicks = unitframe.ChannelTicks[self.spellName]
+		local ticksSize = baseTicks and unitframe.ChannelTicksSize[self.spellName]
+		local hasteTicks = ticksSize and unitframe.HastedChannelTicks[self.spellName]
 
-		if baseTicks and unitframe.ChannelTicksSize[self.spellName] and unitframe.HastedChannelTicks[self.spellName] then
+		-- hasteTicks require a tickSize
+		if hasteTicks then
 			local tickIncRate = 1 / baseTicks
 			local curHaste = UnitSpellHaste("player") * 0.01
 			local firstTickInc = tickIncRate / 2
@@ -387,16 +435,16 @@ function UF:PostCastStart(unit)
 				end
 			end
 
-			local baseTickSize = unitframe.ChannelTicksSize[self.spellName]
+			local baseTickSize = ticksSize
 			local hastedTickSize = baseTickSize / (1 + curHaste)
 			local extraTick = self.max - hastedTickSize * (baseTicks + bonusTicks)
 			local extraTickRatio = extraTick / hastedTickSize
 			UF:SetCastTicks(self, baseTicks + bonusTicks, extraTickRatio)
 			self.hadTicks = true
-		elseif baseTicks and unitframe.ChannelTicksSize[self.spellName] then
+		elseif ticksSize then
 			local curHaste = UnitSpellHaste("player") * 0.01
-			local baseTickSize = unitframe.ChannelTicksSize[self.spellName]
-			local hastedTickSize = baseTickSize / (1 +  curHaste)
+			local baseTickSize = ticksSize
+			local hastedTickSize = baseTickSize / (1 + curHaste)
 			local extraTick = self.max - hastedTickSize * (baseTicks)
 			local extraTickRatio = extraTick / hastedTickSize
 
@@ -410,26 +458,11 @@ function UF:PostCastStart(unit)
 		end
 	end
 
-	local colors = ElvUF.colors
-	local r, g, b = colors.castColor[1], colors.castColor[2], colors.castColor[3]
-
-	if (self.notInterruptible and unit ~= "player") and UnitCanAttack("player", unit) then
-		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
-	elseif UF.db.colors.castClassColor and UnitIsPlayer(unit) then
-		local _, Class = UnitClass(unit)
-		local t = Class and ElvUF.colors.class[Class]
-		if t then r, g, b = t[1], t[2], t[3] end
-	elseif UF.db.colors.castReactionColor then
-		local Reaction = UnitReaction(unit, "player")
-		local t = Reaction and ElvUF.colors.reaction[Reaction]
-		if t then r, g, b = t[1], t[2], t[3] end
-	end
-
 	if self.SafeZone then
 		self.SafeZone:Show()
 	end
 
-	self:SetStatusBarColor(r, g, b)
+	self:SetStatusBarColor(UF.GetInterruptColor(self, db, unit))
 end
 
 function UF:PostCastStop(unit)
@@ -440,7 +473,11 @@ function UF:PostCastStop(unit)
 end
 
 function UF:PostCastFail()
-	self:SetStatusBarColor(UF.db.colors.castInterruptedColor.r, UF.db.colors.castInterruptedColor.g, UF.db.colors.castInterruptedColor.b)
+	local db = self:GetParent().db
+	local customColor = db and db.castbar and db.castbar.customColor
+	local color = (customColor and customColor.enable and customColor.colorInterrupted) or UF.db.colors.castInterruptedColor
+
+	self:SetStatusBarColor(color.r, color.g, color.b)
 
 	if self.SafeZone then
 		self.SafeZone:Hide()
@@ -450,20 +487,8 @@ end
 function UF:PostCastInterruptible(unit)
 	if unit == "vehicle" or unit == "player" then return end
 
-	local colors = ElvUF.colors
-	local r, g, b = colors.castColor[1], colors.castColor[2], colors.castColor[3]
+	local db = self:GetParent().db
+	if not db or not db.castbar then return end
 
-	if self.notInterruptible and UnitCanAttack("player", unit) then
-		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
-	elseif UF.db.colors.castClassColor and UnitIsPlayer(unit) then
-		local _, Class = UnitClass(unit)
-		local t = Class and ElvUF.colors.class[Class]
-		if t then r, g, b = t[1], t[2], t[3] end
-	elseif UF.db.colors.castReactionColor then
-		local Reaction = UnitReaction(unit, "player")
-		local t = Reaction and ElvUF.colors.reaction[Reaction]
-		if t then r, g, b = t[1], t[2], t[3] end
-	end
-
-	self:SetStatusBarColor(r, g, b)
+	self:SetStatusBarColor(UF.GetInterruptColor(self, db, unit))
 end
