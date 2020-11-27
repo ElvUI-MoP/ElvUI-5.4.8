@@ -10,6 +10,7 @@ local GetAddOnCPUUsage = GetAddOnCPUUsage
 local GetAddOnInfo = GetAddOnInfo
 local GetAddOnMemoryUsage = GetAddOnMemoryUsage
 local GetAvailableBandwidth = GetAvailableBandwidth
+local SetCVar = SetCVar
 local GetCVar = GetCVar
 local GetCVarBool = GetCVarBool
 local GetDownloadedPercentage = GetDownloadedPercentage
@@ -18,6 +19,7 @@ local GetNetIpTypes = GetNetIpTypes
 local GetNetStats = GetNetStats
 local GetNumAddOns = GetNumAddOns
 local IsAddOnLoaded = IsAddOnLoaded
+local IsControlKeyDown = IsControlKeyDown
 local IsShiftKeyDown = IsShiftKeyDown
 local ResetCPUUsage = ResetCPUUsage
 local UpdateAddOnCPUUsage = UpdateAddOnCPUUsage
@@ -116,11 +118,14 @@ local function ToggleGameMenuFrame()
 	end
 end
 
-local function OnClick(_, btn)
-	if btn == "RightButton" then
+local function OnClick()
+	if IsShiftKeyDown() and IsControlKeyDown() and not InCombatLockdown() then
+		SetCVar("scriptProfile", GetCVarBool("scriptProfile") and 0 or 1)
+		ReloadUI()
+	elseif IsShiftKeyDown() then
 		collectgarbage("collect")
 		ResetCPUUsage()
-	elseif btn == "LeftButton" then
+	else
 		ToggleGameMenuFrame()
 	end
 end
@@ -183,7 +188,8 @@ local function OnEnter(self)
 		DT.tooltip:AddLine(join("", "|cffaaaaaa", L["(Hold Shift) Memory Usage"], "|r"))
 	end
 
-	DT.tooltip:AddLine(join("", "|cffaaaaaa", L["(Modifer Click) Collect Garbage"], "|r"))
+	DT.tooltip:AddLine(join("", "|cffaaaaaa", L["(Shift Click) Collect Garbage"], "|r"))
+	DT.tooltip:AddLine(join("", "|cffaaaaaa", L["(Ctrl & Shift Click) Toggle CPU Profiling"], "|r"))
 
 	DT.tooltip:Show()
 end
