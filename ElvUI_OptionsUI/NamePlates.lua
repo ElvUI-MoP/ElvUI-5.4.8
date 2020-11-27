@@ -666,7 +666,7 @@ local function UpdateFilterGroup()
 				combat = {
 					order = 7,
 					type = "group",
-					name = L["COMBAT"],
+					name = L["Unit Conditions"],
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 					args = {
 						inCombat = {
@@ -692,6 +692,19 @@ local function UpdateFilterGroup()
 							end,
 							set = function(info, value)
 								E.global.nameplates.filters[selectedNameplateFilter].triggers.outOfCombat = value
+								NP:ConfigureAll()
+							end
+						},
+						isResting = {
+							order = 3,
+							type = "toggle",
+							name = L["Player is Resting"],
+							desc = L["If enabled then the filter will only activate when you are resting at an Inn."],
+							get = function(info)
+								return E.global.nameplates.filters[selectedNameplateFilter].triggers.isResting
+							end,
+							set = function(info, value)
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.isResting = value
 								NP:ConfigureAll()
 							end
 						}
@@ -3542,13 +3555,23 @@ E.Options.args.nameplate = {
 					type = "description",
 					name = " "
 				},
-				fadeIn = {
+				thinBorders = {
 					order = 8,
+					type = "toggle",
+					name = L["Thin Borders"],
+					set = function(info, value)
+						E.db.nameplates[info[#info]] = value
+						E:StaticPopup_Show("CONFIG_RL")
+					end,
+					disabled = function() return E.private.general.pixelPerfect end
+				},
+				fadeIn = {
+					order = 9,
 					type = "toggle",
 					name = L["Alpha Fading"]
 				},
 				smoothbars = {
-					order = 9,
+					order = 10,
 					type = "toggle",
 					name = L["Smooth Bars"],
 					desc = L["Bars will transition smoothly."],
@@ -3558,19 +3581,19 @@ E.Options.args.nameplate = {
 					end
 				},
 				highlight = {
-					order = 10,
+					order = 11,
 					type = "toggle",
 					name = L["Hover Highlight"]
 				},
 				nameColoredGlow = {
-					order = 11,
+					order = 12,
 					type = "toggle",
 					name = L["Name Colored Glow"],
 					desc = L["Use the Name Color of the unit for the Name Glow."],
 					disabled = function() return not E.db.nameplates.highlight end
 				},
 				targetGroup = {
-					order = 12,
+					order = 13,
 					type = "group",
 					name = L["TARGET"],
 					disabled = function() return not E.NamePlates.Initialized end,
@@ -3639,8 +3662,24 @@ E.Options.args.nameplate = {
 								NP:ConfigureAll()
 							end
 						},
-						alwaysShowTargetHealth = {
+						arrow = {
 							order = 6,
+							type = "select",
+							sortByValue = true,
+							name = L["Arrow Texture"],
+							values = {
+								ArrowUp = E:TextureString(E.Media.Textures.ArrowUp, ":14:14"),
+								Arrow1 = E:TextureString(E.Media.Textures.Arrow1, ":14:14"),
+								Arrow2 = E:TextureString(E.Media.Textures.Arrow2, ":14:14")
+							},
+							get = function(info) return E.db.nameplates.arrow end,
+							set = function(info, value)
+								E.db.nameplates.arrow = value
+								NP:ConfigureAll()
+							end
+						},
+						alwaysShowTargetHealth = {
+							order = 7,
 							type = "toggle",
 							name = L["Always Show Target Health"],
 							get = function(info) return E.db.nameplates.alwaysShowTargetHealth end,
@@ -3653,7 +3692,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				trivialGroup = {
-					order = 13,
+					order = 14,
 					type = "group",
 					name = L["Trivial"],
 					get = function(info)
@@ -3687,7 +3726,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				threatGroup = {
-					order = 14,
+					order = 15,
 					type = "group",
 					name = L["Threat"],
 					get = function(info)
@@ -3728,7 +3767,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				colorsGroup = {
-					order = 15,
+					order = 16,
 					type = "group",
 					name = L["COLORS"],
 					args = {
@@ -3911,7 +3950,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				cutawayHealth = {
-					order = 16,
+					order = 17,
 					type = "group",
 					name = L["Cutaway Bars"],
 					args = {
@@ -3945,7 +3984,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				clickThroughGroup = {
-					order = 17,
+					order = 18,
 					type = "group",
 					name = L["Click Through"],
 					get = function(info)
@@ -3975,7 +4014,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				clickableRangeGroup = {
-					order = 18,
+					order = 19,
 					type = "group",
 					name = L["Clickable Size"],
 					args = {

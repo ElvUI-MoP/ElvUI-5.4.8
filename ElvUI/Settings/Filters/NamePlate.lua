@@ -153,7 +153,8 @@ E.StyleFilterDefaults = {
 			u1 = true, u2 = true
 		},
 		inCombat = false,
-		outOfCombat = false
+		outOfCombat = false,
+		isResting = false
 	},
 	actions = {
 		color = {

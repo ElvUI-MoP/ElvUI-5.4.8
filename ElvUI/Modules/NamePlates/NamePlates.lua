@@ -207,7 +207,7 @@ function NP:StyleFrame(parent, noBackdrop, point)
 		point.backdrop:SetTexture(unpack(E.media.backdropfadecolor))
 	end
 
-	if E.PixelMode then
+	if NP.thinBorders then
 		point.bordertop = parent:CreateTexture()
 		point.bordertop:SetPoint("TOPLEFT", point, "TOPLEFT", -noscalemult, noscalemult)
 		point.bordertop:SetPoint("TOPRIGHT", point, "TOPRIGHT", noscalemult, noscalemult)
@@ -1103,6 +1103,10 @@ function NP:UNIT_POWER(_, unit)
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_POWER")
 end
 
+function NP:PLAYER_UPDATE_RESTING()
+	NP:ForEachVisiblePlate("StyleFilterUpdate", "PLAYER_UPDATE_RESTING")
+end
+
 function NP:RAID_TARGET_UPDATE()
 	for frame in pairs(self.VisiblePlates) do
 		NP:CheckRaidIcon(frame)
@@ -1185,6 +1189,8 @@ function NP:Initialize()
 
 	self.Initialized = true
 
+	self.thinBorders = NP.db.thinBorders or E.PixelMode
+
 	--Add metatable to all our StyleFilters so they can grab default values if missing
 	self:StyleFilterInitialize()
 
@@ -1202,6 +1208,7 @@ function NP:Initialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_LOGOUT")
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
+	self:RegisterEvent("PLAYER_UPDATE_RESTING")
 	self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	self:RegisterEvent("UNIT_HEALTH")
 	self:RegisterEvent("UNIT_POWER")

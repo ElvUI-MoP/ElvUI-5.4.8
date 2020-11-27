@@ -9,6 +9,7 @@ local GetInstanceInfo = GetInstanceInfo
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellInfo = GetSpellInfo
 local GetTime = GetTime
+local IsResting = IsResting
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
@@ -231,7 +232,7 @@ function NP:StyleFilterSetChanges(frame, actions, HealthColorChanged, BorderChan
 			end
 		end
 	end
-	if NameOnlyChanged then
+	if NameOnlyChanged and not frame.IconOnlyChanged then
 		frame.StyleChanged = true
 		frame.NameOnlyChanged = true
 		--hide the bars
@@ -244,9 +245,12 @@ function NP:StyleFilterSetChanges(frame, actions, HealthColorChanged, BorderChan
 		frame.Name:ClearAllPoints()
 		frame.Name:SetJustifyH("CENTER")
 		frame.Name:SetPoint("TOP", frame)
-		frame.Level:ClearAllPoints()
-		frame.Level:SetPoint("LEFT", frame.Name, "RIGHT")
-		frame.Level:SetJustifyH("LEFT")
+		if NP.db.units[frame.UnitType].level.enable then
+			frame.Level:ClearAllPoints()
+			frame.Level:SetPoint("LEFT", frame.Name, "RIGHT")
+			frame.Level:SetJustifyH("LEFT")
+			frame.Level:SetFormattedText(" [%s]", NP:UnitLevel(frame))
+		end
 		if not NameColorChanged then
 			NP:Update_Name(frame, true)
 		end
@@ -331,13 +335,16 @@ function NP:StyleFilterClearChanges(frame, HealthColorChanged, BorderChanged, Fl
 			NP:Configure_Glow(frame)
 			NP:Update_Glow(frame)
 		end
+		frame.Name:ClearAllPoints()
+		frame.Level:ClearAllPoints()
 		if NP.db.units[frame.UnitType].name.enable then
-			frame.Name:ClearAllPoints()
-			frame.Level:ClearAllPoints()
-			NP:Update_Level(frame)
 			NP:Update_Name(frame)
+			frame.Name:SetTextColor(frame.Name.r, frame.Name.g, frame.Name.b)
 		else
 			frame.Name:SetText()
+		end
+		if NP.db.units[frame.UnitType].level.enable then
+			NP:Update_Level(frame)
 		end
 	end
 	if IconChanged then
@@ -355,13 +362,16 @@ function NP:StyleFilterClearChanges(frame, HealthColorChanged, BorderChanged, Fl
 			NP:Configure_Glow(frame)
 			NP:Update_Glow(frame)
 		end
+		frame.Name:ClearAllPoints()
+		frame.Level:ClearAllPoints()
 		if NP.db.units[frame.UnitType].name.enable then
-			frame.Name:ClearAllPoints()
-			frame.Level:ClearAllPoints()
-			NP:Update_Level(frame)
 			NP:Update_Name(frame)
+			frame.Name:SetTextColor(frame.Name.r, frame.Name.g, frame.Name.b)
 		else
 			frame.Name:SetText()
+		end
+		if NP.db.units[frame.UnitType].level.enable then
+			NP:Update_Level(frame)
 		end
 		NP:Update_RaidIcon(frame)
 		NP:Configure_NameOnlyGlow(frame)
@@ -450,6 +460,11 @@ function NP:StyleFilterConditionCheck(frame, filter, trigger)
 		local maxLevel = (trigger.maxlevel and trigger.maxlevel ~= 0 and (trigger.maxlevel >= level))
 		local matchMyLevel = trigger.mylevel and (level == myLevel)
 		if curLevel or minLevel or maxLevel or matchMyLevel then passed = true else return end
+	end
+
+	-- Resting
+	if trigger.isResting then
+		if IsResting() then passed = true else return end
 	end
 
 	-- Unit Type
@@ -652,6 +667,10 @@ function NP:StyleFilterConfigure()
 				if t.inCombat or t.outOfCombat then
 					NP.StyleFilterTriggerEvents.PLAYER_REGEN_DISABLED = true
 					NP.StyleFilterTriggerEvents.PLAYER_REGEN_ENABLED = true
+				end
+
+				if t.isResting then
+					NP.StyleFilterTriggerEvents.PLAYER_UPDATE_RESTING = 1
 				end
 
 				if t.cooldowns and t.cooldowns.names and next(t.cooldowns.names) then

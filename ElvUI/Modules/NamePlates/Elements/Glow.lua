@@ -23,13 +23,13 @@ function NP:Update_Glow(frame)
 
 	if frame.isTarget then
 		showIndicator = 1
-	elseif self.db.lowHealthThreshold > 0 then
+	elseif NP.db.lowHealthThreshold > 0 then
 		local health = frame.oldHealthBar:GetValue()
 		local _, maxHealth = frame.oldHealthBar:GetMinMaxValues()
 		local perc = health / maxHealth
 
-		if health > 1 and perc <= self.db.lowHealthThreshold then
-			if perc <= self.db.lowHealthThreshold / 2 then
+		if health > 1 and perc <= NP.db.lowHealthThreshold then
+			if perc <= NP.db.lowHealthThreshold / 2 then
 				showIndicator = 2
 			else
 				showIndicator = 3
@@ -55,7 +55,7 @@ function NP:Update_Glow(frame)
 		local r, g, b
 
 		if showIndicator == 1 then
-			local color = self.db.colors.glowColor
+			local color = NP.db.colors.glowColor
 			r, g, b = color.r, color.g, color.b
 		elseif showIndicator == 2 then
 			r, g, b = 1, 0, 0
@@ -128,40 +128,36 @@ function NP:Configure_Glow(frame)
 	end
 
 	if glowStyle ~= "none" then
-		local color = self.db.colors.glowColor
+		local color = NP.db.colors.glowColor
 		local r, g, b, a = color.r, color.g, color.b, color.a
+		local arrowTex = E.Media.Textures[NP.db.arrow]
 
 		-- Indicators
-		frame.LeftIndicator:SetVertexColor(r, g, b)
-		frame.RightIndicator:SetVertexColor(r, g, b)
+		frame.TopIndicator:SetTexture(arrowTex)
 		frame.TopIndicator:SetVertexColor(r, g, b)
-
-		frame.LeftIndicator:ClearAllPoints()
-		frame.RightIndicator:ClearAllPoints()
 		frame.TopIndicator:ClearAllPoints()
+
+		frame.LeftIndicator:SetTexture(arrowTex)
+		frame.LeftIndicator:SetVertexColor(r, g, b)
+		frame.LeftIndicator:ClearAllPoints()
+
+		frame.RightIndicator:SetTexture(arrowTex)
+		frame.RightIndicator:SetVertexColor(r, g, b)
+		frame.RightIndicator:ClearAllPoints()
 
 		if glowStyle == "style3" or glowStyle == "style5" or glowStyle == "style6" then
 			if frame.IconOnlyChanged then
 				frame.TopIndicator:SetPoint("BOTTOM", frame.IconFrame, "TOP", -1, 6)
 			else
-				if healthIsShown then
-					frame.TopIndicator:SetPoint("BOTTOM", frame.Health, "TOP", 0, 6)
-				else
-					frame.TopIndicator:SetPoint("BOTTOM", frame.Name, "TOP", 0, 8)
-				end
+				frame.TopIndicator:SetPoint("BOTTOM", healthIsShown and frame.Health or frame.Name, "TOP", 0, healthIsShown and 6 or 8)
 			end
 		elseif glowStyle == "style4" or glowStyle == "style7" or glowStyle == "style8" then
 			if frame.IconOnlyChanged then
 				frame.LeftIndicator:SetPoint("LEFT", frame.IconFrame, "RIGHT", -3, 0)
 				frame.RightIndicator:SetPoint("RIGHT", frame.IconFrame, "LEFT", 3, 0)
 			else
-				if healthIsShown then
-					frame.LeftIndicator:SetPoint("LEFT", frame.Health, "RIGHT", -3, 0)
-					frame.RightIndicator:SetPoint("RIGHT", frame.Health, "LEFT", 3, 0)
-				else
-					frame.LeftIndicator:SetPoint("LEFT", frame.Name, "RIGHT", 20, 0)
-					frame.RightIndicator:SetPoint("RIGHT", frame.Name, "LEFT", -20, 0)
-				end
+				frame.LeftIndicator:SetPoint("LEFT", healthIsShown and frame.Health or frame.Name, "RIGHT", healthIsShown and -3 or 20, 0)
+				frame.RightIndicator:SetPoint("RIGHT", healthIsShown and frame.Health or frame.Name, "LEFT", healthIsShown and 3 or -20, 0)
 			end
 		end
 
@@ -173,7 +169,8 @@ function NP:Configure_Glow(frame)
 		frame.Spark:ClearAllPoints()
 
 		if glowStyle == "style1" or glowStyle == "style5" or glowStyle == "style7" then
-			frame.Shadow:SetOutside(frame.IconOnlyChanged and frame.IconFrame or frame.Health, E:Scale(E.PixelMode and 6 or 8), E:Scale(E.PixelMode and 6 or 8))
+			local offset = E:Scale(NP.thinBorders and 6 or 8)
+			frame.Shadow:SetOutside(frame.IconOnlyChanged and frame.IconFrame or frame.Health, offset, offset)
 		elseif glowStyle == "style2" or glowStyle == "style6" or glowStyle == "style8" then
 			if healthIsShown then
 				local size = E.Border + 14
@@ -187,24 +184,19 @@ function NP:Configure_Glow(frame)
 	end
 end
 
-local Textures = {"Spark", "TopIndicator", "LeftIndicator", "RightIndicator"}
-
 function NP:Construct_Glow(frame)
 	frame.Shadow = CreateFrame("Frame", "$parentGlow", frame)
 	frame.Shadow:SetFrameLevel(frame.Health:GetFrameLevel() - 1)
 	frame.Shadow:SetBackdrop({edgeFile = LSM:Fetch("border", "ElvUI GlowBorder"), edgeSize = E:Scale(6)})
 	frame.Shadow:Hide()
 
-	for _, object in ipairs(Textures) do
+	for _, object in ipairs({"Spark", "TopIndicator", "LeftIndicator", "RightIndicator"}) do
 		frame[object] = frame:CreateTexture(nil, "BACKGROUND")
 		frame[object]:Hide()
 	end
 
 	frame.Spark:SetTexture(E.Media.Textures.Spark)
-	frame.TopIndicator:SetTexture(E.Media.Textures.ArrowUp)
 	frame.TopIndicator:SetRotation(3.14)
-	frame.LeftIndicator:SetTexture(E.Media.Textures.ArrowUp)
 	frame.LeftIndicator:SetRotation(1.57)
-	frame.RightIndicator:SetTexture(E.Media.Textures.ArrowUp)
 	frame.RightIndicator:SetRotation(-1.57)
 end
