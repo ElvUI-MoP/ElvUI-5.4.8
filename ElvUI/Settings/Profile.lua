@@ -1170,6 +1170,7 @@ P.tooltip = {
 	itemCount = "BAGS_ONLY",
 	modifierID = "SHOW",
 	role = true,
+	gender = false,
 	font = "PT Sans Narrow",
 	fontOutline = "NONE",
 	headerFontSize = 12,

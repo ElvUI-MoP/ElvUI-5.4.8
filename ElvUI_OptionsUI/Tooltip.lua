@@ -81,42 +81,48 @@ E.Options.args.tooltip = {
 					name = L["Show ElvUI Users"],
 					desc = L["Show ElvUI users and their version of ElvUI."]
 				},
-				alwaysShowRealm = {
+				gender = {
 					order = 7,
+					type = "toggle",
+					name = L["Gender"],
+					desc = L["Displays the gender of players."]
+				},
+				alwaysShowRealm = {
+					order = 8,
 					type = "toggle",
 					name = L["Always Show Realm"]
 				},
 				playerTitles = {
-					order = 8,
+					order = 9,
 					type = "toggle",
 					name = L["Player Titles"],
 					desc = L["Display player titles."]
 				},
 				guildRanks = {
-					order = 9,
+					order = 10,
 					type = "toggle",
 					name = L["Guild Ranks"],
 					desc = L["Display guild ranks if a unit is guilded."]
 				},
 				role = {
-					order = 10,
+					order = 11,
 					type = "toggle",
 					name = L["ROLE"],
 					desc = L["Display the unit role in the tooltip."]
 				},
 				spacer = {
-					order = 11,
+					order = 12,
 					type = "description",
 					name = ""
 				},
 				modifierID = {
-					order = 12,
+					order = 13,
 					type = "select",
 					name = L["Modifier for IDs"],
 					values = modifierValues
 				},
 				itemCount = {
-					order = 13,
+					order = 14,
 					type = "select",
 					name = L["Item Count"],
 					desc = L["Display how many of a certain item you have in your possession."],
@@ -128,14 +134,14 @@ E.Options.args.tooltip = {
 					}
 				},
 				colorAlpha = {
-					order = 14,
+					order = 15,
 					type = "range",
 					name = L["OPACITY"],
 					isPercent = true,
 					min = 0, max = 1, step = 0.01
 				},
 				fontGroup = {
-					order = 15,
+					order = 16,
 					type = "group",
 					guiInline = true,
 					name = L["Tooltip Font Settings"],
@@ -189,7 +195,7 @@ E.Options.args.tooltip = {
 					}
 				},
 				factionColors = {
-					order = 16,
+					order = 17,
 					type = "group",
 					name = L["Custom Faction Colors"],
 					guiInline = true,
@@ -263,34 +269,33 @@ E.Options.args.tooltip = {
 			set = function(info, value) E.db.tooltip.healthBar[info[#info]] = value end,
 			disabled = function() return not E.Tooltip.Initialized end,
 			args = {
-				height = {
-					order = 1,
-					type = "range",
-					name = L["Height"],
-					min = 1, max = 15, step = 1,
-					set = function(info, value) E.db.tooltip.healthBar.height = value GameTooltipStatusBar:Height(value) end
-				},
 				statusPosition = {
-					order = 2,
+					order = 1,
 					type = "select",
 					name = L["Position"],
 					values = {
+						["TOP"] = L["Top"],
 						["BOTTOM"] = L["Bottom"],
-						["TOP"] = L["Top"]
+						["DISABLED"] = L["DISABLE"]
 					}
 				},
 				text = {
-					order = 3,
+					order = 2,
 					type = "toggle",
 					name = L["Text"],
 					set = function(info, value)
 						E.db.tooltip.healthBar.text = value
-						if value then
-							GameTooltipStatusBar.text:Show()
-						else
-							GameTooltipStatusBar.text:Hide()
-						end
-					end
+						GameTooltipStatusBar.text:SetShown(value)
+					end,
+					disabled = function() return E.db.tooltip.healthBar.statusPosition == "DISABLED" end
+				},
+				height = {
+					order = 3,
+					type = "range",
+					name = L["Height"],
+					min = 1, max = 15, step = 1,
+					set = function(info, value) E.db.tooltip.healthBar.height = value GameTooltipStatusBar:Height(value) end,
+					disabled = function() return E.db.tooltip.healthBar.statusPosition == "DISABLED" end
 				},
 				spacer = {
 					order = 4,
@@ -306,7 +311,7 @@ E.Options.args.tooltip = {
 						E.db.tooltip.healthBar.font = value
 						GameTooltipStatusBar.text:FontTemplate(E.Libs.LSM:Fetch("font", E.db.tooltip.healthBar.font), E.db.tooltip.healthBar.fontSize, E.db.tooltip.healthBar.fontOutline)
 					end,
-					disabled = function() return not E.db.tooltip.healthBar.text end,
+					disabled = function() return not E.db.tooltip.healthBar.text or E.db.tooltip.healthBar.statusPosition == "DISABLED" end
 				},
 				fontSize = {
 					order = 6,
@@ -317,7 +322,7 @@ E.Options.args.tooltip = {
 						E.db.tooltip.healthBar.fontSize = value
 						GameTooltipStatusBar.text:FontTemplate(E.Libs.LSM:Fetch("font", E.db.tooltip.healthBar.font), E.db.tooltip.healthBar.fontSize, E.db.tooltip.healthBar.fontOutline)
 					end,
-					disabled = function() return not E.db.tooltip.healthBar.text end,
+					disabled = function() return not E.db.tooltip.healthBar.text or E.db.tooltip.healthBar.statusPosition == "DISABLED" end
 				},
 				fontOutline = {
 					order = 7,
@@ -328,7 +333,7 @@ E.Options.args.tooltip = {
 						E.db.tooltip.healthBar.fontOutline = value
 						GameTooltipStatusBar.text:FontTemplate(E.Libs.LSM:Fetch("font", E.db.tooltip.healthBar.font), E.db.tooltip.healthBar.fontSize, E.db.tooltip.healthBar.fontOutline)
 					end,
-					disabled = function() return not E.db.tooltip.healthBar.text end
+					disabled = function() return not E.db.tooltip.healthBar.text or E.db.tooltip.healthBar.statusPosition == "DISABLED" end
 				}
 			}
 		}
