@@ -10,8 +10,9 @@ L["%s frame has a conflicting anchor point. Forcing the Buffs to be attached to 
 L["%s is attempting to share his filters with you. Would you like to accept the request?"] = "%s quiere compartir sus filtros contigo. ¿Aceptas la petición?"
 L["%s is attempting to share the profile %s with you. Would you like to accept the request?"] = "%s quiere compartir el perfil %s contigo. ¿Aceptas la petición?"
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s intentó llamar a la función protegida '%s'."
+L["(Ctrl & Shift Click) Toggle CPU Profiling"] = true
 L["(Hold Shift) Memory Usage"] = "(Mantén Shift) Uso de Memoria"
-L["(Modifer Click) Collect Garbage"] = "(Clic Mod) Recolectar basura"
+L["(Shift Click) Collect Garbage"] = "(Shift Click) Recolectar basura"
 L["A raid marker feature is available by pressing Escape -> Keybinds scroll to the bottom under ElvUI and setting a keybind for the raid marker."] = "La opción de marcador de banda está disponible pulsando Escape -> Asignar teclas -> Recorrer hacia abajo hasta ElvUI y establecer la tecla para el marcador de banda."
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "La opción que has cambiado se aplicará sólo para este personaje. Esta opción no se verá alterada al cambiar el perfil de usuario. Cambiar esta opción requiere que recargues tu Interfaz de Usuario."
 L["ABOVE_THREAT_FORMAT"] = "%s: %.0f%% [%.0f%% above |cff%02x%02x%02x%s|r]"
