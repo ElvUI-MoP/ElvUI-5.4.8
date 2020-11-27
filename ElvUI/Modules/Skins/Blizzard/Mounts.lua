@@ -401,7 +401,7 @@ local function LoadSkin()
 	PetJournalPetCardPetInfo.backdrop:SetOutside(PetJournalPetCardPetInfo.icon)
 	PetJournalPetCardPetInfo:StyleButton()
 	PetJournalPetCardPetInfo:Size(40)
-	PetJournalPetCardPetInfo:Point("TOPLEFT", 2, -2)
+	PetJournalPetCardPetInfo:Point("TOPLEFT", 4, -4)
 
 	PetJournalPetCardPetInfo.icon:SetTexCoord(unpack(E.TexCoords))
 	PetJournalPetCardPetInfo.icon:SetInside(PetJournalPetCardPetInfo)

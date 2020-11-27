@@ -398,7 +398,7 @@ local function LoadSkin()
 		frame.War:Point("RIGHT", 32, -5)
 
 		bar:StripTextures()
-		bar:CreateBackdrop("Default")
+		bar:CreateBackdrop()
 		bar:SetStatusBarTexture(E.media.normTex)
 		E:RegisterStatusBar(bar)
 

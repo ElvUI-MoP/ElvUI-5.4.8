@@ -44,7 +44,7 @@ local function LoadSkin()
 
 	CalendarFilterFrame:CreateBackdrop()
 	CalendarFilterFrame.backdrop:Point("TOPLEFT", 20, 4)
-	CalendarFilterFrame.backdrop:Point("BOTTOMRIGHT", CalendarFilterButton, "BOTTOMRIGHT", 2, -2)
+	CalendarFilterFrame.backdrop:Point("BOTTOMRIGHT", CalendarFilterButton, 2, -2)
 
 	CalendarWeekdaySelectedTexture:SetTexture(1, 1, 1, 0.3)
 	CalendarWeekdaySelectedTexture:SetInside()
@@ -141,7 +141,7 @@ local function LoadSkin()
 	CalendarCreateEventTitleFrame:StripTextures()
 
 	S:HandleButton(CalendarCreateEventCreateButton, true)
-	CalendarCreateEventCreateButton:Point("BOTTOMRIGHT", CalendarCreateEventFrame, "BOTTOMRIGHT", -12, 12)
+	CalendarCreateEventCreateButton:Point("BOTTOMRIGHT", CalendarCreateEventFrame, -12, 12)
 	S:HandleButton(CalendarCreateEventMassInviteButton, true)
 
 	S:HandleButton(CalendarCreateEventInviteButton, true)
@@ -258,7 +258,7 @@ local function LoadSkin()
 	S:HandleButton(CalendarTexturePickerCancelButton, true)
 	CalendarTexturePickerCancelButton:Width(110)
 	CalendarTexturePickerCancelButton:ClearAllPoints()
-	CalendarTexturePickerCancelButton:Point("BOTTOMRIGHT", CalendarTexturePickerFrame, "BOTTOMRIGHT", -30, 7)
+	CalendarTexturePickerCancelButton:Point("BOTTOMRIGHT", CalendarTexturePickerFrame, -30, 7)
 
 	-- Mass Invite Frame
 	CalendarMassInviteFrame:StripTextures()
@@ -330,8 +330,8 @@ local function LoadSkin()
 
 	S:HandleScrollBar(CalendarEventPickerScrollBar)
 	CalendarEventPickerScrollBar:ClearAllPoints()
-	CalendarEventPickerScrollBar:Point("TOPRIGHT", CalendarEventPickerScrollFrame, "TOPRIGHT", 26, -15)
-	CalendarEventPickerScrollBar:Point("BOTTOMRIGHT", CalendarEventPickerScrollFrame, "BOTTOMRIGHT", 0, 13)
+	CalendarEventPickerScrollBar:Point("TOPRIGHT", CalendarEventPickerScrollFrame, 26, -15)
+	CalendarEventPickerScrollBar:Point("BOTTOMRIGHT", CalendarEventPickerScrollFrame, 0, 13)
 
 	S:HandleButton(CalendarEventPickerCloseButton)
 	CalendarEventPickerCloseButton:Point("BOTTOMRIGHT", -6, 6)

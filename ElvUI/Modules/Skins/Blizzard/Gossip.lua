@@ -59,8 +59,8 @@ local function LoadSkin()
 
 	S:HandleScrollBar(GossipGreetingScrollFrameScrollBar)
 	GossipGreetingScrollFrameScrollBar:ClearAllPoints()
-	GossipGreetingScrollFrameScrollBar:Point("TOPRIGHT", GossipGreetingScrollFrame, "TOPRIGHT", 24, -18)
-	GossipGreetingScrollFrameScrollBar:Point("BOTTOMRIGHT", GossipGreetingScrollFrame, "BOTTOMRIGHT", 0, 18)
+	GossipGreetingScrollFrameScrollBar:Point("TOPRIGHT", GossipGreetingScrollFrame, 24, -18)
+	GossipGreetingScrollFrameScrollBar:Point("BOTTOMRIGHT", GossipGreetingScrollFrame, 0, 18)
 
 	S:HandleButton(GossipFrameGreetingGoodbyeButton)
 	GossipFrameGreetingGoodbyeButton:Point("BOTTOMRIGHT", -54, 19)

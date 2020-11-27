@@ -120,7 +120,7 @@ local function LoadSkin()
 		frame.texture:SetTexCoord(unpack(E.TexCoords))
 
 		_G[frame:GetName().."Border"]:Hide()
-		
+
 		frame.isSkinned = true
 	end
 

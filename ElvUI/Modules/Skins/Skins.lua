@@ -6,8 +6,10 @@ local unpack, assert, pairs, ipairs, select, type = unpack, assert, pairs, ipair
 local strfind = strfind
 
 local CreateFrame = CreateFrame
-local hooksecurefunc = hooksecurefunc
 local IsAddOnLoaded = IsAddOnLoaded
+local UIPanelWindows = UIPanelWindows
+local UpdateUIPanelPositions = UpdateUIPanelPositions
+local hooksecurefunc = hooksecurefunc
 
 S.allowBypass = {}
 S.addonCallbacks = {}
@@ -855,6 +857,54 @@ function S:SetUIPanelWindowInfo(frame, name, value, offset, igroneUpdate)
 	end
 end
 
+function S:SetBackdropHitRect(frame, backdrop, clampRect, attempt)
+	if not frame then return end
+
+	backdrop = backdrop or frame.backdrop
+	if not backdrop then return end
+
+	local left = frame:GetLeft()
+	local bleft = backdrop:GetLeft()
+
+	if not left or not bleft then
+		if attempt ~= 10 then
+			E:Delay(0.1, S.SetBackdropHitRect, S, frame, backdrop, clampRect, attempt and attempt + 1 or 1)
+		end
+
+		return
+	end
+
+	left = floor(left + 0.5)
+	local right = floor(frame:GetRight() + 0.5)
+	local top = floor(frame:GetTop() + 0.5)
+	local bottom = floor(frame:GetBottom() + 0.5)
+
+	bleft = floor(bleft + 0.5)
+	local bright = floor(backdrop:GetRight() + 0.5)
+	local btop = floor(backdrop:GetTop() + 0.5)
+	local bbottom = floor(backdrop:GetBottom() + 0.5)
+
+	left = bleft - left
+	right = right - bright
+	top = top - btop
+	bottom = bbottom - bottom
+
+	if not frame:CanChangeAttribute() then
+		self.hitRectQueue[frame] = {left, right, top, bottom, clampRect}
+
+		if not self.inCombat then
+			self.inCombat = true
+			S:RegisterEvent("PLAYER_REGEN_ENABLED")
+		end
+	else
+		frame:SetHitRectInsets(left, right, top, bottom)
+
+		if clampRect then
+			frame:SetClampRectInsets(left, -right, -top, bottom)
+		end
+	end
+end
+
 function S:PLAYER_REGEN_ENABLED()
 	self.inCombat = nil
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
@@ -864,6 +914,16 @@ function S:PLAYER_REGEN_ENABLED()
 			SetPanelWindowInfo(info[1], info[2], info[3], info[4])
 		end
 		self.uiPanelQueue[frameInfo] = nil
+	end
+
+	for frame, info in pairs(self.hitRectQueue) do
+		frame:SetHitRectInsets(info[1], info[2], info[3], info[4])
+
+		if info[5] then
+			frame:SetClampRectInsets(info[1], info[2], info[3], info[4])
+		end
+
+		self.hitRectQueue[frame] = nil
 	end
 end
 

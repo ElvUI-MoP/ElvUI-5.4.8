@@ -109,8 +109,10 @@ local function LoadSkin()
 
 		tab:StripTextures()
 		tab:SetHighlightTexture(E.Media.Textures.Highlight)
-		tab:GetHighlightTexture():SetInside()
-		tab:GetHighlightTexture():SetAlpha(0.35)
+
+		local highlight = tab:GetHighlightTexture()
+		highlight:SetInside()
+		highlight:SetAlpha(0.35)
 	end
 
 	S:HandleCloseButton(AuctionFrameCloseButton)
@@ -120,19 +122,21 @@ local function LoadSkin()
 
 	-- Browse Frame
 	BrowseTitle:ClearAllPoints()
-	BrowseTitle:Point("TOP", AuctionFrame, "TOP", 0, -5)
+	BrowseTitle:Point("TOP", AuctionFrame, 0, -5)
+
 	BrowseScrollFrame:StripTextures()
 
 	BrowseFilterScrollFrame:StripTextures()
 
 	S:HandleScrollBar(BrowseFilterScrollFrameScrollBar)
 	BrowseFilterScrollFrameScrollBar:ClearAllPoints()
-	BrowseFilterScrollFrameScrollBar:Point("TOPRIGHT", BrowseFilterScrollFrame, "TOPRIGHT", 22, -18)
-	BrowseFilterScrollFrameScrollBar:Point("BOTTOMRIGHT", BrowseFilterScrollFrame, "BOTTOMRIGHT", 0, 17)
+	BrowseFilterScrollFrameScrollBar:Point("TOPRIGHT", BrowseFilterScrollFrame, 22, -18)
+	BrowseFilterScrollFrameScrollBar:Point("BOTTOMRIGHT", BrowseFilterScrollFrame, 0, 17)
+
 	S:HandleScrollBar(BrowseScrollFrameScrollBar)
 	BrowseScrollFrameScrollBar:ClearAllPoints()
-	BrowseScrollFrameScrollBar:Point("TOPRIGHT", BrowseScrollFrame, "TOPRIGHT", 24, -18)
-	BrowseScrollFrameScrollBar:Point("BOTTOMRIGHT", BrowseScrollFrame, "BOTTOMRIGHT", 0, 18)
+	BrowseScrollFrameScrollBar:Point("TOPRIGHT", BrowseScrollFrame, 24, -18)
+	BrowseScrollFrameScrollBar:Point("BOTTOMRIGHT", BrowseScrollFrame, 0, 18)
 
 	S:HandleNextPrevButton(BrowsePrevPageButton, nil, nil, true)
 	BrowsePrevPageButton:Point("TOPLEFT", 640, -50)
@@ -159,7 +163,7 @@ local function LoadSkin()
 
 	-- Bid Frame
 	BidTitle:ClearAllPoints()
-	BidTitle:Point("TOP", AuctionFrame, "TOP", 0, -5)
+	BidTitle:Point("TOP", AuctionFrame, 0, -5)
 
 	BidScrollFrame:StripTextures()
 
@@ -171,19 +175,19 @@ local function LoadSkin()
 
 	S:HandleScrollBar(BidScrollFrameScrollBar)
 	BidScrollFrameScrollBar:ClearAllPoints()
-	BidScrollFrameScrollBar:Point("TOPRIGHT", BidScrollFrame, "TOPRIGHT", 23, -18)
-	BidScrollFrameScrollBar:Point("BOTTOMRIGHT", BidScrollFrame, "BOTTOMRIGHT", 0, 16)
+	BidScrollFrameScrollBar:Point("TOPRIGHT", BidScrollFrame, 23, -18)
+	BidScrollFrameScrollBar:Point("BOTTOMRIGHT", BidScrollFrame, 0, 16)
 
 	-- Auctions Frame
 	AuctionsTitle:ClearAllPoints()
-	AuctionsTitle:Point("TOP", AuctionFrame, "TOP", 0, -5)
+	AuctionsTitle:Point("TOP", AuctionFrame, 0, -5)
 
 	AuctionsScrollFrame:StripTextures()
 
 	S:HandleScrollBar(AuctionsScrollFrameScrollBar)
 	AuctionsScrollFrameScrollBar:ClearAllPoints()
-	AuctionsScrollFrameScrollBar:Point("TOPRIGHT", AuctionsScrollFrame, "TOPRIGHT", 23, -20)
-	AuctionsScrollFrameScrollBar:Point("BOTTOMRIGHT", AuctionsScrollFrame, "BOTTOMRIGHT", 0, 18)
+	AuctionsScrollFrameScrollBar:Point("TOPRIGHT", AuctionsScrollFrame, 23, -20)
+	AuctionsScrollFrameScrollBar:Point("BOTTOMRIGHT", AuctionsScrollFrame, 0, 18)
 
 	AuctionsCloseButton:Point("BOTTOMRIGHT", 66, 6)
 	AuctionsCancelAuctionButton:Point("RIGHT", AuctionsCloseButton, "LEFT", -4, 0)
@@ -196,9 +200,11 @@ local function LoadSkin()
 	AuctionsItemButton:StyleButton()
 
 	AuctionsItemButton:HookScript("OnEvent", function(self, event)
-		if event == "NEW_AUCTION_UPDATE" and self:GetNormalTexture() then
-			self:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-			self:GetNormalTexture():SetInside()
+		local normal = self:GetNormalTexture()
+
+		if event == "NEW_AUCTION_UPDATE" and normal then
+			normal:SetTexCoord(unpack(E.TexCoords))
+			normal:SetInside()
 
 			local _, _, _, quality = GetAuctionSellItemInfo()
 			if quality then

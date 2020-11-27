@@ -6,6 +6,9 @@ local unpack, select = unpack, select
 local ceil = math.ceil
 
 local CreateFrame = CreateFrame
+local GetCurrentGuildBankTab = GetCurrentGuildBankTab
+local GetGuildBankItemLink = GetGuildBankItemLink
+local GetItemQualityColor = GetItemQualityColor
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -16,7 +19,19 @@ local function LoadSkin()
 	GuildBankFrame:Width(654)
 
 	GuildBankEmblemFrame:StripTextures(true)
-	GuildBankMoneyFrameBackground:Kill()
+	GuildBankMoneyFrameBackground:StripTextures()
+
+	S:HookScript(GuildBankFrame, "OnShow", function(self)
+		S:SetUIPanelWindowInfo(self, "width", nil, 35)
+		S:SetBackdropHitRect(self)
+		S:Unhook(self, "OnShow")
+	end)
+
+	S:HandleEditBox(GuildItemSearchBox)
+	GuildItemSearchBox:Point("TOPRIGHT", -24, -28)
+	GuildItemSearchBox:Size(150, 20)
+
+	GuildBankTabTitleBackground:Point("TOP", 0, -8)
 
 	for i = 1, GuildBankFrame:GetNumChildren() do
 		local child = select(i, GuildBankFrame:GetChildren())
@@ -26,55 +41,24 @@ local function LoadSkin()
 		end
 	end
 
-	S:HandleButton(GuildBankFrameDepositButton, true)
-	GuildBankFrameDepositButton:Width(85)
-	GuildBankFrameDepositButton:Point("BOTTOMRIGHT", -8, 23)
+	S:HandleButton(GuildBankFrameDepositButton)
+	GuildBankFrameDepositButton:Size(88, 22)
+	GuildBankFrameDepositButton:Point("BOTTOMRIGHT", -10, 30)
 
-	S:HandleButton(GuildBankFrameWithdrawButton, true)
-	GuildBankFrameWithdrawButton:Width(85)
+	S:HandleButton(GuildBankFrameWithdrawButton)
+	GuildBankFrameWithdrawButton:Width(88, 22)
 	GuildBankFrameWithdrawButton:Point("RIGHT", GuildBankFrameDepositButton, "LEFT", -2, 0)
 
-	S:HandleButton(GuildBankInfoSaveButton, true)
-	GuildBankInfoSaveButton:Point("BOTTOMLEFT", GuildBankFrame, "BOTTOMLEFT", 20, 22)
-
-	S:HandleButton(GuildBankFramePurchaseButton, true)
-
-	GuildBankInfoScrollFrame:StripTextures()
-	GuildBankInfoScrollFrame:Width(572)
-	GuildBankInfoScrollFrame:Point("TOPLEFT", -2, 3)
-
-	S:HandleScrollBar(GuildBankInfoScrollFrameScrollBar)
-
-	GuildBankTabInfoEditBox:Width(565)
-
-	GuildBankMessageFrame:Point("TOPLEFT", 28, -58)
-	GuildBankFrameLog:Point("TOPLEFT", 0, -15)
-
-	GuildBankTransactionsScrollFrame:StripTextures()
-	GuildBankTransactionsScrollFrame:Point("TOPRIGHT", GuildBankFrame, "TOPRIGHT", -44, -87)
-	GuildBankTransactionsScrollFrame:Height(289)
-
-	S:HandleScrollBar(GuildBankTransactionsScrollFrameScrollBar)
-	GuildBankTransactionsScrollFrameScrollBar:Point("TOPLEFT", GuildBankTransactionsScrollFrame, "TOPRIGHT", -2, 0)
-
+	-- Bank Frame
 	GuildBankFrame.inset = CreateFrame("Frame", nil, GuildBankFrame)
 	GuildBankFrame.inset:SetTemplate()
-	GuildBankFrame.inset:Point("TOPLEFT", 25, -65)
-	GuildBankFrame.inset:Point("BOTTOMRIGHT", -25, 47)
+	GuildBankFrame.inset:Point("TOPLEFT", GuildBankColumn1Button1, -8, 8)
+	GuildBankFrame.inset:Point("BOTTOMRIGHT", GuildBankColumn7Button14, 8, -8)
 
-	GuildItemSearchBox:StripTextures()
-	GuildItemSearchBox:CreateBackdrop()
-	GuildItemSearchBox.backdrop:Point("TOPLEFT", 10, -1)
-	GuildItemSearchBox.backdrop:Point("BOTTOMRIGHT", 4, 1)
-	GuildItemSearchBox:Point("TOPRIGHT", -30, -42)
-	GuildItemSearchBox:Size(150, 22)
+	S:HandleButton(GuildBankFramePurchaseButton)
 
-	GuildBankLimitLabel:Point("CENTER", GuildBankTabLimitBackground, "CENTER", -40, -8)
-
-	GuildBankCashFlowLabel:Point("LEFT", GuildBankTabLimitBackground, "LEFT", -80, -8)
-	GuildBankCashFlowMoneyFrame:Point("RIGHT", GuildBankTabLimitBackground, "RIGHT", 10, -8)
-
-	GuildBankWithdrawMoneyFrame:Point("LEFT", GuildBankMoneyLimitLabel, "RIGHT", -100, -5)
+	GuildBankLimitLabel:ClearAllPoints()
+	GuildBankLimitLabel:Point("BOTTOMLEFT", GuildBankFrame, 90, 34)
 
 	for i = 1, NUM_GUILDBANK_COLUMNS do
 		local column = _G["GuildBankColumn"..i]
@@ -82,63 +66,106 @@ local function LoadSkin()
 		column:StripTextures()
 
 		if i == 1 then
-			column:Point("TOPLEFT", GuildBankFrame, "TOPLEFT", 25, -70)
+			column:Point("TOPLEFT", 21, -59)
 		else
-			column:Point("TOPLEFT", _G["GuildBankColumn"..i - 1], "TOPRIGHT", -15, 0)
+			column:Point("TOPLEFT", _G["GuildBankColumn"..i - 1], "TOPRIGHT", -14, 0)
 		end
 
 		for x = 1, NUM_SLOTS_PER_GUILDBANK_GROUP do
 			local button = _G["GuildBankColumn"..i.."Button"..x]
 			local icon = _G["GuildBankColumn"..i.."Button"..x.."IconTexture"]
 			local texture = _G["GuildBankColumn"..i.."Button"..x.."NormalTexture"]
-			local count = _G["GuildBankColumn"..i.."Button"..x.."Count"]
 
-			if x == 8 then
-				button:Point("TOPLEFT", _G["GuildBankColumn"..i.."Button1"], "TOPRIGHT", 5, 0)
-			end
-
-			if texture then
-				texture:SetTexture(nil)
-			end
 			button:StyleButton()
 			button:SetTemplate("Default", true)
+			button:Size(36)
+
+			if x == 8 then
+				button:Point("TOPLEFT", _G["GuildBankColumn"..i.."Button1"], "TOPRIGHT", 7, 0)
+			end
 
 			icon:SetInside()
 			icon:SetTexCoord(unpack(E.TexCoords))
 			icon:SetDrawLayer("OVERLAY")
 
-			count:SetDrawLayer("OVERLAY")
+			if texture then
+				texture:SetTexture(nil)
+			end
+
+			_G["GuildBankColumn"..i.."Button"..x.."Count"]:SetDrawLayer("OVERLAY")
 		end
 	end
 
 	hooksecurefunc("GuildBankFrame_Update", function()
-		if GuildBankFrame.mode ~= "bank" then return end
+		if GuildBankFrame.mode == "bank" then
+			local tab = GetCurrentGuildBankTab()
+			local index, column, button, link, quality
 
-		local tab = GetCurrentGuildBankTab()
-		local index, column, button, link, quality
+			for i = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
+				index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
+				if index == 0 then
+					index = NUM_SLOTS_PER_GUILDBANK_GROUP
+				end
+				column = ceil((i - 0.5) / NUM_SLOTS_PER_GUILDBANK_GROUP)
+				button = _G["GuildBankColumn"..column.."Button"..index]
+				link = GetGuildBankItemLink(tab, i)
 
-		for i = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
-			index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
-			if index == 0 then
-				index = NUM_SLOTS_PER_GUILDBANK_GROUP
-			end
-			column = ceil((i - 0.5) / NUM_SLOTS_PER_GUILDBANK_GROUP)
-			button = _G["GuildBankColumn"..column.."Button"..index]
-			link = GetGuildBankItemLink(tab, i)
+				if link then
+					quality = select(3, GetItemInfo(link))
 
-			if link then
-				quality = select(3, GetItemInfo(link))
-
-				if quality then
-					button:SetBackdropBorderColor(GetItemQualityColor(quality))
+					if quality and quality > 1 then
+						button:SetBackdropBorderColor(GetItemQualityColor(quality))
+					else
+						button:SetBackdropBorderColor(unpack(E.media.bordercolor))
+					end
 				else
 					button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
-			else
-				button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
+
+			GuildBankFrame.inset:Show()
+		else
+			GuildBankFrame.inset:Hide()
 		end
 	end)
+
+	-- Log Tab
+	GuildBankCashFlowLabel:ClearAllPoints()
+	GuildBankCashFlowLabel:Point("BOTTOMLEFT", GuildBankFrame, 90, 34)
+
+	GuildBankCashFlowMoneyFrame:ClearAllPoints()
+	GuildBankCashFlowMoneyFrame:Point("LEFT", GuildBankCashFlowLabel, "RIGHT", 20, 0)
+
+	GuildBankMessageFrame:CreateBackdrop("Transparent")
+	GuildBankMessageFrame.backdrop:Point("TOPLEFT", -2, 2)
+	GuildBankMessageFrame.backdrop:Point("BOTTOMRIGHT", 2, 0)
+	GuildBankMessageFrame:Point("TOPLEFT", 12, -58)
+	GuildBankMessageFrame:Width(610)
+
+	GuildBankTransactionsScrollFrame:StripTextures()
+
+	S:HandleScrollBar(GuildBankTransactionsScrollFrameScrollBar)
+	GuildBankTransactionsScrollFrameScrollBar:ClearAllPoints()
+	GuildBankTransactionsScrollFrameScrollBar:Point("TOPRIGHT", GuildBankMessageFrame, 23, -16)
+	GuildBankTransactionsScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildBankMessageFrame, 0, 18)
+
+	-- Info Tab
+	GuildBankInfoScrollFrame:StripTextures()
+	GuildBankInfoScrollFrame:CreateBackdrop("Transparent")
+	GuildBankInfoScrollFrame.backdrop:Point("TOPLEFT", -2, 2)
+	GuildBankInfoScrollFrame.backdrop:Point("BOTTOMRIGHT", 2, 0)
+	GuildBankInfoScrollFrame:Point("TOPLEFT", -20, 16)
+	GuildBankInfoScrollFrame:Size(610, 304)
+
+	S:HandleScrollBar(GuildBankInfoScrollFrameScrollBar)
+	GuildBankInfoScrollFrameScrollBar:ClearAllPoints()
+	GuildBankInfoScrollFrameScrollBar:Point("TOPRIGHT", GuildBankInfoScrollFrame, 23, -16)
+	GuildBankInfoScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildBankInfoScrollFrame, 0, 18)
+
+	GuildBankTabInfoEditBox:Width(610)
+
+	S:HandleButton(GuildBankInfoSaveButton)
+	GuildBankInfoSaveButton:Point("BOTTOMLEFT", GuildBankFrame, 10, 31)
 
 	-- Side Tabs
 	for i = 1, 8 do
@@ -174,22 +201,25 @@ local function LoadSkin()
 
 		if i == 1 then
 			tab:ClearAllPoints()
-			tab:Point("BOTTOMLEFT", GuildBankFrame, "BOTTOMLEFT", 0, -30)
+			tab:Point("BOTTOMLEFT", GuildBankFrame, 0, -30)
 		end
 	end
 
 	-- Popup
 	S:HandleIconSelectionFrame(GuildBankPopupFrame, NUM_GUILDBANK_ICONS_SHOWN, "GuildBankPopupButton", "GuildBankPopup")
-
-	S:HandleScrollBar(GuildBankPopupScrollFrameScrollBar)
+	GuildBankPopupFrame:Point("TOPLEFT", GuildBankFrame, "TOPRIGHT", 37, 0)
 
 	GuildBankPopupScrollFrame:CreateBackdrop("Transparent")
 	GuildBankPopupScrollFrame.backdrop:Point("TOPLEFT", 92, 2)
 	GuildBankPopupScrollFrame.backdrop:Point("BOTTOMRIGHT", -5, 2)
-	GuildBankPopupScrollFrame:Point("TOPRIGHT", GuildBankPopupFrame, "TOPRIGHT", -30, -66)
+	GuildBankPopupScrollFrame:Point("TOPRIGHT", GuildBankPopupFrame, -30, -66)
 
-	GuildBankPopupButton1:Point("TOPLEFT", GuildBankPopupFrame, "TOPLEFT", 30, -86)
-	GuildBankPopupFrame:Point("TOPLEFT", GuildBankFrame, "TOPRIGHT", 36, 0)
+	S:HandleScrollBar(GuildBankPopupScrollFrameScrollBar)
+	GuildBankPopupScrollFrameScrollBar:ClearAllPoints()
+	GuildBankPopupScrollFrameScrollBar:Point("TOPRIGHT", GuildBankPopupScrollFrame, 19, -16)
+	GuildBankPopupScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildBankPopupScrollFrame, 0, 20)
+
+	GuildBankPopupButton1:Point("TOPLEFT", GuildBankPopupFrame, 30, -86)
 end
 
 S:AddCallbackForAddon("Blizzard_GuildBankUI", "GuildBank", LoadSkin)
