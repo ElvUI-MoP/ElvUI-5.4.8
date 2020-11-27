@@ -312,20 +312,18 @@ function AB:AdjustMaxStanceButtons(event)
 end
 
 function AB:UpdateStanceBindings()
-	local button, hotKey, key, color
-
 	for i = 1, NUM_STANCE_SLOTS do
-		button = _G["ElvUI_StanceBarButton"..i]
-		hotKey = _G["ElvUI_StanceBarButton"..i.."HotKey"]
+		local button = _G["ElvUI_StanceBarButton"..i]
+		local hotKey = _G["ElvUI_StanceBarButton"..i.."HotKey"]
 
-		if self.db.hotkeytext then
-			key = GetBindingKey("BONUSACTIONBUTTON"..i)
-			color = self.db.fontColor
+		if AB.db.hotkeytext and not AB.db.stanceBar.hideHotkey then
+			local key = GetBindingKey("SHAPESHIFTBUTTON"..i)
+			local color = AB.db.fontColor
 
 			hotKey:Show()
 			hotKey:SetText(key)
 			hotKey:SetTextColor(color.r, color.g, color.b)
-			self:FixKeybindText(button)
+			AB:FixKeybindText(button)
 		else
 			hotKey:Hide()
 		end

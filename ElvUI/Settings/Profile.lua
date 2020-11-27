@@ -4622,6 +4622,7 @@ P.actionbar = {
 	notUsableColor = {r = 0.4, g = 0.4, b = 0.4},
 
 	flashAnimation = false,
+	handleOverlay = true,
 
 	cooldown = {
 		threshold = 4,
@@ -4667,6 +4668,7 @@ P.actionbar = {
 		enabled = true,
 		mouseover = false,
 		clickThrough = false,
+		hideHotkey = false,
 		buttons = NUM_PET_ACTION_SLOTS,
 		buttonsPerRow = 1,
 		point = "TOPRIGHT",
@@ -4685,6 +4687,7 @@ P.actionbar = {
 		style = "darkenInactive",
 		mouseover = false,
 		clickThrough = false,
+		hideHotkey = false,
 		buttonsPerRow = NUM_STANCE_SLOTS,
 		buttons = NUM_STANCE_SLOTS,
 		point = "TOPLEFT",
@@ -4701,6 +4704,7 @@ P.actionbar = {
 	extraActionButton = {
 		alpha = 1,
 		scale = 1,
+		hideHotkey = false,
 		inheritGlobalFade = false
 	},
 	vehicleExitButton = {
@@ -4730,7 +4734,28 @@ for i = 1, 10 do
 		showGrid = true,
 		flyoutDirection = "AUTOMATIC",
 		paging = {},
-		visibility = "[vehicleui] hide; [overridebar] hide; [petbattle] hide; show"
+		visibility = "[vehicleui] hide; [overridebar] hide; [petbattle] hide; show",
+		countFont = "Homespun",
+		countFontOutline = "MONOCHROMEOUTLINE",
+		countFontSize = 10,
+		countFontXOffset = 0,
+		countFontYOffset = 2,
+		countTextPosition = "BOTTOMRIGHT",
+		customCountFont = false,
+		customHotkeyFont = false,
+		hideHotkey = false,
+		hotkeyFont = "Homespun",
+		hotkeyFontOutline = "MONOCHROMEOUTLINE",
+		hotkeyFontSize = 10,
+		hotkeyTextPosition = "TOPRIGHT",
+		hotkeyTextXOffset = 0,
+		hotkeyTextYOffset = -3,
+		useHotkeyColor = false,
+		hotkeyColor = {r = 1, g = 1, b = 1},
+		useCountColor = false,
+		countColor = {r = 1, g = 1, b = 1},
+		useMacroColor = false,
+		macroColor = {r = 1, g = 1, b = 1}
 	}
 end
 

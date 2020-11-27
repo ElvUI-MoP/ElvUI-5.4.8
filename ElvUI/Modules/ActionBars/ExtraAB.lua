@@ -20,7 +20,7 @@ end
 function AB:Extra_SetAlpha()
 	if not E.private.actionbar.enable then return end
 
-	local alpha = E.db.actionbar.extraActionButton.alpha
+	local alpha = AB.db.extraActionButton.alpha
 	for i = 1, ExtraActionBarFrame:GetNumChildren() do
 		local button = _G["ExtraActionButton"..i]
 		if button then
@@ -32,7 +32,7 @@ end
 function AB:Extra_SetScale()
 	if not E.private.actionbar.enable then return end
 
-	local scale = E.db.actionbar.extraActionButton.scale
+	local scale = AB.db.extraActionButton.scale
 	if ExtraActionBarFrame then
 		ExtraActionBarFrame:SetScale(scale)
 		ExtraActionBarHolder:Size(ExtraActionBarFrame:GetWidth() * scale)
@@ -47,9 +47,13 @@ function AB:UpdateExtraBindings()
 		if button then
 			local hotKey = _G["ExtraActionButton"..i.."HotKey"]
 
-			hotKey:SetShown(AB.db.hotkeytext)
-			hotKey:SetTextColor(color.r, color.g, color.b)
-			AB:FixKeybindText(button)
+			if AB.db.hotkeytext and not AB.db.extraActionButton.hideHotkey then
+				hotKey:Show()
+				hotKey:SetTextColor(color.r, color.g, color.b)
+				AB:FixKeybindText(button)
+			else
+				hotKey:Hide()
+			end
 		end
 	end
 end
@@ -67,7 +71,7 @@ function AB:SetupExtraButton()
 	for i = 1, ExtraActionBarFrame:GetNumChildren() do
 		local button = _G["ExtraActionButton"..i]
 		if button then
-			self:StyleButton(button, true)
+			AB:StyleButton(button, true)
 			button:SetTemplate()
 
 			button.noResize = true

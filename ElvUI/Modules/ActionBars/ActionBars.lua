@@ -488,6 +488,15 @@ function AB:UpdateButtonSettings()
 		end
 	end
 
+	-- we can safely toggle these events when we arent using the handle overlay
+	if AB.db.handleOverlay then
+		LAB.eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+		LAB.eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+	else
+		LAB.eventFrame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+		LAB.eventFrame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+	end
+
 	AB:UpdatePetBindings()
 	AB:UpdateStanceBindings()
 	AB:UpdateExtraBindings()
@@ -534,8 +543,8 @@ function AB:StyleButton(button, noBackdrop, useMasque, ignoreNormal)
 	local normal = _G[name.."NormalTexture"]
 	local normal2 = button:GetNormalTexture()
 
+	local db = button:GetParent().db
 	local color = AB.db.fontColor
-
 	local countPosition = AB.db.countTextPosition or "BOTTOMRIGHT"
 	local countXOffset = AB.db.countTextXOffset or 0
 	local countYOffset = AB.db.countTextYOffset or 2
@@ -550,16 +559,26 @@ function AB:StyleButton(button, noBackdrop, useMasque, ignoreNormal)
 
 	if count then
 		count:ClearAllPoints()
-		count:Point(countPosition, countXOffset, countYOffset)
-		count:FontTemplate(LSM:Fetch("font", AB.db.font), AB.db.fontSize, AB.db.fontOutline)
-		count:SetTextColor(color.r, color.g, color.b)
+
+		if db and db.customCountFont then
+			count:Point(db.countTextPosition, db.countTextXOffset, db.countTextYOffset)
+			count:FontTemplate(LSM:Fetch("font", db.countFont), db.countFontSize, db.countFontOutline)
+		else
+			count:Point(countPosition, countXOffset, countYOffset)
+			count:FontTemplate(LSM:Fetch("font", AB.db.font), AB.db.fontSize, AB.db.fontOutline)
+		end
+
+		local c = db and db.useCountColor and db.countColor or color
+		count:SetTextColor(c.r, c.g, c.b)
 	end
 
 	if macroText then
 		macroText:ClearAllPoints()
 		macroText:Point("BOTTOM", 0, 1)
 		macroText:FontTemplate(LSM:Fetch("font", AB.db.font), AB.db.fontSize, AB.db.fontOutline)
-		macroText:SetTextColor(color.r, color.g, color.b)
+
+		local c = db and db.useMacroColor and db.macroColor or color
+		macroText:SetTextColor(c.r, c.g, c.b)
 	end
 
 	if not button.noBackdrop and not button.backdrop and not button.useMasque then
@@ -587,11 +606,14 @@ function AB:StyleButton(button, noBackdrop, useMasque, ignoreNormal)
 		shine:SetAllPoints()
 	end
 
-	if AB.db.hotkeytext or AB.db.useRangeColorText then
-		hotkey:FontTemplate(LSM:Fetch("font", AB.db.font), AB.db.fontSize, AB.db.fontOutline)
-		if button.config and (button.config.outOfRangeColoring ~= "hotkey") then
-			button.hotkey:SetTextColor(color.r, color.g, color.b)
+	if AB.db.hotkeytext then
+		if db and db.customHotkeyFont then
+			hotkey:FontTemplate(LSM:Fetch("font", db.hotkeyFont), db.hotkeyFontSize, db.hotkeyFontOutline)
+		else
+			hotkey:FontTemplate(LSM:Fetch("font", AB.db.font), AB.db.fontSize, AB.db.fontOutline)
 		end
+
+		AB:UpdateHotkeyColor(button)
 	end
 
 	--Extra Action Button
@@ -614,6 +636,14 @@ function AB:StyleButton(button, noBackdrop, useMasque, ignoreNormal)
 		E:RegisterCooldown(button.cooldown)
 
 		AB.handledbuttons[button] = true
+	end
+end
+
+function AB:UpdateHotkeyColor(button)
+	if button.config and not button.outOfRange then
+		local db = button:GetParent().db
+		local c = db and db.useHotkeyColor and db.hotkeyColor or AB.db.fontColor
+		button.hotkey:SetTextColor(c.r, c.g, c.b)
 	end
 end
 
@@ -840,16 +870,18 @@ function AB:UpdateButtonConfig(bar, buttonName)
 		return
 	end
 
+	local barDB = AB.db["bar"..bar.id]
 	if not bar.buttonConfig then bar.buttonConfig = {hideElements = {}, colors = {}} end
 	bar.buttonConfig.hideElements.macro = not AB.db.macrotext
-	bar.buttonConfig.hideElements.hotkey = not AB.db.hotkeytext
-	bar.buttonConfig.showGrid = AB.db["bar"..bar.id].showGrid
+	bar.buttonConfig.hideElements.hotkey = not AB.db.hotkeytext or barDB.hideHotkey
+	bar.buttonConfig.showGrid = barDB.showGrid
 	bar.buttonConfig.clickOnDown = AB.db.keyDown
 	bar.buttonConfig.outOfRangeColoring = (AB.db.useRangeColorText and "hotkey") or "button"
 	bar.buttonConfig.colors.range = E:SetColorTable(bar.buttonConfig.colors.range, AB.db.noRangeColor)
 	bar.buttonConfig.colors.mana = E:SetColorTable(bar.buttonConfig.colors.mana, AB.db.noPowerColor)
 	bar.buttonConfig.colors.usable = E:SetColorTable(bar.buttonConfig.colors.usable, AB.db.usableColor)
 	bar.buttonConfig.colors.notUsable = E:SetColorTable(bar.buttonConfig.colors.notUsable, AB.db.notUsableColor)
+	bar.buttonConfig.handleOverlay = AB.db.handleOverlay
 	SetModifiedClick("PICKUPACTION", AB.db.movementModifier)
 
 	for i, button in pairs(bar.buttons) do
@@ -869,9 +901,10 @@ function AB:FixKeybindText(button)
 	local hotkey = _G[button:GetName().."HotKey"]
 	local text = hotkey:GetText()
 
-	local hotkeyPosition = E.db.actionbar.hotkeyTextPosition or "TOPRIGHT"
-	local hotkeyXOffset = E.db.actionbar.hotkeyTextXOffset or 0
-	local hotkeyYOffset = E.db.actionbar.hotkeyTextYOffset or -3
+	local db = button:GetParent().db
+	local hotkeyPosition = db and db.customHotkeyFont and db.hotkeyTextPosition or E.db.actionbar.hotkeyTextPosition or "TOPRIGHT"
+	local hotkeyXOffset = db and db.customHotkeyFont and db.hotkeyTextXOffset or E.db.actionbar.hotkeyTextXOffset or 0
+	local hotkeyYOffset = db and db.customHotkeyFont and db.hotkeyTextYOffset or E.db.actionbar.hotkeyTextYOffset or -3
 
 	local justify = "RIGHT"
 	if hotkeyPosition == "TOPLEFT" or hotkeyPosition == "BOTTOMLEFT" then
@@ -1110,9 +1143,10 @@ end
 
 function AB:LAB_ButtonUpdate(button)
 	local color = AB.db.fontColor
-	button.count:SetTextColor(color.r, color.g, color.b)
-	if button.config and (button.config.outOfRangeColoring ~= "hotkey") then
-		button.hotkey:SetTextColor(color.r, color.g, color.b)
+	local db = button.db
+	do
+		local color = db and db.useCountColor and db.countColor or color
+		button.count:SetTextColor(color.r, color.g, color.b)
 	end
 
 	if button.backdrop then
@@ -1132,6 +1166,10 @@ function AB:LAB_ButtonUpdate(button)
 	end
 end
 
+function AB:LAB_UpdateRange(button)
+	AB:UpdateHotkeyColor(button)
+end
+
 function AB:Initialize()
 	AB.db = E.db.actionbar
 
@@ -1139,6 +1177,7 @@ function AB:Initialize()
 	AB.Initialized = true
 
 	LAB.RegisterCallback(AB, "OnButtonUpdate", AB.LAB_ButtonUpdate)
+	LAB.RegisterCallback(AB, "OnUpdateRange", AB.LAB_UpdateRange)
 	LAB.RegisterCallback(AB, "OnButtonCreated", AB.LAB_ButtonCreated)
 
 	AB.fadeParent = CreateFrame("Frame", "Elv_ABFade", UIParent)

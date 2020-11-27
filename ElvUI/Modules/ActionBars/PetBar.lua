@@ -247,20 +247,18 @@ function AB:PositionAndSizeBarPet()
 end
 
 function AB:UpdatePetBindings()
-	local button, hotKey, key, color
-
 	for i = 1, NUM_PET_ACTION_SLOTS do
-		button = _G["PetActionButton"..i]
-		hotKey = _G["PetActionButton"..i.."HotKey"]
+		local button = _G["PetActionButton"..i]
+		local hotKey = _G["PetActionButton"..i.."HotKey"]
 
-		if self.db.hotkeytext then
-			key = GetBindingKey("BONUSACTIONBUTTON"..i)
-			color = self.db.fontColor
+		if AB.db.hotkeytext and not AB.db.barPet.hideHotkey then
+			local key = GetBindingKey("BONUSACTIONBUTTON"..i)
+			local color = AB.db.fontColor
 
 			hotKey:Show()
 			hotKey:SetText(key)
 			hotKey:SetTextColor(color.r, color.g, color.b)
-			self:FixKeybindText(button)
+			AB:FixKeybindText(button)
 		else
 			hotKey:Hide()
 		end
