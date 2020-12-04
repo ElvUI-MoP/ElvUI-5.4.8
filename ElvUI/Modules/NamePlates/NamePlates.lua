@@ -1107,6 +1107,22 @@ function NP:PLAYER_UPDATE_RESTING()
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "PLAYER_UPDATE_RESTING")
 end
 
+function NP:LOADING_SCREEN_DISABLED()
+	NP:ForEachVisiblePlate("StyleFilterUpdate", "LOADING_SCREEN_DISABLED")
+end
+
+function NP:ZONE_CHANGED_NEW_AREA()
+	NP:ForEachVisiblePlate("StyleFilterUpdate", "ZONE_CHANGED_NEW_AREA")
+end
+
+function NP:ZONE_CHANGED_INDOORS()
+	NP:ForEachVisiblePlate("StyleFilterUpdate", "ZONE_CHANGED_INDOORS")
+end
+
+function NP:ZONE_CHANGED()
+	NP:ForEachVisiblePlate("StyleFilterUpdate", "ZONE_CHANGED")
+end
+
 function NP:RAID_TARGET_UPDATE()
 	for frame in pairs(self.VisiblePlates) do
 		NP:CheckRaidIcon(frame)
@@ -1215,6 +1231,10 @@ function NP:Initialize()
 	self:RegisterEvent("UNIT_COMBO_POINTS")
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 	self:RegisterEvent("RAID_TARGET_UPDATE")
+	self:RegisterEvent("LOADING_SCREEN_DISABLED")
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	self:RegisterEvent("ZONE_CHANGED_INDOORS")
+	self:RegisterEvent("ZONE_CHANGED")
 
 	-- Arena & Arena Pets
 	self:CacheArenaUnits()

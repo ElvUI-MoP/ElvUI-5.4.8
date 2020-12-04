@@ -5,9 +5,13 @@ local LSM = E.Libs.LSM
 local ipairs, next, pairs, select, tonumber, unpack, tostring = ipairs, next, pairs, select, tonumber, unpack, tostring
 local tinsert, sort, twipe = table.insert, table.sort, table.wipe
 
+local GetCurrentMapAreaID = GetCurrentMapAreaID
 local GetInstanceInfo = GetInstanceInfo
+local GetMapNameByID = GetMapNameByID
+local GetRealZoneText = GetRealZoneText
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellInfo = GetSpellInfo
+local GetSubZoneText = GetSubZoneText
 local GetTime = GetTime
 local IsResting = IsResting
 local UnitAffectingCombat = UnitAffectingCombat
@@ -432,22 +436,49 @@ function NP:StyleFilterConditionCheck(frame, filter, trigger)
 		if trigger.role[NP.TriggerConditions.roles[E:GetPlayerRole()]] then passed = true else return end
 	end
 
-	-- Instance Type
-	if trigger.instanceType.none or trigger.instanceType.party or trigger.instanceType.raid or trigger.instanceType.arena or trigger.instanceType.pvp then
-		local _, instanceType, difficultyID = GetInstanceInfo()
-		if trigger.instanceType[instanceType] then
-			passed = true
+	do
+		-- Instance Type
+		local activeID = trigger.location.instanceIDEnabled
+		local activeType = trigger.instanceType.none or trigger.instanceType.scenario or trigger.instanceType.party or trigger.instanceType.raid or trigger.instanceType.arena or trigger.instanceType.pvp
+		local instanceName, instanceType, difficultyID, instanceID, _
 
-			-- Instance Difficulty
-			if instanceType == "raid" or instanceType == "party" then
-				local D = trigger.instanceDifficulty[(instanceType == "party" and "dungeon") or instanceType]
-				for _, value in pairs(D) do
-					if value and not D[NP.TriggerConditions.difficulties[difficultyID]] then return end
+		if activeType or activeID then
+			instanceName, instanceType, difficultyID, _, _, _, _, instanceID = GetInstanceInfo()
+		end
+
+		if activeType then
+			if trigger.instanceType[instanceType] then
+				passed = true
+
+				-- Instance Difficulty
+				if instanceType == "raid" or instanceType == "party" then
+					local D = trigger.instanceDifficulty[(instanceType == "party" and "dungeon") or instanceType]
+					for _, value in pairs(D) do
+						if value and not D[NP.TriggerConditions.difficulties[difficultyID]] then return end
+					end
 				end
+			else return end
+		end
+
+		-- Location
+		if activeID or trigger.location.mapIDEnabled or trigger.location.zoneNamesEnabled or trigger.location.subZoneNamesEnabled then
+			if activeID and next(trigger.location.instanceIDs) then
+				if (instanceID and trigger.location.instanceIDs[tostring(instanceID)]) or trigger.location.instanceIDs[instanceName] then passed = true else return end
 			end
-		else return end
-	elseif trigger.instanceType.sanctuary then
-		if UnitIsPVPSanctuary("player") then passed = true else return end
+			if trigger.location.mapIDEnabled and next(trigger.location.mapIDs) then
+				local mapID = GetCurrentMapAreaID()
+				local mapName = GetMapNameByID(mapID)
+				if (mapID and trigger.location.mapIDs[tostring(mapID)]) or trigger.location.mapIDs[mapName] then passed = true else return end
+			end
+			if trigger.location.zoneNamesEnabled and next(trigger.location.zoneNames) then
+				local realZoneText = GetRealZoneText()
+				if trigger.location.zoneNames[realZoneText] then passed = true else return end
+			end
+			if trigger.location.subZoneNamesEnabled and next(trigger.location.subZoneNames) then
+				local subZoneText = GetSubZoneText()
+				if trigger.location.subZoneNames[subZoneText] then passed = true else return end
+			end
+		end
 	end
 
 	-- Level
@@ -667,6 +698,18 @@ function NP:StyleFilterConfigure()
 				if t.inCombat or t.outOfCombat then
 					NP.StyleFilterTriggerEvents.PLAYER_REGEN_DISABLED = true
 					NP.StyleFilterTriggerEvents.PLAYER_REGEN_ENABLED = true
+				end
+
+				if t.location then
+					if (t.location.mapIDEnabled and next(t.location.mapIDs))
+					or (t.location.instanceIDEnabled and next(t.location.instanceIDs))
+					or (t.location.zoneNamesEnabled and next(t.location.zoneNames))
+					or (t.location.subZoneNamesEnabled and next(t.location.subZoneNames)) then
+						NP.StyleFilterTriggerEvents.LOADING_SCREEN_DISABLED = 1
+						NP.StyleFilterTriggerEvents.ZONE_CHANGED_NEW_AREA = 1
+						NP.StyleFilterTriggerEvents.ZONE_CHANGED_INDOORS = 1
+						NP.StyleFilterTriggerEvents.ZONE_CHANGED = 1
+					end
 				end
 
 				if t.isResting then

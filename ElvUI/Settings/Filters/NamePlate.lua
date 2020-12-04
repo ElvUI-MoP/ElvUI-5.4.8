@@ -106,11 +106,21 @@ E.StyleFilterDefaults = {
 		},
 		instanceType = {
 			none = false,
-			sanctuary = false,
+			scenario = false,
 			party = false,
 			raid = false,
 			arena = false,
 			pvp = false
+		},
+		location = {
+			mapIDEnabled = false,
+			mapIDs = {},
+			instanceIDEnabled = false,
+			instanceIDs = {},
+			zoneNamesEnabled = false,
+			zoneNames = {},
+			subZoneNamesEnabled = false,
+			subZoneNames = {}
 		},
 		instanceDifficulty = {
 			dungeon = {

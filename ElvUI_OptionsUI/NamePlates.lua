@@ -3,11 +3,16 @@ local C, L = unpack(select(2, ...))
 local NP = E:GetModule("NamePlates")
 local ACD = E.Libs.AceConfigDialog
 
-local next, ipairs, pairs, type, tonumber = next, ipairs, pairs, type, tonumber
+local next, ipairs, pairs, type, tonumber, tostring = next, ipairs, pairs, type, tonumber, tostring
 local tremove, tinsert, tconcat = tremove, tinsert, table.concat
 local format, match, gsub, strsplit = string.format, string.match, string.gsub, strsplit
 
+local GetCurrentMapAreaID = GetCurrentMapAreaID
+local GetInstanceInfo = GetInstanceInfo
+local GetMapNameByID = GetMapNameByID
+local GetRealZoneText = GetRealZoneText
 local GetSpellInfo = GetSpellInfo
+local GetSubZoneText = GetSubZoneText
 
 local positionValues = {
 	LEFT = L["Left"],
@@ -1390,15 +1395,15 @@ local function UpdateFilterGroup()
 								NP:ConfigureAll()
 							end
 						},
-						sanctuary = {
+						scenario = {
 							order = 2,
 							type = "toggle",
-							name = L["Sanctuary"],
+							name = L["SCENARIOS"],
 							get = function(info)
-								return E.global.nameplates.filters[selectedNameplateFilter].triggers.instanceType.sanctuary
+								return E.global.nameplates.filters[selectedNameplateFilter].triggers.instanceType.scenario
 							end,
 							set = function(info, value)
-								E.global.nameplates.filters[selectedNameplateFilter].triggers.instanceType.sanctuary = value
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.instanceType.scenario = value
 								NP:ConfigureAll()
 							end
 						},
@@ -1454,8 +1459,273 @@ local function UpdateFilterGroup()
 						}
 					}
 				},
+				location = {
+					order = 18,
+					type = "group",
+					name = L["Location"],
+					get = function(info)
+						return E.global.nameplates.filters[selectedNameplateFilter].triggers.location[info[#info]]
+					end,
+					set = function(info, value)
+						E.global.nameplates.filters[selectedNameplateFilter].triggers.location[info[#info]] = value
+						NP:ConfigureAll()
+					end,
+					disabled = function()
+						return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable)
+					end,
+					args = {
+						mapIDEnabled = {
+							order = 1,
+							type = "toggle",
+							name = L["Use Map ID or Name"],
+							desc = L["If enabled, the style filter will only activate when you are in one of the maps specified in Map ID."],
+							customWidth = 200
+						},
+						mapIDs = {
+							order = 2,
+							type = "input",
+							name = L["Add Map ID"],
+							get = function(info) return end,
+							set = function(info, value)
+								if strmatch(value, "^[%s%p]-$") then return end
+								if E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDs[value] then return end
+
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDs[value] = true
+								NP:ConfigureAll()
+							end,
+							disabled = function () return not E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDEnabled end
+						},
+						removeMapID = {
+							order = 3,
+							type = "select",
+							name = L["Remove Map ID"],
+							get = function(info) return end,
+							set = function(info, value)
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDs[value] = nil
+								NP:ConfigureAll()
+							end,
+							values = function()
+								local vals = {}
+								local ids = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDs
+								if not (ids and next(ids)) then return vals end
+
+								for value in pairs(ids) do
+									local info = tonumber(value) 
+									local mapName = GetMapNameByID(value)
+									if info and mapName then
+										info = "|cFF999999("..value..")|r "..mapName
+									end
+									vals[value] = info or value
+								end
+								return vals
+							end,
+							disabled = function()
+								local ids = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDs
+								return not (E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDEnabled and ids and next(ids))
+							end
+						},
+						instanceIDEnabled = {
+							order = 4,
+							type = "toggle",
+							name = L["Use Instance ID or Name"],
+							desc = L["If enabled, the style filter will only activate when you are in one of the instances specified in Instance ID."],
+							customWidth = 200
+						},
+						instanceIDs = {
+							order = 5,
+							type = "input",
+							name = L["Add Instance ID"],
+							get = function(info) return end,
+							set = function(info, value)
+								if strmatch(value, "^[%s%p]-$") then return end
+
+								if E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDs[value] then return end
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDs[value] = true
+								NP:ConfigureAll()
+							end,
+							disabled = function () return not E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDEnabled end
+						},
+						removeInstanceID = {
+							order = 6,
+							type = "select",
+							name = L["Remove Instance ID"],
+							get = function(info) return end,
+							set = function(info, value)
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDs[value] = nil
+								NP:ConfigureAll()
+							end,
+							values = function()
+								local vals = {}
+								local ids = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDs
+								if not (ids and next(ids)) then return vals end
+
+								for value in pairs(ids) do
+									local name = tonumber(value) and GetRealZoneText(value)
+									if name then
+										name = "|cFF999999("..value..")|r "..name
+									end
+									vals[value] = name or value
+								end
+								return vals
+							end,
+							disabled = function()
+								local ids = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDs
+								return not (E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDEnabled and ids and next(ids))
+							end
+						},
+						zoneNamesEnabled = {
+							order = 7,
+							type = "toggle",
+							name = L["Use Zone Names"],
+							desc = L["If enabled, the style filter will only activate when you are in one of the zones specified in Add Zone Name."],
+							customWidth = 200
+						},
+						zoneNames = {
+							order = 8,
+							type = "input",
+							name = L["Add Zone Name"],
+							get = function(info) return end,
+							set = function(info, value)
+							if strmatch(value, "^[%s%p]-$") then return end
+
+							if E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNames[value] then return end
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNames[value] = true
+								NP:ConfigureAll()
+							end,
+							disabled = function () return not E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNamesEnabled end
+						},
+						removeZoneName = {
+							order = 9,
+							type = "select",
+							name = L["Remove Zone Name"],
+							get = function(info) return end,
+							set = function(info, value)
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNames[value] = nil
+								NP:ConfigureAll()
+							end,
+							values = function()
+								local vals = {}
+								local zone = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNames
+								if not (zone and next(zone)) then return vals end
+
+								for value in pairs(zone) do vals[value] = value end
+								return vals
+							end,
+							disabled = function()
+								local zone = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNames
+								return not (E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNamesEnabled and zone and next(zone))
+							end
+						},
+						subZoneNamesEnabled = {
+							order = 10,
+							type = "toggle",
+							name = L["Use Subzone Names"],
+							desc = L["If enabled, the style filter will only activate when you are in one of the subzones specified in Add Subzone Name."],
+							customWidth = 200
+						},
+						subZoneNames = {
+							order = 11,
+							type = "input",
+							name = L["Add Subzone Name"],
+							get = function(info) return end,
+							set = function(info, value)
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNames[value] = true
+								NP:ConfigureAll()
+							end,
+							disabled = function () return not E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNamesEnabled end
+						},
+						removeSubZoneName = {
+							order = 12,
+							type = "select",
+							name = L["Remove Subzone Name"],
+							get = function(info) return end,
+							set = function(info, value)
+								E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNames[value] = nil
+								NP:ConfigureAll()
+							end,
+							values = function()
+								local vals = {}
+								local zone = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNames
+								if not (zone and next(zone)) then return vals end
+
+								for value in pairs(zone) do vals[value] = value end
+								return vals
+							end,
+							disabled = function()
+								local zone = E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNames
+								return not (E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNamesEnabled and zone and next(zone))
+							end
+						},
+						btns = {
+							order = 13,
+							type = "group",
+							inline = true,
+							name = L["Add Current"],
+							args = {
+								mapID = {
+									order = 1,
+									type = "execute",
+									name = L["Map ID"],
+									func = function()
+										local mapID = GetCurrentMapAreaID()
+										if not mapID then return end
+										mapID = tostring(mapID)
+
+										if E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDs[mapID] then return end
+										E.global.nameplates.filters[selectedNameplateFilter].triggers.location.mapIDs[mapID] = true
+										NP:ConfigureAll()
+										E:Print(format(L["Added Map ID: %s"], GetMapNameByID(mapID).." ("..mapID..")"))
+									end
+								},
+								instanceID = {
+									order = 2,
+									type = "execute",
+									name = L["Instance ID"],
+									func = function()
+										local instanceName, _, _, _, _, _, _, instanceID = GetInstanceInfo()
+										if not instanceID then return end
+										instanceID = tostring(instanceID)
+
+										if E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDs[instanceID] then return end
+										E.global.nameplates.filters[selectedNameplateFilter].triggers.location.instanceIDs[instanceID] = true
+										NP:ConfigureAll()
+										E:Print(format(L["Added Instance ID: %s"], instanceName.." ("..instanceID..")"))
+									end
+								},
+								zoneName = {
+									order = 3,
+									type = "execute",
+									name = L["Zone Name"],
+									func = function()
+										local zone = GetRealZoneText()
+										if not zone then return end
+
+										if E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNames[zone] then return end
+										E.global.nameplates.filters[selectedNameplateFilter].triggers.location.zoneNames[zone] = true
+										NP:ConfigureAll()
+										E:Print(format(L["Added Zone Name: %s"], zone))
+									end
+								},
+								subZoneName = {
+									order = 4,
+									type = "execute",
+									name = L["Subzone Name"],
+									func = function()
+										local subZone = GetSubZoneText()
+										if not subZone or subZone == "" then return end
+
+										if E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNames[subZone] then return end
+										E.global.nameplates.filters[selectedNameplateFilter].triggers.location.subZoneNames[subZone] = true
+										NP:ConfigureAll()
+										E:Print(format(L["Added Subzone Name: %s"], subZone))
+									end
+								}
+							}
+						}
+					}
+				},
 				raidTarget = {
-					order = 27,
+					order = 19,
 					type = "group",
 					name = L["BINDING_HEADER_RAID_TARGET"],
 					get = function(info)
@@ -1514,7 +1784,7 @@ local function UpdateFilterGroup()
 					}
 				},
 				totems = {
-					order = 28,
+					order = 20,
 					type = "group",
 					name = L["Totems"],
 					get = function(info)
@@ -1545,7 +1815,7 @@ local function UpdateFilterGroup()
 					}
 				},
 				uniqueUnits = {
-					order = 28,
+					order = 21,
 					type = "group",
 					name = L["Unique Units"],
 					get = function(info)
