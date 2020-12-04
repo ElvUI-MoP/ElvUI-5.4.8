@@ -851,7 +851,7 @@ for i = 1, 10 do
 				disabled = function() return not E.db.actionbar["bar"..i].enabled end
 			},
 			generalGroup = {
-				order = 2,
+				order = 3,
 				type = "group",
 				name = L["General"],
 				disabled = function() return not E.db.actionbar["bar"..i].enabled end,
@@ -971,17 +971,9 @@ for i = 1, 10 do
 						name = L["Alpha"],
 						isPercent = true,
 						min = 0, max = 1, step = 0.01
-					}
-				}
-			},
-			pagingGroup = {
-				order = 19,
-				type = "group",
-				name = L["Action Paging"],
-				disabled = function() return not E.db.actionbar["bar"..i].enabled end,
-				args = {
+					},
 					paging = {
-						order = 1,
+						order = 19,
 						type = "input",
 						name = L["Action Paging"],
 						desc = L["This works like a macro, you can run different situations to get the actionbar to page differently.\n Example: '[combat] 2;'"],
@@ -1000,17 +992,9 @@ for i = 1, 10 do
 							E.db.actionbar["bar"..i].paging[E.myclass] = value
 							AB:UpdateButtonSettings()
 						end
-					}
-				}
-			},
-			visibilityGroup = {
-				order = 20,
-				type = "group",
-				name = L["Visibility"],
-				disabled = function() return not E.db.actionbar["bar"..i].enabled end,
-				args = {
+					},
 					visibility = {
-						order = 1,
+						order = 20,
 						type = "input",
 						name = L["Visibility State"],
 						desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
@@ -1027,7 +1011,7 @@ for i = 1, 10 do
 				}
 			},
 			fontGroup = {
-				order = 21,
+				order = 4,
 				type = "group",
 				name = L["Fonts"],
 				disabled = function() return not E.db.actionbar["bar"..i].enabled end,
@@ -1158,7 +1142,7 @@ for i = 1, 10 do
 				}
 			},
 			colorGroup = {
-				order = 22,
+				order = 5,
 				type = "group",
 				name = L["COLORS"],
 				disabled = function() return not E.db.actionbar["bar"..i].enabled end,
@@ -1244,8 +1228,8 @@ for i = 1, 10 do
 	}
 end
 
-E.Options.args.actionbar.args.playerBars.args.bar1.args.pagingGroup.args.pagingReset = {
-	order = 2,
+E.Options.args.actionbar.args.playerBars.args.bar1.args.pagingReset = {
+	order = 2.1,
 	type = "execute",
 	name = L["Reset Action Paging"],
 	confirm = true,
