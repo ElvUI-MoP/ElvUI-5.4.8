@@ -712,7 +712,6 @@ L["Make the unitframe glow yellow when it is below this percent of health, it wi
 L["Make the world map smaller."] = "讓世界地圖更小."
 L["Map ID"] = "地圖ID"
 L["Map Opacity When Moving"] = "移動時地圖透明度"
-L["Max Lines"] = true
 L["Maps"] = "地圖"
 L["Mark Quest Reward"] = "標註任務獎勵"
 L["Marks the most valuable quest reward with a gold coin."] = "使用金幣圖示標註任務獎勵中最有價值的物品."
@@ -722,6 +721,7 @@ L["Match Player Level"] = "符合玩家等級"
 L["Max Alpha"] = "最大透明度"
 L["Max amount of overflow allowed to extend past the end of the health bar."] = "顯示在生命值條末端的治療吸收盾的最大量"
 L["Max Bars"] = "最多"
+L["Max Lines"] = true
 L["Max Overflow"] = "最大治療吸收盾"
 L["Max Wraps"] = "每行最大數"
 L["Maximum Duration"] = "最大持續時間"

@@ -712,7 +712,6 @@ L["Make the unitframe glow yellow when it is below this percent of health, it wi
 L["Make the world map smaller."] = "Сделать карту мира меньше. Она больше не будет занимать весь экран в увеличенном варианте."
 L["Map ID"] = "ID карты"
 L["Map Opacity When Moving"] = "Прозрачность карты в движении"
-L["Max Lines"] = true
 L["Maps"] = "Карты"
 L["Mark Quest Reward"] = "Иконка награды"
 L["Marks the most valuable quest reward with a gold coin."] = "Помечает самую дорогую награду за задание при помощи иконки."
@@ -722,6 +721,7 @@ L["Match Player Level"] = "Соответствие уровню игрока"
 L["Max Alpha"] = "Максимальная видимость"
 L["Max amount of overflow allowed to extend past the end of the health bar."] = "Максимальное значение переполнения, которое может отображаться за пределами полосы здоровья."
 L["Max Bars"] = "Максимум полос"
+L["Max Lines"] = true
 L["Max Overflow"] = "Макс. переполнение"
 L["Max Wraps"] = "Максимум рядов"
 L["Maximum Duration"] = "Максимальная длительность"

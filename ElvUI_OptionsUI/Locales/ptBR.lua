@@ -712,7 +712,6 @@ L["Make the unitframe glow yellow when it is below this percent of health, it wi
 L["Make the world map smaller."] = "Fazer o Mapa Mundial menor."
 L["Map ID"] = "ID do Mapa"
 L["Map Opacity When Moving"] = "Opacidade do Mapa ao se mover"
-L["Max Lines"] = true
 L["Maps"] = "Mapas"
 L["Mark Quest Reward"] = "Marcar Recompensas de Quests"
 L["Marks the most valuable quest reward with a gold coin."] = "Marca a recompensa mais valiosa da quest com uma moeda de ouro."
@@ -722,6 +721,7 @@ L["Match Player Level"] = "Igualar nível do jogador"
 L["Max Alpha"] = true
 L["Max amount of overflow allowed to extend past the end of the health bar."] = true
 L["Max Bars"] = true
+L["Max Lines"] = true
 L["Max Overflow"] = true
 L["Max Wraps"] = "Enrolamentos Máximos"
 L["Maximum Duration"] = "Duração Máxima"

@@ -713,7 +713,6 @@ L["Make the unitframe glow yellow when it is below this percent of health, it wi
 L["Make the world map smaller."] = true
 L["Map ID"] = true
 L["Map Opacity When Moving"] = true
-L["Max Lines"] = true
 L["Maps"] = true
 L["Mark Quest Reward"] = true
 L["Marks the most valuable quest reward with a gold coin."] = true
@@ -723,6 +722,7 @@ L["Match Player Level"] = true
 L["Max Alpha"] = true
 L["Max amount of overflow allowed to extend past the end of the health bar."] = true
 L["Max Bars"] = true
+L["Max Lines"] = true
 L["Max Overflow"] = true
 L["Max Wraps"] = true
 L["Maximum Duration"] = true
