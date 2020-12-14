@@ -274,7 +274,7 @@ local function LoadSkin()
 				frame.Icon.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 
-			frame.SpecIcon.backdrop:SetShown(specID and specID > 0)
+			frame.SpecIcon.backdrop:SetShown(not isCurrency and specID and specID > 0)
 		end
 	end)
 

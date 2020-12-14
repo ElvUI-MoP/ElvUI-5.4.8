@@ -982,6 +982,7 @@ function B:OnEvent(event, ...)
 			end
 		end
 
+		B:UpdateBagTypes()
 		B:UpdateBagSlots(self, ...)
 
 		--Refresh search in case we moved items around
@@ -990,6 +991,7 @@ function B:OnEvent(event, ...)
 		if not self:IsShown() then return end
 		B:UpdateCooldowns(self)
 	elseif event == "PLAYERBANKSLOTS_CHANGED" then
+		B:UpdateBagTypes()
 		B:UpdateBagSlots(self, -1)
 	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED") and self:IsShown() then
 		B:UpdateAllSlots(self)

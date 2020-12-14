@@ -9,7 +9,7 @@ function NP:Update_Elite(frame)
 		local elite, boss = frame.EliteIcon:IsShown(), frame.BossIcon:IsShown()
 
 		if boss then
-			icon:SetTexCoord(0, 0.15, 0.62, 0.94)
+			icon:SetTexCoord(0, 0.15, 0.65, 0.94)
 			icon:Show()
 		elseif elite then
 			icon:SetTexCoord(0, 0.15, 0.35, 0.63)
