@@ -4,28 +4,30 @@ local LSM = E.Libs.LSM
 
 local _G = _G
 local unpack = unpack
-local twipe = table.wipe
-local format = string.format
+local wipe = wipe
+local format = format
 
-local GetTime = GetTime
-
-local CreateFrame = CreateFrame
-local GetRaidBuffTrayAuraInfo = GetRaidBuffTrayAuraInfo
 local CooldownFrame_SetTimer = CooldownFrame_SetTimer
+local CreateFrame = CreateFrame
+local GetTime = GetTime
+local GetRaidBuffTrayAuraInfo = GetRaidBuffTrayAuraInfo
+
 local NUM_LE_RAID_BUFF_TYPES = NUM_LE_RAID_BUFF_TYPES
 
 local Masque = E.Libs.Masque
 local MasqueGroup = Masque and Masque:Group("ElvUI", "Consolidated Buffs")
 
+local ignoreIcons = {}
+
 A.DefaultIcons = {
-	[1] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",	-- Stats
-	[2] = "Interface\\Icons\\Spell_Holy_WordFortitude",				-- Stamina
-	[3] = "Interface\\Icons\\INV_Misc_Horn_02",						-- Attack Power
-	[4] = "Interface\\Icons\\INV_Helmet_08",						-- Attack Speed
-	[5] = "Interface\\Icons\\Spell_Holy_MagicalSentry",				-- Spell Power
-	[6] = "Interface\\Icons\\Spell_Shadow_SpectralSight",			-- Spell Haste
-	[7] = "Interface\\Icons\\ability_monk_prideofthetiger",			-- Critical Strike
-	[8] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"		-- Mastery
+	[1] = [[Interface\Icons\Spell_Magic_GreaterBlessingofKings]],	-- Stats
+	[2] = [[Interface\Icons\Spell_Holy_WordFortitude]],				-- Stamina
+	[3] = [[Interface\Icons\INV_Misc_Horn_02]],						-- Attack Power
+	[4] = [[Interface\Icons\INV_Helmet_08]],						-- Attack Speed
+	[5] = [[Interface\Icons\Spell_Holy_MagicalSentry]],				-- Spell Power
+	[6] = [[Interface\Icons\Spell_Shadow_SpectralSight]],			-- Spell Haste
+	[7] = [[Interface\Icons\ability_monk_prideofthetiger]],			-- Critical Strike
+	[8] = [[Interface\Icons\Spell_Holy_GreaterBlessingofKings]]		-- Mastery
 }
 
 function A:UpdateConsolidatedTime(elapsed)
@@ -44,12 +46,12 @@ function A:UpdateConsolidatedTime(elapsed)
 		return
 	end
 
-	local threshold = E.db.cooldown.threshold
+	local threshold = E.db.auras.cooldown.threshold
 	if not threshold then threshold = E.TimeThreshold end
 
-	local hhmmThreshold = E.db.cooldown.checkSeconds and E.db.cooldown.hhmmThreshold or nil
-	local mmssThreshold = E.db.cooldown.checkSeconds and E.db.cooldown.mmssThreshold or nil
-	local textColors = E.db.cooldown.useIndicatorColor and E.TimeIndicatorColors or nil
+	local hhmmThreshold = E.db.auras.cooldown.checkSeconds and E.db.auras.cooldown.hhmmThreshold or nil
+	local mmssThreshold = E.db.auras.cooldown.checkSeconds and E.db.auras.cooldown.mmssThreshold or nil
+	local textColors = E.db.auras.cooldown.useIndicatorColor and E.TimeIndicatorColors.auras or nil
 
 	local value, id, nextUpdate, remainder = E:GetTimeInfo(self.expiration, threshold, hhmmThreshold, mmssThreshold)
 	local style = E.TimeFormats[id]
@@ -65,7 +67,7 @@ function A:UpdateConsolidatedTime(elapsed)
 		end
 	end
 
-	local color = E.TimeColors[id]
+	local color = E.TimeColors.auras[id]
 	if color then
 		self.timer:SetTextColor(color.r, color.g, color.b)
 	end
@@ -85,7 +87,7 @@ function A:UpdateReminder(event, unit)
 			button.duration = duration
 			button.t:SetTexture(texture)
 
-			if (duration == 0 and expirationTime == 0) or E.db.auras.consolidatedBuffs.durations ~= true then
+			if (duration == 0 and expirationTime == 0) or not E.db.auras.consolidatedBuffs.durations then
 				button.t:SetAlpha(reverseStyle and 1 or 0.3)
 				button:SetScript("OnUpdate", nil)
 				button.timer:SetText(nil)
@@ -105,12 +107,26 @@ function A:UpdateReminder(event, unit)
 			button.t:SetAlpha(reverseStyle and 0.3 or 1)
 			button:SetScript("OnUpdate", nil)
 			button.timer:SetText(nil)
-			button.t:SetTexture(self.DefaultIcons[i])
+			button.t:SetTexture(A.DefaultIcons[i])
 		end
 	end
 end
 
+local function onEnter()
+	if E.db.auras.consolidatedBuffs.mouseover and E.db.auras.consolidatedBuffs.detached then
+		E:UIFrameFadeIn(ElvUI_ConsolidatedBuffs, 0.2, ElvUI_ConsolidatedBuffs:GetAlpha(), E.db.auras.consolidatedBuffs.alpha)
+	end
+end
+
+local function onLeave()
+	if E.db.auras.consolidatedBuffs.mouseover and E.db.auras.consolidatedBuffs.detached then
+		E:UIFrameFadeOut(ElvUI_ConsolidatedBuffs, 0.2, ElvUI_ConsolidatedBuffs:GetAlpha(), 0)
+	end
+end
+
 function A:Button_OnEnter()
+	onEnter()
+
 	GameTooltip:Hide()
 	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT", -3, self:GetHeight() + 2)
 	GameTooltip:ClearLines()
@@ -121,13 +137,15 @@ function A:Button_OnEnter()
 	if parent.spellName then
 		GameTooltip:SetUnitConsolidatedBuff("player", id)
 	else
-		GameTooltip:AddLine(_G[("RAID_BUFF_%d"):format(id)])
+		GameTooltip:AddLine(_G[format("RAID_BUFF_%d", id)])
 	end
 
 	GameTooltip:Show()
 end
 
 function A:Button_OnLeave()
+	onLeave()
+
 	GameTooltip:Hide()
 end
 
@@ -135,9 +153,9 @@ function A:CreateButton(i)
 	local button = CreateFrame("Button", "ElvUIConsolidatedBuff"..i, ElvUI_ConsolidatedBuffs)
 
 	button.t = button:CreateTexture(nil, "OVERLAY")
+	button.t:SetTexture([[Interface\Icons\INV_Misc_QuestionMark]])
 	button.t:SetTexCoord(unpack(E.TexCoords))
 	button.t:SetInside()
-	button.t:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
 
 	button.cd = CreateFrame("Cooldown", nil, button, "CooldownFrameTemplate")
 	button.cd:SetInside()
@@ -169,7 +187,7 @@ function A:CreateButton(i)
 	if MasqueGroup and E.private.auras.masque.consolidatedBuffs then
 		MasqueGroup:AddButton(button, ButtonData)
 	elseif not E.private.auras.masque.consolidatedBuffs then
-		button:SetTemplate("Default")
+		button:SetTemplate()
 	end
 
 	return button
@@ -184,7 +202,7 @@ function A:EnableCB()
 	self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "UpdateReminder")
 	E.RegisterCallback(self, "RoleChanged", "Update_ConsolidatedBuffsSettings")
 
-	self:UpdateReminder()
+	A:UpdateReminder()
 end
 
 function A:DisableCB()
@@ -202,14 +220,13 @@ function A:DisableCB()
 	E.UnregisterCallback(self, "RoleChanged", "Update_ConsolidatedBuffsSettings")
 end
 
-local ignoreIcons = {}
 function A:Update_ConsolidatedBuffsSettings(isCallback)
 	local frame = self.frame
-	frame:Width(E.ConsolidatedBuffsWidth)
+	local db = E.db.auras.consolidatedBuffs
 
-	twipe(ignoreIcons)
+	wipe(ignoreIcons)
 
-	if E.db.auras.consolidatedBuffs.filter then
+	if db.filter then
 		if E.role == "Caster" then
 			ignoreIcons[3] = true
 			ignoreIcons[4] = 2
@@ -219,36 +236,104 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 		end
 	end
 
+	local backdropSpacing = db.backdrop and db.backdropSpacing or 0
+
+	-- Frame
+	if db.detached then
+		local numButtons = db.filter and 6 or 8
+		local width, height = (db.buttonSize * numButtons) + (db.buttonSpacing * (numButtons - 1)) + (backdropSpacing * 2), db.buttonSize + (backdropSpacing * 2)
+		local WIDTH, HEIGHT = db.orientation == "HORIZONTAL" and width or height, db.orientation == "HORIZONTAL" and height or width
+
+		frame:SetSize(WIDTH, HEIGHT)
+		frame:ClearAllPoints()
+		frame:SetPoint("CENTER", ConsolidatedBuffsMover, "CENTER")
+
+		frame.mover:SetSize(WIDTH, HEIGHT)
+
+		if E.private.general.minimap.enable then
+			Minimap:ClearAllPoints()
+			Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
+		end
+
+		E:EnableMover("ConsolidatedBuffsMover")
+		E.FrameLocks.ElvUI_ConsolidatedBuffs = true
+	else
+		frame:SetWidth(E.ConsolidatedBuffsWidth)
+
+		if E.private.general.minimap.enable then
+			Minimap:ClearAllPoints()
+			ElvConfigToggle:ClearAllPoints()
+			frame:ClearAllPoints()
+
+			if db.position == "LEFT" then
+				Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
+
+				ElvConfigToggle:SetPoint("TOPRIGHT", LeftMiniPanel, "TOPLEFT", E.Border - E.Spacing * 3, 0)
+				ElvConfigToggle:SetPoint("BOTTOMRIGHT", LeftMiniPanel, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
+
+				frame:SetPoint("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing * 3, 0)
+				frame:SetPoint("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
+			else
+				Minimap:Point("TOPLEFT", MMHolder, "TOPLEFT", E.Border, -E.Border)
+
+				ElvConfigToggle:SetPoint("TOPLEFT", RightMiniPanel, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
+				ElvConfigToggle:SetPoint("BOTTOMLEFT", RightMiniPanel, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
+
+				frame:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
+				frame:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
+			end
+		end
+
+		E:DisableMover("ConsolidatedBuffsMover")
+		E.FrameLocks.ElvUI_ConsolidatedBuffs = nil
+	end
+
+	frame:SetParent(db.detached and frame.mover or Minimap)
+	frame:SetFrameStrata(db.detached and db.frameStrata or "LOW")
+
+	if db.detached and db.mouseover and not frame:IsMouseOver() then
+		frame:SetAlpha(0)
+	else
+		frame:SetAlpha(db.detached and db.alpha or 1)
+	end
+
+	frame.backdrop:SetTemplate(db.transparent and "Transparent" or "Default")
+	frame.backdrop:SetShown(db.detached and db.backdrop)
+
+	-- Buttons
 	for i = 1, NUM_LE_RAID_BUFF_TYPES do
 		local button = frame[i]
+		local size = db.detached and db.buttonSize or E.ConsolidatedBuffsWidth
+
+		button:SetSize(size, size)
+		button:SetShown(not ignoreIcons[i])
 		button:ClearAllPoints()
 
-		button:SetWidth(E.ConsolidatedBuffsWidth)
-		button:SetHeight(E.ConsolidatedBuffsWidth)
-
-		if i == 1 then
-			button:Point("TOP", ElvUI_ConsolidatedBuffs, "TOP", 0, 0)
+		if db.detached then
+			local vertical = db.orientation == "VERTICAL"
+			if i == 1 then
+				button:Point(vertical and "TOP" or "LEFT", frame, vertical and "TOP" or "LEFT", vertical and 0 or backdropSpacing, vertical and -backdropSpacing or 0)
+			else
+				button:Point(vertical and "TOP" or "LEFT", frame[ignoreIcons[i - 1] or (i - 1)], vertical and "BOTTOM" or "RIGHT", vertical and 0 or db.buttonSpacing, vertical and -db.buttonSpacing or 0)
+			end
 		else
-			button:Point("TOP", frame[ignoreIcons[i - 1] or (i - 1)], "BOTTOM", 0, E.Border - E.Spacing)
+			if i == 1 then
+				button:Point("TOP", frame, "TOP", 0, 0)
+			elseif i == 8 then
+				button:Point("BOTTOM", frame, "BOTTOM", 0, 0)
+			else
+				button:Point("TOP", frame[ignoreIcons[i - 1] or (i - 1)], "BOTTOM", 0, E.Border - E.Spacing)
+			end
 		end
 
-		if ignoreIcons[i] then
-			button:Hide()
-		else
-			button:Show()
-		end
+		local font = LSM:Fetch("font", db.font)
+		button.timer:FontTemplate(font, db.fontSize, db.fontOutline)
 
-		if E.db.auras.consolidatedBuffs.durations then
-			button.cd:SetAlpha(1)
-		else
-			button.cd:SetAlpha(0)
-		end
-
-		local font = LSM:Fetch("font", E.db.auras.consolidatedBuffs.font)
-		button.timer:FontTemplate(font, E.db.auras.consolidatedBuffs.fontSize, E.db.auras.consolidatedBuffs.fontOutline)
+		button.cd:SetAlpha(db.durations and 1 or 0)
 
 		if E.private.auras.disableBlizzard then
-			local buffIcon = _G[("ConsolidatedBuffsTooltipBuff%d"):format(i)]
+			local buffIcon = _G[format("ConsolidatedBuffsTooltipBuff%d", i)]
+
 			buffIcon:ClearAllPoints()
 			buffIcon:SetAllPoints(frame[i])
 			buffIcon:SetParent(frame[i])
@@ -258,59 +343,37 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 		end
 	end
 
+	-- Enable / Disable
 	if not isCallback then
-		if E.db.auras.consolidatedBuffs.enable and E.private.general.minimap.enable and E.private.auras.disableBlizzard then
+		if db.enable and E.private.auras.disableBlizzard and (E.private.general.minimap.enable or db.detached and not E.private.general.minimap.enable) then
 			A:EnableCB()
 		else
 			A:DisableCB()
 		end
 	else
-		self:UpdateReminder()
+		A:UpdateReminder()
 	end
 
-	if MasqueGroup and E.private.auras.masque.consolidatedBuffs and E.db.auras.consolidatedBuffs.enable then MasqueGroup:ReSkin() end
-end
-
-function A:UpdatePosition()
-	Minimap:ClearAllPoints()
-	ElvConfigToggle:ClearAllPoints()
-	ElvUI_ConsolidatedBuffs:ClearAllPoints()
-
-	if E.db.auras.consolidatedBuffs.position == "LEFT" then
-		Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
-
-		ElvConfigToggle:SetPoint("TOPRIGHT", LeftMiniPanel, "TOPLEFT", E.Border - E.Spacing*3, 0)
-		ElvConfigToggle:SetPoint("BOTTOMRIGHT", LeftMiniPanel, "BOTTOMLEFT", E.Border - E.Spacing*3, 0)
-
-		ElvUI_ConsolidatedBuffs:SetPoint("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing*3, 0)
-		ElvUI_ConsolidatedBuffs:SetPoint("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing*3, 0)
-	else
-		Minimap:Point("TOPLEFT", MMHolder, "TOPLEFT", E.Border, -E.Border)
-
-		ElvConfigToggle:SetPoint("TOPLEFT", RightMiniPanel, "TOPRIGHT", -E.Border + E.Spacing*3, 0)
-		ElvConfigToggle:SetPoint("BOTTOMLEFT", RightMiniPanel, "BOTTOMRIGHT", -E.Border + E.Spacing*3, 0)
-
-		ElvUI_ConsolidatedBuffs:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing*3, 0)
-		ElvUI_ConsolidatedBuffs:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing*3, 0)
+	-- Masque
+	if MasqueGroup and E.private.auras.masque.consolidatedBuffs and db.enable then
+		MasqueGroup:ReSkin()
 	end
 end
 
 function A:Construct_ConsolidatedBuffs()
 	local frame = CreateFrame("Frame", "ElvUI_ConsolidatedBuffs", Minimap)
-
-	if not Masque or not E.private.auras.masque.consolidatedBuffs then
-		frame:SetTemplate()
-	end
-
-	frame:Width(E.ConsolidatedBuffsWidth)
-	if E.db.auras.consolidatedBuffs.position == "LEFT" then
-		frame:Point("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing*3, 0)
-		frame:Point("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing*3, 0)
-	else
-		frame:Point("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing*3, 0)
-		frame:Point("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing*3, 0)
-	end
+	frame:CreateBackdrop()
+	frame:SetWidth(E.ConsolidatedBuffsWidth)
+	frame:SetScript("OnEnter", onEnter)
+	frame:SetScript("OnLeave", onLeave)
 	self.frame = frame
+
+	local holder = CreateFrame("Frame", "ConsolidatedBuffsMover", E.UIParent)
+	holder:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -4, -260)
+	holder:SetSize(120, 30)
+	frame.mover = holder
+
+	E:CreateMover(holder, "ConsolidatedBuffsMover", L["Consolidated Buffs"], nil, nil, nil, "ALL,GENERAL", nil, "auras,consolidatedBuffs")
 
 	for i = 1, NUM_LE_RAID_BUFF_TYPES do
 		frame[i] = self:CreateButton(i)
@@ -321,5 +384,5 @@ function A:Construct_ConsolidatedBuffs()
 		A.CBMasqueGroup = MasqueGroup
 	end
 
-	self:Update_ConsolidatedBuffsSettings()
+	A:Update_ConsolidatedBuffsSettings()
 end

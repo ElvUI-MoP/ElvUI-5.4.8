@@ -201,13 +201,13 @@ local function group(order, db, label)
 						desc = L["Color when the text is in the days format."],
 						disabled = function() return not (profile(db)).override end
 					},
-					hhmmColorIndicator = {
+					mmssColorIndicator = {
 						order = 20,
 						type = "color",
 						name = L["MM:SS"],
 						disabled = function() return not (profile(db)).override end
 					},
-					mmssColorIndicator = {
+					hhmmColorIndicator = {
 						order = 21,
 						type = "color",
 						name = L["HH:MM"],

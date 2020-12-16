@@ -165,7 +165,7 @@ function M:Update_ZoneText()
 
 	Minimap.location:FontTemplate(E.Libs.LSM:Fetch("font", E.db.general.minimap.locationFont), E.db.general.minimap.locationFontSize, E.db.general.minimap.locationFontOutline)
 	Minimap.location:SetText(utf8sub(GetMinimapZoneText(), 1, 46))
-	Minimap.location:SetTextColor(self:GetLocTextColor())
+	Minimap.location:SetTextColor(M:GetLocTextColor())
 end
 
 function M:Minimap_OnMouseWheel(d)
@@ -193,22 +193,24 @@ end
 
 function M:CreateFarmModeMap()
 	local fm = CreateFrame("Minimap", "FarmModeMap", E.UIParent)
-	fm:Size(E.db.farmSize)
-	fm:Point("TOP", E.UIParent, "TOP", 0, -120)
-	fm:SetClampedToScreen(true)
 	fm:CreateBackdrop()
+	fm:Point("TOP", E.UIParent, "TOP", 0, -120)
+	fm:Size(E.db.farmSize)
+	fm:SetClampedToScreen(true)
 	fm:EnableMouseWheel(true)
-	fm:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)
-	fm:SetScript("OnMouseUp", M.Minimap_OnMouseUp)
-	fm:RegisterForDrag("LeftButton", "RightButton")
 	fm:SetMovable(true)
-	fm:SetScript("OnDragStart", function(self) self:StartMoving() end)
-	fm:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-	if AstrolabeMapMonitor then AstrolabeMapMonitor:MonitorWorldMap(fm) end
+	fm:RegisterForDrag("LeftButton", "RightButton")
+	fm:SetScript("OnMouseUp", M.Minimap_OnMouseUp)
+	fm:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)
+	fm:SetScript("OnDragStart", function(frame) frame:StartMoving() end)
+	fm:SetScript("OnDragStop", function(frame) frame:StopMovingOrSizing() end)
 	fm:Hide()
-	E.FrameLocks["FarmModeMap"] = true
 
-	self.farmModeMap = fm
+	M.farmModeMap = fm
+
+	E.FrameLocks.FarmModeMap = true
+
+	if AstrolabeMapMonitor then AstrolabeMapMonitor:MonitorWorldMap(fm) end
 
 	fm:SetScript("OnShow", function()
 		if BuffsMover and not E:HasMoverBeenMoved("BuffsMover") then
@@ -258,104 +260,29 @@ function M:CreateFarmModeMap()
 end
 
 function M:PLAYER_REGEN_ENABLED()
-	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-	self:UpdateSettings()
+	M:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	M:UpdateSettings()
 end
 
 function M:UpdateSettings()
 	if InCombatLockdown() then
-		self:RegisterEvent("PLAYER_REGEN_ENABLED")
+		M:RegisterEvent("PLAYER_REGEN_ENABLED")
 	end
-	E.MinimapSize = E.private.general.minimap.enable and E.db.general.minimap.size or Minimap:GetWidth() + 10
-	E.MinimapWidth, E.MinimapHeight = E.MinimapSize, E.MinimapSize
 
-	if E.db.auras.consolidatedBuffs.enable then
-		local numBuffs = E.db.auras.consolidatedBuffs.filter and 5 or 7
-		E.ConsolidatedBuffsWidth = (E.MinimapHeight + (numBuffs*E.Border) + E.Border*2 - (E.Spacing*numBuffs)) / (numBuffs + 1)
-	else
-		E.ConsolidatedBuffsWidth = 0
-	end
+	local mWidth, mHeight = Minimap:GetSize()
+	E.MinimapSize = E.private.general.minimap.enable and E.db.general.minimap.size or mWidth
+
+	local numBuffs = E.db.auras.consolidatedBuffs.filter and 6 or 8
+	E.ConsolidatedBuffsWidth = E.db.auras.consolidatedBuffs.enable and not E.db.auras.consolidatedBuffs.detached and (E.MinimapSize + ((E.Border * numBuffs) + (E.PixelMode and 2 or 1)) - (E.Spacing * numBuffs)) / numBuffs or E:Scale(E.PixelMode and 1 or -1)
 
 	if E.private.general.minimap.enable then
 		Minimap:Size(E.MinimapSize, E.MinimapSize)
 	end
 
-	if LeftMiniPanel and RightMiniPanel then
-		if E.db.datatexts.minimapPanels and E.private.general.minimap.enable then
-			LeftMiniPanel:Show()
-			RightMiniPanel:Show()
-		else
-			LeftMiniPanel:Hide()
-			RightMiniPanel:Hide()
-		end
-	end
-
-	if BottomMiniPanel then
-		if E.db.datatexts.minimapBottom and E.private.general.minimap.enable then
-			BottomMiniPanel:Show()
-		else
-			BottomMiniPanel:Hide()
-		end
-	end
-
-	if BottomLeftMiniPanel then
-		if E.db.datatexts.minimapBottomLeft and E.private.general.minimap.enable then
-			BottomLeftMiniPanel:Show()
-		else
-			BottomLeftMiniPanel:Hide()
-		end
-	end
-
-	if BottomRightMiniPanel then
-		if E.db.datatexts.minimapBottomRight and E.private.general.minimap.enable then
-			BottomRightMiniPanel:Show()
-		else
-			BottomRightMiniPanel:Hide()
-		end
-	end
-
-	if TopMiniPanel then
-		if E.db.datatexts.minimapTop and E.private.general.minimap.enable then
-			TopMiniPanel:Show()
-		else
-			TopMiniPanel:Hide()
-		end
-	end
-
-	if TopLeftMiniPanel then
-		if E.db.datatexts.minimapTopLeft and E.private.general.minimap.enable then
-			TopLeftMiniPanel:Show()
-		else
-			TopLeftMiniPanel:Hide()
-		end
-	end
-
-	if TopRightMiniPanel then
-		if E.db.datatexts.minimapTopRight and E.private.general.minimap.enable then
-			TopRightMiniPanel:Show()
-		else
-			TopRightMiniPanel:Hide()
-		end
-	end
-
 	if MMHolder then
-		MMHolder:Width((Minimap:GetWidth() + E.Border + E.Spacing*3) + E.ConsolidatedBuffsWidth)
-
-		if E.db.datatexts.minimapPanels then
-			MMHolder:Height(Minimap:GetHeight() + (LeftMiniPanel and (LeftMiniPanel:GetHeight() + E.Border) or 24) + E.Spacing*3)
-		else
-			MMHolder:Height(Minimap:GetHeight() + E.Border + E.Spacing*3)
-		end
-	end
-
-	if Minimap.location then
-		Minimap.location:Width(E.MinimapSize)
-
-		if E.db.general.minimap.locationText ~= "SHOW" or not E.private.general.minimap.enable then
-			Minimap.location:Hide()
-		else
-			Minimap.location:Show()
-		end
+		local panel = E.db.datatexts.minimapPanels and (LeftMiniPanel and (LeftMiniPanel:GetHeight() + E.Border) or 24) or E:Scale(E.PixelMode and 2 or 1)
+		MMHolder:Width((mWidth + E.Border + E.Spacing * 3) + E.ConsolidatedBuffsWidth)
+		MMHolder:Height(mHeight + panel + E.Spacing * 3)
 	end
 
 	if MinimapMover then
@@ -363,16 +290,46 @@ function M:UpdateSettings()
 	end
 
 	if ElvConfigToggle then
-		if E.db.auras.consolidatedBuffs.enable and E.db.datatexts.minimapPanels and E.private.general.minimap.enable then
-			ElvConfigToggle:Show()
-			ElvConfigToggle:Width(E.ConsolidatedBuffsWidth)
-		else
-			ElvConfigToggle:Hide()
-		end
+		ElvConfigToggle:Width(E.ConsolidatedBuffsWidth)
+		ElvConfigToggle:SetShown(E.db.auras.consolidatedBuffs.enable and E.db.datatexts.minimapPanels and E.private.general.minimap.enable and not E.db.auras.consolidatedBuffs.detached)
 	end
 
 	if ElvUI_ConsolidatedBuffs then
 		A:Update_ConsolidatedBuffsSettings()
+	end
+
+	if Minimap.location then
+		Minimap.location:Width(E.MinimapSize)
+		Minimap.location:SetShown(E.db.general.minimap.locationText == "SHOW" and E.private.general.minimap.enable)
+	end
+
+	if LeftMiniPanel and RightMiniPanel then
+		LeftMiniPanel:SetShown(E.db.datatexts.minimapPanels and E.private.general.minimap.enable)
+		RightMiniPanel:SetShown(E.db.datatexts.minimapPanels and E.private.general.minimap.enable)
+	end
+
+	if BottomMiniPanel then
+		BottomMiniPanel:SetShown(E.db.datatexts.minimapBottom and E.private.general.minimap.enable)
+	end
+
+	if BottomLeftMiniPanel then
+		BottomLeftMiniPanel:SetShown(E.db.datatexts.minimapBottomLeft and E.private.general.minimap.enable)
+	end
+
+	if BottomRightMiniPanel then
+		BottomRightMiniPanel:SetShown(E.db.datatexts.minimapBottomRight and E.private.general.minimap.enable)
+	end
+
+	if TopMiniPanel then
+		TopMiniPanel:SetShown(E.db.datatexts.minimapTop and E.private.general.minimap.enable)
+	end
+
+	if TopLeftMiniPanel then
+		TopLeftMiniPanel:SetShown(E.db.datatexts.minimapTopLeft and E.private.general.minimap.enable)
+	end
+
+	if TopRightMiniPanel then
+		TopRightMiniPanel:SetShown(E.db.datatexts.minimapTopRight and E.private.general.minimap.enable)
 	end
 
 	--Stop here if ElvUI Minimap is disabled.
@@ -384,6 +341,7 @@ function M:UpdateSettings()
 		else
 			local pos = E.db.general.minimap.icons.calendar.position or "TOPRIGHT"
 			local scale = E.db.general.minimap.icons.calendar.scale or 1
+
 			GameTimeFrame:ClearAllPoints()
 			GameTimeFrame:Point(pos, Minimap, pos, E.db.general.minimap.icons.calendar.xOffset or 0, E.db.general.minimap.icons.calendar.yOffset or 0)
 			GameTimeFrame:SetScale(scale)
@@ -394,6 +352,7 @@ function M:UpdateSettings()
 	if MiniMapMailFrame then
 		local pos = E.db.general.minimap.icons.mail.position or "TOPRIGHT"
 		local scale = E.db.general.minimap.icons.mail.scale or 1
+
 		MiniMapMailFrame:ClearAllPoints()
 		MiniMapMailFrame:Point(pos, Minimap, pos, E.db.general.minimap.icons.mail.xOffset or 3, E.db.general.minimap.icons.mail.yOffset or 4)
 		MiniMapMailFrame:SetScale(scale)
@@ -402,6 +361,7 @@ function M:UpdateSettings()
 	if QueueStatusMinimapButton then
 		local pos = E.db.general.minimap.icons.lfgEye.position or "BOTTOMRIGHT"
 		local scale = E.db.general.minimap.icons.lfgEye.scale or 1
+
 		QueueStatusMinimapButton:ClearAllPoints()
 		QueueStatusMinimapButton:Point(pos, Minimap, pos, E.db.general.minimap.icons.lfgEye.xOffset or 3, E.db.general.minimap.icons.lfgEye.yOffset or 0)
 		QueueStatusMinimapButton:SetScale(scale)
@@ -411,6 +371,7 @@ function M:UpdateSettings()
 	if MiniMapBattlefieldFrame then
 		local pos = E.db.general.minimap.icons.battlefield.position or "BOTTOMRIGHT"
 		local scale = E.db.general.minimap.icons.battlefield.scale or 1
+
 		MiniMapBattlefieldFrame:ClearAllPoints()
 		MiniMapBattlefieldFrame:Point(pos, Minimap, pos, E.db.general.minimap.icons.battlefield.xOffset or 3, E.db.general.minimap.icons.battlefield.yOffset or 0)
 		MiniMapBattlefieldFrame:SetScale(scale)
@@ -423,9 +384,11 @@ function M:UpdateSettings()
 		local scale = E.db.general.minimap.icons.difficulty.scale or 1
 		local x = E.db.general.minimap.icons.difficulty.xOffset or 0
 		local y = E.db.general.minimap.icons.difficulty.yOffset or 0
+
 		MiniMapInstanceDifficulty:ClearAllPoints()
 		MiniMapInstanceDifficulty:Point(pos, Minimap, pos, x, y)
 		MiniMapInstanceDifficulty:SetScale(scale)
+
 		GuildInstanceDifficulty:ClearAllPoints()
 		GuildInstanceDifficulty:Point(pos, Minimap, pos, x, y)
 		GuildInstanceDifficulty:SetScale(scale)
@@ -434,6 +397,7 @@ function M:UpdateSettings()
 	if MiniMapChallengeMode then
 		local pos = E.db.general.minimap.icons.challengeMode.position or "TOPLEFT"
 		local scale = E.db.general.minimap.icons.challengeMode.scale or 1
+
 		MiniMapChallengeMode:ClearAllPoints()
 		MiniMapChallengeMode:Point(pos, Minimap, pos, E.db.general.minimap.icons.challengeMode.xOffset or 8, E.db.general.minimap.icons.challengeMode.yOffset or -8)
 		MiniMapChallengeMode:SetScale(scale)
@@ -444,6 +408,7 @@ function M:UpdateSettings()
 		local scale = E.db.general.minimap.icons.ticket.scale or 1
 		local x = E.db.general.minimap.icons.ticket.xOffset or 0
 		local y = E.db.general.minimap.icons.ticket.yOffset or 0
+
 		HelpOpenTicketButton:ClearAllPoints()
 		HelpOpenTicketButton:Point(pos, Minimap, pos, x, y)
 		HelpOpenTicketButton:SetScale(scale)
@@ -475,6 +440,7 @@ end
 local function MinimapPostDrag()
 	MinimapCluster:ClearAllPoints()
 	MinimapCluster:SetAllPoints(Minimap)
+
 	MinimapBackdrop:ClearAllPoints()
 	MinimapBackdrop:SetAllPoints(Minimap)
 end
@@ -489,9 +455,10 @@ end
 
 function M:Initialize()
 	menuFrame:SetTemplate("Transparent", true)
-	self:UpdateSettings()
+	M:UpdateSettings()
+
 	if not E.private.general.minimap.enable then
-		Minimap:SetMaskTexture("Textures\\MinimapMask")
+		Minimap:SetMaskTexture([[Textures\MinimapMask]])
 		return
 	end
 
@@ -503,49 +470,43 @@ function M:Initialize()
 	Minimap:Size(E.db.general.minimap.size, E.db.general.minimap.size)
 
 	local mmholder = CreateFrame("Frame", "MMHolder", Minimap)
-	mmholder:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
-	mmholder:Width((Minimap:GetWidth() + 29) + E.ConsolidatedBuffsWidth)
-	mmholder:Height(Minimap:GetHeight() + 53)
+	mmholder:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -4, -4)
+	mmholder:Size(Minimap:GetSize())
 
 	Minimap:ClearAllPoints()
-	if E.db.auras.consolidatedBuffs.position == "LEFT" then
-		Minimap:Point("TOPRIGHT", mmholder, "TOPRIGHT", -E.Border, -E.Border)
-	else
-		Minimap:Point("TOPLEFT", mmholder, "TOPLEFT", E.Border, -E.Border)
-	end
-	Minimap:SetMaskTexture("Interface\\ChatFrame\\ChatFrameBackground")
+	Minimap:Point("TOPRIGHT", mmholder, "TOPRIGHT", -E.Border, -E.Border)
+
+	Minimap:SetMaskTexture([[Interface\ChatFrame\ChatFrameBackground]])
 	Minimap:CreateBackdrop()
 	Minimap:SetFrameLevel(Minimap:GetFrameLevel() + 2)
-	Minimap:HookScript("OnEnter", function(self)
-		if E.db.general.minimap.locationText ~= "MOUSEOVER" or not E.private.general.minimap.enable then return end
-		self.location:Show()
-	end)
-
-	Minimap:HookScript("OnLeave", function(self)
-		if E.db.general.minimap.locationText ~= "MOUSEOVER" or not E.private.general.minimap.enable then return end
-		self.location:Hide()
-	end)
-
+	Minimap:HookScript("OnEnter", function(mm) if E.db.general.minimap.locationText == "MOUSEOVER" then mm.location:Show() end end)
+	Minimap:HookScript("OnLeave", function(mm) if E.db.general.minimap.locationText == "MOUSEOVER" then mm.location:Hide() end end)
+	
 	Minimap.location = Minimap:CreateFontString(nil, "OVERLAY")
 	Minimap.location:FontTemplate(nil, nil, "OUTLINE")
 	Minimap.location:Point("TOP", Minimap, "TOP", 0, -2)
 	Minimap.location:SetJustifyH("CENTER")
 	Minimap.location:SetJustifyV("MIDDLE")
-	if E.db.general.minimap.locationText ~= "SHOW" or not E.private.general.minimap.enable then
+	if E.db.general.minimap.locationText ~= "SHOW" then
 		Minimap.location:Hide()
 	end
 
-	MinimapBorder:Hide()
-	MinimapBorderTop:Hide()
-	MinimapZoomIn:Hide()
-	MinimapZoomOut:Hide()
-	MiniMapVoiceChatFrame:Hide()
-	MinimapZoneTextButton:Hide()
-	MiniMapMailBorder:Hide()
-	QueueStatusMinimapButtonBorder:Hide()
+	local frames = {
+		MinimapBorder,
+		MinimapBorderTop,
+		MinimapZoomIn,
+		MinimapZoomOut,
+		MinimapNorthTag,
+		MinimapZoneTextButton,
+		MiniMapTracking,
+		MiniMapMailBorder,
+		MiniMapVoiceChatFrame,
+		QueueStatusMinimapButtonBorder
+	}
 
-	MiniMapTracking:Kill()
-	MinimapNorthTag:Kill()
+	for _, frame in pairs(frames) do
+		frame:Kill()
+	end
 
 	QueueStatusFrame:SetClampedToScreen(true)
 
@@ -556,36 +517,37 @@ function M:Initialize()
 	MiniMapChallengeMode:SetParent(Minimap)
 	HelpOpenTicketButton:SetParent(Minimap)
 
-	for _, frame in pairs({"HelpOpenTicketButton", "MiniMapWorldMapButton"}) do
-		local item = _G[frame]
-		local normal, pushed = item:GetNormalTexture(), item:GetPushedTexture()
+	for _, frame in pairs({HelpOpenTicketButton, MiniMapWorldMapButton}) do
+		frame:StripTextures()
+		frame:CreateBackdrop()
+		frame:SetFrameStrata("MEDIUM")
+		frame:Size(28)
+		frame:StyleButton(nil, true)
+		frame.hover:SetAllPoints()
 
-		item:StripTextures()
-		item:CreateBackdrop()
-		item:SetFrameStrata("MEDIUM")
-		item:Size(28)
-		item:StyleButton(nil, true)
-		item.hover:SetAllPoints()
-
-		if item == MiniMapWorldMapButton then
-			normal:SetTexture("INTERFACE\\ICONS\\INV_Misc_Map02")
+		local normal, pushed = frame:GetNormalTexture(), frame:GetPushedTexture()
+		if frame == MiniMapWorldMapButton then
+			normal:SetTexture([[Interface\Icons\INV_Misc_Map02]])
 			normal:SetAllPoints()
 
-			pushed:SetTexture("INTERFACE\\ICONS\\INV_Misc_Map02")
+			pushed:SetTexture([[Interface\Icons\INV_Misc_Map02]])
 			pushed:SetAllPoints()
-		elseif item == HelpOpenTicketButton then
-			normal:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-Blizz")
+		elseif frame == HelpOpenTicketButton then
+			normal:SetTexture([[Interface\ChatFrame\UI-ChatIcon-Blizz]])
 			normal:Point("TOPLEFT", 2, -6)
 			normal:Point("BOTTOMRIGHT", -2, 6)
 
-			pushed:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-Blizz")
+			pushed:SetTexture([[Interface\ChatFrame\UI-ChatIcon-Blizz]])
 			pushed:Point("TOPLEFT", 2, -6)
 			pushed:Point("BOTTOMRIGHT", -2, 6)
 		end
 	end
 
 	--Hide the BlopRing on Minimap
+	Minimap:SetArchBlobRingAlpha(0)
 	Minimap:SetArchBlobRingScalar(0)
+
+	Minimap:SetQuestBlobRingAlpha(0)
 	Minimap:SetQuestBlobRingScalar(0)
 
 	if TimeManagerClockButton then
@@ -603,16 +565,16 @@ function M:Initialize()
 	Minimap:SetScript("OnMouseUp", M.Minimap_OnMouseUp)
 
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "Update_ZoneText")
-	self:RegisterEvent("ZONE_CHANGED", "Update_ZoneText")
-	self:RegisterEvent("ZONE_CHANGED_INDOORS", "Update_ZoneText")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update_ZoneText")
-	self:RegisterEvent("ADDON_LOADED")
+	M:RegisterEvent("ZONE_CHANGED", "Update_ZoneText")
+	M:RegisterEvent("ZONE_CHANGED_INDOORS", "Update_ZoneText")
+	M:RegisterEvent("PLAYER_ENTERING_WORLD", "Update_ZoneText")
+	M:RegisterEvent("ADDON_LOADED")
 
 	hooksecurefunc(Minimap, "SetZoom", SetupZoomReset)
 
-	self:CreateFarmModeMap()
+	M:CreateFarmModeMap()
 
-	self.Initialized = true
+	M.Initialized = true
 end
 
 local function InitializeCallback()

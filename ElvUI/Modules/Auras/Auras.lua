@@ -451,7 +451,7 @@ function A:Initialize()
 		InterfaceOptionsFrameCategoriesButton12:SetScale(0.0001)
 	end
 
-	self:Construct_ConsolidatedBuffs()
+	A:Construct_ConsolidatedBuffs()
 
 	if not E.private.auras.enable then return end
 

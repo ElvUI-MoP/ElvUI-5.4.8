@@ -1,4 +1,5 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
+local A = E:GetModule("Auras")
 
 local next, ipairs, pairs = next, ipairs, pairs
 local floor, tinsert = floor, tinsert
@@ -308,5 +309,9 @@ function E:UpdateCooldownSettings(module)
 		E:UpdateCooldownSettings("actionbar")
 		E:UpdateCooldownSettings("unitframe")
 		E:UpdateCooldownSettings("auras")
+	end
+
+	if E.db.auras.consolidatedBuffs.enable and E.db.auras.consolidatedBuffs.durations then
+		A:Update_ConsolidatedBuffsSettings()
 	end
 end

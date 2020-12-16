@@ -147,6 +147,7 @@ E.Options.args.auras = {
 			name = L["General"],
 			get = function(info) return E.db.auras[info[#info]] end,
 			set = function(info, value) E.db.auras[info[#info]] = value A:UpdateHeader(A.BuffFrame) A:UpdateHeader(A.DebuffFrame) end,
+			disabled = function() return not E.Auras.Initialized or (not E.private.auras.buffsHeader and not E.private.auras.debuffsHeader) end,
 			args = {
 				fadeThreshold = {
 					order = 1,
@@ -339,66 +340,159 @@ E.Options.args.auras = {
 			order = 7,
 			type = "group",
 			name = L["Consolidated Buffs"],
-			disabled = function() return (E.private.general.minimap.enable ~= true or E.private.auras.disableBlizzard ~= true) end,
 			get = function(info) return E.db.auras.consolidatedBuffs[info[#info]] end,
 			set = function(info, value) E.db.auras.consolidatedBuffs[info[#info]] = value M:UpdateSettings() end,
+			disabled = function() return not E.private.auras.disableBlizzard end,
 			args = {
 				enable = {
 					order = 1,
 					type = "toggle",
 					name = L["ENABLE"],
+					desc = L["Display the consolidated buffs bar."],
 					set = function(info, value)
 						E.db.auras.consolidatedBuffs[info[#info]] = value
 						M:UpdateSettings()
 						A:UpdateHeader(ElvUIPlayerBuffs)
-					end,
-					desc = L["Display the consolidated buffs bar."]
+					end
 				},
 				filter = {
 					order = 2,
 					type = "toggle",
 					name = L["Filter Consolidated"],
-					desc = L["Only show consolidated icons on the consolidated bar that your class/spec is interested in. This is useful for raid leading."]
+					desc = L["Only show consolidated icons on the consolidated bar that your class/spec is interested in. This is useful for raid leading."],
+					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
 				},
 				durations = {
 					order = 3,
 					type = "toggle",
-					name = L["Remaining Time"]
+					name = L["Remaining Time"],
+					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
 				},
 				reverseStyle = {
 					order = 4,
 					type = "toggle",
 					name = L["Reverse Style"],
-					desc = L["When enabled active buff icons will light up instead of becoming darker, while inactive buff icons will become darker instead of being lit up."]
+					desc = L["When enabled active buff icons will light up instead of becoming darker, while inactive buff icons will become darker instead of being lit up."],
+					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
 				},
 				position = {
 					order = 5,
 					type = "select",
 					name = L["Position"],
-					set = function(info, value) E.db.auras.consolidatedBuffs[ info[#info] ] = value A:UpdatePosition() end,
 					values = {
 						["LEFT"] = L["Left"],
 						["RIGHT"] = L["Right"]
-					}
+					},
+					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
 				},
 				font = {
 					order = 6,
 					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
-					values = AceGUIWidgetLSMlists.font
+					values = AceGUIWidgetLSMlists.font,
+					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
 				},
 				fontSize = {
 					order = 7,
 					type = "range",
 					name = L["FONT_SIZE"],
-					min = 4, max = 22, step = 1
+					min = 4, max = 22, step = 1,
+					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
 				},
 				fontOutline = {
 					order = 8,
 					type = "select",
 					name = L["Font Outline"],
 					desc = L["Set the font outline."],
-					values = C.Values.FontFlags
+					values = C.Values.FontFlags,
+					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
+				},
+				detached = {
+					order = 9,
+					type = "group",
+					name = L["Detach From Frame"],
+					guiInline = true,
+					args = {
+						detached = {
+							order = 1,
+							type = "toggle",
+							name = L["ENABLE"],
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable end
+						},
+						mouseover = {
+							order = 2,
+							type = "toggle",
+							name = L["Mouseover"],
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
+						},
+						backdrop = {
+							order = 3,
+							type = "toggle",
+							name = L["Backdrop"],
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
+						},
+						transparent = {
+							order = 4,
+							type = "toggle",
+							name = L["Transparent Backdrop"],
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached or not E.db.auras.consolidatedBuffs.backdrop end
+						},
+						buttonSize = {
+							order = 5,
+							type = "range",
+							name = L["Button Size"],
+							min = 14, max = 64, step = 1,
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
+						},
+						buttonSpacing = {
+							order = 6,
+							type = "range",
+							name = L["Button Spacing"],
+							min = -1, max = 10, step = 1,
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
+						},
+						backdropSpacing = {
+							order = 7,
+							type = "range",
+							name = L["Backdrop Spacing"],
+							desc = L["The spacing between the backdrop and the buttons."],
+							min = -1, max = 10, step = 1,
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached or not E.db.auras.consolidatedBuffs.backdrop end
+						},
+						alpha = {
+							order = 8,
+							type = "range",
+							name = L["Alpha"],
+							isPercent = true,
+							min = 0, max = 1, step = 0.01,
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
+						},
+						orientation = {
+							order = 9,
+							type = "select",
+							name = L["Orientation"],
+							values = {
+								["HORIZONTAL"] = L["Horizontal"],
+								["VERTICAL"] = L["Vertical"]
+							},
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
+						},
+						frameStrata = {
+							order = 10,
+							type = "select",
+							name = L["Frame Strata"],
+							desc = L["Frames with higher strata will appear on top of frames with lower strata"],
+							values = {
+								["BACKGROUND"] = "BACKGROUND",
+								["LOW"] = "LOW",
+								["MEDIUM"] = "MEDIUM",
+								["HIGH"] = "HIGH",
+								["DIALOG"] = "DIALOG",
+								["TOOLTIP"] = "TOOLTIP"
+							},
+							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
+						}
+					}
 				}
 			}
 		}
