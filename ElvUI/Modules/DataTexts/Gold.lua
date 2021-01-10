@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local DT = E:GetModule("DataTexts")
+local B = E:GetModule("Bags")
 
 local type, ipairs, pairs = type, ipairs, pairs
 local format, strjoin = string.format, strjoin
@@ -140,6 +141,12 @@ local function OnEnter(self)
 			DT.tooltip:AddLine(CURRENCY..":")
 		end
 		if name and count then DT.tooltip:AddDoubleLine(currencyString:format(icon, name), count, 1, 1, 1) end
+	end
+
+	local grayValue = B:GetGraysValue()
+	if grayValue > 0 then
+		DT.tooltip:AddLine(" ")
+		DT.tooltip:AddDoubleLine(L["Grays"], E:FormatMoney(grayValue, style, textOnly), nil, nil, nil, 1, 1, 1)
 	end
 
 	DT.tooltip:AddLine(" ")
