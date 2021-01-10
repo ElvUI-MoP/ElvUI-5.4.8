@@ -168,9 +168,11 @@ P.databars = {
 P.bags = {
 	sortInverted = true,
 	bagSize = 34,
-	bankSize = 34,
 	bagWidth = 406,
+	bagButtonSpacing = 1,
+	bankSize = 34,
 	bankWidth = 406,
+	bankButtonSpacing = 1,
 	currencyFormat = "ICON_TEXT_ABBR",
 	moneyFormat = "SMART",
 	moneyCoins = true,
@@ -229,6 +231,7 @@ P.bags = {
 	},
 	split = {
 		bagSpacing = 5,
+		bankSpacing = 5,
 		player = false,
 		bank = false,
 		bag1 = false,
@@ -282,6 +285,7 @@ P.bags = {
 		showBackdrop = false,
 		mouseover = false,
 		transparent = false,
+		justBackpack = false,
 		visibility = "[petbattle] hide; show",
 	}
 }

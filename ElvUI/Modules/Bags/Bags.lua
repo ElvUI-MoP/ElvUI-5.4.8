@@ -148,6 +148,10 @@ function B:Tooltip_Show()
 		end
 	end
 
+	if self.ttValue and self.ttValue() > 0 then
+		GameTooltip:AddLine(E:FormatMoney(self.ttValue(), E.db.bags.moneyFormat, not E.db.bags.moneyCoins), 1, 1, 1)
+	end
+
 	GameTooltip:Show()
 end
 
@@ -178,7 +182,7 @@ function B:UpdateSearch()
 	if #search > MIN_REPEAT_CHARACTERS then
 		local repeatChar = true
 		for i = 1, MIN_REPEAT_CHARACTERS, 1 do
-			if sub(search,(0 - i), (0 - i)) ~= sub(search,(-1 - i),(-1 - i)) then
+			if sub(search, (0 - i), (0 - i)) ~= sub(search,(-1 - i), (-1 - i)) then
 				repeatChar = false
 				break
 			end
@@ -694,12 +698,12 @@ function B:Layout(isBank)
 	if not f then return end
 
 	local buttonSize = isBank and B.db.bankSize or B.db.bagSize
-	local buttonSpacing = E.PixelMode and 2 or 4
+	local buttonSpacing = isBank and B.db.bankButtonSpacing or B.db.bagButtonSpacing
 	local containerWidth = ((isBank and B.db.bankWidth) or B.db.bagWidth)
 	local numContainerColumns = floor(containerWidth / (buttonSize + buttonSpacing))
 	local holderWidth = ((buttonSize + buttonSpacing) * numContainerColumns) - buttonSpacing
 	local numContainerRows, numBags, numBagSlots = 0, 0, 0
-	local bagSpacing = B.db.split.bagSpacing
+	local bagSpacing = isBank and B.db.split.bankSpacing or B.db.split.bagSpacing
 	local countColor = E.db.bags.countFontColor
 	local isSplit = B.db.split[isBank and "bank" or "player"]
 
@@ -1074,27 +1078,6 @@ function B:UpdateGoldText()
 	B.BagFrame.goldText:Point("BOTTOMRIGHT", B.BagFrame.holderFrame, "TOPRIGHT", goldPos and -8 or -2, 4)
 end
 
-function B:FormatMoney(amount)
-	local str, coppername, silvername, goldname = "", "|cffeda55fc|r", "|cffc7c7cfs|r", "|cffffd700g|r"
-
-	local value = abs(amount)
-	local gold = floor(value / 10000)
-	local silver = floor((value / 100) % 100)
-	local copper = floor(value % 100)
-
-	if gold > 0 then
-		str = format("%d%s%s", gold, goldname, (silver > 0 or copper > 0) and " " or "")
-	end
-	if silver > 0 then
-		str = format("%s%d%s%s", str, silver, silvername, copper > 0 and " " or "")
-	end
-	if copper > 0 or value == 0 then
-		str = format("%s%d%s", str, copper, coppername)
-	end
-
-	return str
-end
-
 function B:GetGraysValue()
 	local value = 0
 
@@ -1331,7 +1314,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.editBox = CreateFrame("EditBox", name.."EditBox", f)
 		f.editBox:FontTemplate()
 		f.editBox:SetFrameLevel(f.editBox:GetFrameLevel() + 2)
-		f.editBox:CreateBackdrop("Default")
+		f.editBox:CreateBackdrop()
 		f.editBox.backdrop:Point("TOPLEFT", f.editBox, "TOPLEFT", -20, 2)
 		f.editBox:Height(15)
 		f.editBox:Point("BOTTOMLEFT", f.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
@@ -1413,6 +1396,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.vendorGraysButton:GetPushedTexture():SetInside()
 		f.vendorGraysButton:StyleButton(nil, true)
 		f.vendorGraysButton.ttText = L["Vendor / Delete Grays"]
+		f.vendorGraysButton.ttValue = B.GetGraysValue
 		f.vendorGraysButton:SetScript("OnEnter", B.Tooltip_Show)
 		f.vendorGraysButton:SetScript("OnLeave", GameTooltip_Hide)
 		f.vendorGraysButton:SetScript("OnClick", B.VendorGrayCheck)
@@ -1420,7 +1404,7 @@ function B:ConstructContainerFrame(name, isBank)
 		--Search
 		f.editBox = CreateFrame("EditBox", name.."EditBox", f)
 		f.editBox:SetFrameLevel(f.editBox:GetFrameLevel() + 2)
-		f.editBox:CreateBackdrop("Default")
+		f.editBox:CreateBackdrop()
 		f.editBox.backdrop:Point("TOPLEFT", f.editBox, "TOPLEFT", -20, 2)
 		f.editBox:Height(15)
 		f.editBox:Point("BOTTOMLEFT", f.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
@@ -1449,7 +1433,7 @@ function B:ConstructContainerFrame(name, isBank)
 		for i = 1, MAX_WATCHED_TOKENS do
 			f.currencyButton[i] = CreateFrame("Button", f:GetName().."CurrencyButton"..i, f.currencyButton)
 			f.currencyButton[i]:Size(16)
-			f.currencyButton[i]:SetTemplate("Default")
+			f.currencyButton[i]:SetTemplate()
 			f.currencyButton[i]:SetID(i)
 			f.currencyButton[i].icon = f.currencyButton[i]:CreateTexture(nil, "OVERLAY")
 			f.currencyButton[i].icon:SetInside()
@@ -1734,7 +1718,7 @@ function B:ProgressQuickVendor()
 		local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
 		stackPrice = (itemPrice or 0) * stackCount
 		if E.db.bags.vendorGrays.details and link then
-			E:Print(format("%s|cFF00DDDDx%d|r %s", link, stackCount, B:FormatMoney(stackPrice)))
+			E:Print(format("%s|cFF00DDDDx%d|r %s", link, stackCount, E:FormatMoney(stackPrice, E.db.bags.moneyFormat, not E.db.bags.moneyCoins)))
 		end
 		UseContainerItem(bag, slot)
 	end
@@ -1759,7 +1743,7 @@ function B:VendorGreys_OnUpdate(elapsed)
 	elseif lastItem then
 		B.SellFrame:Hide()
 		if B.SellFrame.Info.goldGained > 0 then
-			E:Print((L["Vendored gray items for: %s"]):format(B:FormatMoney(B.SellFrame.Info.goldGained)))
+			E:Print((L["Vendored gray items for: %s"]):format(E:FormatMoney(B.SellFrame.Info.goldGained, E.db.bags.moneyFormat, not E.db.bags.moneyCoins)))
 		end
 	end
 end
