@@ -166,131 +166,144 @@ end
 local function GetOptionsTable_AuraBars(updateFunc, groupName)
 	local config = {
 		type = "group",
+		childGroups = "tab",
 		name = L["Aura Bars"],
 		get = function(info) return E.db.unitframe.units[groupName].aurabar[info[#info]] end,
 		set = function(info, value) E.db.unitframe.units[groupName].aurabar[info[#info]] = value updateFunc(UF, groupName) end,
 		args = {
 			enable = {
-				order = 2,
+				order = 1,
 				type = "toggle",
 				name = L["ENABLE"]
 			},
 			configureButton1 = {
-				order = 3,
+				order = 2,
 				type = "execute",
 				name = L["Coloring"],
 				desc = L["This opens the UnitFrames Color settings. These settings affect all unitframes."],
 				func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup", "auraBars") end,
+				disabled = function() return not E.db.unitframe.units[groupName].aurabar.enable end
 			},
 			configureButton2 = {
-				order = 4,
+				order = 3,
 				type = "execute",
 				name = L["Coloring (Specific)"],
 				desc = L["This opens the AuraBar Colors filter. These settings affect specific spells."],
-				func = function() E:SetToFilterConfig("AuraBar Colors") end
+				func = function() E:SetToFilterConfig("AuraBar Colors") end,
+				disabled = function() return not E.db.unitframe.units[groupName].aurabar.enable end
 			},
-			anchorPoint = {
-				order = 5,
-				type = "select",
-				name = L["Anchor Point"],
-				desc = L["What point to anchor to the frame you set to attach to."],
-				values = {
-					["ABOVE"] = L["Above"],
-					["BELOW"] = L["Below"]
+			generalGroup = {
+				order = 4,
+				type = "group",
+				name = L["General"],
+				get = function(info) return E.db.unitframe.units[groupName].aurabar[info[#info]] end,
+				set = function(info, value) E.db.unitframe.units[groupName].aurabar[info[#info]] = value updateFunc(UF, groupName) end,
+				disabled = function() return not E.db.unitframe.units[groupName].aurabar.enable end,
+				args = {
+					anchorPoint = {
+						order = 1,
+						type = "select",
+						name = L["Anchor Point"],
+						desc = L["What point to anchor to the frame you set to attach to."],
+						values = {
+							["ABOVE"] = L["Above"],
+							["BELOW"] = L["Below"]
+						}
+					},
+					attachTo = {
+						order = 2,
+						type = "select",
+						name = L["Attach To"],
+						desc = L["The object you want to attach to."],
+						values = {
+							["FRAME"] = L["Frame"],
+							["DEBUFFS"] = L["Debuffs"],
+							["BUFFS"] = L["Buffs"],
+							["DETACHED"] = L["Detach From Frame"]
+						}
+					},
+					sortMethod = {
+						order = 3,
+						type = "select",
+						name = L["Sort By"],
+						desc = L["Method to sort by."],
+						values = {
+							["TIME_REMAINING"] = L["Time Remaining"],
+							["DURATION"] = L["Duration"],
+							["NAME"] = L["NAME"],
+							["INDEX"] = L["Index"],
+							["PLAYER"] = L["PLAYER"]
+						}
+					},
+					friendlyAuraType = {
+						order = 4,
+						type = "select",
+						name = L["Friendly Aura Type"],
+						desc = L["Set the type of auras to show when a unit is friendly."],
+						values = {
+							["HARMFUL"] = L["Debuffs"],
+							["HELPFUL"] = L["Buffs"]
+						}
+					},
+					enemyAuraType = {
+						order = 5,
+						type = "select",
+						name = L["Enemy Aura Type"],
+						desc = L["Set the type of auras to show when a unit is a foe."],
+						values = {
+							["HARMFUL"] = L["Debuffs"],
+							["HELPFUL"] = L["Buffs"]
+						}
+					},
+					sortDirection = {
+						order = 6,
+						type = "select",
+						name = L["Sort Direction"],
+						desc = L["Ascending or Descending order."],
+						values = {
+							["ASCENDING"] = L["Ascending"],
+							["DESCENDING"] = L["Descending"]
+						}
+					},
+					height = {
+						order = 7,
+						type = "range",
+						name = L["Height"],
+						min = 6, max = 40, step = 1
+					},
+					detachedWidth = {
+						order = 8,
+						type = "range",
+						name = L["Detached Width"],
+						hidden = function() return E.db.unitframe.units[groupName].aurabar.attachTo ~= "DETACHED" end,
+						min = 50, max = 500, step = 1
+					},
+					maxBars = {
+						order = 9,
+						type = "range",
+						name = L["Max Bars"],
+						min = 1, max = 40, step = 1
+					},
+					yOffset = {
+						order = 10,
+						type = "range",
+						name = L["Y-Offset"],
+						min = 0, max = 100, step = 1,
+						hidden = function() return E.db.unitframe.units[groupName].aurabar.attachTo == "DETACHED" end
+					},
+					spacing = {
+						order = 11,
+						type = "range",
+						name = L["Spacing"],
+						min = 0, softMax = 20, step = 1
+					}
 				}
-			},
-			attachTo = {
-				order = 6,
-				type = "select",
-				name = L["Attach To"],
-				desc = L["The object you want to attach to."],
-				values = {
-					["FRAME"] = L["Frame"],
-					["DEBUFFS"] = L["Debuffs"],
-					["BUFFS"] = L["Buffs"],
-					["DETACHED"] = L["Detach From Frame"]
-				}
-			},
-			height = {
-				order = 7,
-				type = "range",
-				name = L["Height"],
-				min = 6, max = 40, step = 1
-			},
-			detachedWidth = {
-				order = 8,
-				type = "range",
-				name = L["Detached Width"],
-				hidden = function() return E.db.unitframe.units[groupName].aurabar.attachTo ~= "DETACHED" end,
-				min = 50, max = 500, step = 1
-			},
-			maxBars = {
-				order = 9,
-				type = "range",
-				name = L["Max Bars"],
-				min = 1, max = 40, step = 1
-			},
-			sortMethod = {
-				order = 10,
-				type = "select",
-				name = L["Sort By"],
-				desc = L["Method to sort by."],
-				values = {
-					["TIME_REMAINING"] = L["Time Remaining"],
-					["DURATION"] = L["Duration"],
-					["NAME"] = L["NAME"],
-					["INDEX"] = L["Index"],
-					["PLAYER"] = L["PLAYER"]
-				}
-			},
-			sortDirection = {
-				order = 11,
-				type = "select",
-				name = L["Sort Direction"],
-				desc = L["Ascending or Descending order."],
-				values = {
-					["ASCENDING"] = L["Ascending"],
-					["DESCENDING"] = L["Descending"]
-				}
-			},
-			friendlyAuraType = {
-				order = 16,
-				type = "select",
-				name = L["Friendly Aura Type"],
-				desc = L["Set the type of auras to show when a unit is friendly."],
-				values = {
-					["HARMFUL"] = L["Debuffs"],
-					["HELPFUL"] = L["Buffs"]
-				}
-			},
-			enemyAuraType = {
-				order = 17,
-				type = "select",
-				name = L["Enemy Aura Type"],
-				desc = L["Set the type of auras to show when a unit is a foe."],
-				values = {
-					["HARMFUL"] = L["Debuffs"],
-					["HELPFUL"] = L["Buffs"]
-				}
-			},
-			yOffset = {
-				order = 19,
-				type = "range",
-				name = L["Y-Offset"],
-				min = 0, max = 100, step = 1,
-				hidden = function() return E.db.unitframe.units[groupName].aurabar.attachTo == "DETACHED" end
-			},
-			spacing = {
-				order = 20,
-				type = "range",
-				name = L["Spacing"],
-				min = 0, softMax = 20, step = 1,
 			},
 			filters = {
 				order = 500,
 				type = "group",
 				name = L["FILTERS"],
-				guiInline = true,
+				disabled = function() return not E.db.unitframe.units[groupName].aurabar.enable end,
 				args = {
 					minDuration = {
 						order = 1,
@@ -420,7 +433,7 @@ local function GetOptionsTable_AuraBars(updateFunc, groupName)
 	}
 
 	if groupName == "target" then
-		config.args.attachTo.values.PLAYER_AURABARS = L["Player Frame Aura Bars"]
+		config.args.generalGroup.args.attachTo.values.PLAYER_AURABARS = L["Player Frame Aura Bars"]
 	end
 
 	return config

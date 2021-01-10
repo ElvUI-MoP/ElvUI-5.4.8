@@ -39,6 +39,7 @@ function UF:AuraBars_SetPosition(from, to)
 	local spacing = self.spacing
 	local anchor = self.initialAnchor
 	local growth = self.growth == "BELOW" and -1 or 1
+	local border = UF.thinBorders and E.mult or E.Border
 
 	for i = from, to do
 		local button = self[i]
@@ -46,9 +47,9 @@ function UF:AuraBars_SetPosition(from, to)
 
 		button:ClearAllPoints()
 		if i == 1 then
-			button:SetPoint(anchor, self, anchor, -E.Border, 0)
+			button:SetPoint(anchor, self, anchor, -border, 0)
 		else
-			button:SetPoint(anchor, self, anchor, -(E.Border), growth * ((i - 1) * (height + spacing + 1)))
+			button:SetPoint(anchor, self, anchor, -(border), growth * ((i - 1) * (height + spacing + 1)))
 		end
 	end
 end
@@ -63,6 +64,7 @@ function UF:Construct_AuraBarHeader(frame)
 	auraBar.CustomFilter = UF.AuraFilter
 	auraBar.SetPosition = UF.AuraBars_SetPosition
 
+	auraBar.gap = UF.thinBorders and 1 or 6
 	auraBar.sparkEnabled = true
 	auraBar.initialAnchor = "BOTTOMRIGHT"
 	auraBar.type = "aurabar"
@@ -81,14 +83,10 @@ function UF:Configure_AuraBars(frame)
 			frame:EnableElement("AuraBars")
 		end
 
-		local index = 1
-		while auraBars[index] do
-			local button = auraBars[index]
-			if button then
-				button.db = auraBars.db
-			end
-
-			index = index + 1
+		for _, statusBar in ipairs(auraBars) do
+			statusBar.db = auraBars.db
+			UF:Update_FontString(statusBar.timeText)
+			UF:Update_FontString(statusBar.nameText)
 		end
 
 		auraBars:Show()
@@ -99,7 +97,7 @@ function UF:Configure_AuraBars(frame)
 		auraBars.enemyAuraType = db.aurabar.enemyAuraType
 		auraBars.maxBars = db.aurabar.maxBars
 		auraBars.spacing = db.aurabar.spacing
-		auraBars.width = frame.UNIT_WIDTH - auraBars.height - (frame.BORDER * 4)
+		auraBars.width = frame.UNIT_WIDTH - auraBars.height - (frame.BORDER * 4) + (UF.thinBorders and 1 or -4)
 
 		local attachTo = frame
 		local colors = UF.db.colors.auraBarBuff
@@ -125,9 +123,9 @@ function UF:Configure_AuraBars(frame)
 			elseif frame.unitframeType == "target" then
 				E:CreateMover(holder, "ElvUF_TargetAuraMover", L["Target Aura Bars"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,target,aurabar")
 			elseif frame.unitframeType == "pet" then
-				E:CreateMover(holder, "ElvUF_PetAuraMover", L["Focus Aura Bars"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,pet,aurabar")
+				E:CreateMover(holder, "ElvUF_PetAuraMover", L["Pet Aura Bars"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,pet,aurabar")
 			elseif frame.unitframeType == "focus" then
-				E:CreateMover(holder, "ElvUF_FocusAuraMover", L["Pet Aura Bars"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,focus,aurabar")
+				E:CreateMover(holder, "ElvUF_FocusAuraMover", L["Focus Aura Bars"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,focus,aurabar")
 			end
 
 			auraBars.Holder = holder

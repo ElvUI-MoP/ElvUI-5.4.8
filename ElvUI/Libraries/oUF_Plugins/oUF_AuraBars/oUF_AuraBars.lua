@@ -1,21 +1,23 @@
 local _, ns = ...
 local oUF = ns.oUF
 
-local next, pcall, unpack = next, pcall, unpack
+local pcall, unpack = pcall, unpack
 local floor, huge = math.floor, math.huge
-local format = string.format
-local tinsert = table.insert
+local format = format
+local tinsert = tinsert
 
 local CreateFrame = CreateFrame
 local GetTime = GetTime
 local UnitAura = UnitAura
-local UnitIsFriend = UnitIsFriend
+local UnitIsEnemy = UnitIsEnemy
+local UnitReaction = UnitReaction
+local GameTooltip = GameTooltip
 
 local VISIBLE, HIDDEN = 1, 0
 local DAY, HOUR, MINUTE = 86400, 3600, 60
 
 local function FormatTime(s)
-	if s == huge then s = 0 end
+	if s == huge then return end
 
 	if s < MINUTE then
 		return format("%.1fs", s)
@@ -24,15 +26,15 @@ local function FormatTime(s)
 	elseif s < DAY then
 		return format("%dh %dm", s / HOUR, s / 60 % 60)
 	else
-		return format("%dd %dh", s/DAY, (s / HOUR) - (floor(s / DAY) * 24))
+		return format("%dd %dh", s / DAY, (s / HOUR) - (floor(s / DAY) * 24))
 	end
 end
 
 local function onEnter(self)
-	if(not self:IsVisible()) then return end
+	if not self:IsVisible() then return end
 
-	GameTooltip:SetOwner(self, self:GetParent().tooltipAnchor)
-	GameTooltip:SetUnitAura(self.unit, self:GetID(), self.filter)
+	GameTooltip:SetOwner(self, self.tooltipAnchor)
+	GameTooltip:SetUnitAura(self.unit, self.index, self.filter)
 end
 
 local function onLeave()
@@ -108,11 +110,12 @@ local function updateBar(element, unit, index, offset, filter, isDebuff, visible
 			element.createdBars = element.createdBars + 1
 		end
 
+		statusBar.unit = unit
+		statusBar.index = index
 		statusBar.caster = caster
 		statusBar.filter = filter
 		statusBar.isDebuff = isDebuff
-		statusBar.isPlayer = (caster == 'player' or caster == 'vehicle')
-		statusBar.unit = unit
+		statusBar.isPlayer = caster == 'player' or caster == 'vehicle'
 
 		local show = (element.CustomFilter or customFilter) (element, unit, statusBar, name, rank, texture, count, debuffType, duration, expiration, caster, isStealable, shouldConsolidate, spellID, canApply, isBossDebuff)
 
@@ -137,10 +140,14 @@ local function updateBar(element, unit, index, offset, filter, isDebuff, visible
 			end
 
 			local r, g, b = .2, .6, 1
+			if element.buffColor then r, g, b = unpack(element.buffColor) end
 			if filter == 'HARMFUL' then
-				if not debuffType or debuffType == '' then debuffType = 'none' end
+				if not debuffType or debuffType == '' then
+					debuffType = 'none'
+				end
 
-				r, g, b = DebuffTypeColor[debuffType].r, DebuffTypeColor[debuffType].g, DebuffTypeColor[debuffType].b
+				local color = DebuffTypeColor[debuffType]
+				r, g, b = color.r, color.g, color.b
 			end
 
 			statusBar:SetStatusBarColor(r, g, b)
@@ -209,13 +216,12 @@ local function UpdateAuras(self, event, unit)
 	if(element) then
 		if(element.PreUpdate) then element:PreUpdate(unit) end
 
-		local isFriend = UnitIsFriend('player', unit)
-		local filter = (isFriend and (element.friendlyAuraType or 'HELPFUL') or (element.enemyAuraType or 'HARMFUL'))
-
+		local isEnemy = UnitIsEnemy('player', unit)
+		local reaction = UnitReaction('player', unit)
+		local filter = (not isEnemy and (not reaction or reaction > 4) and (element.friendlyAuraType or 'HELPFUL')) or element.enemyAuraType or 'HARMFUL'
 		local visible, hidden = filterBars(element, unit, filter, element.maxBars, filter == 'HARMFUL', 0)
 
 		local fromRange, toRange
-
 		if(element.PreSetPosition) then
 			fromRange, toRange = element:PreSetPosition(element.maxBars)
 		end
