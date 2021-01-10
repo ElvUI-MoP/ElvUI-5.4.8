@@ -4932,6 +4932,7 @@ for i = 1, 10 do
 		customCountFont = false,
 		customHotkeyFont = false,
 		hideHotkey = false,
+		hideMacroText = false,
 		hotkeyFont = "Homespun",
 		hotkeyFontOutline = "MONOCHROMEOUTLINE",
 		hotkeyFontSize = 10,

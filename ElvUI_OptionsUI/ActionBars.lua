@@ -896,6 +896,17 @@ for i = 1, 10 do
 							end
 						end
 					},
+					hideMacroText = {
+						order = 8.1,
+						type = "toggle",
+						name = L["Hide Macro Text"],
+						set = function(info, value)
+							E.db.actionbar["bar"..i][info[#info]] = value
+							for _, bar in pairs(AB.handledBars) do
+								AB:UpdateButtonConfig(bar, bar.bindButtons)
+							end
+						end
+					},
 					point = {
 						order = 9,
 						type = "select",

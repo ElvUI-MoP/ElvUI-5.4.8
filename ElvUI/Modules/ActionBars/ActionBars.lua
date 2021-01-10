@@ -872,7 +872,7 @@ function AB:UpdateButtonConfig(bar, buttonName)
 
 	local barDB = AB.db["bar"..bar.id]
 	if not bar.buttonConfig then bar.buttonConfig = {hideElements = {}, colors = {}} end
-	bar.buttonConfig.hideElements.macro = not AB.db.macrotext
+	bar.buttonConfig.hideElements.macro = not AB.db.macrotext or barDB.hideMacroText
 	bar.buttonConfig.hideElements.hotkey = not AB.db.hotkeytext or barDB.hideHotkey
 	bar.buttonConfig.showGrid = barDB.showGrid
 	bar.buttonConfig.clickOnDown = AB.db.keyDown
