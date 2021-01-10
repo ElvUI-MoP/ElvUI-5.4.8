@@ -127,6 +127,7 @@ L["Ghost"] = "Призрак"
 L["GM Ticket Frame"] = "Запрос ГМу"
 L["Gold"] = "Золото"
 L["goldabbrev"] = "|cffffd700з|r"
+L["Grays"] = true
 L["Grid Size:"] = "Размер сетки"
 L["Healer"] = "Лекарь"
 L["Hit"] = "Метк."

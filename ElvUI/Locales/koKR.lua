@@ -127,6 +127,7 @@ L["Ghost"] = "유령"
 L["GM Ticket Frame"] = "GM요청 번호표"
 L["Gold"] = "골드"
 L["goldabbrev"] = "|TInterface\\MoneyFrame\\UI-MoneyIcons:0:0:1:0:64:16:1:16:1:16|t"
+L["Grays"] = true
 L["Grid Size:"] = "격자 크기 :"
 L["Healer"] = "힐러"
 L["Hit"] = "적중도"

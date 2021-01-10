@@ -127,6 +127,7 @@ L["Ghost"] = "Fantasma"
 L["GM Ticket Frame"] = "Marco de Consultas para el MJ"
 L["Gold"] = "Oro"
 L["goldabbrev"] = "|cffffd700g|r"
+L["Grays"] = true
 L["Grid Size:"] = "Tamaño de la Rejilla:"
 L["Healer"] = "Sanador"
 L["Hit"] = "Golpe"

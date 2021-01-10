@@ -127,6 +127,7 @@ L["Ghost"] = "鬼魂"
 L["GM Ticket Frame"] = "GM对话框"
 L["Gold"] = "金"
 L["goldabbrev"] = "|cffffd700金|r"
+L["Grays"] = true
 L["Grid Size:"] = "网格尺寸:"
 L["Healer"] = "治疗"
 L["Hit"] = "命中"

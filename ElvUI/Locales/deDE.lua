@@ -127,6 +127,7 @@ L["Ghost"] = "Geist"
 L["GM Ticket Frame"] = "GM-Ticket-Fenster"
 L["Gold"] = true
 L["goldabbrev"] = "|cffffd700g|r"
+L["Grays"] = true
 L["Grid Size:"] = "Rastergröße:"
 L["Healer"] = "Heiler"
 L["Hit"] = "Trefferchance"

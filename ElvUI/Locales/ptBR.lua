@@ -127,6 +127,7 @@ L["Ghost"] = "Fantasma"
 L["GM Ticket Frame"] = "Quadro de Consulta com GM"
 L["Gold"] = "Ouro"
 L["goldabbrev"] = "|cffffd700g|r"
+L["Grays"] = true
 L["Grid Size:"] = "Tamanho da Grade"
 L["Healer"] = "Curandeiro"
 L["Hit"] = "Acerto"

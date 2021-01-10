@@ -127,6 +127,7 @@ L["Ghost"] = true
 L["GM Ticket Frame"] = true
 L["Gold"] = true
 L["goldabbrev"] = "|cffffd700g|r"
+L["Grays"] = true
 L["Grid Size:"] = true
 L["Healer"] = true
 L["Hit"] = true
