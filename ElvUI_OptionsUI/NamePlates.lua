@@ -3388,7 +3388,7 @@ local function GetUnitSettings(unit, name)
 			raidTargetIndicator = {
 				order = 7,
 				type = "group",
-				name = L["Raid Icon"],
+				name = L["Target Marker Icon"],
 				get = function(info)
 					return E.db.nameplates.units[unit].raidTargetIndicator[info[#info]]
 				end,

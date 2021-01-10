@@ -103,14 +103,14 @@ function mod:ExperienceBar_OnEnter()
 
 	local cur, max = mod:GetXP("player")
 	local rested = GetXPExhaustion()
-	GameTooltip:AddLine(L["Experience"])
+	GameTooltip:AddDoubleLine(L["Experience"], format("%s %d", L["Level"], E.mylevel))
 	GameTooltip:AddLine(" ")
 
 	GameTooltip:AddDoubleLine(L["XP:"], format(" %d / %d (%d%%)", cur, max, E:Round(cur / max * 100)), 1, 1, 1)
 	GameTooltip:AddDoubleLine(L["Remaining:"], format(" %d (%d%% - %d "..L["Bars"]..")", max - cur, E:Round((max - cur) / max * 100), 20 * (max - cur) / max), 1, 1, 1)
 
 	if rested then
-		GameTooltip:AddDoubleLine(L["Rested:"], format("+%d (%d%%)", rested, E:Round(rested / max * 100)), 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["Rested:"], format("%d (%d%%)", rested, E:Round(rested / max * 100)), 1, 1, 1)
 	end
 
 	GameTooltip:Show()

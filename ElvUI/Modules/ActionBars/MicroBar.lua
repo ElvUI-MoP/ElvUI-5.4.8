@@ -154,8 +154,8 @@ function AB:UpdateMicroButtons()
 	GuildMicroButtonTabard.background:SetTexCoord(0.17, 0.87, 0.5, 0.908)
 
 	GuildMicroButtonTabard.emblem:ClearAllPoints()
-	GuildMicroButtonTabard.emblem:Point("TOPLEFT", GuildMicroButton, "TOPLEFT", 4, -4)
-	GuildMicroButtonTabard.emblem:Point("BOTTOMRIGHT", GuildMicroButton, "BOTTOMRIGHT", -4, 8)
+	GuildMicroButtonTabard.emblem:Point("TOPLEFT", GuildMicroButton, 4, -4)
+	GuildMicroButtonTabard.emblem:Point("BOTTOMRIGHT", GuildMicroButton, -4, 8)
 
 	-- PvP Micro Button
 	local desaturate = (E.mylevel < PVPMicroButton.minLevel and true) or false
@@ -183,9 +183,9 @@ function AB:SetupMicroBar()
 
 	MicroButtonPortrait:SetInside(CharacterMicroButton.backdrop)
 
-	PVPMicroButtonTexture:Point("TOPLEFT", PVPMicroButton, "TOPLEFT", -3, 3)
-	PVPMicroButtonTexture:Point("BOTTOMRIGHT", PVPMicroButton, "BOTTOMRIGHT", 2, -3)
-	PVPMicroButtonTexture:SetTexture("Interface\\PVPFrame\\PVP-Conquest-Misc")
+	PVPMicroButtonTexture:Point("TOPLEFT", PVPMicroButton, -3, 3)
+	PVPMicroButtonTexture:Point("BOTTOMRIGHT", PVPMicroButton, 2, -3)
+	PVPMicroButtonTexture:SetTexture([[Interface\PVPFrame\PVP-Conquest-Misc]])
 
 	if E.myfaction == "Alliance" then
 		PVPMicroButtonTexture:SetTexCoord(0.694, 0.748, 0.603, 0.728)

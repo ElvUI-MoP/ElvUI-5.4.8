@@ -71,13 +71,17 @@ local function LoadSkin()
 					button.isSkinned = true
 				end
 
+				local r, g, b
 				if button.itemLink then
-					local r, g, b = GetItemQualityColor(select(3, GetItemInfo(button.itemLink)))
-					button.Name:SetTextColor(r, g, b)
-					button.handledHighlight:SetVertexColor(r, g, b)
-					button.Selection:SetVertexColor(r, g, b)
-					button.Item.backdrop:SetBackdropBorderColor(r, g, b)
+					r, g, b = GetItemQualityColor(select(3, GetItemInfo(button.itemLink)))
+				else
+					r, g, b = 1, 1, 1
 				end
+
+				button.Name:SetTextColor(r, g, b)
+				button.handledHighlight:SetVertexColor(r, g, b)
+				button.Selection:SetVertexColor(r, g, b)
+				button.Item.backdrop:SetBackdropBorderColor(r, g, b)
 			end
 		end
 	end

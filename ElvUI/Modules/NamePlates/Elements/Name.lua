@@ -69,7 +69,9 @@ function NP:Update_Name(frame, triggered)
 			r, g, b = classColor.r, classColor.g, classColor.b
 		end
 	elseif triggered or (not self.db.units[frame.UnitType].health.enable and not frame.isTarget) or (useReactionColor and (frame.UnitType == "FRIENDLY_NPC" or frame.UnitType == "ENEMY_NPC")) then
-		if reactionType and reactionType == 4 then
+		if reactionType and reactionType == 1 then
+			r, g, b = db.reactions.tapped.r, db.reactions.tapped.g, db.reactions.tapped.b
+		elseif reactionType and reactionType == 4 then
 			r, g, b = db.reactions.neutral.r, db.reactions.neutral.g, db.reactions.neutral.b
 		elseif reactionType and reactionType > 4 then
 			if frame.UnitType == "FRIENDLY_PLAYER" then
