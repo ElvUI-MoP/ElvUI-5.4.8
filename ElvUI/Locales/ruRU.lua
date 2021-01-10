@@ -79,6 +79,7 @@ L["copperabbrev"] = "|cffeda55fм|r"
 L["Count"] = "Кол-во"
 L["CVars Set"] = "Настройки сброшены"
 L["CVars"] = "Настройки игры"
+L["Daily Reset"] = true
 L["Dark"] = "Темная"
 L["Data From: %s"] = "Данные от: %s"
 L["Data To: %s"] = true

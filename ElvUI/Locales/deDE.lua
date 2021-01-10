@@ -79,6 +79,7 @@ L["copperabbrev"] = "|cffeda55fc|r"
 L["Count"] = "Zähler"
 L["CVars Set"] = "CVars gesetzt"
 L["CVars"] = "CVars"
+L["Daily Reset"] = true
 L["Dark"] = "Dunkel"
 L["Data From: %s"] = "Datei von: %s"
 L["Data To: %s"] = true

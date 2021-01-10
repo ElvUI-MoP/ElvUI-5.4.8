@@ -79,6 +79,7 @@ L["copperabbrev"] = "|TInterface\\MoneyFrame\\UI-MoneyIcons:0:0:1:0:64:16:33:48:
 L["Count"] = "갯수"
 L["CVars Set"] = "CVars 설정"
 L["CVars"] = "게임 인터페이스 설정(CVars)"
+L["Daily Reset"] = true
 L["Dark"] = "어두운 느낌"
 L["Data From: %s"] = "%s 유저에게서 데이터 받는중..."
 L["Data To: %s"] = true

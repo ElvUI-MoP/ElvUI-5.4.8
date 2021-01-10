@@ -17,6 +17,7 @@ local GetNumSavedInstances = GetNumSavedInstances
 local GetSavedInstanceInfo = GetSavedInstanceInfo
 local GetDifficultyInfo = GetDifficultyInfo
 local GetNumSavedWorldBosses = GetNumSavedWorldBosses
+local GetQuestResetTime = GetQuestResetTime
 local GetSavedWorldBossInfo = GetSavedWorldBossInfo
 local RequestRaidInfo = RequestRaidInfo
 local SecondsToTime = SecondsToTime
@@ -245,6 +246,8 @@ local function OnEnter(self)
 	if DT.tooltip:NumLines() > 0 then
 		DT.tooltip:AddLine(" ")
 	end
+
+	DT.tooltip:AddDoubleLine(L["Daily Reset"]..":", SecondsToTime(GetQuestResetTime()), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
 
 	local timeFormat1 = E.db.datatexts.timeFormat ~= "" and E.db.datatexts.timeFormat or "%H:%M"
 	local timeType = E.db.datatexts.localTime and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME

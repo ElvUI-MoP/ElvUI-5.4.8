@@ -79,6 +79,7 @@ L["copperabbrev"] = "|cffeda55f銅|r"
 L["Count"] = "計數"
 L["CVars Set"] = "參數設定"
 L["CVars"] = "參數"
+L["Daily Reset"] = true
 L["Dark"] = "黑暗"
 L["Data From: %s"] = "數據來源: %s"
 L["Data To: %s"] = true
