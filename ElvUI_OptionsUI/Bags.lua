@@ -136,7 +136,7 @@ E.Options.args.bags = {
 				},
 				upgradeIcon = {
 					order = 14,
-					type = 'toggle',
+					type = "toggle",
 					name = L["Show Upgrade Icon"],
 					desc = L["Display the upgrade icon on items that WoW considers an upgrade for your character."],
 					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
