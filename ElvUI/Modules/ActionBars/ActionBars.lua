@@ -648,10 +648,8 @@ function AB:UpdateHotkeyColor(button)
 end
 
 function AB:Bar_OnEnter(bar)
-	if bar:GetParent() == AB.fadeParent then
-		if not AB.fadeParent.mouseLock then
-			E:UIFrameFadeIn(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1)
-		end
+	if bar:GetParent() == AB.fadeParent and not AB.fadeParent.mouseLock then
+		E:UIFrameFadeIn(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1)
 	end
 
 	if bar.mouseover then
@@ -660,10 +658,8 @@ function AB:Bar_OnEnter(bar)
 end
 
 function AB:Bar_OnLeave(bar)
-	if bar:GetParent() == AB.fadeParent then
-		if not AB.fadeParent.mouseLock then
-			E:UIFrameFadeOut(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1 - AB.db.globalFadeAlpha)
-		end
+	if bar:GetParent() == AB.fadeParent and not AB.fadeParent.mouseLock then
+		E:UIFrameFadeOut(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1 - AB.db.globalFadeAlpha)
 	end
 
 	if bar.mouseover then
@@ -673,10 +669,8 @@ end
 
 function AB:Button_OnEnter(button)
 	local bar = button:GetParent()
-	if bar:GetParent() == AB.fadeParent then
-		if not AB.fadeParent.mouseLock then
-			E:UIFrameFadeIn(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1)
-		end
+	if bar:GetParent() == AB.fadeParent and not AB.fadeParent.mouseLock then
+		E:UIFrameFadeIn(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1)
 	end
 
 	if bar.mouseover then
@@ -686,10 +680,8 @@ end
 
 function AB:Button_OnLeave(button)
 	local bar = button:GetParent()
-	if bar:GetParent() == AB.fadeParent then
-		if not AB.fadeParent.mouseLock then
-			E:UIFrameFadeOut(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1 - AB.db.globalFadeAlpha)
-		end
+	if bar:GetParent() == AB.fadeParent and not AB.fadeParent.mouseLock then
+		E:UIFrameFadeOut(AB.fadeParent, 0.2, AB.fadeParent:GetAlpha(), 1 - AB.db.globalFadeAlpha)
 	end
 
 	if bar.mouseover then
@@ -710,11 +702,7 @@ function AB:BlizzardOptionsPanel_OnEvent()
 end
 
 function AB:FadeParent_OnEvent(event, unit)
-	if (event == "UNIT_SPELLCAST_START"
-	or event == "UNIT_SPELLCAST_STOP"
-	or event == "UNIT_SPELLCAST_CHANNEL_START"
-	or event == "UNIT_SPELLCAST_CHANNEL_STOP"
-	or event == "UNIT_HEALTH") and unit ~= "player" then return end
+	if (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_STOP" or event == "UNIT_HEALTH") and unit ~= "player" then return end
 
 	if (UnitCastingInfo("player") or UnitChannelInfo("player")) or (UnitHealth("player") ~= UnitHealthMax("player")) or (UnitExists("target") or UnitExists("focus")) or UnitAffectingCombat("player") then
 		self.mouseLock = true
@@ -1142,18 +1130,16 @@ function AB:LAB_ButtonCreated(button)
 end
 
 function AB:LAB_ButtonUpdate(button)
-	local color = AB.db.fontColor
 	local db = button.db
-	do
-		local color = db and db.useCountColor and db.countColor or color
-		button.count:SetTextColor(color.r, color.g, color.b)
-	end
+	local color = db and db.useCountColor and db.countColor or AB.db.fontColor
+
+	button.count:SetTextColor(color.r, color.g, color.b)
 
 	if button.backdrop then
 		if AB.db.equippedItem then
 			if button:IsEquipped() and AB.db.equippedItemColor then
-				color = AB.db.equippedItemColor
-				button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+				local border = AB.db.equippedItemColor
+				button.backdrop:SetBackdropBorderColor(border.r, border.g, border.b)
 				button.backdrop.isColored = true
 			elseif button.backdrop.isColored then
 				button.backdrop.isColored = nil

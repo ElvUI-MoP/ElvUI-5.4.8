@@ -88,14 +88,15 @@ function A:UpdateReminder(event, unit)
 			button.t:SetTexture(texture)
 
 			if (duration == 0 and expirationTime == 0) or not E.db.auras.consolidatedBuffs.durations then
-				button.t:SetAlpha(reverseStyle and 1 or 0.3)
+				local color = reverseStyle and 1 or 0.3
+				button.t:SetVertexColor(color, color, color)
 				button:SetScript("OnUpdate", nil)
 				button.timer:SetText(nil)
 				CooldownFrame_SetTimer(button.cd, 0, 0, 0)
 			else
 				button.expiration = expirationTime - GetTime()
 				button.nextUpdate = 0
-				button.t:SetAlpha(1)
+				button.t:SetVertexColor(1, 1, 1)
 				CooldownFrame_SetTimer(button.cd, expirationTime - duration, duration, 1)
 				button.cd:SetReverse(reverseStyle and true or false)
 				button:SetScript("OnUpdate", A.UpdateConsolidatedTime)
@@ -104,7 +105,8 @@ function A:UpdateReminder(event, unit)
 		else
 			CooldownFrame_SetTimer(button.cd, 0, 0, 0)
 			button.spellName = nil
-			button.t:SetAlpha(reverseStyle and 0.3 or 1)
+			local color = reverseStyle and 0.3 or 1
+			button.t:SetVertexColor(color, color, color)
 			button:SetScript("OnUpdate", nil)
 			button.timer:SetText(nil)
 			button.t:SetTexture(A.DefaultIcons[i])
