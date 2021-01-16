@@ -4842,16 +4842,6 @@ P.actionbar = {
 			fontSize = 18
 		}
 	},
-
-	microbar = {
-		enabled = false,
-		mouseover = false,
-		buttonsPerRow = 12,
-		buttonSize = 20,
-		buttonSpacing = 2,
-		alpha = 1,
-		visibility = "show"
-	},
 	barPet = {
 		enabled = true,
 		mouseover = false,
@@ -4888,6 +4878,18 @@ P.actionbar = {
 		alpha = 1,
 		inheritGlobalFade = false,
 		visibility = "[vehicleui] hide; [petbattle] hide;show"
+	},
+	microbar = {
+		enabled = false,
+		mouseover = false,
+		buttonsPerRow = 12,
+		buttonSize = 20,
+		buttonSpacing = 2,
+		backdrop = false,
+		transparentBackdrop = false,
+		backdropSpacing = 2,
+		alpha = 1,
+		visibility = "show"
 	},
 	extraActionButton = {
 		alpha = 1,
