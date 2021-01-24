@@ -5,7 +5,7 @@ local Skins = E:GetModule("Skins")
 local Search = E.Libs.ItemSearch
 
 local _G = _G
-local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
+local type, ipairs, pairs, tonumber, unpack, select, assert, pcall = type, ipairs, pairs, tonumber, unpack, select, assert, pcall
 local tinsert, tremove, twipe, tmaxn = table.insert, table.remove, table.wipe, table.maxn
 local floor, ceil, abs = math.floor, math.ceil, math.abs
 local format, sub, gsub, match = string.format, string.sub, string.gsub, string.match
@@ -182,7 +182,7 @@ function B:UpdateSearch()
 	if #search > MIN_REPEAT_CHARACTERS then
 		local repeatChar = true
 		for i = 1, MIN_REPEAT_CHARACTERS, 1 do
-			if sub(search, (0 - i), (0 - i)) ~= sub(search,(-1 - i), (-1 - i)) then
+			if sub(search, (0 - i), (0 - i)) ~= sub(search, (-1 - i), (-1 - i)) then
 				repeatChar = false
 				break
 			end

@@ -194,9 +194,9 @@ local function LoadSkin()
 				button:SetFrameLevel(button:GetFrameLevel() + 2)
 
 				if numItems == 2 then
-					button:Point(j == 1 and "TOPLEFT" or "TOPRIGHT", j == 1 and item.button2 or item, j == 1 and "BOTTOMLEFT" or "TOPRIGHT", j == 1 and 135 or -235, j == 1 and 40 or -45)
+					button:Point(j == 1 and "TOPLEFT" or "TOPRIGHT", j == 1 and item.button2 or item, j == 1 and "BOTTOMLEFT" or "TOPRIGHT", j == 1 and 150 or -255, j == 1 and 40 or -45)
 				elseif numItems == 4 then
-					button:Point("TOPRIGHT", j == 1 and item or item.button1, j == 1 and "TOPRIGHT" or "TOPLEFT", j == 1 and -100 or -95, j == 1 and -10 or 0)
+					button:Point("TOPRIGHT", j == 1 and item or item.button1, j == 1 and "TOPRIGHT" or "TOPLEFT", j == 1 and -105 or -110, j == 1 and -10 or 0)
 				end
 
 				button:StyleButton(true)

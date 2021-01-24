@@ -323,7 +323,8 @@ local function LoadSkin()
 	hooksecurefunc("PaperDollFrame_UpdateSidebarTabs", function()
 		for i = 1, #PAPERDOLL_SIDEBARS do
 			local tab = _G["PaperDollSidebarTab"..i]
-			if tab then
+
+			if tab and not tab.isSkinned then
 				tab:CreateBackdrop("Default", true)
 
 				tab.Highlight:SetTexture(1, 1, 1, 0.3)
@@ -334,14 +335,20 @@ local function LoadSkin()
 
 				tab.TabBg:Kill()
 
-				if i == 1 then
-					for x = 1, tab:GetNumRegions() do
-						local region = select(x, tab:GetRegions())
-						region:SetTexCoord(0.16, 0.86, 0.16, 0.86)
-						region.SetTexCoord = E.noop
-						region:SetInside(tab.backdrop)
+				if i == 1 or i == 2 then
+					tab:Point("RIGHT", _G["PaperDollSidebarTab"..i + 1], "LEFT", E.PixelMode and -4 or -8, 0)
+
+					if i == 1 then
+						for x = 1, tab:GetNumRegions() do
+							local region = select(x, tab:GetRegions())
+							region:SetTexCoord(0.16, 0.86, 0.16, 0.86)
+							region.SetTexCoord = E.noop
+							region:SetInside(tab.backdrop)
+						end
 					end
 				end
+
+				tab.isSkinned = true
 			end
 		end
 	end)

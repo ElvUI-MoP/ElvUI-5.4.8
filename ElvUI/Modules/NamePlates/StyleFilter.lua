@@ -271,6 +271,7 @@ function NP:StyleFilterSetChanges(frame, actions, HealthColorChanged, BorderChan
 		NP:Update_IconFrame(frame, true)
 		if frame.CastBar:IsShown() then frame.CastBar:Hide() end
 		if frame.Health:IsShown() then frame.Health:Hide() end
+		if frame.Title then frame.Title:Hide() end -- Temporary solution (enhanced plugin)
 		frame.Level:SetText()
 		frame.Name:SetText()
 		NP:Configure_Glow(frame)

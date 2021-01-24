@@ -476,7 +476,7 @@ E.Options.args.actionbar = {
 					type = "range",
 					name = L["Backdrop Spacing"],
 					desc = L["The spacing between the backdrop and the buttons."],
-					min = 0, max = 10, step = 1,
+					min = -1, max = 10, step = 1,
 					disabled = function() return not E.db.actionbar.barPet.enabled end
 				},
 				widthMult = {
@@ -650,7 +650,7 @@ E.Options.args.actionbar = {
 					type = "range",
 					name = L["Backdrop Spacing"],
 					desc = L["The spacing between the backdrop and the buttons."],
-					min = 0, max = 10, step = 1,
+					min = -1, max = 10, step = 1,
 					disabled = function() return not E.db.actionbar.stanceBar.enabled end
 				},
 				widthMult = {
@@ -767,7 +767,7 @@ E.Options.args.actionbar = {
 					type = "range",
 					name = L["Backdrop Spacing"],
 					desc = L["The spacing between the backdrop and the buttons."],
-					min = 0, max = 10, step = 1,
+					min = -1, max = 10, step = 1,
 					disabled = function() return not E.db.actionbar.microbar.enabled or not E.db.actionbar.microbar.backdrop end
 				},
 				buttonsPerRow = {
@@ -1021,7 +1021,7 @@ for i = 1, 10 do
 						type = "range",
 						name = L["Backdrop Spacing"],
 						desc = L["The spacing between the backdrop and the buttons."],
-						min = 0, max = 10, step = 1
+						min = -1, max = 10, step = 1
 					},
 					heightMult = {
 						order = 16,

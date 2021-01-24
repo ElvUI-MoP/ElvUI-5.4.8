@@ -21,15 +21,15 @@ function UF:Configure_ClassBar(frame)
 	bars.origParent = frame
 
 	--Fix height in case it is lower than the theme allows, or in case it's higher than 30px when not detached
-	if (not self.thinBorders and not E.PixelMode) and frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 7 then --A height of 7 means 6px for borders and just 1px for the actual power statusbar
+	if not UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 7) then --A height of 7 means 6px for borders and just 1px for the actual power statusbar
 		frame.CLASSBAR_HEIGHT = 7
 		if db.classbar then db.classbar.height = 7 end
 		UF.ToggleResourceBar(bars) --Trigger update to health if needed
-	elseif (self.thinBorders or E.PixelMode) and frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 3 then --A height of 3 means 2px for borders and just 1px for the actual power statusbar
+	elseif UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 3) then --A height of 3 means 2px for borders and just 1px for the actual power statusbar
 		frame.CLASSBAR_HEIGHT = 3
 		if db.classbar then db.classbar.height = 3 end
 		UF.ToggleResourceBar(bars) --Trigger update to health if needed
-	elseif (not frame.CLASSBAR_DETACHED and frame.CLASSBAR_HEIGHT > 30) then
+	elseif not frame.CLASSBAR_DETACHED and frame.CLASSBAR_HEIGHT > 30 then
 		frame.CLASSBAR_HEIGHT = 10
 		if db.classbar then db.classbar.height = 10 end
 		--Override visibility if Classbar is Additional Power in order to fix a bug when Auto Hide is enabled, height is higher than 30 and it goes from detached to not detached
@@ -42,7 +42,7 @@ function UF:Configure_ClassBar(frame)
 
 	if frame.USE_MINI_CLASSBAR and not frame.CLASSBAR_DETACHED then
 		if frame.MAX_CLASS_BAR == 1 or frame.ClassBar == "EclipseBar" or frame.ClassBar == "AdditionalPower" or frame.ClassBar == "AlternativePower" or frame.ClassBar == "DemonicFury" then
-			CLASSBAR_WIDTH = CLASSBAR_WIDTH * 2/3
+			CLASSBAR_WIDTH = CLASSBAR_WIDTH * 2 / 3
 		else
 			CLASSBAR_WIDTH = CLASSBAR_WIDTH * (frame.MAX_CLASS_BAR - 1) / frame.MAX_CLASS_BAR
 		end
@@ -56,12 +56,10 @@ function UF:Configure_ClassBar(frame)
 	local color = E.db.unitframe.colors.borderColor
 	bars.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 
+	local vertical = frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation
+
 	if frame.ClassBar == "ClassPower" or frame.ClassBar == "SpecPower" or frame.ClassBar == "Runes" or frame.ClassBar == "BurningEmbers" or frame.ClassBar == "SoulShards" then
-		if (not frame.USE_MINI_CLASSBAR) and frame.USE_CLASSBAR then
-			bars.backdrop:Show()
-		else
-			bars.backdrop:Hide()
-		end
+		bars.backdrop:SetShown(not frame.USE_MINI_CLASSBAR and frame.USE_CLASSBAR)
 
 		local maxClassBarButtons = max(UF.classMaxResourceBar[E.myclass] or 0)
 		for i = 1, maxClassBarButtons do
@@ -80,10 +78,11 @@ function UF:Configure_ClassBar(frame)
 						bars[i]:Width((CLASSBAR_WIDTH - ((5 + (frame.BORDER * 2 + frame.SPACING * 2)) * (frame.MAX_CLASS_BAR - 1))) / frame.MAX_CLASS_BAR) --Width accounts for 5px spacing between each button, excluding borders
 					end
 				elseif i ~= frame.MAX_CLASS_BAR then
-					bars[i]:Width((CLASSBAR_WIDTH - ((frame.MAX_CLASS_BAR - 1) * (frame.BORDER-frame.SPACING))) / frame.MAX_CLASS_BAR) --classbar width minus total width of dividers between each button, divided by number of buttons
+					bars[i]:Width((CLASSBAR_WIDTH - ((frame.MAX_CLASS_BAR - 1) * (frame.BORDER - frame.SPACING))) / frame.MAX_CLASS_BAR) --classbar width minus total width of dividers between each button, divided by number of buttons
 				end
 
 				bars[i]:GetStatusBarTexture():SetHorizTile(false)
+				bars[i]:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
 				bars[i]:ClearAllPoints()
 
 				if i == 1 then
@@ -98,10 +97,10 @@ function UF:Configure_ClassBar(frame)
 							bars[i]:Point("LEFT", bars[i - 1], "RIGHT", (5 + frame.BORDER * 2 + frame.SPACING * 2), 0) --5px spacing between borders of each button
 						end
 					elseif i == frame.MAX_CLASS_BAR then
-						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", frame.BORDER-frame.SPACING, 0)
+						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", frame.BORDER - frame.SPACING, 0)
 						bars[i]:Point("RIGHT", bars)
 					else
-						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", frame.BORDER-frame.SPACING, 0)
+						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", frame.BORDER - frame.SPACING, 0)
 					end
 				end
 
@@ -117,50 +116,30 @@ function UF:Configure_ClassBar(frame)
 					end
 				end
 
-				if frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation then
-					bars[i]:SetOrientation("VERTICAL")
-				else
-					bars[i]:SetOrientation("HORIZONTAL")
-				end
-
 				bars[i]:Show()
 			end
 		end
 	elseif frame.ClassBar == "EclipseBar" then
+		local luranTex = bars.LunarBar:GetStatusBarTexture()
+
 		bars.LunarBar:SetMinMaxValues(0, 0)
 		bars.LunarBar:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][1]))
 		bars.LunarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+		bars.LunarBar:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
 		E:SetSmoothing(bars.LunarBar, UF.db.smoothbars)
 
 		bars.SolarBar:SetMinMaxValues(0, 0)
 		bars.SolarBar:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
 		bars.SolarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+		bars.SolarBar:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
+		bars.SolarBar:ClearAllPoints()
+		bars.SolarBar:Point(vertical and "BOTTOM" or "LEFT", luranTex, vertical and "TOP" or "RIGHT")
 		E:SetSmoothing(bars.SolarBar, UF.db.smoothbars)
 
-		bars.SolarBar:ClearAllPoints()
 		bars.Arrow:ClearAllPoints()
-
-		if frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation then
-			bars.LunarBar:SetOrientation("VERTICAL")
-
-			bars.SolarBar:SetOrientation("VERTICAL")
-			bars.SolarBar:Point("BOTTOM", bars.LunarBar:GetStatusBarTexture(), "TOP")
-
-			bars.Arrow:Point("CENTER", bars.LunarBar:GetStatusBarTexture(), "TOP", 0, -4)
-		else
-			bars.LunarBar:SetOrientation("HORIZONTAL")
-
-			bars.SolarBar:SetOrientation("HORIZONTAL")
-			bars.SolarBar:Point("LEFT", bars.LunarBar:GetStatusBarTexture(), "RIGHT")
-
-			bars.Arrow:Point("CENTER", bars.LunarBar:GetStatusBarTexture(), "RIGHT")
-		end
+		bars.Arrow:Point("CENTER", luranTex, vertical and "TOP" or "RIGHT", 0, vertical and -4 or 0)
 	elseif frame.ClassBar == "AdditionalPower" or frame.ClassBar == "AlternativePower" or frame.ClassBar == "DemonicFury" then
-		if frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation then
-			bars:SetOrientation("VERTICAL")
-		else
-			bars:SetOrientation("HORIZONTAL")
-		end
+		bars:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
 
 		if frame.ClassBar == "DemonicFury" then
 			bars:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
@@ -201,30 +180,16 @@ function UF:Configure_ClassBar(frame)
 			bars.Holder.mover:SetAlpha(1)
 		end
 
-		if db.classbar.parent == "UIPARENT" then
-			bars:SetParent(E.UIParent)
-		else
-			bars:SetParent(frame)
-		end
-
-		if not db.classbar.strataAndLevel.useCustomStrata then
-			bars:SetFrameStrata("LOW")
-		else
-			bars:SetFrameStrata(db.classbar.strataAndLevel.frameStrata)
-		end
-
-		if not db.classbar.strataAndLevel.useCustomLevel then
-			bars:SetFrameLevel(frame.Health:GetFrameLevel() + 10) --Health uses 10, Power uses (Health + 5) when attached
-		else
-			bars:SetFrameLevel(db.classbar.strataAndLevel.frameLevel)
-		end
+		bars:SetParent(db.classbar.parent == "UIPARENT" and E.UIParent or frame)
+		bars:SetFrameStrata(db.classbar.strataAndLevel.useCustomStrata and "LOW" or db.classbar.strataAndLevel.frameStrata)
+		bars:SetFrameLevel(db.classbar.strataAndLevel.useCustomLevel and db.classbar.strataAndLevel.frameLevel or frame.Health:GetFrameLevel() + 10) --Health uses 10, Power uses (Health + 5) when attached
 	else
 		bars:ClearAllPoints()
 
 		if frame.ORIENTATION == "RIGHT" then
-			bars:Point("BOTTOMRIGHT", frame.Health.backdrop, "TOPRIGHT", -frame.BORDER, frame.SPACING*3)
+			bars:Point("BOTTOMRIGHT", frame.Health.backdrop, "TOPRIGHT", -frame.BORDER, frame.SPACING * 3)
 		else
-			bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING*3)
+			bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING * 3)
 		end
 
 		bars:SetParent(frame)
@@ -313,7 +278,7 @@ local function ToggleResourceBar(bars, overrideVisibility)
 
 	local height = (db.classbar and db.classbar.height) or (db.combobar and db.combobar.height)
 	frame.CLASSBAR_HEIGHT = (frame.USE_CLASSBAR and (frame.CLASSBAR_SHOWN and height) or 0)
-	frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and ((frame.SPACING+(frame.CLASSBAR_HEIGHT/2))) or (frame.CLASSBAR_HEIGHT - (frame.BORDER-frame.SPACING)))
+	frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and ((frame.SPACING + (frame.CLASSBAR_HEIGHT / 2))) or (frame.CLASSBAR_HEIGHT - (frame.BORDER - frame.SPACING)))
 
 	if not frame.CLASSBAR_DETACHED then
 		UF:Configure_HealthBar(frame)
@@ -723,9 +688,8 @@ function UF:EclipsePostDirectionChange(direction)
 	if not db then return end
 
 	local vertical = frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation
-	local arrowRotation = direction == "sun" and (vertical and 0 or -1.57) or (vertical and 3.14 or 1.57)
 
-	self.Arrow:SetRotation(arrowRotation)
+	self.Arrow:SetRotation(direction == "sun" and (vertical and 0 or -1.57) or (vertical and 3.14 or 1.57))
 	self.Arrow:SetVertexColor(unpack(ElvUF.colors.ClassBars[E.myclass][direction == "sun" and 1 or 2]))
 	self.Arrow:SetShown(direction == "sun" or direction == "moon")
 end

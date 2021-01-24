@@ -70,8 +70,8 @@ local function LoadSkin()
 	MountJournal.MountDisplay.ModelFrame.RotateRightButton:Kill()
 
 	S:HandleEditBox(MountJournalSearchBox)
-	MountJournalSearchBox:Width(256)
-	MountJournalSearchBox:Point("TOPLEFT", MountJournal.LeftInset, 1, -9)
+	MountJournalSearchBox:Width(E.PixelMode and 256 or 254)
+	MountJournalSearchBox:Point("TOPLEFT", MountJournal.LeftInset, E.PixelMode and 1 or 2, -9)
 
 	MountJournalListScrollFrame:StripTextures()
 	MountJournalListScrollFrame:CreateBackdrop("Transparent")
@@ -154,12 +154,13 @@ local function LoadSkin()
 	PetJournalTutorialButton:Kill()
 
 	S:HandleEditBox(PetJournalSearchBox)
-	PetJournalSearchBox:Width(160)
-	PetJournalSearchBox:Point("TOPLEFT", PetJournalLeftInset, 1, -9)
+	PetJournalSearchBox:Width(E.PixelMode and 160 or 157)
+	PetJournalSearchBox:Point("TOPLEFT", PetJournalLeftInset, E.PixelMode and 1 or 2, -9)
 
 	S:HandleButton(PetJournalFilterButton, true)
 	PetJournalFilterButton:ClearAllPoints()
-	PetJournalFilterButton:Point("RIGHT", PetJournalSearchBox, 97, 0)
+	PetJournalFilterButton:Point("RIGHT", PetJournalSearchBox, E.PixelMode and 97 or 99, 0)
+	PetJournalFilterButton:Height(E.PixelMode and 22 or 24)
 
 	PetJournalFilterButtonText:Point("CENTER")
 

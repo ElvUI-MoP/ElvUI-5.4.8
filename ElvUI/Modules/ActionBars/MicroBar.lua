@@ -106,7 +106,7 @@ function AB:UpdateMicroPositionDimensions()
 	local buttonSpacing = E:Scale(offset + AB.db.microbar.buttonSpacing)
 	local buttonsPerRow = AB.db.microbar.buttonsPerRow
 	local showBackdrop = AB.db.microbar.backdrop
-	local backdropSpacing = showBackdrop and AB.db.microbar.backdropSpacing or 0
+	local backdropSpacing = showBackdrop and AB.db.microbar.backdropSpacing + E.Border or 0
 
 	for i = 1, #MICRO_BUTTONS - 1 do
 		local button = _G[__buttonIndex[i]] or _G[MICRO_BUTTONS[i]]

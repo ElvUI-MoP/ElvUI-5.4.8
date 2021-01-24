@@ -2,6 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 
 local random = random
+local match = string.match
 
 local CreateFrame = CreateFrame
 local UnitIsTapped = UnitIsTapped
@@ -10,6 +11,8 @@ local UnitReaction = UnitReaction
 local UnitIsPlayer = UnitIsPlayer
 local UnitClass = UnitClass
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsCharmed = UnitIsCharmed
+local UnitIsEnemy = UnitIsEnemy
 
 local _, ns = ...
 local ElvUF = ns.oUF
@@ -229,6 +232,14 @@ function UF:PostUpdateHealthColor(unit, r, g, b)
 	if (((colors.healthclass and colors.colorhealthbyvalue) or (colors.colorhealthbyvalue and parent.isForced)) and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit))) then
 		newr, newg, newb = ElvUF:ColorGradient(self.cur, self.max, 1, 0, 0, 1, 1, 0, r, g, b)
 		self:SetStatusBarColor(newr, newg, newb)
+	end
+
+	-- Charmed player should have hostile color
+	if unit and (match(unit, "raid%d+") or match(unit, "party%d+")) then
+		if not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit) and UnitIsCharmed(unit) and UnitIsEnemy("player", unit) then
+			local color = parent.colors.reaction[2]
+			if color then self:SetStatusBarColor(color[1], color[2], color[3]) end
+		end
 	end
 
 	if self.bg then
