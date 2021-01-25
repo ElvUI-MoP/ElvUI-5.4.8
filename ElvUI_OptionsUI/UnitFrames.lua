@@ -65,6 +65,15 @@ local attachToValues = {
 	Frame = L["Frame"]
 }
 
+local customTextsAttachToValues = {
+	AdditionalPower = L["Additional Power"],
+	EclipseBar = L["Eclipse Power"],
+	Health = L["HEALTH"],
+	Power = L["Power"],
+	InfoPanel = L["Information Panel"],
+	Frame = L["Frame"]
+}
+
 local growthDirectionValues = {
 	DOWN_RIGHT = format(L["%s and then %s"], L["Down"], L["Right"]),
 	DOWN_LEFT = format(L["%s and then %s"], L["Down"], L["Left"]),
@@ -1542,17 +1551,40 @@ local function GetOptionsTable_Cutaway(updateFunc, groupName, numGroup)
 end
 
 local individual = {
-	["player"] = true,
-	["target"] = true,
-	["targettarget"] = true,
-	["targettargettarget"] = true,
-	["focus"] = true,
-	["focustarget"] = true,
-	["pet"] = true,
-	["pettarget"] = true
+	player = true,
+	target = true,
+	targettarget = true,
+	targettargettarget = true,
+	focus = true,
+	focustarget = true,
+	pet = true,
+	pettarget = true
 }
 
+local function UpdateCustomTextGroup(unit)
+	if unit == "party" or unit:find("raid") then
+		for i = 1, UF[unit]:GetNumChildren() do
+			local child = select(i, UF[unit]:GetChildren())
+
+			for x = 1, child:GetNumChildren() do
+				local subchild = select(x, child:GetChildren())
+				UF:Configure_CustomTexts(subchild)
+				subchild:UpdateTags()
+			end
+		end
+	elseif unit == "boss" or unit == "arena" then
+		for i = 1, 5 do
+			UF:Configure_CustomTexts(UF[unit..i])
+			UF[unit..i]:UpdateTags()
+		end
+	else
+		UF:Configure_CustomTexts(UF[unit])
+		UF[unit]:UpdateTags()
+	end
+end
+
 local function CreateCustomTextGroup(unit, objectName)
+	if not E.private.unitframe.enable then return end
 	local group = individual[unit] and "individualUnits" or "groupUnits"
 	if not E.Options.args.unitframe.args[group].args[unit] then
 		return
@@ -1570,15 +1602,7 @@ local function CreateCustomTextGroup(unit, objectName)
 		set = function(info, value)
 			E.db.unitframe.units[unit].customTexts[objectName][info[#info]] = value
 
-			if unit == "party" or unit:find("raid") then
-				UF:CreateAndUpdateHeaderGroup(unit)
-			elseif unit == "boss" then
-				UF:CreateAndUpdateUFGroup("boss", MAX_BOSS_FRAMES)
-			elseif unit == "arena" then
-				UF:CreateAndUpdateUFGroup("arena", 5)
-			else
-				UF:CreateAndUpdateUF(unit)
-			end
+			UpdateCustomTextGroup(unit)
 		end,
 		args = {
 			delete = {
@@ -1589,37 +1613,7 @@ local function CreateCustomTextGroup(unit, objectName)
 					E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName] = nil
 					E.db.unitframe.units[unit].customTexts[objectName] = nil
 
-					if unit == "boss" or unit == "arena" then
-						for i = 1, 5 do
-							if UF[unit..i] then
-								UF[unit..i]:Untag(UF[unit..i].customTexts[objectName])
-								UF[unit..i].customTexts[objectName]:Hide()
-								UF[unit..i].customTexts[objectName] = nil
-							end
-						end
-					elseif unit == "party" or unit:find("raid") then
-						for i = 1, UF[unit]:GetNumChildren() do
-							local child = select(i, UF[unit]:GetChildren())
-							if child.Untag then
-								child:Untag(child.customTexts[objectName])
-								child.customTexts[objectName]:Hide()
-								child.customTexts[objectName] = nil
-							else
-								for x = 1, child:GetNumChildren() do
-									local c2 = select(x, child:GetChildren())
-									if c2.Untag then
-										c2:Untag(c2.customTexts[objectName])
-										c2.customTexts[objectName]:Hide()
-										c2.customTexts[objectName] = nil
-									end
-								end
-							end
-						end
-					elseif UF[unit] then
-						UF[unit]:Untag(UF[unit].customTexts[objectName])
-						UF[unit].customTexts[objectName]:Hide()
-						UF[unit].customTexts[objectName] = nil
-					end
+					UpdateCustomTextGroup(unit)
 				end
 			},
 			enable = {
@@ -1686,6 +1680,12 @@ local function CreateCustomTextGroup(unit, objectName)
 		}
 	}
 
+	if unit == "player" and (E.myclass == "DRUID" and UF.player.AdditionalPower and UF.player.EclipseBar) then
+		E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName].args.attachTextTo.values = customTextsAttachToValues
+	else
+		E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName].args.attachTextTo.values = attachToValues
+	end
+
 	tinsert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden on profile change
 end
 
@@ -1732,6 +1732,8 @@ local function GetOptionsTable_CustomText(updateFunc, groupName, numUnits)
 
 					CreateCustomTextGroup(groupName, textName)
 					updateFunc(UF, groupName, numUnits)
+
+					E.Libs.AceConfigDialog:SelectGroup("ElvUI", "unitframe", individual[groupName] and "individualUnits" or "groupUnits", groupName, "customText", textName)
 				end
 			}
 		}
@@ -2975,15 +2977,8 @@ local function GetOptionsTable_ClassBar(updateFunc, groupName, numUnits)
 			name = L["Auto Hide"],
 			disabled = function() return not E.db.unitframe.units[groupName].classbar.enable end
 		}
-		config.args.additionalPowerText = {
-			order = 6,
-			type = "toggle",
-			name = L["Additional Power Text"],
-			hidden = function() return E.myclass ~= "DRUID" end,
-			disabled = function() return not E.db.unitframe.units[groupName].classbar.enable end
-		}
 		config.args.detachGroup = {
-			order = 7,
+			order = 6,
 			type = "group",
 			name = L["Detach From Frame"],
 			get = function(info) return E.db.unitframe.units.player.classbar[info[#info]] end,
@@ -3054,7 +3049,7 @@ local function GetOptionsTable_ClassBar(updateFunc, groupName, numUnits)
 			}
 		}
 		config.args.strataAndLevel = {
-			order = 8,
+			order = 7,
 			type = "group",
 			name = L["Strata and Level"],
 			get = function(info) return E.db.unitframe.units.player.classbar.strataAndLevel[info[#info]] end,

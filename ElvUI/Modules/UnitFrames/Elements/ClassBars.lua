@@ -5,9 +5,8 @@ local _, ns = ...
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
-local select, unpack = select, unpack
-local strfind, strsub, gsub = strfind, strsub, gsub
-local floor, max = floor, max
+local unpack = unpack
+local max = max
 
 local CreateFrame = CreateFrame
 
@@ -279,6 +278,8 @@ local function ToggleResourceBar(bars, overrideVisibility)
 	local height = (db.classbar and db.classbar.height) or (db.combobar and db.combobar.height)
 	frame.CLASSBAR_HEIGHT = (frame.USE_CLASSBAR and (frame.CLASSBAR_SHOWN and height) or 0)
 	frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and ((frame.SPACING + (frame.CLASSBAR_HEIGHT / 2))) or (frame.CLASSBAR_HEIGHT - (frame.BORDER - frame.SPACING)))
+
+	UF:Configure_CustomTexts(frame)
 
 	if not frame.CLASSBAR_DETACHED then
 		UF:Configure_HealthBar(frame)
@@ -660,7 +661,7 @@ end
 -- DRUID
 -------------------------------------------------------------
 function UF:Construct_DruidEclipseBar(frame)
-	local eclipseBar = CreateFrame("Frame", nil, frame)
+	local eclipseBar = CreateFrame("Frame", "$parent_EclipsePowerBar", frame)
 	eclipseBar:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 
 	eclipseBar.LunarBar = CreateFrame("StatusBar", "LunarBar", eclipseBar)
@@ -671,6 +672,10 @@ function UF:Construct_DruidEclipseBar(frame)
 	eclipseBar.SolarBar = CreateFrame("StatusBar", "SolarBar", eclipseBar)
 	eclipseBar.SolarBar:SetStatusBarTexture(E.media.blankTex)
 	UF.statusbars[eclipseBar.SolarBar] = true
+
+	eclipseBar.RaisedElementParent = CreateFrame("Frame", nil, eclipseBar)
+	eclipseBar.RaisedElementParent:SetFrameLevel(eclipseBar:GetFrameLevel() + 100)
+	eclipseBar.RaisedElementParent:SetAllPoints()
 
 	eclipseBar.Arrow = eclipseBar.LunarBar:CreateTexture(nil, "OVERLAY")
 	eclipseBar.Arrow:SetTexture(E.Media.Textures.ArrowUp)
@@ -707,21 +712,21 @@ function UF:EclipsePostUpdateVisibility(enabled, stateChanged)
 end
 
 function UF:Construct_AdditionalPowerBar(frame)
-	local additionalPower = CreateFrame("StatusBar", "AdditionalPowerBar", frame)
+	local additionalPower = CreateFrame("StatusBar", "$parent_AdditionalPowerBar", frame)
+	additionalPower:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 	additionalPower:SetStatusBarTexture(E.media.blankTex)
-	UF.statusbars[additionalPower] = true
 
 	additionalPower.colorPower = true
 	additionalPower.frequentUpdates = true
+	UF.statusbars[additionalPower] = true
 
-	additionalPower:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
+	additionalPower.RaisedElementParent = CreateFrame("Frame", nil, additionalPower)
+	additionalPower.RaisedElementParent:SetFrameLevel(additionalPower:GetFrameLevel() + 100)
+	additionalPower.RaisedElementParent:SetAllPoints()
 
 	additionalPower.BG = additionalPower:CreateTexture(nil, "BORDER")
 	additionalPower.BG:SetAllPoints(additionalPower)
 	additionalPower.BG:SetTexture(E.media.blankTex)
-
-	additionalPower.text = additionalPower:CreateFontString(nil, "OVERLAY")
-	UF:Configure_FontString(additionalPower.text)
 
 	additionalPower.PostUpdate = UF.PostUpdateAdditionalPower
 	additionalPower.PostUpdateVisibility = UF.PostVisibilityAdditionalPower
@@ -737,56 +742,6 @@ function UF:PostUpdateAdditionalPower(_, MIN, MAX, event)
 	local db = frame.db
 
 	if frame.USE_CLASSBAR and ((MIN ~= MAX or (not db.classbar.autoHide)) and (event ~= "ElementDisable")) then
-		if db.classbar.additionalPowerText then
-			local powerValue = frame.Power.value
-			local powerValueText = powerValue:GetText()
-			local powerValueParent = powerValue:GetParent()
-			local powerTextPosition = db.power.position
-			local color = ElvUF.colors.power.MANA
-			color = E:RGBToHex(color[1], color[2], color[3])
-
-			--Attempt to remove |cFFXXXXXX color codes in order to determine if power text is really empty
-			if powerValueText then
-				local _, endIndex = strfind(powerValueText, "|cff")
-				if endIndex then
-					endIndex = endIndex + 7 --Add hex code
-					powerValueText = strsub(powerValueText, endIndex)
-					powerValueText = gsub(powerValueText, "%s+", "")
-				end
-			end
-
-			self.text:ClearAllPoints()
-			if not frame.CLASSBAR_DETACHED then
-				self.text:SetParent(powerValueParent)
-				if powerValueText and (powerValueText ~= "" and powerValueText ~= " ") then
-					if strfind(powerTextPosition, "RIGHT") then
-						self.text:Point("RIGHT", powerValue, "LEFT", 3, 0)
-						self.text:SetFormattedText(color.."%d%%|r |cffD7BEA5- |r", floor(MIN / MAX * 100))
-					elseif strfind(powerTextPosition, "LEFT") then
-						self.text:Point("LEFT", powerValue, "RIGHT", -3, 0)
-						self.text:SetFormattedText("|cffD7BEA5 -|r"..color.." %d%%|r", floor(MIN / MAX * 100))
-					else
-						if select(4, powerValue:GetPoint()) <= 0 then
-							self.text:Point("LEFT", powerValue, "RIGHT", -3, 0)
-							self.text:SetFormattedText(" |cffD7BEA5-|r"..color.." %d%%|r", floor(MIN / MAX * 100))
-						else
-							self.text:Point("RIGHT", powerValue, "LEFT", 3, 0)
-							self.text:SetFormattedText(color.."%d%%|r |cffD7BEA5- |r", floor(MIN / MAX * 100))
-						end
-					end
-				else
-					self.text:Point(powerValue:GetPoint())
-					self.text:SetFormattedText(color.."%d%%|r", floor(MIN / MAX * 100))
-				end
-			else
-				self.text:SetParent(frame.RaisedElementParent) -- needs to be 'frame.RaisedElementParent' otherwise the new PowerPrediction Bar will overlap
-				self.text:Point("CENTER", self, 0, 1)
-				self.text:SetFormattedText(color.."%d%%|r", floor(MIN / MAX * 100))
-			end
-		else --Text disabled
-			self.text:SetText("")
-		end
-
 		local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
 		if custom_backdrop then
 			self.BG:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)
@@ -796,8 +751,7 @@ function UF:PostUpdateAdditionalPower(_, MIN, MAX, event)
 		end
 
 		self:Show()
-	else --Bar disabled
-		self.text:SetText("")
+	else
 		self:Hide()
 	end
 end
@@ -809,7 +763,6 @@ function UF:PostVisibilityAdditionalPower(enabled, stateChanged)
 		frame.ClassBar = "AdditionalPower"
 	else
 		frame.ClassBar = "EclipseBar"
-		self.text:SetText("")
 	end
 
 	if stateChanged then
