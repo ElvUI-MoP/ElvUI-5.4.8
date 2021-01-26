@@ -222,6 +222,8 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 		end
 	end
 
+	frame:SetWidth(E.ConsolidatedBuffsWidth)
+
 	-- Buttons
 	for i = 1, NUM_LE_RAID_BUFF_TYPES do
 		local button = frame[i]

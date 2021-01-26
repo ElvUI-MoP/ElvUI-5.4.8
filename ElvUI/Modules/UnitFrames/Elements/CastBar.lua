@@ -45,11 +45,13 @@ function UF:Construct_Castbar(frame, moverName)
 	castbar:CreateBackdrop("Default", nil, nil, UF.thinBorders, true)
 
 	castbar.Time = castbar:CreateFontString(nil, "OVERLAY")
+	UF:Configure_FontString(castbar.Time)
 	castbar.Time:Point("RIGHT", castbar, "RIGHT", -4, 0)
 	castbar.Time:SetTextColor(0.84, 0.75, 0.65)
 	castbar.Time:SetJustifyH("RIGHT")
 
 	castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
+	UF:Configure_FontString(castbar.Text)
 	castbar.Text:Point("LEFT", castbar, "LEFT", 4, 0)
 	castbar.Text:Point("RIGHT", castbar.Time, "LEFT", -4, 0)
 	castbar.Text:SetTextColor(0.84, 0.75, 0.65)
@@ -167,7 +169,7 @@ function UF:Configure_Castbar(frame)
 			castbar.Icon.bg:Size(db.iconSize)
 		else
 			castbar.Icon.bg:Size(db.height - frame.SPACING * 2)
-			castbar:Width(db.width - castbar.Icon.bg:GetWidth() - (frame.BORDER + frame.SPACING*5))
+			castbar:Width(db.width - castbar.Icon.bg:GetWidth() - (frame.BORDER + frame.SPACING * 5))
 		end
 
 		castbar.Icon.bg:Show()
@@ -236,9 +238,9 @@ function UF:Configure_Castbar(frame)
 	elseif db.icon then
 		castbar.Icon.bg:ClearAllPoints()
 		if frame.ORIENTATION == "RIGHT" then
-			castbar.Icon.bg:Point("LEFT", castbar, "RIGHT", frame.SPACING*3, 0)
+			castbar.Icon.bg:Point("LEFT", castbar, "RIGHT", frame.SPACING * 3, 0)
 		else
-			castbar.Icon.bg:Point("RIGHT", castbar, "LEFT", -frame.SPACING*3, 0)
+			castbar.Icon.bg:Point("RIGHT", castbar, "LEFT", -frame.SPACING * 3, 0)
 		end
 	end
 

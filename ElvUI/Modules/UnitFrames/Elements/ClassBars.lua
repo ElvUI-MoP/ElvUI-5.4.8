@@ -119,7 +119,7 @@ function UF:Configure_ClassBar(frame)
 			end
 		end
 	elseif frame.ClassBar == "EclipseBar" then
-		local luranTex = bars.LunarBar:GetStatusBarTexture()
+		local lunarTex = bars.LunarBar:GetStatusBarTexture()
 
 		bars.LunarBar:SetMinMaxValues(0, 0)
 		bars.LunarBar:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][1]))
@@ -132,11 +132,11 @@ function UF:Configure_ClassBar(frame)
 		bars.SolarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
 		bars.SolarBar:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
 		bars.SolarBar:ClearAllPoints()
-		bars.SolarBar:Point(vertical and "BOTTOM" or "LEFT", luranTex, vertical and "TOP" or "RIGHT")
+		bars.SolarBar:Point(vertical and "BOTTOM" or "LEFT", lunarTex, vertical and "TOP" or "RIGHT")
 		E:SetSmoothing(bars.SolarBar, UF.db.smoothbars)
 
 		bars.Arrow:ClearAllPoints()
-		bars.Arrow:Point("CENTER", luranTex, vertical and "TOP" or "RIGHT", 0, vertical and -4 or 0)
+		bars.Arrow:Point("CENTER", lunarTex, vertical and "TOP" or "RIGHT", 0, vertical and -4 or 0)
 	elseif frame.ClassBar == "AdditionalPower" or frame.ClassBar == "AlternativePower" or frame.ClassBar == "DemonicFury" then
 		bars:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
 
@@ -428,10 +428,13 @@ end
 -------------------------------------------------------------
 function UF:Construct_DemonicFuryBar(frame)
 	local demonicFury = CreateFrame("StatusBar", "DemonicFuryBar", frame)
+	demonicFury:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 	demonicFury:SetStatusBarTexture(E.media.blankTex)
 	UF.statusbars[demonicFury] = true
 
-	demonicFury:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
+	demonicFury.RaisedElementParent = CreateFrame("Frame", nil, demonicFury)
+	demonicFury.RaisedElementParent:SetFrameLevel(demonicFury:GetFrameLevel() + 100)
+	demonicFury.RaisedElementParent:SetAllPoints()
 
 	demonicFury.bg = demonicFury:CreateTexture(nil, "BORDER")
 	demonicFury.bg:SetAllPoints(demonicFury)

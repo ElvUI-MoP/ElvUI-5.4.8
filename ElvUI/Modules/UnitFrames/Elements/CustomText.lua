@@ -41,6 +41,8 @@ function UF:Configure_CustomTexts(frame)
 				object:SetParent(frame.EclipseBar.RaisedElementParent)
 			elseif db.attachTextTo == "AdditionalPower" and frame.AdditionalPower then
 				object:SetParent(frame.AdditionalPower.RaisedElementParent)
+			elseif db.attachTextTo == "DemonicFury" and frame.DemonicFury then
+				object:SetParent(frame.DemonicFury.RaisedElementParent)
 			else
 				object:SetParent(frame.RaisedElementParent)
 			end

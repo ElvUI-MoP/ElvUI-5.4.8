@@ -15,6 +15,15 @@ function UF:Construct_Stagger(frame)
 	stagger.bg:SetTexture(E.media.blankTex)
 	stagger.bg.multiplier = 0.3
 
+	stagger.RaisedElementParent = CreateFrame("Frame", nil, stagger)
+	stagger.RaisedElementParent:SetFrameLevel(stagger:GetFrameLevel() + 100)
+	stagger.RaisedElementParent:SetAllPoints()
+
+	stagger.value = stagger.RaisedElementParent:CreateFontString(nil, "OVERLAY")
+	stagger.value:Point("CENTER")
+	stagger.value:SetJustifyH("CENTER")
+	UF:Configure_FontString(stagger.value)
+
 	stagger.PostUpdate = UF.PostUpdateStagger
 
 	stagger:SetScript("OnShow", UF.ToggleStaggerBar)
@@ -35,6 +44,8 @@ function UF:Configure_Stagger(frame)
 		end
 
 		E:SetSmoothing(stagger, UF.db.smoothbars)
+
+		frame:Tag(stagger.value, db.stagger.staggerTextFormat)
 
 		local powerSettings = db.power.enable and not frame.USE_MINI_POWERBAR and not frame.USE_INSET_POWERBAR and not frame.POWERBAR_DETACHED and not frame.USE_POWERBAR_OFFSET
 		local anchor = powerSettings and frame.Power or frame.Health

@@ -1698,7 +1698,8 @@ P.unitframe = {
 			stagger = {
 				enable = true,
 				autoHide = true,
-				width = 10
+				width = 10,
+				staggerTextFormat = "[staggercolor][stagger]"
 			},
 			strataAndLevel = {
 				useCustomStrata = false,

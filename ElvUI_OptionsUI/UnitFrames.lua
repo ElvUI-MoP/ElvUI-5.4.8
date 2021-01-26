@@ -65,15 +65,6 @@ local attachToValues = {
 	Frame = L["Frame"]
 }
 
-local customTextsAttachToValues = {
-	AdditionalPower = L["Additional Power"],
-	EclipseBar = L["Eclipse Power"],
-	Health = L["HEALTH"],
-	Power = L["Power"],
-	InfoPanel = L["Information Panel"],
-	Frame = L["Frame"]
-}
-
 local growthDirectionValues = {
 	DOWN_RIGHT = format(L["%s and then %s"], L["Down"], L["Right"]),
 	DOWN_LEFT = format(L["%s and then %s"], L["Down"], L["Left"]),
@@ -1680,8 +1671,14 @@ local function CreateCustomTextGroup(unit, objectName)
 		}
 	}
 
-	if unit == "player" and (E.myclass == "DRUID" and UF.player.AdditionalPower and UF.player.EclipseBar) then
-		E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName].args.attachTextTo.values = customTextsAttachToValues
+	if unit == "player" then
+		if E.myclass == "DRUID" and UF.player.AdditionalPower and UF.player.EclipseBar then
+			E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName].args.attachTextTo.values = {AdditionalPower = L["Additional Power"], EclipseBar = L["Eclipse Power"], Health = L["HEALTH"], Power = L["Power"], InfoPanel = L["Information Panel"], Frame = L["Frame"]}
+		elseif E.myclass == "WARLOCK" and UF.player.DemonicFury then
+			E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName].args.attachTextTo.values = {DemonicFury = L["DEMONIC_FURY"], Health = L["HEALTH"], Power = L["Power"], InfoPanel = L["Information Panel"], Frame = L["Frame"]}
+		else
+			E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName].args.attachTextTo.values = attachToValues
+		end
 	else
 		E.Options.args.unitframe.args[group].args[unit].args.customText.args[objectName].args.attachTextTo.values = attachToValues
 	end
@@ -4969,6 +4966,14 @@ E.Options.args.unitframe.args.individualUnits.args.player = {
 					type = "range",
 					name = L["Width"],
 					min = 5, max = 50, step = 1,
+					disabled = function() return not E.db.unitframe.units.player.stagger.enable end
+				},
+				staggerTextFormat = {
+					order = 4,
+					type = "input",
+					name = L["Text Format"],
+					desc = L["Controls the text displayed. Tags are available in the Available Tags section of the config."],
+					width = "full",
 					disabled = function() return not E.db.unitframe.units.player.stagger.enable end
 				}
 			}
