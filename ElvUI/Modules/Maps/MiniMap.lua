@@ -273,7 +273,7 @@ function M:UpdateSettings()
 	E.MinimapSize = E.private.general.minimap.enable and E.db.general.minimap.size or mWidth
 
 	local numBuffs = E.db.auras.consolidatedBuffs.filter and 6 or 8
-	E.ConsolidatedBuffsWidth = E.db.auras.consolidatedBuffs.enable and not E.db.auras.consolidatedBuffs.detached and (E.MinimapSize + ((E.Border * numBuffs) + (E.PixelMode and 2 or 1)) - (E.Spacing * numBuffs)) / numBuffs or E:Scale(E.PixelMode and 1 or -1)
+	E.ConsolidatedBuffsWidth = E.db.auras.consolidatedBuffs.enable and (E.MinimapSize + ((E.Border * numBuffs) + (E.PixelMode and 2 or 1)) - (E.Spacing * numBuffs)) / numBuffs or E:Scale(E.PixelMode and 1 or -1)
 
 	if E.private.general.minimap.enable then
 		Minimap:Size(E.MinimapSize, E.MinimapSize)
@@ -291,7 +291,7 @@ function M:UpdateSettings()
 
 	if ElvConfigToggle then
 		ElvConfigToggle:Width(E.ConsolidatedBuffsWidth)
-		ElvConfigToggle:SetShown(E.db.auras.consolidatedBuffs.enable and E.db.datatexts.minimapPanels and E.private.general.minimap.enable and not E.db.auras.consolidatedBuffs.detached)
+		ElvConfigToggle:SetShown(E.db.auras.consolidatedBuffs.enable and E.db.datatexts.minimapPanels and E.private.general.minimap.enable)
 	end
 
 	if ElvUI_ConsolidatedBuffs then
@@ -474,14 +474,18 @@ function M:Initialize()
 	mmholder:Size(Minimap:GetSize())
 
 	Minimap:ClearAllPoints()
-	Minimap:Point("TOPRIGHT", mmholder, "TOPRIGHT", -E.Border, -E.Border)
+	if E.db.auras.consolidatedBuffs.position == "LEFT" then
+		Minimap:Point("TOPRIGHT", mmholder, "TOPRIGHT", -E.Border, -E.Border)
+	else
+		Minimap:Point("TOPLEFT", mmholder, "TOPLEFT", E.Border, -E.Border)
+	end
 
 	Minimap:SetMaskTexture([[Interface\ChatFrame\ChatFrameBackground]])
 	Minimap:CreateBackdrop()
 	Minimap:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 	Minimap:HookScript("OnEnter", function(mm) if E.db.general.minimap.locationText == "MOUSEOVER" then mm.location:Show() end end)
 	Minimap:HookScript("OnLeave", function(mm) if E.db.general.minimap.locationText == "MOUSEOVER" then mm.location:Hide() end end)
-	
+
 	Minimap.location = Minimap:CreateFontString(nil, "OVERLAY")
 	Minimap.location:FontTemplate(nil, nil, "OUTLINE")
 	Minimap.location:Point("TOP", Minimap, "TOP", 0, -2)

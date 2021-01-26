@@ -114,21 +114,7 @@ function A:UpdateReminder(event, unit)
 	end
 end
 
-local function onEnter()
-	if E.db.auras.consolidatedBuffs.mouseover and E.db.auras.consolidatedBuffs.detached then
-		E:UIFrameFadeIn(ElvUI_ConsolidatedBuffs, 0.2, ElvUI_ConsolidatedBuffs:GetAlpha(), E.db.auras.consolidatedBuffs.alpha)
-	end
-end
-
-local function onLeave()
-	if E.db.auras.consolidatedBuffs.mouseover and E.db.auras.consolidatedBuffs.detached then
-		E:UIFrameFadeOut(ElvUI_ConsolidatedBuffs, 0.2, ElvUI_ConsolidatedBuffs:GetAlpha(), 0)
-	end
-end
-
 function A:Button_OnEnter()
-	onEnter()
-
 	GameTooltip:Hide()
 	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT", -3, self:GetHeight() + 2)
 	GameTooltip:ClearLines()
@@ -146,8 +132,6 @@ function A:Button_OnEnter()
 end
 
 function A:Button_OnLeave()
-	onLeave()
-
 	GameTooltip:Hide()
 end
 
@@ -238,94 +222,20 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 		end
 	end
 
-	local backdropSpacing = db.backdrop and db.backdropSpacing or 0
-
-	-- Frame
-	if db.detached then
-		local numButtons = db.filter and 6 or 8
-		local width, height = (db.buttonSize * numButtons) + (db.buttonSpacing * (numButtons - 1)) + (backdropSpacing * 2), db.buttonSize + (backdropSpacing * 2)
-		local WIDTH, HEIGHT = db.orientation == "HORIZONTAL" and width or height, db.orientation == "HORIZONTAL" and height or width
-
-		frame:SetSize(WIDTH, HEIGHT)
-		frame:ClearAllPoints()
-		frame:SetPoint("CENTER", ConsolidatedBuffsMover, "CENTER")
-
-		frame.mover:SetSize(WIDTH, HEIGHT)
-
-		if E.private.general.minimap.enable then
-			Minimap:ClearAllPoints()
-			Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
-		end
-
-		E:EnableMover("ConsolidatedBuffsMover")
-		E.FrameLocks.ElvUI_ConsolidatedBuffs = true
-	else
-		frame:SetWidth(E.ConsolidatedBuffsWidth)
-
-		if E.private.general.minimap.enable then
-			Minimap:ClearAllPoints()
-			ElvConfigToggle:ClearAllPoints()
-			frame:ClearAllPoints()
-
-			if db.position == "LEFT" then
-				Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
-
-				ElvConfigToggle:SetPoint("TOPRIGHT", LeftMiniPanel, "TOPLEFT", E.Border - E.Spacing * 3, 0)
-				ElvConfigToggle:SetPoint("BOTTOMRIGHT", LeftMiniPanel, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
-
-				frame:SetPoint("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing * 3, 0)
-				frame:SetPoint("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
-			else
-				Minimap:Point("TOPLEFT", MMHolder, "TOPLEFT", E.Border, -E.Border)
-
-				ElvConfigToggle:SetPoint("TOPLEFT", RightMiniPanel, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
-				ElvConfigToggle:SetPoint("BOTTOMLEFT", RightMiniPanel, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
-
-				frame:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
-				frame:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
-			end
-		end
-
-		E:DisableMover("ConsolidatedBuffsMover")
-		E.FrameLocks.ElvUI_ConsolidatedBuffs = nil
-	end
-
-	frame:SetParent(db.detached and frame.mover or Minimap)
-	frame:SetFrameStrata(db.detached and db.frameStrata or "LOW")
-
-	if db.detached and db.mouseover and not frame:IsMouseOver() then
-		frame:SetAlpha(0)
-	else
-		frame:SetAlpha(db.detached and db.alpha or 1)
-	end
-
-	frame.backdrop:SetTemplate(db.transparent and "Transparent" or "Default")
-	frame.backdrop:SetShown(db.detached and db.backdrop)
-
 	-- Buttons
 	for i = 1, NUM_LE_RAID_BUFF_TYPES do
 		local button = frame[i]
-		local size = db.detached and db.buttonSize or E.ConsolidatedBuffsWidth
 
-		button:SetSize(size, size)
+		button:SetSize(E.ConsolidatedBuffsWidth, E.ConsolidatedBuffsWidth)
 		button:SetShown(not ignoreIcons[i])
 		button:ClearAllPoints()
 
-		if db.detached then
-			local vertical = db.orientation == "VERTICAL"
-			if i == 1 then
-				button:Point(vertical and "TOP" or "LEFT", frame, vertical and "TOP" or "LEFT", vertical and 0 or backdropSpacing, vertical and -backdropSpacing or 0)
-			else
-				button:Point(vertical and "TOP" or "LEFT", frame[ignoreIcons[i - 1] or (i - 1)], vertical and "BOTTOM" or "RIGHT", vertical and 0 or db.buttonSpacing, vertical and -db.buttonSpacing or 0)
-			end
+		if i == 1 then
+			button:Point("TOP", frame, "TOP", 0, 0)
+		elseif i == 8 then
+			button:Point("BOTTOM", frame, "BOTTOM", 0, 0)
 		else
-			if i == 1 then
-				button:Point("TOP", frame, "TOP", 0, 0)
-			elseif i == 8 then
-				button:Point("BOTTOM", frame, "BOTTOM", 0, 0)
-			else
-				button:Point("TOP", frame[ignoreIcons[i - 1] or (i - 1)], "BOTTOM", 0, E.Border - E.Spacing)
-			end
+			button:Point("TOP", frame[ignoreIcons[i - 1] or (i - 1)], "BOTTOM", 0, E.Border - E.Spacing)
 		end
 
 		local font = LSM:Fetch("font", db.font)
@@ -347,7 +257,7 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 
 	-- Enable / Disable
 	if not isCallback then
-		if db.enable and E.private.auras.disableBlizzard and (E.private.general.minimap.enable or db.detached and not E.private.general.minimap.enable) then
+		if db.enable and E.private.auras.disableBlizzard and E.private.general.minimap.enable then
 			A:EnableCB()
 		else
 			A:DisableCB()
@@ -362,20 +272,43 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 	end
 end
 
+function A:UpdatePosition()
+	if E.private.general.minimap.enable then
+		Minimap:ClearAllPoints()
+		ElvConfigToggle:ClearAllPoints()
+		ElvUI_ConsolidatedBuffs:ClearAllPoints()
+
+		if E.db.auras.consolidatedBuffs.position == "LEFT" then
+			Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
+
+			ElvConfigToggle:SetPoint("TOPRIGHT", LeftMiniPanel, "TOPLEFT", E.Border - E.Spacing * 3, 0)
+			ElvConfigToggle:SetPoint("BOTTOMRIGHT", LeftMiniPanel, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
+
+			ElvUI_ConsolidatedBuffs:SetPoint("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing * 3, 0)
+			ElvUI_ConsolidatedBuffs:SetPoint("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
+		else
+			Minimap:Point("TOPLEFT", MMHolder, "TOPLEFT", E.Border, -E.Border)
+
+			ElvConfigToggle:SetPoint("TOPLEFT", RightMiniPanel, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
+			ElvConfigToggle:SetPoint("BOTTOMLEFT", RightMiniPanel, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
+
+			ElvUI_ConsolidatedBuffs:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
+			ElvUI_ConsolidatedBuffs:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
+		end
+	end
+end
+
 function A:Construct_ConsolidatedBuffs()
 	local frame = CreateFrame("Frame", "ElvUI_ConsolidatedBuffs", Minimap)
-	frame:CreateBackdrop()
 	frame:SetWidth(E.ConsolidatedBuffsWidth)
-	frame:SetScript("OnEnter", onEnter)
-	frame:SetScript("OnLeave", onLeave)
+	if E.db.auras.consolidatedBuffs.position == "LEFT" then
+		frame:SetPoint("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing * 3, 0)
+		frame:SetPoint("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
+	else
+		frame:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
+		frame:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
+	end
 	self.frame = frame
-
-	local holder = CreateFrame("Frame", "ConsolidatedBuffsMover", E.UIParent)
-	holder:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -4, -260)
-	holder:SetSize(120, 30)
-	frame.mover = holder
-
-	E:CreateMover(holder, "ConsolidatedBuffsMover", L["Consolidated Buffs"], nil, nil, nil, "ALL,GENERAL", nil, "auras,consolidatedBuffs")
 
 	for i = 1, NUM_LE_RAID_BUFF_TYPES do
 		frame[i] = self:CreateButton(i)

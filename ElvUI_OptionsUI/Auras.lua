@@ -379,6 +379,7 @@ E.Options.args.auras = {
 					order = 5,
 					type = "select",
 					name = L["Position"],
+					set = function(info, value) E.db.auras.consolidatedBuffs[info[#info]] = value A:UpdatePosition() end,
 					values = {
 						["LEFT"] = L["Left"],
 						["RIGHT"] = L["Right"]
@@ -406,93 +407,6 @@ E.Options.args.auras = {
 					desc = L["Set the font outline."],
 					values = C.Values.FontFlags,
 					disabled = function() return not E.db.auras.consolidatedBuffs.enable end
-				},
-				detached = {
-					order = 9,
-					type = "group",
-					name = L["Detach From Frame"],
-					guiInline = true,
-					args = {
-						detached = {
-							order = 1,
-							type = "toggle",
-							name = L["ENABLE"],
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable end
-						},
-						mouseover = {
-							order = 2,
-							type = "toggle",
-							name = L["Mouseover"],
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
-						},
-						backdrop = {
-							order = 3,
-							type = "toggle",
-							name = L["Backdrop"],
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
-						},
-						transparent = {
-							order = 4,
-							type = "toggle",
-							name = L["Transparent Backdrop"],
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached or not E.db.auras.consolidatedBuffs.backdrop end
-						},
-						buttonSize = {
-							order = 5,
-							type = "range",
-							name = L["Button Size"],
-							min = 14, max = 64, step = 1,
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
-						},
-						buttonSpacing = {
-							order = 6,
-							type = "range",
-							name = L["Button Spacing"],
-							min = -1, max = 10, step = 1,
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
-						},
-						backdropSpacing = {
-							order = 7,
-							type = "range",
-							name = L["Backdrop Spacing"],
-							desc = L["The spacing between the backdrop and the buttons."],
-							min = -1, max = 10, step = 1,
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached or not E.db.auras.consolidatedBuffs.backdrop end
-						},
-						alpha = {
-							order = 8,
-							type = "range",
-							name = L["Alpha"],
-							isPercent = true,
-							min = 0, max = 1, step = 0.01,
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
-						},
-						orientation = {
-							order = 9,
-							type = "select",
-							name = L["Orientation"],
-							values = {
-								["HORIZONTAL"] = L["Horizontal"],
-								["VERTICAL"] = L["Vertical"]
-							},
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
-						},
-						frameStrata = {
-							order = 10,
-							type = "select",
-							name = L["Frame Strata"],
-							desc = L["Frames with higher strata will appear on top of frames with lower strata"],
-							values = {
-								["BACKGROUND"] = "BACKGROUND",
-								["LOW"] = "LOW",
-								["MEDIUM"] = "MEDIUM",
-								["HIGH"] = "HIGH",
-								["DIALOG"] = "DIALOG",
-								["TOOLTIP"] = "TOOLTIP"
-							},
-							disabled = function() return not E.db.auras.consolidatedBuffs.enable or not E.db.auras.consolidatedBuffs.detached end
-						}
-					}
 				}
 			}
 		}
