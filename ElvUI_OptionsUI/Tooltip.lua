@@ -256,7 +256,6 @@ E.Options.args.tooltip = {
 					type = "select",
 					name = L["Combat Override Key"],
 					desc = L["Choose when you want the tooltip to show in combat. If a modifer is chosen, then you need to hold that down to show the tooltip."],
-					disabled = function() return not E.db.tooltip.visibility.combat end,
 					values = modifierValues
 				}
 			}
