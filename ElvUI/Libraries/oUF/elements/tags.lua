@@ -12,15 +12,15 @@ A FontString to hold a tag string. Unlike other elements, this widget must not h
 ## Notes
 
 A `Tag` is a Lua string consisting of a function name surrounded by square brackets. The tag will be replaced by the
-output of the function and displayed as text on the font string widget with that the tag has been registered. Literals
-can be pre- or appended by separating them with a `>` before or `<` after the function name. The literals will be only
+output of the function and displayed as text on the font string widget with that the tag has been registered.
+Literals can be pre or appended by separating them with a `>` before or `<` after the function name. The literals will be only
 displayed when the function returns a non-nil value. I.e. `"[perhp<%]"` will display the current health as a percentage
 of the maximum health followed by the % sign.
 
-A `Tag String` is a Lua string consisting of one or multiple tags with optional literals between them. Each tag will be
-updated individually and the output will follow the tags order. Literals will be displayed in the output string
-regardless of whether the surrounding tag functions return a value. I.e. `"[curhp]/[maxhp]"` will resolve to something
-like `2453/5000`.
+A `Tag String` is a Lua string consisting of one or multiple tags with optional literals between them.
+Each tag will be updated individually and the output will follow the tags order. Literals will be displayed in the
+output string regardless of whether the surrounding tag functions return a value. I.e. `"[curhp]/[maxhp]"` will resolve
+to something like `2453/5000`.
 
 A `Tag Function` is used to replace a single tag in a tag string by its output. A tag function receives only two
 arguments - the unit and the realUnit of the unit frame used to register the tag (see Options for further details). The
@@ -37,9 +37,9 @@ in the `oUF.Tags.SharedEvents` table as follows: `oUF.Tags.SharedEvents.EVENT_NA
 .overrideUnit    - if specified on the font string widget, the frame's realUnit will be passed as the second argument to
                    every tag function whose name is contained in the relevant tag string. Otherwise the second argument
                    is always nil (boolean)
-.frequentUpdates - defines how often the correspondig tag function(s) should be called. This will override the events for
-                   the tag(s), if any. If the value is a number, it is taken as a time interval in seconds. If the value
-                   is a boolean, the time interval is set to 0.5 seconds (number or boolean)
+.frequentUpdates - defines how often the corresponding tag function(s) should be called. This will override the events
+                   for the tag(s), if any. If the value is a number, it is taken as a time interval in seconds. If the
+                   value is a boolean, the time interval is set to 0.5 seconds (number or boolean)
 
 ## Attributes
 
@@ -143,6 +143,8 @@ local tagStrings = {
 			return 'Elite'
 		elseif(c == 'worldboss') then
 			return 'Boss'
+		elseif(c == 'minus') then
+			return 'Affix'
 		end
 	end]],
 
@@ -311,7 +313,7 @@ local tagStrings = {
 					return Hex(altR, altG, altB)
 				end
 			else
-				return Hex(_COLORS.power[pType])
+				return Hex(_COLORS.power[pType] or _COLORS.power.MANA)
 			end
 		end
 
@@ -353,6 +355,19 @@ local tagStrings = {
 		end
 	end]],
 
+	['runes'] = [[function()
+		local amount = 0
+
+		for i = 1, 6 do
+			local _, _, ready = GetRuneCooldown(i)
+			if(ready) then
+				amount = amount + 1
+			end
+		end
+
+		return amount
+	end]],
+
 	['sex'] = [[function(u)
 		local s = UnitSex(u)
 		if(s == 2) then
@@ -379,6 +394,8 @@ local tagStrings = {
 			return '+'
 		elseif(c == 'worldboss') then
 			return 'B'
+		elseif(c == 'minus') then
+			return '-'
 		end
 	end]],
 
@@ -507,41 +524,42 @@ _ENV._VARS = vars
 local tagEvents = {
 	['affix']               = 'UNIT_CLASSIFICATION_CHANGED',
 	['arenaspec']           = 'ARENA_PREP_OPPONENT_SPECIALIZATIONS',
-	['chi']                 = 'UNIT_POWER PLAYER_TALENT_UPDATE',
+	['chi']                 = 'UNIT_POWER_FREQUENT PLAYER_TALENT_UPDATE',
 	['classification']      = 'UNIT_CLASSIFICATION_CHANGED',
 	['cpoints']             = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED',
-	['curhp']               = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH',
-	['curmana']             = 'UNIT_POWER UNIT_MAXPOWER',
-	['curpp']               = 'UNIT_POWER UNIT_MAXPOWER',
-	['dead']                = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT',
-	['deficit:name']        = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_NAME_UPDATE',
+	['curhp']               = 'UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH',
+	['curmana']             = 'UNIT_POWER_FREQUENT UNIT_MAXPOWER',
+	['curpp']               = 'UNIT_POWER_FREQUENT UNIT_MAXPOWER',
+	['dead']                = 'UNIT_HEALTH_FREQUENT',
+	['deficit:name']        = 'UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_NAME_UPDATE',
 	['difficulty']          = 'UNIT_FACTION',
 	['faction']             = 'NEUTRAL_FACTION_SELECT_RESULT',
 	['group']               = 'GROUP_ROSTER_UPDATE',
-	['holypower']           = 'UNIT_POWER',
+	['holypower']           = 'UNIT_POWER_FREQUENT',
 	['leader']              = 'PARTY_LEADER_CHANGED',
 	['leaderlong']          = 'PARTY_LEADER_CHANGED',
 	['level']               = 'UNIT_LEVEL PLAYER_LEVEL_UP',
 	['maxhp']               = 'UNIT_MAXHEALTH',
-	['maxmana']             = 'UNIT_POWER UNIT_MAXPOWER',
+	['maxmana']             = 'UNIT_POWER_FREQUENT UNIT_MAXPOWER',
 	['maxpp']               = 'UNIT_MAXPOWER',
-	['missinghp']           = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH',
-	['missingpp']           = 'UNIT_MAXPOWER UNIT_POWER',
+	['missinghp']           = 'UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH',
+	['missingpp']           = 'UNIT_MAXPOWER UNIT_POWER_FREQUENT',
 	['name']                = 'UNIT_NAME_UPDATE',
-	['offline']             = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_CONNECTION',
-	['pereclipse']          = 'UNIT_POWER',
-	['perhp']               = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH',
-	['perpp']               = 'UNIT_MAXPOWER UNIT_POWER',
+	['offline']             = 'UNIT_HEALTH_FREQUENT UNIT_CONNECTION',
+	['pereclipse']          = 'UNIT_POWER_FREQUENT',
+	['perhp']               = 'UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH',
+	['perpp']               = 'UNIT_MAXPOWER UNIT_POWER_FREQUENT',
 	['plus']                = 'UNIT_CLASSIFICATION_CHANGED',
 	['powercolor']          = 'UNIT_DISPLAYPOWER',
 	['pvp']                 = 'UNIT_FACTION',
 	['rare']                = 'UNIT_CLASSIFICATION_CHANGED',
 	['resting']             = 'PLAYER_UPDATE_RESTING',
-	['shadoworbs']          = 'UNIT_POWER',
+	['runes']               = 'RUNE_POWER_UPDATE',
+	['shadoworbs']          = 'UNIT_POWER_FREQUENT',
 	['shortclassification'] = 'UNIT_CLASSIFICATION_CHANGED',
 	['smartlevel']          = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED',
-	['soulshards']          = 'UNIT_POWER',
-	['status']              = 'UNIT_HEALTH UNIT_HEALTH_FREQUENT PLAYER_UPDATE_RESTING UNIT_CONNECTION',
+	['soulshards']          = 'UNIT_POWER_FREQUENT',
+	['status']              = 'UNIT_HEALTH_FREQUENT PLAYER_UPDATE_RESTING UNIT_CONNECTION',
 	['threat']              = 'UNIT_THREAT_SITUATION_UPDATE',
 	['threatcolor']         = 'UNIT_THREAT_SITUATION_UPDATE',
 }
@@ -554,6 +572,7 @@ local unitlessEvents = {
 	PLAYER_LEVEL_UP = true,
 	PLAYER_TARGET_CHANGED = true,
 	PLAYER_UPDATE_RESTING = true,
+	RUNE_POWER_UPDATE = true,
 	UNIT_COMBO_POINTS = true
 }
 
@@ -637,7 +656,7 @@ local function getTagFunc(tagstr)
 
 	local func = tagPool[tagstr]
 	if(not func) then
-		local format, numTags = tagstr:gsub('%%', '%%%%'):gsub(_PATTERN, '%%s')
+		local frmt, numTags = tagstr:gsub('%%', '%%%%'):gsub(_PATTERN, '%%s')
 		local args = {}
 
 		for bracket in tagstr:gmatch(_PATTERN) do
@@ -689,13 +708,14 @@ local function getTagFunc(tagstr)
 			else
 				numTags = -1
 				func = function(self)
-					return self:SetText(bracket)
+					self:SetText(bracket)
 				end
 			end
 			-- end block
 		end
 
-		if numTags ~= -1 then -- ElvUI replaced
+		-- ElvUI changed
+		if numTags ~= -1 then
 			func = function(self)
 				local parent = self.parent
 				local unit = parent.unit
@@ -710,12 +730,9 @@ local function getTagFunc(tagstr)
 				end
 
 				-- We do 1, numTags because tmp can hold several unneeded variables.
-				return self:SetFormattedText(format, unpack(tmp, 1, numTags))
+				self:SetFormattedText(frmt, unpack(tmp, 1, numTags))
 			end
-		end
 
-		-- ElvUI added check
-		if numTags ~= -1 then
 			tagPool[tagstr] = func
 		end
 		-- end block
@@ -745,14 +762,20 @@ end
 
 local function unregisterEvents(fontstr)
 	for event, data in next, events do
-		for i, tagfsstr in next, data do
+		local index = 1
+		local tagfsstr = data[index]
+		while tagfsstr do
 			if(tagfsstr == fontstr) then
 				if(#data == 1) then
 					eventFrame:UnregisterEvent(event)
 				end
 
-				tremove(data, i)
+				tremove(data, index)
+			else
+				index = index + 1
 			end
+
+			tagfsstr = data[index]
 		end
 	end
 end
@@ -872,16 +895,27 @@ local function Untag(self, fs)
 
 	unregisterEvents(fs)
 	for _, timers in next, eventlessUnits do
-		for i, fontstr in next, timers do
+		local index = 1
+		local fontstr = timers[index]
+		while fontstr do
 			if(fs == fontstr) then
-				tremove(timers, i)
+				tremove(timers, index)
+			else
+				index = index + 1
 			end
+
+			fontstr = timers[index]
 		end
 	end
 
 	fs.UpdateTag = nil
 	taggedFS[fs] = nil
 	self.__tags[fs] = nil
+end
+
+local function strip(tag)
+	-- remove prefix, custom args, and suffix
+	return tag:gsub("%[[^%[%]]*>", "["):gsub("<[^%[%]]*%]", "]") -- ElvUI uses old tag format
 end
 
 oUF.Tags = {
@@ -895,9 +929,11 @@ oUF.Tags = {
 
 		funcPool['[' .. tag .. ']'] = nil
 
+		-- If a tag's name contains magic chars, there's a chance that
+		-- string.match will fail to find the match.
 		tag = '%[' .. tag:gsub('[%^%$%(%)%%%.%*%+%-%?]', '%%%1') .. '%]'
 		for tagstr, func in next, tagPool do
-			if(tagstr:gsub("%[[^%[%]]*>", "["):gsub("<[^%[%]]*%]", "]"):match(tag)) then
+			if(strip(tagstr):match(tag)) then
 				tagPool[tagstr] = nil
 
 				for fs in next, taggedFS do
@@ -915,9 +951,11 @@ oUF.Tags = {
 	RefreshEvents = function(self, tag)
 		if(not tag) then return end
 
+		-- If a tag's name contains magic chars, there's a chance that
+		-- string.match will fail to find the match.
 		tag = '%[' .. tag:gsub('[%^%$%(%)%%%.%*%+%-%?]', '%%%1') .. '%]'
 		for tagstr in next, tagPool do
-			if(tagstr:gsub("%[[^%[%]]*>", "["):gsub("<[^%[%]]*%]", "]"):match(tag)) then
+			if(strip(tagstr):match(tag)) then
 				for fs, ts in next, taggedFS do
 					if(ts == tagstr) then
 						unregisterEvents(fs)
@@ -926,7 +964,7 @@ oUF.Tags = {
 				end
 			end
 		end
-	end,
+	end
 }
 
 oUF:RegisterMetaFunction('Tag', Tag)
