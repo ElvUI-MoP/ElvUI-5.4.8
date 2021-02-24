@@ -259,23 +259,10 @@ function M:QUEST_COMPLETE()
 	if not E.db.general.questRewardMostValueIcon then return end
 	if not QuestInfoItem1 then return end
 
-	local bestValue, bestItem = 0
 	local numQuests = GetNumQuestChoices()
-
-	if not self.QuestRewardGoldIconFrame then
-		local frame = CreateFrame("Frame", nil, QuestInfoItem1)
-		frame:SetFrameStrata("HIGH")
-		frame:Size(14)
-		frame.Icon = frame:CreateTexture(nil, "OVERLAY")
-		frame.Icon:SetAllPoints(frame)
-		frame.Icon:SetTexture([[Interface\MONEYFRAME\UI-GoldIcon]])
-		self.QuestRewardGoldIconFrame = frame
-	end
-
-	self.QuestRewardGoldIconFrame:Hide()
-
 	if numQuests < 2 then return end
 
+	local bestValue, bestItem = 0
 	for i = 1, numQuests do
 		local questLink = GetQuestItemLink("choice", i)
 		local _, _, amount = GetQuestItemInfo("choice", i)
@@ -290,15 +277,10 @@ function M:QUEST_COMPLETE()
 
 	if bestItem then
 		local btn = _G["QuestInfoItem"..bestItem]
-
 		if btn and btn.type == "choice" then
-			self.QuestRewardGoldIconFrame:ClearAllPoints()
-			self.QuestRewardGoldIconFrame:Point("TOPRIGHT", btn, "TOPRIGHT", -2, -2)
-			self.QuestRewardGoldIconFrame:Show()
-
-			if E.private.skins.blizzard.enable and E.private.skins.blizzard.quest then
-				self.QuestRewardGoldIconFrame:SetParent(btn.backdrop)
-			end
+			M.QuestRewardGoldIconFrame:ClearAllPoints()
+			M.QuestRewardGoldIconFrame:Point("TOPRIGHT", btn, "TOPRIGHT", -2, -2)
+			M.QuestRewardGoldIconFrame:Show()
 		end
 	end
 end
@@ -324,6 +306,25 @@ function M:Initialize()
 	self:RegisterEvent("COMBAT_TEXT_UPDATE")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ForceCVars")
 	self:RegisterEvent("QUEST_COMPLETE")
+
+	do	-- questRewardMostValueIcon
+		local MostValue = CreateFrame("Frame", "ElvUI_QuestRewardGoldIconFrame", UIParent)
+		MostValue:SetFrameStrata("HIGH")
+		MostValue:Size(14)
+		MostValue:Hide()
+
+		MostValue.Icon = MostValue:CreateTexture(nil, "OVERLAY")
+		MostValue.Icon:SetAllPoints(MostValue)
+		MostValue.Icon:SetTexture([[Interface\MONEYFRAME\UI-GoldIcon]])
+
+		M.QuestRewardGoldIconFrame = MostValue
+
+		hooksecurefunc(QuestFrameRewardPanel, "Hide", function()
+			if M.QuestRewardGoldIconFrame then
+				M.QuestRewardGoldIconFrame:Hide()
+			end
+		end)
+	end
 
 	if IsAddOnLoaded("Blizzard_InspectUI") then
 		M:SetupInspectPageInfo()

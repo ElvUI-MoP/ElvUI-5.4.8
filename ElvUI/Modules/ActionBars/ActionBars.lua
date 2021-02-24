@@ -761,7 +761,7 @@ function AB:DisableBlizzard()
 			_G["VehicleMenuBarActionButton"..i]:Hide()
 			_G["VehicleMenuBarActionButton"..i]:UnregisterAllEvents()
 			_G["VehicleMenuBarActionButton"..i]:SetAttribute("statehidden", true)
- 		end
+		end
 
 		if _G["OverrideActionBarButton"..i] then
 			_G["OverrideActionBarButton"..i]:Hide()

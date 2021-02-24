@@ -34,14 +34,14 @@ local positionValues2 = {
 }
 
 local RaidIconBit = {
-	["STAR"] = 0x00000001,
-	["CIRCLE"] = 0x00000002,
-	["DIAMOND"] = 0x00000004,
-	["TRIANGLE"] = 0x00000008,
-	["MOON"] = 0x00000010,
-	["SQUARE"] = 0x00000020,
-	["CROSS"] = 0x00000040,
-	["SKULL"] = 0x00000080
+	STAR = 0x00000001,
+	CIRCLE = 0x00000002,
+	DIAMOND = 0x00000004,
+	TRIANGLE = 0x00000008,
+	MOON = 0x00000010,
+	SQUARE = 0x00000020,
+	CROSS = 0x00000040,
+	SKULL = 0x00000080
 }
 
 local ByRaidIcon = {}
@@ -213,13 +213,8 @@ function NP:Update_AurasPosition(frame, db)
 			button.bg:SetPoint("BOTTOMLEFT", button:GetStatusBarTexture(), "BOTTOMRIGHT")
 		end
 
-		if db.reverseCooldown then
-			button:SetStatusBarColor(0, 0, 0, 0.5)
-			button.bg:SetTexture(0, 0, 0, 0)
-		else
-			button:SetStatusBarColor(0, 0, 0, 0)
-			button.bg:SetTexture(0, 0, 0, 0.5)
-		end
+		button:SetStatusBarColor(0, 0, 0, db.reverseCooldown and 0.5 or 0)
+		button.bg:SetTexture(0, 0, 0, db.reverseCooldown and 0 or 0.5)
 	end
 end
 

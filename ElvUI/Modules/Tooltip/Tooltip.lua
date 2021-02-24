@@ -529,7 +529,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 
 		local guid = UnitGUID(unit) or ""
 		local id = tonumber(sub(guid, 6, 10), 16)
-		
+
 		if id then
 			tt:AddLine(format(IDLine, ID, id))
 		end

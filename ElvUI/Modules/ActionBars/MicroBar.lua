@@ -180,8 +180,6 @@ function AB:SetupMicroBar()
 	microBar.visibility:SetScript("OnShow", function() microBar:Show() end)
 	microBar.visibility:SetScript("OnHide", function() microBar:Hide() end)
 
-	E.FrameLocks.ElvUI_MicroBar = true
-
 	for i = 1, #MICRO_BUTTONS do
 		AB:HandleMicroButton(_G[MICRO_BUTTONS[i]])
 	end

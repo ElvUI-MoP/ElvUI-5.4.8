@@ -16,12 +16,12 @@ local PLAYER = PLAYER
 local WORLDMAP_SETTINGS = WORLDMAP_SETTINGS
 
 local INVERTED_POINTS = {
-	["TOPLEFT"] = "BOTTOMLEFT",
-	["TOPRIGHT"] = "BOTTOMRIGHT",
-	["BOTTOMLEFT"] = "TOPLEFT",
-	["BOTTOMRIGHT"] = "TOPRIGHT",
-	["TOP"] = "BOTTOM",
-	["BOTTOM"] = "TOP"
+	TOP = "BOTTOM",
+	TOPLEFT = "BOTTOMLEFT",
+	TOPRIGHT = "BOTTOMRIGHT",
+	BOTTOM = "TOP",
+	BOTTOMLEFT = "TOPLEFT",
+	BOTTOMRIGHT = "TOPRIGHT"
 }
 
 local t = 0
@@ -137,13 +137,11 @@ function M:UpdateMapAlpha()
 end
 
 function M:Initialize()
-	local db = E.global.general
-
 	M:UpdateMapAlpha()
 
 	if not E.private.worldmap.enable then return end
 
-	if db.WorldMapCoordinates.enable then
+	if E.global.general.WorldMapCoordinates.enable then
 		local coordsHolder = CreateFrame("Frame", "ElvUI_CoordsHolder", WorldMapFrame)
 		coordsHolder:SetFrameLevel(WORLDMAP_POI_FRAMELEVEL + 100)
 		coordsHolder:SetFrameStrata(WorldMapDetailFrame:GetFrameStrata())
@@ -165,7 +163,7 @@ function M:Initialize()
 		self:PositionCoords()
 	end
 
-	if db.smallerWorldMap then
+	if E.global.general.smallerWorldMap then
 		BlackoutWorld:SetTexture(nil)
 
 		WorldMapFrame:SetParent(UIParent)
@@ -181,9 +179,11 @@ function M:Initialize()
 
 		M:SecureHook("ToggleMapFramerate")
 
-		DropDownList1:HookScript("OnShow", function(self)
-			if self:GetScale() ~= UIParent:GetScale() then
-				self:SetScale(UIParent:GetScale())
+		DropDownList1:HookScript("OnShow", function(dropDown)
+			local uiParentScale = UIParent:GetScale()
+
+			if dropDown:GetScale() ~= uiParentScale then
+				dropDown:SetScale(uiParentScale)
 			end
 		end)
 

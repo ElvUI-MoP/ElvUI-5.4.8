@@ -1205,7 +1205,7 @@ function NP:Initialize()
 
 	self.Initialized = true
 
-	self.thinBorders = NP.db.thinBorders or E.PixelMode
+	self.thinBorders = NP.db.thinBorders
 
 	--Add metatable to all our StyleFilters so they can grab default values if missing
 	self:StyleFilterInitialize()
