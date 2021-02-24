@@ -77,9 +77,8 @@ function UF:ToggleStaggerBar()
 
 	if stateChanged then
 		UF:Configure_Stagger(frame)
-		UF:Configure_HealthBar(frame)
+		UF:Configure_HealthBar(frame, true)
 		UF:Configure_Power(frame, true)
-		UF:Configure_Threat(frame)
 		UF:Configure_InfoPanel(frame, true)
 	end
 end

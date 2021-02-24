@@ -36,10 +36,10 @@ local textValues = {
 }
 
 local totemsColor = {
-	["earth"] = "|cff5cde23",
-	["fire"] = "|cffe64717",
-	["water"] = "|cff17bdff",
-	["air"] = "|cff9d47ff"
+	earth = "|cff5cde23",
+	fire = "|cffe64717",
+	water = "|cff17bdff",
+	air = "|cff9d47ff"
 }
 
 local raidTargetIcon = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%s:0|t %s"
@@ -65,7 +65,7 @@ local function filterPriority(auraType, unit, value, remove, movehere)
 		end
 		tremove(tbl, sm)
 		tinsert(tbl, sv, movehere)
-		E.db.nameplates.units[unit][auraType].filters.priority = tconcat(tbl,",")
+		E.db.nameplates.units[unit][auraType].filters.priority = tconcat(tbl, ",")
 	elseif found and remove then
 		E.db.nameplates.units[unit][auraType].filters.priority = gsub(filter, found, "")
 	elseif not found and not remove then
@@ -1319,7 +1319,7 @@ local function UpdateFilterGroup()
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 					args = {
 						enable = {
-							order = 0,
+							order = 1,
 							type = "toggle",
 							name = L["ENABLE"],
 							get = function(info)
@@ -1331,14 +1331,26 @@ local function UpdateFilterGroup()
 							end
 						},
 						types = {
-							order = 1,
+							order = 2,
 							type = "group",
 							name = "",
 							guiInline = true,
 							disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) or not E.global.nameplates.filters[selectedNameplateFilter].triggers.reactionType.enable end,
 							args = {
-								hostile = {
+								tapped = {
 									order = 1,
+									type = "toggle",
+									name = L["Tapped"],
+									get = function(info)
+										return E.global.nameplates.filters[selectedNameplateFilter].triggers.reactionType.tapped
+									end,
+									set = function(info, value)
+										E.global.nameplates.filters[selectedNameplateFilter].triggers.reactionType.tapped = value
+										NP:ConfigureAll()
+									end
+								},
+								hostile = {
+									order = 2,
 									type = "toggle",
 									name = L["FACTION_STANDING_LABEL2"],
 									get = function(info)
@@ -1350,7 +1362,7 @@ local function UpdateFilterGroup()
 									end
 								},
 								neutral = {
-									order = 2,
+									order = 3,
 									type = "toggle",
 									name = L["FACTION_STANDING_LABEL4"],
 									get = function(info)
@@ -1362,7 +1374,7 @@ local function UpdateFilterGroup()
 									end
 								},
 								friendly = {
-									order = 3,
+									order = 4,
 									type = "toggle",
 									name = L["FACTION_STANDING_LABEL5"],
 									get = function(info)
@@ -1943,9 +1955,9 @@ local function UpdateFilterGroup()
 				},
 				frameLevel = {
 					order = 8,
+					type = "range",
 					name = L["Frame Level"],
 					desc = L["NAMEPLATE_FRAMELEVEL_DESC"],
-					type = "range",
 					min = 0, max = 10, step = 1,
 					disabled = function() return E.global.nameplates.filters[selectedNameplateFilter].actions.hide end,
 					get = function(info) return E.global.nameplates.filters[selectedNameplateFilter].actions.frameLevel or 0 end,
@@ -2101,9 +2113,9 @@ local function UpdateFilterGroup()
 					disabled = function() return E.global.nameplates.filters[selectedNameplateFilter].actions.hide end,
 					args = {
 						enable = {
-							name = L["ENABLE"],
 							order = 1,
 							type = "toggle",
+							name = L["ENABLE"],
 							get = function(info)
 								return E.global.nameplates.filters[selectedNameplateFilter].actions.flash.enable
 							end,
@@ -2847,29 +2859,23 @@ local function GetUnitSettings(unit, name)
 								dragOnMouseDown = function(info)
 									carryFilterFrom, carryFilterTo = info.obj.value, nil
 								end,
-								dragOnMouseUp = function(info)
+								dragOnMouseUp = function()
 									filterPriority("buffs", unit, carryFilterTo, nil, carryFilterFrom) --add it in the new spot
 									carryFilterFrom, carryFilterTo = nil, nil
 								end,
-								dragOnClick = function(info)
+								dragOnClick = function()
 									filterPriority("buffs", unit, carryFilterFrom, true)
 								end,
-								stateSwitchGetText = function(_, TEXT)
-									local text = TEXT
-									local SF, localized = E.global.unitframe.specialFilters[text], L[text]
-									local blockText = SF and localized and text:match("^block") and localized:gsub("^%[.-]%s?", "")
-									local filterText = (blockText and format("|cFF999999%s|r %s", L["BLOCK"], blockText)) or localized or text
-									return filterText
-								end,
+								stateSwitchGetText = C.StateSwitchGetText,
 								values = function()
 									local str = E.db.nameplates.units[unit].buffs.filters.priority
 									if str == "" then return nil end
-									return {strsplit(",",str)}
+									return {strsplit(",", str)}
 								end,
 								get = function(_, value)
 									local str = E.db.nameplates.units[unit].buffs.filters.priority
 									if str == "" then return nil end
-									local tbl = {strsplit(",",str)}
+									local tbl = {strsplit(",", str)}
 									return tbl[value]
 								end,
 								set = function()
@@ -3246,32 +3252,26 @@ local function GetUnitSettings(unit, name)
 								dragOnMouseDown = function(info)
 									carryFilterFrom, carryFilterTo = info.obj.value, nil
 								end,
-								dragOnMouseUp = function(info)
+								dragOnMouseUp = function()
 									filterPriority("debuffs", unit, carryFilterTo, nil, carryFilterFrom) --add it in the new spot
 									carryFilterFrom, carryFilterTo = nil, nil
 								end,
-								dragOnClick = function(info)
+								dragOnClick = function()
 									filterPriority("debuffs", unit, carryFilterFrom, true)
 								end,
-								stateSwitchGetText = function(_, TEXT)
-									local text = TEXT
-									local SF, localized = E.global.unitframe.specialFilters[text], L[text]
-									local blockText = SF and localized and text:match("^block") and localized:gsub("^%[.-]%s?", "")
-									local filterText = (blockText and format("|cFF999999%s|r %s", L["BLOCK"], blockText)) or localized or text
-									return filterText
-								end,
+								stateSwitchGetText = C.StateSwitchGetText,
 								values = function()
 									local str = E.db.nameplates.units[unit].debuffs.filters.priority
 									if str == "" then return nil end
 									return {strsplit(",", str)}
 								end,
-								get = function(info, value)
+								get = function(_, value)
 									local str = E.db.nameplates.units[unit].debuffs.filters.priority
 									if str == "" then return nil end
 									local tbl = {strsplit(",", str)}
 									return tbl[value]
 								end,
-								set = function(info)
+								set = function()
 									NP:ConfigureAll()
 								end,
 								disabled = function() return not E.db.nameplates.units[unit].debuffs.enable end
@@ -3825,23 +3825,13 @@ E.Options.args.nameplate = {
 					type = "description",
 					name = " "
 				},
-				thinBorders = {
-					order = 8,
-					type = "toggle",
-					name = L["Thin Borders"],
-					set = function(info, value)
-						E.db.nameplates[info[#info]] = value
-						E:StaticPopup_Show("CONFIG_RL")
-					end,
-					disabled = function() return E.private.general.pixelPerfect end
-				},
 				fadeIn = {
-					order = 9,
+					order = 8,
 					type = "toggle",
 					name = L["Alpha Fading"]
 				},
 				smoothbars = {
-					order = 10,
+					order = 9,
 					type = "toggle",
 					name = L["Smooth Bars"],
 					desc = L["Bars will transition smoothly."],
@@ -3851,19 +3841,19 @@ E.Options.args.nameplate = {
 					end
 				},
 				highlight = {
-					order = 11,
+					order = 10,
 					type = "toggle",
 					name = L["Hover Highlight"]
 				},
 				nameColoredGlow = {
-					order = 12,
+					order = 11,
 					type = "toggle",
 					name = L["Name Colored Glow"],
 					desc = L["Use the Name Color of the unit for the Name Glow."],
 					disabled = function() return not E.db.nameplates.highlight end
 				},
 				targetGroup = {
-					order = 13,
+					order = 12,
 					type = "group",
 					name = L["TARGET"],
 					disabled = function() return not E.NamePlates.Initialized end,
@@ -3962,7 +3952,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				trivialGroup = {
-					order = 14,
+					order = 13,
 					type = "group",
 					name = L["Trivial"],
 					get = function(info)
@@ -3996,7 +3986,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				threatGroup = {
-					order = 15,
+					order = 14,
 					type = "group",
 					name = L["Threat"],
 					get = function(info)
@@ -4037,7 +4027,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				colorsGroup = {
-					order = 16,
+					order = 15,
 					type = "group",
 					name = L["COLORS"],
 					args = {
@@ -4220,7 +4210,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				cutawayHealth = {
-					order = 17,
+					order = 16,
 					type = "group",
 					name = L["Cutaway Bars"],
 					args = {
@@ -4254,7 +4244,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				clickThroughGroup = {
-					order = 18,
+					order = 17,
 					type = "group",
 					name = L["Click Through"],
 					get = function(info)
@@ -4284,7 +4274,7 @@ E.Options.args.nameplate = {
 					}
 				},
 				clickableRangeGroup = {
-					order = 19,
+					order = 18,
 					type = "group",
 					name = L["Clickable Size"],
 					args = {

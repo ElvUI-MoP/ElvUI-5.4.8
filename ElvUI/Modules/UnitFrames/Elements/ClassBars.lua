@@ -32,8 +32,7 @@ function UF:Configure_ClassBar(frame)
 		frame.CLASSBAR_HEIGHT = 10
 		if db.classbar then db.classbar.height = 10 end
 		--Override visibility if Classbar is Additional Power in order to fix a bug when Auto Hide is enabled, height is higher than 30 and it goes from detached to not detached
-		local overrideVisibility = frame.ClassBar == "AdditionalPower"
-		UF.ToggleResourceBar(bars, overrideVisibility) --Trigger update to health if needed
+		UF.ToggleResourceBar(bars, frame.ClassBar == "AdditionalPower") --Trigger update to health if needed
 	end
 
 	--We don't want to modify the original frame.CLASSBAR_WIDTH value, as it bugs out when the classbar gains more buttons
@@ -53,7 +52,9 @@ function UF:Configure_ClassBar(frame)
 	bars:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
 
 	local color = E.db.unitframe.colors.borderColor
-	bars.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	if not bars.backdrop.ignoreBorderColors then
+		bars.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	end
 
 	local vertical = frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation
 
@@ -65,7 +66,9 @@ function UF:Configure_ClassBar(frame)
 			bars[i]:Hide()
 
 			if i <= frame.MAX_CLASS_BAR then
-				bars[i].backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+				if not bars[i].backdrop.ignoreBorderColors then
+					bars[i].backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+				end
 				bars[i]:Height(bars:GetHeight())
 
 				if frame.MAX_CLASS_BAR == 1 then
@@ -273,21 +276,26 @@ local function ToggleResourceBar(bars, overrideVisibility)
 
 	frame.CLASSBAR_SHOWN = (not not overrideVisibility) or bars:IsShown()
 
-	if bars.text then bars.text:SetAlpha(frame.CLASSBAR_SHOWN and 1 or 0) end
-
 	local height = (db.classbar and db.classbar.height) or (db.combobar and db.combobar.height)
 	frame.CLASSBAR_HEIGHT = (frame.USE_CLASSBAR and (frame.CLASSBAR_SHOWN and height) or 0)
 	frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and ((frame.SPACING + (frame.CLASSBAR_HEIGHT / 2))) or (frame.CLASSBAR_HEIGHT - (frame.BORDER - frame.SPACING)))
 
 	UF:Configure_CustomTexts(frame)
-
-	if not frame.CLASSBAR_DETACHED then
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Portrait(frame, true)
-		UF:Configure_Threat(frame)
-	end
+	UF:Configure_HealthBar(frame, true)
+	UF:Configure_Portrait(frame, true)
 end
 UF.ToggleResourceBar = ToggleResourceBar
+
+function UF:PostVisibility_ClassBars(frame, stateChanged)
+	if not (frame and frame.db) then return end
+
+	if stateChanged then
+		ToggleResourceBar(frame[frame.ClassBar])
+		UF:Configure_ClassBar(frame)
+		UF:Configure_Power(frame, true)
+		UF:Configure_InfoPanel(frame, true)
+	end
+end
 
 -------------------------------------------------------------
 -- PALADIN, MONK, PRIEST
@@ -397,17 +405,17 @@ function UF:UpdateSpecPower(_, charges, maxCharges)
 	local db = frame.db
 	if not db then return end
 
-	if charges == 0 and (IsSpellKnown(114664) or IsSpellKnown(114015)) then
-		if db.classbar.autoHide then
-			self:Hide()
-		else
+	if frame.USE_CLASSBAR and (IsSpellKnown(114664) or IsSpellKnown(114015)) then
+		if charges == 0 then
 			for i = 1, maxCharges do
 				self[i]:SetValue(0)
 				self[i]:SetScript("OnUpdate", nil)
 			end
 
-			self:Show()
+			self:SetShown(not db.classbar.autoHide)
 		end
+	else
+		self:Hide()
 	end
 
 	local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
@@ -469,13 +477,7 @@ function UF:VisibilityUpdateDemonicFury(enabled, stateChanged)
 		frame.ClassBar = "DemonicFury"
 	end
 
-	if stateChanged then
-		ToggleResourceBar(frame[frame.ClassBar])
-		UF:Configure_ClassBar(frame)
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame)
-		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
-	end
+	UF:PostVisibility_ClassBars(frame, stateChanged)
 end
 
 function UF:Construct_BurningEmbersBar(frame)
@@ -531,13 +533,7 @@ function UF:VisibilityUpdateBurningEmbers(enabled, stateChanged)
 		frame.ClassBar = "BurningEmbers"
 	end
 
-	if stateChanged then
-		ToggleResourceBar(frame[frame.ClassBar])
-		UF:Configure_ClassBar(frame)
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame)
-		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
-	end
+	UF:PostVisibility_ClassBars(frame, stateChanged)
 end
 
 function UF:Construct_SoulShardsBar(frame)
@@ -593,13 +589,7 @@ function UF:VisibilityUpdateSoulShards(enabled, stateChanged)
 		frame.ClassBar = "SoulShards"
 	end
 
-	if stateChanged then
-		ToggleResourceBar(frame[frame.ClassBar])
-		UF:Configure_ClassBar(frame)
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame)
-		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
-	end
+	UF:PostVisibility_ClassBars(frame, stateChanged)
 end
 
 -------------------------------------------------------------
@@ -651,13 +641,7 @@ function UF:PostVisibilityRunes(enabled, stateChanged)
 		frame.MAX_CLASS_BAR = #self
 	end
 
-	if stateChanged then
-		ToggleResourceBar(frame[frame.ClassBar])
-		UF:Configure_ClassBar(frame)
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame)
-		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
-	end
+	UF:PostVisibility_ClassBars(frame, stateChanged)
 end
 
 -------------------------------------------------------------
@@ -687,15 +671,15 @@ function UF:Construct_DruidEclipseBar(frame)
 	eclipseBar.PostDirectionChange = UF.EclipsePostDirectionChange
 	eclipseBar.PostUpdateVisibility = UF.EclipsePostUpdateVisibility
 
+	eclipseBar:SetScript("OnShow", ToggleResourceBar)
+	eclipseBar:SetScript("OnHide", ToggleResourceBar)
+
 	return eclipseBar
 end
 
 function UF:EclipsePostDirectionChange(direction)
 	local frame = self.origParent or self:GetParent()
-	local db = frame.db
-	if not db then return end
-
-	local vertical = frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation
+	local vertical = frame.CLASSBAR_DETACHED and frame.db.classbar.verticalOrientation
 
 	self.Arrow:SetRotation(direction == "sun" and (vertical and 0 or -1.57) or (vertical and 3.14 or 1.57))
 	self.Arrow:SetVertexColor(unpack(ElvUF.colors.ClassBars[E.myclass][direction == "sun" and 1 or 2]))
@@ -705,22 +689,15 @@ end
 function UF:EclipsePostUpdateVisibility(enabled, stateChanged)
 	local frame = self.origParent or self:GetParent()
 
-	if stateChanged then
-		ToggleResourceBar(frame[frame.ClassBar])
-		UF:Configure_ClassBar(frame)
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame)
-		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
-	end
+	frame.ClassBar = enabled and "EclipseBar" or "AdditionalPower"
+
+	UF:PostVisibility_ClassBars(frame, stateChanged)
 end
 
 function UF:Construct_AdditionalPowerBar(frame)
 	local additionalPower = CreateFrame("StatusBar", "$parent_AdditionalPowerBar", frame)
 	additionalPower:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
 	additionalPower:SetStatusBarTexture(E.media.blankTex)
-
-	additionalPower.colorPower = true
-	additionalPower.frequentUpdates = true
 	UF.statusbars[additionalPower] = true
 
 	additionalPower.RaisedElementParent = CreateFrame("Frame", nil, additionalPower)
@@ -731,7 +708,11 @@ function UF:Construct_AdditionalPowerBar(frame)
 	additionalPower.BG:SetAllPoints(additionalPower)
 	additionalPower.BG:SetTexture(E.media.blankTex)
 
+	additionalPower.colorPower = true
+	additionalPower.frequentUpdates = true
+
 	additionalPower.PostUpdate = UF.PostUpdateAdditionalPower
+	additionalPower.PostUpdateColor = UF.PostColorAdditionalPower
 	additionalPower.PostUpdateVisibility = UF.PostVisibilityAdditionalPower
 
 	additionalPower:SetScript("OnShow", ToggleResourceBar)
@@ -740,11 +721,16 @@ function UF:Construct_AdditionalPowerBar(frame)
 	return additionalPower
 end
 
-function UF:PostUpdateAdditionalPower(_, MIN, MAX, event)
+function UF:PostUpdateAdditionalPower(MIN, MAX, event)
 	local frame = self.origParent or self:GetParent()
-	local db = frame.db
 
-	if frame.USE_CLASSBAR and ((MIN ~= MAX or (not db.classbar.autoHide)) and (event ~= "ElementDisable")) then
+	self:SetShown(frame.USE_CLASSBAR and ((MIN ~= MAX or (not frame.db.classbar.autoHide)) and (event ~= "ElementDisable")))
+end
+
+function UF:PostColorAdditionalPower()
+	local frame = self.origParent or self:GetParent()
+
+	if frame.USE_CLASSBAR then
 		local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
 		if custom_backdrop then
 			self.BG:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)
@@ -752,27 +738,13 @@ function UF:PostUpdateAdditionalPower(_, MIN, MAX, event)
 			local r, g, b = self:GetStatusBarColor()
 			self.BG:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
 		end
-
-		self:Show()
-	else
-		self:Hide()
 	end
 end
 
 function UF:PostVisibilityAdditionalPower(enabled, stateChanged)
 	local frame = self.origParent or self:GetParent()
 
-	if enabled then
-		frame.ClassBar = "AdditionalPower"
-	else
-		frame.ClassBar = "EclipseBar"
-	end
+	frame.ClassBar = enabled and "AdditionalPower" or "EclipseBar"
 
-	if stateChanged then
-		ToggleResourceBar(frame[frame.ClassBar])
-		UF:Configure_ClassBar(frame)
-		UF:Configure_HealthBar(frame)
-		UF:Configure_Power(frame)
-		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
-	end
+	UF:PostVisibility_ClassBars(frame, stateChanged)
 end

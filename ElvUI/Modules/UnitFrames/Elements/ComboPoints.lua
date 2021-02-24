@@ -50,7 +50,7 @@ function UF:Configure_ComboPoints(frame)
 	ComboPoints.origParent = frame
 
 	--Fix height in case it is lower than the theme allows, or in case it's higher than 30px when not detached
-	if UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 7) then --A height of 7 means 6px for borders and just 1px for the actual power statusbar
+	if not UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 7) then --A height of 7 means 6px for borders and just 1px for the actual power statusbar
 		frame.CLASSBAR_HEIGHT = 7
 		if db.combobar then db.combobar.height = 7 end
 		UF.ToggleResourceBar(ComboPoints) --Trigger update to health if needed
@@ -77,13 +77,17 @@ function UF:Configure_ComboPoints(frame)
 
 	ComboPoints:Width(CLASSBAR_WIDTH)
 	ComboPoints:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
-	ComboPoints.backdrop:SetBackdropColor(color.r, color.g, color.b)
+	if not ComboPoints.backdrop.ignoreBorderColors then
+		ComboPoints.backdrop:SetBackdropColor(color.r, color.g, color.b)
+	end
 	ComboPoints.backdrop:SetShown(not frame.USE_MINI_CLASSBAR)
 
 	for i = 1, frame.MAX_CLASS_BAR do
 		ComboPoints[i]:Hide()
 		ComboPoints[i]:SetStatusBarColor(unpack(ElvUF.colors.ComboPoints[i]))
-		ComboPoints[i].backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+		if not ComboPoints[i].backdrop.ignoreBorderColors then
+			ComboPoints[i].backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+		end
 		ComboPoints[i]:Height(ComboPoints:GetHeight())
 
 		if frame.USE_MINI_CLASSBAR then
@@ -209,31 +213,22 @@ function UF:UpdateComboDisplay(event, unit)
 
 	if db.combobar.enable then
 		local inVehicle = UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")
-		local form = GetShapeshiftFormID()
 
-		if not inVehicle and E.myclass ~= "ROGUE" and (E.myclass ~= "DRUID" or (E.myclass == "DRUID" and form ~= CAT_FORM)) then
+		if not inVehicle and E.myclass ~= "ROGUE" and (E.myclass ~= "DRUID" or (E.myclass == "DRUID" and GetShapeshiftFormID() ~= CAT_FORM)) then
 			element:Hide()
 			UF.ToggleResourceBar(element)
 		else
-			local cp
-			if inVehicle then
-				cp = GetComboPoints("vehicle", "target")
-			else
-				cp = GetComboPoints("player", "target")
-			end
-
+			local cp = GetComboPoints(inVehicle and "vehicle" or "player", "target")
 			local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
+
 			if cp == 0 and db.combobar.autoHide then
 				element:Hide()
 				UF.ToggleResourceBar(element)
 			else
 				element:Show()
+
 				for i = 1, MAX_COMBO_POINTS do
-					if i <= cp then
-						element[i]:Show()
-					else
-						element[i]:Hide()
-					end
+					element[i]:SetShown(i <= cp)
 
 					if custom_backdrop then
 						element[i].bg:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)

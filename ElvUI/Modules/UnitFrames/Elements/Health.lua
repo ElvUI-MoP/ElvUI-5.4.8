@@ -65,7 +65,7 @@ function UF:Construct_HealthBar(frame, bg, text, textPos)
 	return health
 end
 
-function UF:Configure_HealthBar(frame)
+function UF:Configure_HealthBar(frame, noTemplateChange)
 	if not frame.VARIABLES_SET then return end
 	local db = frame.db
 	local health = frame.Health
@@ -199,7 +199,7 @@ function UF:Configure_HealthBar(frame)
 		health:SetReverseFill(db.health.reverseFill)
 	end
 
-	UF:ToggleTransparentStatusBar(UF.db.colors.transparentHealth, frame.Health, frame.Health.bg, true, nil, db.health and db.health.reverseFill)
+	UF:ToggleTransparentStatusBar(UF.db.colors.transparentHealth, frame.Health, frame.Health.bg, true, nil, db.health and db.health.reverseFill, noTemplateChange)
 
 	--Frame Glow
 	UF:Configure_FrameGlow(frame)
@@ -229,7 +229,7 @@ function UF:PostUpdateHealthColor(unit, r, g, b)
 
 	local newr, newg, newb -- fallback for bg if custom settings arent used
 	if not b then r, g, b = colors.health.r, colors.health.g, colors.health.b end
-	if (((colors.healthclass and colors.colorhealthbyvalue) or (colors.colorhealthbyvalue and parent.isForced)) and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit))) then
+	if ((colors.healthclass and colors.colorhealthbyvalue) or (colors.colorhealthbyvalue and parent.isForced)) and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
 		newr, newg, newb = ElvUF:ColorGradient(self.cur, self.max, 1, 0, 0, 1, 1, 0, r, g, b)
 		self:SetStatusBarColor(newr, newg, newb)
 	end

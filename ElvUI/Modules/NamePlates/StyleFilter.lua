@@ -507,7 +507,11 @@ function NP:StyleFilterConditionCheck(frame, filter, trigger)
 	-- Reaction Type
 	if trigger.reactionType and trigger.reactionType.enable then
 		local reaction = frame.UnitReaction
-		if ((reaction == 1 or reaction == 2 or reaction == 3) and trigger.reactionType.hostile) or (reaction == 4 and trigger.reactionType.neutral) or (reaction == 5 and trigger.reactionType.friendly) then passed = true else return end
+		if (reaction == 1 and trigger.reactionType.tapped)
+		or ((reaction == 2 or reaction == 3) and trigger.reactionType.hostile)
+		or (reaction == 4 and trigger.reactionType.neutral)
+		or (reaction == 5 and trigger.reactionType.friendly)
+		then passed = true else return end
 	end
 
 	-- Raid Target

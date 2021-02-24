@@ -1032,7 +1032,7 @@ function UF:UpdateAllHeaders()
 
 	for group in pairs(self.headers) do
 		self:CreateAndUpdateHeaderGroup(group)
-		
+
 		if group == "party" or group == "raid" or group == "raid40" then
 			--Update BuffIndicators on profile change as they might be using profile specific data
 			self:UpdateAuraWatchFromHeader(group)
@@ -1374,44 +1374,47 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 	statusBar.invertColors = invertColors
 	statusBar.backdropTex = backdropTex
 
-	local statusBarTex = statusBar:GetStatusBarTexture()
-	local statusBarOrientation = statusBar:GetOrientation()
-
 	if not statusBar.hookedColor then
 		hooksecurefunc(statusBar, "SetStatusBarColor", UF.UpdateBackdropTextureColor)
 		statusBar.hookedColor = true
 	end
 
+	local parent = statusBar:GetParent()
+	local orientation = statusBar:GetOrientation()
 	if isTransparent then
 		if not noTemplateChange then
 			if statusBar.backdrop then
 				statusBar.backdrop:SetTemplate("Transparent", nil, nil, nil, true)
-			elseif statusBar:GetParent().template then
-				statusBar:GetParent():SetTemplate("Transparent", nil, nil, nil, true)
+			elseif parent.template then
+				parent:SetTemplate("Transparent", nil, nil, nil, true)
 			end
 		end
 
 		statusBar:SetStatusBarTexture(0, 0, 0, 0)
 		UF:Update_StatusBar(statusBar.bg or statusBar.BG, E.media.blankTex)
 
-		if statusBar.texture then statusBar.texture = statusBar:GetStatusBarTexture() end --Needed for Power element
+		local barTexture = statusBar:GetStatusBarTexture()
+		if statusBar.texture then statusBar.texture = barTexture end --Needed for Power element
 
-		UF:SetStatusBarBackdropPoints(statusBar, statusBarTex, backdropTex, statusBarOrientation, reverseFill)
+		UF:SetStatusBarBackdropPoints(statusBar, barTexture, backdropTex, orientation, reverseFill)
 	else
-		if statusBar.backdrop then
-			statusBar.backdrop:SetTemplate(nil, nil, nil, not statusBar.PostCastStart and self.thinBorders, true)
-		elseif statusBar:GetParent().template then
-			statusBar:GetParent():SetTemplate(nil, nil, nil, self.thinBorders, true)
+		if not noTemplateChange then
+			if statusBar.backdrop then
+				statusBar.backdrop:SetTemplate(nil, nil, nil, not statusBar.PostCastStart and self.thinBorders, true)
+			elseif parent.template then
+				parent:SetTemplate(nil, nil, nil, self.thinBorders, true)
+			end
 		end
 
 		local texture = LSM:Fetch("statusbar", self.db.statusbar)
 		statusBar:SetStatusBarTexture(texture)
 		UF:Update_StatusBar(statusBar.bg or statusBar.BG, texture)
 
-		if statusBar.texture then statusBar.texture = statusBar:GetStatusBarTexture() end
+		local barTexture = statusBar:GetStatusBarTexture()
+		if statusBar.texture then statusBar.texture = barTexture end
 
 		if adjustBackdropPoints then
-			UF:SetStatusBarBackdropPoints(statusBar, statusBarTex, backdropTex, statusBarOrientation, reverseFill)
+			UF:SetStatusBarBackdropPoints(statusBar, barTexture, backdropTex, orientation, reverseFill)
 		end
 	end
 end

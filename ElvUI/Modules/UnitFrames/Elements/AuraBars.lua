@@ -95,6 +95,7 @@ function UF:Configure_AuraBars(frame)
 		auraBars.growth = db.aurabar.anchorPoint
 		auraBars.friendlyAuraType = db.aurabar.friendlyAuraType
 		auraBars.enemyAuraType = db.aurabar.enemyAuraType
+		auraBars.disableMouse = db.aurabar.clickThrough
 		auraBars.maxBars = db.aurabar.maxBars
 		auraBars.spacing = db.aurabar.spacing
 		auraBars.width = frame.UNIT_WIDTH - auraBars.height - (frame.BORDER * 4) + (UF.thinBorders and 1 or -4)

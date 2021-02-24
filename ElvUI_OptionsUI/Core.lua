@@ -2,7 +2,6 @@
 local D = E:GetModule("Distributor")
 
 local Engine = select(2, ...)
-
 Engine[1] = {}
 Engine[2] = E.Libs.ACL:GetLocale("ElvUI", E.global.general.locale)
 local C, L = Engine[1], Engine[2]
@@ -10,16 +9,37 @@ local C, L = Engine[1], Engine[2]
 local _G = _G
 local pairs = pairs
 local format = string.format
-local sort, tinsert, tconcat = sort, tinsert, table.concat
+local sort, tinsert, tconcat, strmatch = sort, tinsert, table.concat, strmatch
 
 C.Values = {
 	FontFlags = {
-		["NONE"] = L["NONE"],
-		["OUTLINE"] = "OUTLINE",
-		["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
-		["THICKOUTLINE"] = "THICKOUTLINE"
+		NONE = L["NONE"],
+		OUTLINE = "Outline",
+		THICKOUTLINE = "Thick",
+		MONOCHROMEOUTLINE = "|cffaaaaaaMono|r Outline",
+		MONOCHROMETHICKOUTLINE = "|cffaaaaaaMono|r Thick"
+	},
+	Strata = {BACKGROUND = "BACKGROUND", LOW = "LOW", MEDIUM = "MEDIUM", HIGH = "HIGH", DIALOG = "DIALOG", TOOLTIP = "TOOLTIP"},
+	GrowthDirection = {
+		DOWN_RIGHT = format(L["%s and then %s"], L["Down"], L["Right"]),
+		DOWN_LEFT = format(L["%s and then %s"], L["Down"], L["Left"]),
+		UP_RIGHT = format(L["%s and then %s"], L["Up"], L["Right"]),
+		UP_LEFT = format(L["%s and then %s"], L["Up"], L["Left"]),
+		RIGHT_DOWN = format(L["%s and then %s"], L["Right"], L["Down"]),
+		RIGHT_UP = format(L["%s and then %s"], L["Right"], L["Up"]),
+		LEFT_DOWN = format(L["%s and then %s"], L["Left"], L["Down"]),
+		LEFT_UP = format(L["%s and then %s"], L["Left"], L["Up"])
 	}
 }
+
+C.StateSwitchGetText = function(_, TEXT)
+	local friend, enemy = strmatch(TEXT, "^Friendly:([^,]*)"), strmatch(TEXT, "^Enemy:([^,]*)")
+	local text, blockB, blockS, blockT = friend or enemy or TEXT
+	local SF, localized = E.global.unitframe.specialFilters[text], L[text]
+	if SF and localized and text:match("^block") then blockB, blockS, blockT = localized:match("^%[(.-)](%s?)(.+)") end
+	local filterText = (blockB and format("|cFF999999%s|r%s%s", blockB, blockS, blockT)) or localized or text
+	return (friend and format("|cFF33FF33%s|r %s", L["FRIEND"], filterText)) or (enemy and format("|cFFFF3333%s|r %s", L["ENEMY"], filterText)) or filterText
+end
 
 E:AddLib("AceGUI", "AceGUI-3.0")
 E:AddLib("AceConfig", "AceConfig-3.0-ElvUI")
@@ -332,7 +352,7 @@ local function ExportImport_Open(mode)
 		ExportFormatDropdown:SetWidth(150)
 		Frame:AddChild(ExportFormatDropdown)
 
-		local exportButton = E.Libs.AceGUI:Create("Button")
+		local exportButton = E.Libs.AceGUI:Create("Button-ElvUI")
 		exportButton:SetText(L["Export Now"])
 		exportButton:SetAutoWidth(true)
 		exportButton:SetCallback("OnClick", function()

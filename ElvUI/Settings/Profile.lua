@@ -1682,7 +1682,8 @@ P.unitframe = {
 				sortMethod = "TIME_REMAINING",
 				sortDirection = "DESCENDING",
 				yOffset = 0,
-				spacing = 0
+				spacing = 0,
+				clickThrough = false
 			},
 			raidicon = {
 				enable = true,
@@ -1970,7 +1971,8 @@ P.unitframe = {
 				sortMethod = "TIME_REMAINING",
 				sortDirection = "DESCENDING",
 				yOffset = 0,
-				spacing = 0
+				spacing = 0,
+				clickThrough = false
 			},
 			raidicon = {
 				enable = true,
@@ -2512,7 +2514,8 @@ P.unitframe = {
 				sortMethod = "TIME_REMAINING",
 				sortDirection = "DESCENDING",
 				yOffset = 0,
-				spacing = 0
+				spacing = 0,
+				clickThrough = false
 			},
 			raidicon = {
 				enable = true,
@@ -2828,7 +2831,8 @@ P.unitframe = {
 				sortMethod = "TIME_REMAINING",
 				sortDirection = "DESCENDING",
 				yOffset = 2,
-				spacing = 2
+				spacing = 2,
+				clickThrough = false
 			},
 			buffIndicator = {
 				enable = true,
@@ -4899,7 +4903,7 @@ P.actionbar = {
 		transparentBackdrop = false,
 		backdropSpacing = 2,
 		alpha = 1,
-		visibility = "show"
+		visibility = "[petbattle] hide; show"
 	},
 	extraActionButton = {
 		alpha = 1,

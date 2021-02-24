@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
+local LSM = E.Libs.LSM
 
 local _G = _G
 local assert, pairs, select = assert, pairs, select
@@ -122,7 +123,7 @@ function UF:FrameGlow_PositionGlow(frame, mainGlow, powerGlow)
 	local health = frame.Health and frame.Health.backdrop
 	local portrait = (frame.USE_PORTRAIT and not frame.USE_PORTRAIT_OVERLAY and not frame.PORTRAIT_DETACHED) and (frame.Portrait and frame.Portrait.backdrop)
 	local stagger = frame.USE_STAGGER and (frame.Stagger and frame.Stagger.backdrop)
-	local offset = (E.PixelMode and 3) or 4 -- edgeSize is 3
+	local offset = (UF.thinBorders and 3) or 4 -- edgeSize is 3
 
 	mainGlow:ClearAllPoints()
 	if frame.ORIENTATION == "RIGHT" then
@@ -138,8 +139,8 @@ function UF:FrameGlow_PositionGlow(frame, mainGlow, powerGlow)
 		mainGlow:Point("BOTTOMRIGHT", health, offset, -offset)
 	else
 		--offset is set because its one pixel off for some reason
-		mainGlow:Point("BOTTOMLEFT", frame, -offset, -(E.PixelMode and offset or offset-1))
-		mainGlow:Point("BOTTOMRIGHT", frame, offset, -(E.PixelMode and offset or offset-1))
+		mainGlow:Point("BOTTOMLEFT", frame, -offset, -(UF.thinBorders and offset or offset - 1))
+		mainGlow:Point("BOTTOMRIGHT", frame, offset, -(UF.thinBorders and offset or offset - 1))
 	end
 
 	if powerGlow then
@@ -344,7 +345,7 @@ function UF:FrameGlow_CheckMouseover(frame)
 		if frame.FrameGlow and not frame.FrameGlow:IsShown() then
 			frame.FrameGlow:Show()
 		end
-		if (shouldShow == "both" or shouldShow == "frame") then
+		if shouldShow == "both" or shouldShow == "frame" then
 			if frame.MouseGlow.powerGlow then
 				if frame.USE_POWERBAR_OFFSET or frame.USE_MINI_POWERBAR then
 					frame.MouseGlow.powerGlow:Show()
@@ -354,7 +355,7 @@ function UF:FrameGlow_CheckMouseover(frame)
 			end
 			frame.MouseGlow:Show()
 
-			if (shouldShow == "frame") and frame.FrameGlow.texture and frame.FrameGlow.texture:IsShown() then
+			if shouldShow == "frame" and frame.FrameGlow.texture and frame.FrameGlow.texture:IsShown() then
 				frame.FrameGlow.texture:Hide()
 			end
 		end
@@ -376,7 +377,7 @@ end
 
 function UF:Configure_FrameGlow(frame)
 	if frame.FrameGlow and frame.FrameGlow.texture then
-		local dbTexture = UF.LSM:Fetch("statusbar", E.db.unitframe.colors.frameGlow.mouseoverGlow.texture)
+		local dbTexture = LSM:Fetch("statusbar", E.db.unitframe.colors.frameGlow.mouseoverGlow.texture)
 		frame.FrameGlow.texture:SetTexture(dbTexture)
 	end
 end
@@ -449,7 +450,7 @@ function UF:FrameGlow_CheckChildren(frame, dbTexture)
 end
 
 function UF:FrameGlow_UpdateFrames()
-	local dbTexture = UF.LSM:Fetch("statusbar", E.db.unitframe.colors.frameGlow.mouseoverGlow.texture)
+	local dbTexture = LSM:Fetch("statusbar", E.db.unitframe.colors.frameGlow.mouseoverGlow.texture)
 
 	-- focus, focustarget, pet, pettarget, player, target, targettarget, targettargettarget
 	for unit in pairs(self.units) do

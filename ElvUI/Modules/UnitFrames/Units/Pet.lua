@@ -7,8 +7,6 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 local _G = _G
 local tinsert = table.insert
 
-local InCombatLockdown = InCombatLockdown
-
 function UF:Construct_PetFrame(frame)
 	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
 	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
@@ -95,7 +93,7 @@ function UF:Update_PetFrame(frame, db)
 	UF:Configure_AuraBars(frame)
 	UF:Configure_Cutaway(frame)
 	UF:Configure_CustomTexts(frame)
-	UF:UpdateAuraWatch(frame)
+	UF:UpdateAuraWatch(frame, true)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

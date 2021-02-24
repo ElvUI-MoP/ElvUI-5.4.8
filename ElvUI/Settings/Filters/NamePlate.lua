@@ -100,6 +100,7 @@ E.StyleFilterDefaults = {
 		},
 		reactionType = {
 			enabled = false,
+			tapped = false,
 			hostile = false,
 			neutral = false,
 			friendly = false

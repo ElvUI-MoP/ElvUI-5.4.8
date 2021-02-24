@@ -10,20 +10,20 @@ function UF:Construct_Threat(frame)
 	local threat = CreateFrame("Frame", nil, frame)
 
 	--Main ThreatGlow
-	threat.glow = frame:CreateShadow(nil, true)
-	threat.glow:SetParent(frame)
-	threat.glow:Hide()
+	threat.MainGlow = frame:CreateShadow(nil, true)
+	threat.MainGlow:SetParent(frame)
+	threat.MainGlow:Hide()
 
 	--Secondary ThreatGlow, for power frame when using power offset
-	threat.powerGlow = frame:CreateShadow(nil, true)
-	threat.powerGlow:SetParent(frame)
-	threat.powerGlow:SetFrameStrata("BACKGROUND")
-	threat.powerGlow:Hide()
+	threat.PowerGlow = frame:CreateShadow(nil, true)
+	threat.PowerGlow:SetParent(frame)
+	threat.PowerGlow:SetFrameStrata("BACKGROUND")
+	threat.PowerGlow:Hide()
 
-	threat.texIcon = threat:CreateTexture(nil, "OVERLAY")
-	threat.texIcon:Size(8)
-	threat.texIcon:SetTexture(E.media.blankTex)
-	threat.texIcon:Hide()
+	threat.TextureIcon = threat:CreateTexture(nil, "OVERLAY")
+	threat.TextureIcon:Size(8)
+	threat.TextureIcon:SetTexture(E.media.blankTex)
+	threat.TextureIcon:Hide()
 
 	threat.PostUpdate = self.UpdateThreat
 
@@ -32,129 +32,120 @@ end
 
 function UF:Configure_Threat(frame)
 	if not (frame.VARIABLES_SET and frame.ThreatIndicator) then return end
+
 	local threat = frame.ThreatIndicator
 	if not threat then return end
 
-	local db = frame.db
-	if db.threatStyle and db.threatStyle ~= "NONE" then
+	local threatStyle = frame.db and frame.db.threatStyle
+	if threatStyle and threatStyle ~= "NONE" then
 		if not frame:IsElementEnabled("ThreatIndicator") then
 			frame:EnableElement("ThreatIndicator")
 		end
 
-		if db.threatStyle == "GLOW" then
+		if threatStyle == "GLOW" then
 			threat:SetFrameStrata("BACKGROUND")
-			threat.glow:SetFrameStrata("BACKGROUND")
+			threat.MainGlow:ClearAllPoints()
+			threat.MainGlow:SetAllPoints(frame.TargetGlow)
 
-			threat.glow:ClearAllPoints()
 			if frame.USE_POWERBAR_OFFSET then
-				if frame.ORIENTATION == "RIGHT" then
-					threat.glow:Point("TOPLEFT", frame.Health.backdrop, "TOPLEFT", -frame.SHADOW_SPACING - frame.SPACING - (frame.STAGGER_WIDTH or 0), frame.SHADOW_SPACING + frame.SPACING + (frame.USE_CLASSBAR and (frame.USE_MINI_CLASSBAR and 0 or frame.CLASSBAR_HEIGHT) or 0))
-					threat.glow:Point("BOTTOMRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", frame.SHADOW_SPACING + frame.SPACING, -frame.SHADOW_SPACING - frame.SPACING)
-				else
-					threat.glow:Point("TOPLEFT", frame.Health.backdrop, "TOPLEFT", -frame.SHADOW_SPACING - frame.SPACING, frame.SHADOW_SPACING + frame.SPACING + (frame.USE_CLASSBAR and (frame.USE_MINI_CLASSBAR and 0 or frame.CLASSBAR_HEIGHT) or 0))
-					threat.glow:Point("BOTTOMRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", frame.SHADOW_SPACING + frame.SPACING + (frame.STAGGER_WIDTH or 0), -frame.SHADOW_SPACING - frame.SPACING)
-				end
-
-				threat.powerGlow:ClearAllPoints()
-				threat.powerGlow:Point("TOPLEFT", frame.Power.backdrop, "TOPLEFT", -frame.SHADOW_SPACING - frame.SPACING, frame.SHADOW_SPACING + frame.SPACING)
-				threat.powerGlow:Point("BOTTOMRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", frame.SHADOW_SPACING + frame.SPACING, -frame.SHADOW_SPACING - frame.SPACING)
-			else
-				threat.glow:Point("TOPLEFT", -frame.SHADOW_SPACING, frame.SHADOW_SPACING-(frame.USE_MINI_CLASSBAR and frame.CLASSBAR_YOFFSET or 0))
-
-				if frame.USE_MINI_POWERBAR then
-					threat.glow:Point("BOTTOMLEFT", -frame.SHADOW_SPACING, -frame.SHADOW_SPACING + (frame.POWERBAR_HEIGHT/2))
-					threat.glow:Point("BOTTOMRIGHT", frame.SHADOW_SPACING, -frame.SHADOW_SPACING + (frame.POWERBAR_HEIGHT/2))
-				else
-					threat.glow:Point("BOTTOMLEFT", -frame.SHADOW_SPACING, -frame.SHADOW_SPACING)
-					threat.glow:Point("BOTTOMRIGHT", frame.SHADOW_SPACING, -frame.SHADOW_SPACING)
-				end
+				threat.PowerGlow:ClearAllPoints()
+				threat.PowerGlow:SetAllPoints(frame.TargetGlow.powerGlow)
 			end
-		elseif match(db.threatStyle, "^ICON") then
+		elseif match(threatStyle, "^ICON") then
 			threat:SetFrameStrata("LOW")
 			threat:SetFrameLevel(75) --Inset power uses 50, we want it to appear above that
 
-			local point = db.threatStyle:gsub("ICON", "")
-			threat.texIcon:ClearAllPoints()
-			threat.texIcon:Point(point, frame.Health, point)
-		elseif db.threatStyle == "HEALTHBORDER" then
-			if frame.InfoPanel then
-				frame.InfoPanel:SetFrameLevel(frame.Health:GetFrameLevel() - 3)
-			end
-		elseif db.threatStyle == "INFOPANELBORDER" then
-			if frame.InfoPanel then
-				frame.InfoPanel:SetFrameLevel(frame.Health:GetFrameLevel() + 3)
-			end
+			local point = threatStyle:gsub("ICON", "")
+			threat.TextureIcon:ClearAllPoints()
+			threat.TextureIcon:Point(point, frame.Health, point)
+		elseif threatStyle == "HEALTHBORDER" and frame.InfoPanel then
+			frame.InfoPanel:SetFrameLevel(frame.Health:GetFrameLevel() - 3)
+		elseif threatStyle == "INFOPANELBORDER" and frame.InfoPanel then
+			frame.InfoPanel:SetFrameLevel(frame.Health:GetFrameLevel() + 3)
 		end
 	elseif frame:IsElementEnabled("ThreatIndicator") then
 		frame:DisableElement("ThreatIndicator")
 	end
 end
 
-function UF:UpdateThreat(unit, status, r, g, b)
-	local parent = self:GetParent()
-	if not unit or parent.unit ~= unit then return end
+function UF:ThreatBorderColor(backdrop, lock, r, g, b)
+	backdrop.ignoreBorderColors = lock and {r, g, b} or nil
+	backdrop:SetBackdropBorderColor(r, g, b)
+end
 
-	local db = parent.db
-	if not db or (not db.threatStyle or db.threatStyle == "NONE") then return end
+function UF:ThreatClassBarBorderColor(parent, status, r, g, b)
+	if parent.AdditionalPower then UF:ThreatBorderColor(parent.AdditionalPower.backdrop, status, r, g, b) end
+	if parent.AlternativePower then UF:ThreatBorderColor(parent.AlternativePower.backdrop, status, r, g, b) end
+	if parent.BurningEmbers then UF:ThreatBorderColor(parent.BurningEmbers.backdrop, status, r, g, b) end
+	if parent.ClassPower then UF:ThreatBorderColor(parent.ClassPower.backdrop, status, r, g, b) end
+	if parent.DemonicFury then UF:ThreatBorderColor(parent.DemonicFury.backdrop, status, r, g, b) end
+	if parent.EclipseBar then UF:ThreatBorderColor(parent.EclipseBar.backdrop, status, r, g, b) end
+	if parent.Runes then UF:ThreatBorderColor(parent.Runes.backdrop, status, r, g, b) end
+	if parent.SoulShards then UF:ThreatBorderColor(parent.SoulShards.backdrop, status, r, g, b) end
+	if parent.SpecPower then UF:ThreatBorderColor(parent.SpecPower.backdrop, status, r, g, b) end
+	if parent.Stagger then UF:ThreatBorderColor(parent.Stagger.backdrop, status, r, g, b) end
 
-	if status and status > 1 then
-		if db.threatStyle == "GLOW" then
-			self.glow:Show()
-			self.glow:SetBackdropBorderColor(r, g, b)
+	if parent.ClassPower or parent.SpecPower or parent.Runes or parent.BurningEmbers or parent.SoulShards then
+		local maxClassBarButtons = max(UF.classMaxResourceBar[E.myclass] or 0)
+		for i = 1, maxClassBarButtons do
+			if i <= parent.MAX_CLASS_BAR then
+				if parent.BurningEmbers then UF:ThreatBorderColor(parent.BurningEmbers[i].backdrop, status, r, g, b) end
+				if parent.ClassPower then UF:ThreatBorderColor(parent.ClassPower[i].backdrop, status, r, g, b) end
+				if parent.Runes then UF:ThreatBorderColor(parent.Runes[i].backdrop, status, r, g, b) end
+				if parent.SoulShards then UF:ThreatBorderColor(parent.SoulShards[i].backdrop, status, r, g, b) end
+				if parent.SpecPower then UF:ThreatBorderColor(parent.SpecPower[i].backdrop, status, r, g, b) end
+			end
+		end
+	end
+
+	if parent.ComboPoints then
+		for i = 1, MAX_COMBO_POINTS do
+			UF:ThreatBorderColor(parent.ComboPoints[i].backdrop, status, r, g, b)
+		end
+	end
+end
+
+function UF:ThreatHandler(threat, parent, threatStyle, status, r, g, b)
+	if threatStyle == "GLOW" then
+		if status then
+			threat.MainGlow:Show()
+			threat.MainGlow:SetBackdropBorderColor(r, g, b)
 
 			if parent.USE_POWERBAR_OFFSET then
-				self.powerGlow:Show()
-				self.powerGlow:SetBackdropBorderColor(r, g, b)
+				threat.PowerGlow:Show()
+				threat.PowerGlow:SetBackdropBorderColor(r, g, b)
 			end
-		elseif db.threatStyle == "BORDERS" then
-			parent.Health.backdrop:SetBackdropBorderColor(r, g, b)
-
-			if parent.Power and parent.Power.backdrop then
-				parent.Power.backdrop:SetBackdropBorderColor(r, g, b)
-			end
-
-			local classBar = parent.ClassBar and parent[parent.ClassBar]
-			if classBar and classBar.backdrop then
-				classBar.backdrop:SetBackdropBorderColor(r, g, b)
-			end
-
-			if parent.InfoPanel and parent.InfoPanel.backdrop then
-				parent.InfoPanel.backdrop:SetBackdropBorderColor(r, g, b)
-			end
-		elseif db.threatStyle == "HEALTHBORDER" then
-			parent.Health.backdrop:SetBackdropBorderColor(r, g, b)
-		elseif db.threatStyle == "INFOPANELBORDER" then
-			parent.InfoPanel.backdrop:SetBackdropBorderColor(r, g, b)
-		elseif db.threatStyle ~= "NONE" and self.texIcon then
-			self.texIcon:Show()
-			self.texIcon:SetVertexColor(r, g, b)
+		else
+			threat.MainGlow:Hide()
+			threat.PowerGlow:Hide()
 		end
+	elseif threatStyle == "BORDERS" then
+		if parent.InfoPanel then UF:ThreatBorderColor(parent.InfoPanel.backdrop, status, r, g, b) end
+		if parent.Power then UF:ThreatBorderColor(parent.Power.backdrop, status, r, g, b) end
+		UF:ThreatBorderColor(parent.Health.backdrop, status, r, g, b)
+		UF:ThreatClassBarBorderColor(parent, status, r, g, b)
+	elseif threatStyle == "HEALTHBORDER" then
+		UF:ThreatBorderColor(parent.Health.backdrop, status, r, g, b)
+	elseif threatStyle == "INFOPANELBORDER" then
+		if parent.InfoPanel then UF:ThreatBorderColor(parent.InfoPanel.backdrop, status, r, g, b) end
+	elseif threatStyle ~= "NONE" and threat.TextureIcon then
+		if status then
+			threat.TextureIcon:Show()
+			threat.TextureIcon:SetVertexColor(r, g, b)
+		else
+			threat.TextureIcon:Hide()
+		end
+	end
+end
+
+function UF:UpdateThreat(unit, status, r, g, b)
+	local parent = self:GetParent()
+	local db = parent.db and parent.db.threatStyle
+	local badUnit = not unit or parent.unit ~= unit
+
+	if not badUnit and status and status > 1 then
+		UF:ThreatHandler(self, parent, db, status, r, g, b)
 	else
-		r, g, b = unpack(E.media.unitframeBorderColor)
-		if db.threatStyle == "GLOW" then
-			self.glow:Hide()
-			self.powerGlow:Hide()
-		elseif db.threatStyle == "BORDERS" then
-			parent.Health.backdrop:SetBackdropBorderColor(r, g, b)
-
-			if parent.Power and parent.Power.backdrop then
-				parent.Power.backdrop:SetBackdropBorderColor(r, g, b)
-			end
-
-			local classBar = parent.ClassBar and parent[parent.ClassBar]
-			if classBar and classBar.backdrop then
-				classBar.backdrop:SetBackdropBorderColor(r, g, b)
-			end
-
-			if parent.InfoPanel and parent.InfoPanel.backdrop then
-				parent.InfoPanel.backdrop:SetBackdropBorderColor(r, g, b)
-			end
-		elseif db.threatStyle == "HEALTHBORDER" then
-			parent.Health.backdrop:SetBackdropBorderColor(r, g, b)
-		elseif db.threatStyle == "INFOPANELBORDER" then
-			parent.InfoPanel.backdrop:SetBackdropBorderColor(r, g, b)
-		elseif db.threatStyle ~= "NONE" and self.texIcon then
-			self.texIcon:Hide()
-		end
+		UF:ThreatHandler(self, parent, db, nil, unpack(E.media.unitframeBorderColor))
 	end
 end

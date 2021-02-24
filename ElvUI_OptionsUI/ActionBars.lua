@@ -62,10 +62,10 @@ E.Options.args.actionbar = {
 					desc = L["The button you must hold down in order to drag an ability to another action button."],
 					disabled = function() return (not E.private.actionbar.enable or not E.db.actionbar.lockActionBars) end,
 					values = {
-						["NONE"] = L["NONE"],
-						["SHIFT"] = L["SHIFT_KEY"],
-						["ALT"] = L["ALT_KEY"],
-						["CTRL"] = L["CTRL_KEY"]
+						NONE = L["NONE"],
+						SHIFT = L["SHIFT_KEY"],
+						ALT = L["ALT_KEY"],
+						CTRL = L["CTRL_KEY"]
 					}
 				},
 				flyoutSize = {
@@ -561,8 +561,8 @@ E.Options.args.actionbar = {
 					name = L["Style"],
 					desc = L["This setting will be updated upon changing stances."],
 					values = {
-						["darkenInactive"] = L["Darken Inactive"],
-						["classic"] = L["Classic"]
+						darkenInactive = L["Darken Inactive"],
+						classic = L["Classic"]
 					},
 					disabled = function() return not E.db.actionbar.stanceBar.enabled end
 				},
@@ -738,7 +738,7 @@ E.Options.args.actionbar = {
 				transparentBackdrop = {
 					order = 6,
 					type = "toggle",
-					name = L["Transparent Backdrops"],
+					name = L["Transparent Backdrop"],
 					disabled = function() return not E.db.actionbar.microbar.enabled or not E.db.actionbar.microbar.backdrop end
 				},
 				spacer2 = {
@@ -870,14 +870,7 @@ E.Options.args.actionbar = {
 					order = 4,
 					type = "select",
 					name = L["Frame Strata"],
-					values = {
-						["BACKGROUND"] = "BACKGROUND",
-						["LOW"] = "LOW",
-						["MEDIUM"] = "MEDIUM",
-						["HIGH"] = "HIGH",
-						["DIALOG"] = "DIALOG",
-						["TOOLTIP"] = "TOOLTIP"
-					}
+					values = C.Values.Strata
 				}
 			}
 		}
@@ -981,11 +974,11 @@ for i = 1, 10 do
 						name = L["Flyout Direction"],
 						set = function(info, value) E.db.actionbar["bar"..i][info[#info]] = value AB:PositionAndSizeBar("bar"..i) AB:UpdateButtonSettingsForBar("bar"..i) end,
 						values = {
-							["UP"] = L["Up"],
-							["DOWN"] = L["Down"],
-							["LEFT"] = L["Left"],
-							["RIGHT"] = L["Right"],
-							["AUTOMATIC"] = L["Automatic"]
+							UP = L["Up"],
+							DOWN = L["Down"],
+							LEFT = L["Left"],
+							RIGHT = L["Right"],
+							AUTOMATIC = L["Automatic"]
 						}
 					},
 					buttons = {
