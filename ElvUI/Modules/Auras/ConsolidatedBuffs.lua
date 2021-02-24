@@ -172,7 +172,7 @@ function A:CreateButton(i)
 
 	if MasqueGroup and E.private.auras.masque.consolidatedBuffs then
 		MasqueGroup:AddButton(button, ButtonData)
-	elseif not E.private.auras.masque.consolidatedBuffs then
+	else
 		button:SetTemplate()
 	end
 
@@ -275,28 +275,28 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 end
 
 function A:UpdatePosition()
-	if E.private.general.minimap.enable then
-		Minimap:ClearAllPoints()
-		ElvConfigToggle:ClearAllPoints()
-		ElvUI_ConsolidatedBuffs:ClearAllPoints()
+	if not E.private.general.minimap.enable then return end
 
-		if E.db.auras.consolidatedBuffs.position == "LEFT" then
-			Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
+	Minimap:ClearAllPoints()
+	ElvConfigToggle:ClearAllPoints()
+	ElvUI_ReminderBuffs:ClearAllPoints()
 
-			ElvConfigToggle:SetPoint("TOPRIGHT", LeftMiniPanel, "TOPLEFT", E.Border - E.Spacing * 3, 0)
-			ElvConfigToggle:SetPoint("BOTTOMRIGHT", LeftMiniPanel, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
+	if E.db.auras.consolidatedBuffs.position == "LEFT" then
+		Minimap:Point("TOPRIGHT", MMHolder, "TOPRIGHT", -E.Border, -E.Border)
 
-			ElvUI_ConsolidatedBuffs:SetPoint("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing * 3, 0)
-			ElvUI_ConsolidatedBuffs:SetPoint("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
-		else
-			Minimap:Point("TOPLEFT", MMHolder, "TOPLEFT", E.Border, -E.Border)
+		ElvConfigToggle:SetPoint("TOPRIGHT", LeftMiniPanel, "TOPLEFT", E.Border - E.Spacing * 3, 0)
+		ElvConfigToggle:SetPoint("BOTTOMRIGHT", LeftMiniPanel, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
 
-			ElvConfigToggle:SetPoint("TOPLEFT", RightMiniPanel, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
-			ElvConfigToggle:SetPoint("BOTTOMLEFT", RightMiniPanel, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
+		ElvUI_ReminderBuffs:SetPoint("TOPRIGHT", Minimap.backdrop, "TOPLEFT", E.Border - E.Spacing * 3, 0)
+		ElvUI_ReminderBuffs:SetPoint("BOTTOMRIGHT", Minimap.backdrop, "BOTTOMLEFT", E.Border - E.Spacing * 3, 0)
+	else
+		Minimap:Point("TOPLEFT", MMHolder, "TOPLEFT", E.Border, -E.Border)
 
-			ElvUI_ConsolidatedBuffs:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
-			ElvUI_ConsolidatedBuffs:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
-		end
+		ElvConfigToggle:SetPoint("TOPLEFT", RightMiniPanel, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
+		ElvConfigToggle:SetPoint("BOTTOMLEFT", RightMiniPanel, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
+
+		ElvUI_ReminderBuffs:SetPoint("TOPLEFT", Minimap.backdrop, "TOPRIGHT", -E.Border + E.Spacing * 3, 0)
+		ElvUI_ReminderBuffs:SetPoint("BOTTOMLEFT", Minimap.backdrop, "BOTTOMRIGHT", -E.Border + E.Spacing * 3, 0)
 	end
 end
 
