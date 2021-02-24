@@ -61,7 +61,6 @@ local function LoadSkin()
 	hooksecurefunc("PlayerTalentFrame_UpdateTabs", function()
 		for i = 1, 4 do
 			local tab = _G["PlayerTalentFrameTab"..i]
-
 			local point, anchor, anchorPoint, x = tab:GetPoint()
 
 			tab:Point(point, anchor, anchorPoint, x, -4)
@@ -205,13 +204,13 @@ local function LoadSkin()
 			button.roleIcon:Size(20)
 		elseif role == "TANK" then
 			button.roleIcon:SetTexture(E.Media.Textures.Tank)
-			button.roleIcon:Size(23)
+			button.roleIcon:Size(24)
 		elseif role == "HEALER" then
 			button.roleIcon:SetTexture(E.Media.Textures.Healer)
-			button.roleIcon:Size(21)
+			button.roleIcon:Size(22)
 		end
 
-		button.roleIcon:SetTexCoord(unpack(E.TexCoords))
+		button.roleIcon:SetTexCoord(0, 1, 0, 1)
 		button.specIcon:SetTexture(icon)
 
 		if bonuses then
@@ -255,6 +254,7 @@ local function LoadSkin()
 						frame.name:SetParent(frame.bg)
 
 						frame.subText:SetTextColor(1, 1, 1)
+						frame.subText.SetTextColor = E.noop
 						frame.subText:SetParent(frame.bg)
 
 						frame.ring:Hide()

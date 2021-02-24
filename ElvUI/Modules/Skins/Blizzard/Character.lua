@@ -24,7 +24,7 @@ local function LoadSkin()
 	CharacterModelFrame.backdrop:Point("TOPLEFT", -1, 1)
 	CharacterModelFrame.backdrop:Point("BOTTOMRIGHT", 1, -2)
 
-	--Re-add the overlay texture which was removed right above via StripTextures
+	-- Re-add the overlay texture which was removed right above via StripTextures
 	CharacterModelFrameBackgroundOverlay:SetTexture(0, 0, 0)
 
 	-- Give character frame model backdrop it's color back
@@ -83,9 +83,13 @@ local function LoadSkin()
 			E:RegisterCooldown(cooldown)
 		end
 
+		-- Equipment Flyout
 		if popout then
 			popout:StripTextures()
 			popout:SetTemplate("Default", true)
+			popout:Point(button.verticalFlyout and "TOP" or "LEFT", button, button.verticalFlyout and "BOTTOM" or "RIGHT", button.verticalFlyout and 0 or -5, button.verticalFlyout and 5 or 0)
+			popout:Size(button.verticalFlyout and 27 or 11, button.verticalFlyout and 11 or 27)
+
 			popout:HookScript("OnEnter", S.SetModifiedBackdrop)
 			popout:HookScript("OnLeave", S.SetOriginalBackdrop)
 
@@ -93,77 +97,9 @@ local function LoadSkin()
 			popout.icon:Size(14)
 			popout.icon:Point("CENTER")
 			popout.icon:SetTexture(E.Media.Textures.ArrowUp)
-
-			if button.verticalFlyout then
-				popout:Size(27, 11)
-				popout:Point("TOP", button, "BOTTOM", 0, 5)
-
-				popout.icon:SetRotation(3.14)
-			else
-				popout:Size(11, 27)
-				popout:Point("LEFT", button, "RIGHT", -5, 0)
-
-				popout.icon:SetRotation(-1.57)
-			end
+			popout.icon:SetRotation(button.verticalFlyout and 3.14 or -1.57)
 		end
 	end
-
-	hooksecurefunc("EquipmentFlyoutPopoutButton_SetReversed", function(button, isReversed)
-		local flyout = button:GetParent()
-		if flyout:GetParent() ~= PaperDollItemsFrame then return end
-
-		button.icon:SetRotation(flyout.verticalFlyout and (isReversed and 0 or 3.14) or (isReversed and 1.57 or -1.57))
-	end)
-
-	EquipmentFlyoutFrameHighlight:Kill()
-
-	EquipmentFlyoutFrame.NavigationFrame:StripTextures()
-	EquipmentFlyoutFrame.NavigationFrame:SetTemplate("Transparent")
-	EquipmentFlyoutFrame.NavigationFrame:Point("TOPLEFT", EquipmentFlyoutFrameButtons, "BOTTOMLEFT", 0, -E.Border - E.Spacing)
-	EquipmentFlyoutFrame.NavigationFrame:Point("TOPRIGHT", EquipmentFlyoutFrameButtons, "BOTTOMRIGHT", 0, -E.Border - E.Spacing)
-
-	S:HandleNextPrevButton(EquipmentFlyoutFrame.NavigationFrame.PrevButton)
-	S:HandleNextPrevButton(EquipmentFlyoutFrame.NavigationFrame.NextButton)
-
-	hooksecurefunc("EquipmentFlyout_DisplayButton", function(button)
-		if not button.isSkinned then
-			button:GetNormalTexture():SetTexture(nil)
-			button:SetTemplate()
-			button:StyleButton()
-
-			button.icon = _G[button:GetName().."IconTexture"]
-			button.icon:SetTexCoord(unpack(E.TexCoords))
-			button.icon:SetInside()
-
-			local cooldown = _G[button:GetName().."Cooldown"]
-			if cooldown then
-				E:RegisterCooldown(cooldown)
-			end
-
-			button.isSkinned = true
-		end
-
-		local location = button.location
-		if not location then return end
-		if location and location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then return end
-
-		local id = EquipmentManager_GetItemInfoByLocation(location)
-		local _, _, quality = GetItemInfo(id)
-		local r, g, b = GetItemQualityColor(quality)
-
-		button:SetBackdropBorderColor(r, g, b)
-	end)
-
-	hooksecurefunc("EquipmentFlyout_Show", function(self)
-		local frame = EquipmentFlyoutFrame.buttonFrame
-
-		frame:StripTextures()
-		frame:SetTemplate("Transparent")
-		frame:Point("TOPLEFT", self.popoutButton, self.verticalFlyout and "BOTTOMLEFT" or "TOPRIGHT", self.verticalFlyout and -10 or 0, self.verticalFlyout and 0 or 10)
-
-		local width, height = frame:GetSize()
-		frame:Size(width + 3, height)
-	end)
 
 	local function ColorItemBorder()
 		for _, slot in pairs(slots) do
@@ -190,34 +126,90 @@ local function LoadSkin()
 	CharacterFrame:HookScript("OnShow", ColorItemBorder)
 	ColorItemBorder()
 
-	CharacterFrameExpandButton:Size(CharacterFrameExpandButton:GetWidth() - 5, CharacterFrameExpandButton:GetHeight() - 5)
+	-- Equipment Flyout
+	EquipmentFlyoutFrameHighlight:Kill()
+
+	EquipmentFlyoutFrame.NavigationFrame:StripTextures()
+	EquipmentFlyoutFrame.NavigationFrame:SetTemplate("Transparent")
+	EquipmentFlyoutFrame.NavigationFrame:Point("TOPLEFT", EquipmentFlyoutFrameButtons, "BOTTOMLEFT", 0, -E.Border - E.Spacing)
+	EquipmentFlyoutFrame.NavigationFrame:Point("TOPRIGHT", EquipmentFlyoutFrameButtons, "BOTTOMRIGHT", 0, -E.Border - E.Spacing)
+
+	S:HandleNextPrevButton(EquipmentFlyoutFrame.NavigationFrame.PrevButton)
+	S:HandleNextPrevButton(EquipmentFlyoutFrame.NavigationFrame.NextButton)
+
+	hooksecurefunc("EquipmentFlyoutPopoutButton_SetReversed", function(button, isReversed)
+		local flyout = button:GetParent()
+		if flyout:GetParent() ~= PaperDollItemsFrame then return end
+
+		button.icon:SetRotation(flyout.verticalFlyout and (isReversed and 0 or 3.14) or (isReversed and 1.57 or -1.57))
+	end)
+
+	hooksecurefunc("EquipmentFlyout_DisplayButton", function(button)
+		if not button.isSkinned then
+			local name = button:GetName()
+
+			button:SetTemplate()
+			button:StyleButton()
+			button:GetNormalTexture():SetTexture(nil)
+
+			button.icon = _G[name.."IconTexture"]
+			button.icon:SetTexCoord(unpack(E.TexCoords))
+			button.icon:SetInside()
+
+			local cooldown = _G[name.."Cooldown"]
+			if cooldown then
+				E:RegisterCooldown(cooldown)
+			end
+
+			button.isSkinned = true
+		end
+
+		local location = button.location
+		if not location then return end
+		if location and location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then return end
+
+		button:SetBackdropBorderColor(GetItemQualityColor(select(3, GetItemInfo(EquipmentManager_GetItemInfoByLocation(location)))))
+	end)
+
+	hooksecurefunc("EquipmentFlyout_Show", function(self)
+		local frame = EquipmentFlyoutFrame.buttonFrame
+
+		frame:StripTextures()
+		frame:SetTemplate("Transparent")
+		frame:Point("TOPLEFT", self.popoutButton, self.verticalFlyout and "BOTTOMLEFT" or "TOPRIGHT", self.verticalFlyout and -10 or 0, self.verticalFlyout and 0 or 10)
+
+		local width, height = frame:GetSize()
+		frame:Size(width + 3, height)
+	end)
+
+	-- Expand Button
 	S:HandleNextPrevButton(CharacterFrameExpandButton)
+	CharacterFrameExpandButton:Size(18)
+
+	CharacterFrameExpandButton:SetNormalTexture(E.Media.Textures.ArrowUp)
+	CharacterFrameExpandButton.SetNormalTexture = E.noop
+
+	CharacterFrameExpandButton:SetPushedTexture(E.Media.Textures.ArrowUp)
+	CharacterFrameExpandButton.SetPushedTexture = E.noop
+
+	CharacterFrameExpandButton:SetDisabledTexture(E.Media.Textures.ArrowUp)
+	CharacterFrameExpandButton.SetDisabledTexture = E.noop
+
+	local expandButtonNormal, expandButtonPushed = CharacterFrameExpandButton:GetNormalTexture(), CharacterFrameExpandButton:GetPushedTexture()
+	local expandButtonCvar = GetCVar("characterFrameCollapsed") ~= "0"
+
+	expandButtonNormal:SetRotation(expandButtonCvar and -1.57 or 1.57)
+	expandButtonPushed:SetRotation(expandButtonCvar and -1.57 or 1.57)
 
 	hooksecurefunc("CharacterFrame_Collapse", function()
-		CharacterFrameExpandButton:SetNormalTexture(E.Media.Textures.ArrowUp)
-		CharacterFrameExpandButton:SetPushedTexture(E.Media.Textures.ArrowUp)
-		CharacterFrameExpandButton:SetDisabledTexture(E.Media.Textures.ArrowUp)
-
-		CharacterFrameExpandButton:GetNormalTexture():SetRotation(-1.57)
-		CharacterFrameExpandButton:GetPushedTexture():SetRotation(-1.57)
+		expandButtonNormal:SetRotation(-1.57)
+		expandButtonPushed:SetRotation(-1.57)
 	end)
 
 	hooksecurefunc("CharacterFrame_Expand", function()
-		CharacterFrameExpandButton:SetNormalTexture(E.Media.Textures.ArrowUp)
-		CharacterFrameExpandButton:SetPushedTexture(E.Media.Textures.ArrowUp)
-		CharacterFrameExpandButton:SetDisabledTexture(E.Media.Textures.ArrowUp)
-
-		CharacterFrameExpandButton:GetNormalTexture():SetRotation(1.57)
-		CharacterFrameExpandButton:GetPushedTexture():SetRotation(1.57)
+		expandButtonNormal:SetRotation(1.57)
+		expandButtonPushed:SetRotation(1.57)
 	end)
-
-	if GetCVar("characterFrameCollapsed") ~= "0" then
-		CharacterFrameExpandButton:GetNormalTexture():SetRotation(-1.57)
-		CharacterFrameExpandButton:GetPushedTexture():SetRotation(-1.57)
-	else
-		CharacterFrameExpandButton:GetNormalTexture():SetRotation(1.57)
-		CharacterFrameExpandButton:GetPushedTexture():SetRotation(1.57)
-	end
 
 	-- Control Frame
 	S:HandleModelControlFrame(CharacterModelFrameControlFrame)
@@ -225,11 +217,9 @@ local function LoadSkin()
 	-- Titles
 	PaperDollTitlesPane:HookScript("OnShow", function()
 		for _, object in pairs(PaperDollTitlesPane.buttons) do
-			object.BgTop:SetTexture(nil)
-			object.BgBottom:SetTexture(nil)
-			object.BgMiddle:SetTexture(nil)
-			object.Check:SetTexture(nil)
+			if object.isSkinned then return end
 
+			object:StripTextures()
 			S:HandleButtonHighlight(object)
 			object.handledHighlight:Point("TOPLEFT", 0, -1)
 
@@ -243,6 +233,8 @@ local function LoadSkin()
 
 			object.text:FontTemplate()
 			object.text.SetFont = E.noop
+
+			object.isSkinned = true
 		end
 	end)
 
@@ -253,10 +245,22 @@ local function LoadSkin()
 
 	PaperDollEquipmentManagerPane:HookScript("OnShow", function()
 		for _, object in pairs(PaperDollEquipmentManagerPane.buttons) do
-			object.BgTop:SetTexture(nil)
-			object.BgBottom:SetTexture(nil)
-			object.BgMiddle:SetTexture(nil)
-			object.Check:SetTexture(nil)
+			if object.isSkinned then return end
+
+			object.BgTop:SetTexture()
+			object.BgBottom:SetTexture()
+			object.BgMiddle:SetTexture()
+
+			object:CreateBackdrop()
+			object.backdrop:Point("TOPLEFT", object.icon, -1, 1)
+			object.backdrop:Point("BOTTOMRIGHT", object.icon, 1, -1)
+
+			object.icon:SetTexCoord(unpack(E.TexCoords))
+			object.icon:SetParent(object.backdrop)
+			object.icon:Point("LEFT", object, "LEFT", 1, 0)
+			object.icon.SetPoint = E.noop
+			object.icon:Size(40)
+			object.icon.SetSize = E.noop
 
 			object.SelectedBar:SetTexture(E.Media.Textures.Highlight)
 			object.SelectedBar:SetVertexColor(unpack(E.media.rgbvaluecolor))
@@ -277,27 +281,17 @@ local function LoadSkin()
 			object.Stripe:Point("TOPLEFT", object, 42, -1)
 			object.Stripe:Point("BOTTOMRIGHT", object, 0, 1)
 
-			object:CreateBackdrop()
-			object.backdrop:Point("TOPLEFT", object.icon, -1, 1)
-			object.backdrop:Point("BOTTOMRIGHT", object.icon, 1, -1)
-
-			object.icon:SetTexCoord(unpack(E.TexCoords))
-			object.icon:SetParent(object.backdrop)
-			object.icon:Point("LEFT", object, "LEFT", 1, 0)
-			object.icon.SetPoint = E.noop
-			object.icon:Size(40)
-			object.icon.SetSize = E.noop
+			object.isSkinned = true
 		end
 	end)
 
-	S:HandleButton(PaperDollEquipmentManagerPaneEquipSet)
+	S:HandleButton(PaperDollEquipmentManagerPaneEquipSet, true)
 	PaperDollEquipmentManagerPaneEquipSet:Point("TOPLEFT", PaperDollEquipmentManagerPane, "TOPLEFT", 8, 0)
-	PaperDollEquipmentManagerPaneEquipSet:Width(PaperDollEquipmentManagerPaneEquipSet:GetWidth() - 8)
-	PaperDollEquipmentManagerPaneEquipSet.ButtonBackground:SetTexture(nil)
+	PaperDollEquipmentManagerPaneEquipSet:Width(80)
 
 	S:HandleButton(PaperDollEquipmentManagerPaneSaveSet)
 	PaperDollEquipmentManagerPaneSaveSet:Point("LEFT", PaperDollEquipmentManagerPaneEquipSet, "RIGHT", 4, 0)
-	PaperDollEquipmentManagerPaneSaveSet:Width(PaperDollEquipmentManagerPaneSaveSet:GetWidth() - 8)
+	PaperDollEquipmentManagerPaneSaveSet:Width(80)
 
 	S:HandleScrollBar(PaperDollEquipmentManagerPaneScrollBar)
 
@@ -400,7 +394,7 @@ local function LoadSkin()
 		frame:StripTextures(true)
 
 		frame.War = frame:CreateTexture(nil, "OVERLAY")
-		frame.War:SetTexture("Interface\\Buttons\\UI-CheckBox-SwordCheck")
+		frame.War:SetTexture([[Interface\Buttons\UI-CheckBox-SwordCheck]])
 		frame.War:Size(30)
 		frame.War:Point("RIGHT", 32, -5)
 
@@ -409,11 +403,14 @@ local function LoadSkin()
 		bar:SetStatusBarTexture(E.media.normTex)
 		E:RegisterStatusBar(bar)
 
+		button:SetHighlightTexture(nil)
+
 		button:SetNormalTexture(E.Media.Textures.Minus)
 		button.SetNormalTexture = E.noop
-		button:GetNormalTexture():Size(16)
-		button:GetNormalTexture():Point("LEFT", 4, 1)
-		button:SetHighlightTexture(nil)
+
+		local normal = button:GetNormalTexture()
+		normal:Size(16)
+		normal:Point("LEFT", 4, 1)
 	end
 
 	hooksecurefunc("ReputationFrame_Update", function()
@@ -421,24 +418,13 @@ local function LoadSkin()
 		local numFactions = GetNumFactions()
 
 		for i = 1, NUM_FACTIONS_DISPLAYED, 1 do
-			local frame = _G["ReputationBar"..i]
-			local button = _G["ReputationBar"..i.."ExpandOrCollapseButton"]
 			local factionIndex = factionOffset + i
 
 			if factionIndex <= numFactions then
 				local _, _, _, _, _, _, atWarWith, canToggleAtWar, isHeader, isCollapsed = GetFactionInfo(factionIndex)
 
-				if isCollapsed then
-					button:GetNormalTexture():SetTexture(E.Media.Textures.Plus)
-				else
-					button:GetNormalTexture():SetTexture(E.Media.Textures.Minus)
-				end
-
-				if atWarWith and canToggleAtWar and (not isHeader) then
-					frame.War:Show()
-				else
-					frame.War:Hide()
-				end
+				_G["ReputationBar"..i.."ExpandOrCollapseButton"]:GetNormalTexture():SetTexture(isCollapsed and E.Media.Textures.Plus or E.Media.Textures.Minus)
+				_G["ReputationBar"..i].War:SetShown(atWarWith and canToggleAtWar and (not isHeader))
 			end
 		end
 	end)
@@ -452,7 +438,7 @@ local function LoadSkin()
 	S:HandleCheckBox(ReputationDetailLFGBonusReputationCheckBox)
 
 	S:HandleCheckBox(ReputationDetailAtWarCheckBox)
-	ReputationDetailAtWarCheckBox:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-SwordCheck")
+	ReputationDetailAtWarCheckBox:SetCheckedTexture([[Interface\Buttons\UI-CheckBox-SwordCheck]])
 
 	S:HandleCloseButton(ReputationDetailCloseButton)
 	ReputationDetailCloseButton:Point("TOPRIGHT", 3, 4)
@@ -476,7 +462,14 @@ local function LoadSkin()
 				button.categoryLeft:Kill()
 				button.categoryRight:Kill()
 
+				button:CreateBackdrop()
+				button.backdrop:SetOutside(button.icon)
+
 				button.icon:SetTexCoord(unpack(E.TexCoords))
+				button.icon:SetParent(button.backdrop)
+
+				button.stripe:SetTexture(E.Media.Textures.Highlight)
+				button.stripe:SetAlpha(0.15)
 
 				button.expandIcon:SetTexture(E.Media.Textures.Plus)
 				button.expandIcon:SetTexCoord(0, 1, 0, 1)
@@ -486,15 +479,11 @@ local function LoadSkin()
 				button.isSkinned = true
 			end
 
-			if name or name == "" then
-				if isHeader then
-					if isExpanded then
-						button.expandIcon:SetTexture(E.Media.Textures.Minus)
-					else
-						button.expandIcon:SetTexture(E.Media.Textures.Plus)
-					end
-					button.expandIcon:SetTexCoord(0, 1, 0, 1)
-				end
+			button.backdrop:SetShown(not isHeader)
+
+			if (name or name == "") and isHeader then
+				button.expandIcon:SetTexture(isExpanded and E.Media.Textures.Minus or E.Media.Textures.Plus)
+				button.expandIcon:SetTexCoord(0, 1, 0, 1)
 			end
 		end
 	end)
@@ -528,8 +517,10 @@ local function LoadSkin()
 	PetPaperDollPetInfo:Point("TOPRIGHT", -3, -3)
 	PetPaperDollPetInfo:Size(30)
 
+	S:HandleFrameHighlight(PetPaperDollPetInfo, PetPaperDollPetInfo.backdrop)
+
 	local petIcon = PetPaperDollPetInfo:GetRegions()
-	petIcon:SetTexture("Interface\\Icons\\Ability_Hunter_BeastTraining")
+	petIcon:SetTexture([[Interface\Icons\Ability_Hunter_BeastTraining]])
 	petIcon:SetTexCoord(unpack(E.TexCoords))
 end
 

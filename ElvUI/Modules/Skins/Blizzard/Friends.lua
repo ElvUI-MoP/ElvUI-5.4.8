@@ -24,6 +24,9 @@ local function LoadSkin()
 		end
 	end
 
+	FriendsFrame:SetTemplate("Transparent")
+	S:SetUIPanelWindowInfo(FriendsFrame, "width")
+
 	for i = 1, 3 do
 		local headerTab = _G["FriendsTabHeaderTab"..i]
 		headerTab:StripTextures()
@@ -58,8 +61,6 @@ local function LoadSkin()
 		S:HandleButton(_G["FriendsFramePendingButton"..i.."AcceptButton"])
 		S:HandleButton(_G["FriendsFramePendingButton"..i.."DeclineButton"])
 	end
-
-	FriendsFrame:SetTemplate("Transparent")
 
 	AddFriendFrame:StripTextures()
 	AddFriendFrame:SetTemplate("Transparent")

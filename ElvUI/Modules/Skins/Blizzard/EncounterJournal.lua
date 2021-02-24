@@ -20,6 +20,11 @@ local function LoadSkin()
 	EncounterJournal:StripTextures(true)
 	EncounterJournal:SetTemplate("Transparent")
 
+	S:HookScript(EncounterJournal, "OnShow", function(self)
+		S:SetUIPanelWindowInfo(self, "width")
+		S:Unhook(self, "OnShow")
+	end)
+
 	S:HandleCloseButton(EncounterJournalCloseButton)
 
 	-- NavBar

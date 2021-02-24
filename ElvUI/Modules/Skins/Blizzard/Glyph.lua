@@ -17,7 +17,10 @@ local function LoadSkin()
 	GlyphFrame.sideInset:StripTextures()
 
 	GlyphFrame.levelOverlayText1:SetTextColor(1, 1, 1)
+	GlyphFrame.levelOverlayText1.SetTextColor = E.noop
+
 	GlyphFrame.levelOverlayText2:SetTextColor(1, 1, 1)
+	GlyphFrame.levelOverlayText2.SetTextColor = E.noop
 
 	GlyphFrame.specIcon:SetTexCoord(unpack(E.TexCoords))
 

@@ -271,14 +271,12 @@ local function LoadSkin(event)
 
 	for i = 1, 10 do
 		local frame = _G["AchievementFrameSummaryCategoriesCategory"..i]
-		local button = _G["AchievementFrameSummaryCategoriesCategory"..i.."Button"]
-		local highlight = _G["AchievementFrameSummaryCategoriesCategory"..i.."ButtonHighlight"]
-		local middle = _G["AchievementFrameSummaryCategoriesCategory"..i.."ButtonHighlightMiddle"]
 
 		SkinStatusBar(frame)
-		button:StripTextures()
-		highlight:StripTextures()
 
+		_G["AchievementFrameSummaryCategoriesCategory"..i.."ButtonHighlight"]:StripTextures()
+
+		local middle = _G["AchievementFrameSummaryCategoriesCategory"..i.."ButtonHighlightMiddle"]
 		middle:SetTexture(1, 1, 1, 0.3)
 		middle:SetAllPoints(frame)
 	end
@@ -321,21 +319,17 @@ local function LoadSkin(event)
 	for _, frame in pairs({"AchievementFrameStatsContainerButton", "AchievementFrameComparisonStatsContainerButton"}) do
 		for i = 1, 20 do
 			local button = _G[frame..i]
-			local buttonBG = _G[frame..i.."BG"]
 
 			button:StripTextures()
-
 			button:SetHighlightTexture(E.Media.Textures.Highlight)
-			button:GetHighlightTexture():SetAlpha(0.35)
-			button:GetHighlightTexture():SetInside()
 
-			buttonBG:SetTexture(0, 0, 0, 0.6)
-			buttonBG:Point("TOPLEFT", 1, 0)
-			buttonBG:Point("BOTTOMRIGHT", -1, 0)
+			local highlight = button:GetHighlightTexture()
+			highlight:SetAlpha(0.35)
+			highlight:SetInside()
 
-			_G[frame..i.."HeaderLeft"]:Kill()
-			_G[frame..i.."HeaderRight"]:Kill()
-			_G[frame..i.."HeaderMiddle"]:Kill()
+			button.background:SetTexture(1, 1, 1, 0.1)
+			button.background:Point("TOPLEFT", 0, -1)
+			button.background:Point("BOTTOMRIGHT", -2, 1)
 		end
 	end
 
@@ -380,33 +374,37 @@ local function LoadSkin(event)
 
 			if criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID then
 				metas = metas + 1
-				local metaCriteria = AchievementButton_GetMeta(metas)
+				local meta = AchievementButton_GetMeta(metas)
 
-				metaCriteria:CreateBackdrop("Transparent")
-				metaCriteria.backdrop:SetOutside(metaCriteria.icon)
-				metaCriteria.backdrop:SetBackdropColor(0, 0, 0, 0)
-				metaCriteria:Height(21)
-				metaCriteria:StyleButton()
+				if not meta.isSkinned then
+					meta:CreateBackdrop("Transparent")
+					meta.backdrop:SetOutside(meta.icon)
+					meta.backdrop:SetBackdropColor(0, 0, 0, 0)
+					meta:StyleButton()
+					meta:Height(21)
 
-				metaCriteria.hover:Point("TOPLEFT", 20, -1)
-				metaCriteria.pushed:Point("TOPLEFT", 20, -1)
+					meta.hover:Point("TOPLEFT", 20, -1)
+					meta.pushed:Point("TOPLEFT", 20, -1)
 
-				metaCriteria.icon:Point("TOPLEFT", 2, -2)
-				metaCriteria.icon:SetTexCoord(unpack(E.TexCoords))
+					meta.icon:Point("TOPLEFT", 2, -2)
+					meta.icon:SetTexCoord(unpack(E.TexCoords))
 
-				metaCriteria.label:Point("LEFT", 24, -1)
+					meta.label:Point("LEFT", 24, -1)
 
-				metaCriteria.border:Kill()
+					meta.border:Kill()
+
+					meta.isSkinned = true
+				end
 
 				if objectivesFrame.completed and completed then
-					metaCriteria.label:SetShadowOffset(0, 0)
-					metaCriteria.label:SetTextColor(1, 1, 1, 1)
+					meta.label:SetShadowOffset(0, 0)
+					meta.label:SetTextColor(1, 1, 1, 1)
 				elseif completed then
-					metaCriteria.label:SetShadowOffset(1, -1)
-					metaCriteria.label:SetTextColor(0, 1, 0, 1)
+					meta.label:SetShadowOffset(1, -1)
+					meta.label:SetTextColor(0, 1, 0, 1)
 				else
-					metaCriteria.label:SetShadowOffset(1, -1)
-					metaCriteria.label:SetTextColor(0.6, 0.6, 0.6, 1)
+					meta.label:SetShadowOffset(1, -1)
+					meta.label:SetTextColor(0.6, 0.6, 0.6, 1)
 				end
 			elseif criteriaType ~= 1 then
 				textStrings = textStrings + 1

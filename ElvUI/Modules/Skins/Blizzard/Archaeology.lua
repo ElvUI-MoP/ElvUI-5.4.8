@@ -195,7 +195,7 @@ local function LoadSkin()
 		tab:Size(44, 38)
 
 		tab.icon = tab:CreateTexture(nil, "ARTWORK")
-		tab.icon:SetTexture("Interface\\ARCHEOLOGY\\ARCH-RACE-TOLVIR")
+		tab.icon:SetTexture([[Interface\ARCHEOLOGY\ARCH-RACE-TOLVIR]])
 	end
 
 	ArchaeologyFrame.tab1:Point("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -30)

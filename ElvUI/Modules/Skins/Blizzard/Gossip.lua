@@ -16,10 +16,13 @@ local function LoadSkin()
 
 	ItemTextFrameInset:Kill()
 
+	ItemTextTitleText:ClearAllPoints()
+	ItemTextTitleText:Point("TOP", 0, -8)
+
 	ItemTextPageText:SetTextColor(1, 1, 1)
 	ItemTextPageText.SetTextColor = E.noop
 
-	ItemTextCurrentPage:Point("TOP", -10, -35)
+	ItemTextCurrentPage:Point("TOP", 0, -35)
 
 	ItemTextScrollFrame:StripTextures()
 	ItemTextScrollFrame:Point("TOPRIGHT", -41, -63)
