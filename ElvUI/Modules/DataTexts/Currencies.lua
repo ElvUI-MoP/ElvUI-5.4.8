@@ -6,6 +6,7 @@ local format, join = string.format, string.join
 
 local GetCurrencyInfo = GetCurrencyInfo
 local GetMoney = GetMoney
+local ToggleCharacter = ToggleCharacter
 
 local BONUS_ROLL_REWARD_MONEY = BONUS_ROLL_REWARD_MONEY
 local CURRENCY, OTHER, PVP = CURRENCY, OTHER, PVP
@@ -75,6 +76,10 @@ local function OnEvent(self)
 	end
 end
 
+local function OnClick()
+	ToggleCharacter("TokenFrame")
+end
+
 local function OnEnter(self)
 	DT:SetupTooltip(self)
 
@@ -122,4 +127,4 @@ local function OnEnter(self)
 	DT.tooltip:Show()
 end
 
-DT:RegisterDatatext("Currencies", {"PLAYER_ENTERING_WORLD", "PLAYER_MONEY", "SEND_MAIL_MONEY_CHANGED", "SEND_MAIL_COD_CHANGED", "PLAYER_TRADE_MONEY", "TRADE_MONEY_CHANGED", "CHAT_MSG_CURRENCY", "CURRENCY_DISPLAY_UPDATE"}, OnEvent, nil, nil, OnEnter, nil, CURRENCY)
+DT:RegisterDatatext("Currencies", {"PLAYER_ENTERING_WORLD", "PLAYER_MONEY", "SEND_MAIL_MONEY_CHANGED", "SEND_MAIL_COD_CHANGED", "PLAYER_TRADE_MONEY", "TRADE_MONEY_CHANGED", "CHAT_MSG_CURRENCY", "CURRENCY_DISPLAY_UPDATE"}, OnEvent, nil, OnClick, OnEnter, nil, CURRENCY)
