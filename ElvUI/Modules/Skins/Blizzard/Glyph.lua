@@ -16,12 +16,6 @@ local function LoadSkin()
 
 	GlyphFrame.sideInset:StripTextures()
 
-	GlyphFrame.levelOverlayText1:SetTextColor(1, 1, 1)
-	GlyphFrame.levelOverlayText1.SetTextColor = E.noop
-
-	GlyphFrame.levelOverlayText2:SetTextColor(1, 1, 1)
-	GlyphFrame.levelOverlayText2.SetTextColor = E.noop
-
 	GlyphFrame.specIcon:SetTexCoord(unpack(E.TexCoords))
 
 	S:HandleEditBox(GlyphFrameSearchBox)
@@ -77,6 +71,10 @@ local function LoadSkin()
 
 	hooksecurefunc("GlyphFrame_Update", function(self)
 		local isActiveTalentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup == GetActiveSpecGroup()
+
+		GlyphFrame.levelOverlayText1:SetTextColor(1, 1, 1)
+		GlyphFrame.levelOverlayText2:SetTextColor(1, 1, 1)
+
 		for i = 1, NUM_GLYPH_SLOTS do
 			local glyph = _G["GlyphFrameGlyph"..i]
 			local _, _, _, _, iconFilename = GetGlyphSocketInfo(i, PlayerTalentFrame.talentGroup)
@@ -138,12 +136,14 @@ local function LoadSkin()
 	GlyphFrame.clearInfo:CreateBackdrop()
 	GlyphFrame.clearInfo.backdrop:SetAllPoints()
 	GlyphFrame.clearInfo:StyleButton()
-	GlyphFrame.clearInfo:Size(26)
-	GlyphFrame.clearInfo:Point("TOPLEFT", GlyphFrame, "BOTTOMLEFT", -1, -6)
+	GlyphFrame.clearInfo:Size(E.PixelMode and 26 or 24)
+	GlyphFrame.clearInfo:Point("TOPLEFT", GlyphFrame, "BOTTOMLEFT", -1, E.PixelMode and -6 or -7)
 
 	GlyphFrame.clearInfo.icon:SetTexCoord(unpack(E.TexCoords))
 	GlyphFrame.clearInfo.icon:ClearAllPoints()
 	GlyphFrame.clearInfo.icon:SetInside()
+
+	GlyphFrame.clearInfo.name:Point("LEFT", GlyphFrame.clearInfo.icon, "RIGHT", 6, E.PixelMode and 1 or 0)
 end
 
 S:AddCallbackForAddon("Blizzard_GlyphUI", "Glyph", LoadSkin)

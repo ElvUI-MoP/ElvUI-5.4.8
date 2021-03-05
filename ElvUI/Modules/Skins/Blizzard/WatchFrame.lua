@@ -21,7 +21,7 @@ local function LoadSkin()
 	WatchFrameCollapseExpandButton.tex = WatchFrameCollapseExpandButton:CreateTexture(nil, "OVERLAY")
 	WatchFrameCollapseExpandButton.tex:SetTexture(E.Media.Textures.MinusButton)
 	WatchFrameCollapseExpandButton.tex:SetInside()
-	WatchFrameCollapseExpandButton:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight", "ADD")
+	WatchFrameCollapseExpandButton:SetHighlightTexture([[Interface\Buttons\UI-PlusButton-Hilight]], "ADD")
 
 	WatchFrameHeader:Point("TOPLEFT", 0, -3)
 
@@ -83,7 +83,7 @@ local function LoadSkin()
 				button:CreateBackdrop()
 				button.backdrop:SetAllPoints()
 				button:StyleButton()
-				button:Size(25)
+				button:Size(26)
 
 				normal:SetAlpha(0)
 
@@ -127,7 +127,7 @@ local function LoadSkin()
 					object:ClearAllPoints()
 					object:Point("RIGHT", child.TopText, "LEFT", -2, 0)
 					object:SetParent(frame.backdrop)
-					object:SetTexture("Interface\\QuestFrame\\AutoQuest-Parts")
+					object:SetTexture([[Interface\QuestFrame\AutoQuest-Parts]])
 					object:Size(16, 22)
 				end
 
@@ -172,31 +172,29 @@ local function LoadSkin()
 	hooksecurefunc("QuestPOI_DisplayButton", function(parentName, buttonType, buttonIndex)
 		local poiButton = _G[format("poi%s%s_%d", parentName, buttonType, buttonIndex)]
 
-		if poiButton and parentName == "WatchFrameLines" then
-			if not poiButton.isSkinned then
-				poiButton.normalTexture:SetTexture("")
-				poiButton.pushedTexture:SetTexture("")
-				poiButton.highlightTexture:SetTexture("")
-				poiButton.selectionGlow:SetTexture("")
+		if poiButton and not poiButton.isSkinned and parentName == "WatchFrameLines" then
+			poiButton.normalTexture:SetTexture("")
+			poiButton.pushedTexture:SetTexture("")
+			poiButton.highlightTexture:SetTexture("")
+			poiButton.selectionGlow:SetTexture("")
 
-				poiButton:SetScale(1)
-				poiButton:SetHitRectInsets(6, 6, 6, 6)
+			poiButton:SetScale(1)
+			poiButton:SetHitRectInsets(6, 6, 6, 6)
 
-				poiButton.bg = CreateFrame("Frame", nil, poiButton)
-				poiButton.bg:SetTemplate("Default", true)
-				poiButton.bg:Point("TOPLEFT", 6, -6)
-				poiButton.bg:Point("BOTTOMRIGHT", -6, 6)
-				poiButton.bg:SetFrameLevel(poiButton.bg:GetFrameLevel() - 1)
+			poiButton.bg = CreateFrame("Frame", nil, poiButton)
+			poiButton.bg:SetTemplate("Default", true)
+			poiButton.bg:Point("TOPLEFT", 6, -6)
+			poiButton.bg:Point("BOTTOMRIGHT", -6, 6)
+			poiButton.bg:SetFrameLevel(poiButton.bg:GetFrameLevel() - 1)
 
-				poiButton:HookScript("OnEnter", function(self)
-					self.bg:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
-				end)
-				poiButton:HookScript("OnLeave", function(self)
-					self.bg:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				end)
+			poiButton:HookScript("OnEnter", function(self)
+				self.bg:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+			end)
+			poiButton:HookScript("OnLeave", function(self)
+				self.bg:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			end)
 
-				poiButton.isSkinned = true
-			end
+			poiButton.isSkinned = true
 		end
 	end)
 

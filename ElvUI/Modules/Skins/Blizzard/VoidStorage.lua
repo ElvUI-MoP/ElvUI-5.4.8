@@ -62,9 +62,7 @@ local function LoadSkin()
 
 	for i = 1, 9 do
 		local deposit = _G["VoidStorageDepositButton"..i]
-		local depositBg = _G["VoidStorageDepositButton"..i.."Bg"]
 		local withdraw = _G["VoidStorageWithdrawButton"..i]
-		local withdrawBg = _G["VoidStorageWithdrawButton"..i.."Bg"]
 
 		deposit:SetTemplate("Default", true)
 		deposit:StyleButton()
@@ -72,7 +70,7 @@ local function LoadSkin()
 		deposit.icon:SetTexCoord(unpack(E.TexCoords))
 		deposit.icon:SetInside()
 
-		depositBg:Hide()
+		_G["VoidStorageDepositButton"..i.."Bg"]:Hide()
 
 		withdraw:SetTemplate("Default", true)
 		withdraw:StyleButton()
@@ -80,12 +78,11 @@ local function LoadSkin()
 		withdraw.icon:SetTexCoord(unpack(E.TexCoords))
 		withdraw.icon:SetInside()
 
-		withdrawBg:Hide()
+		_G["VoidStorageWithdrawButton"..i.."Bg"]:Hide()
 	end
 
 	for i = 1, 80 do
 		local button = _G["VoidStorageStorageButton"..i]
-		local buttonBg = _G["VoidStorageStorageButton"..i.."Bg"]
 
 		button:SetTemplate("Default", true)
 		button:StyleButton()
@@ -93,7 +90,7 @@ local function LoadSkin()
 		button.icon:SetTexCoord(unpack(E.TexCoords))
 		button.icon:SetInside()
 
-		buttonBg:Hide()
+		_G["VoidStorageStorageButton"..i.."Bg"]:Hide()
 	end
 
 	local function VoidQualityColors(button, link)

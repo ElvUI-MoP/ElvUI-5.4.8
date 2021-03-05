@@ -86,8 +86,8 @@ local function LoadSkin()
 
 	S:HandleScrollBar(FriendsFrameFriendsScrollFrameScrollBar, 5)
 	FriendsFrameFriendsScrollFrameScrollBar:ClearAllPoints()
-	FriendsFrameFriendsScrollFrameScrollBar:Point("TOPRIGHT", FriendsFrameFriendsScrollFrame, "TOPRIGHT", 24, -10)
-	FriendsFrameFriendsScrollFrameScrollBar:Point("BOTTOMRIGHT", FriendsFrameFriendsScrollFrame, "BOTTOMRIGHT", 0, 12)
+	FriendsFrameFriendsScrollFrameScrollBar:Point("TOPRIGHT", FriendsFrameFriendsScrollFrame, 24, -10)
+	FriendsFrameFriendsScrollFrameScrollBar:Point("BOTTOMRIGHT", FriendsFrameFriendsScrollFrame, 0, 12)
 
 	S:HandleScrollBar(FriendsFriendsScrollFrameScrollBar)
 
@@ -115,7 +115,6 @@ local function LoadSkin()
 	-- Who Frame
 	WhoFrameListInset:StripTextures()
 	WhoFrameEditBoxInset:StripTextures()
-
 	WhoListScrollFrame:StripTextures()
 
 	for i = 1, 4 do
@@ -136,8 +135,8 @@ local function LoadSkin()
 	WhoFrameButton1:Point("TOPLEFT", 10, -82)
 
 	S:HandleEditBox(WhoFrameEditBox)
-	WhoFrameEditBox:Point("BOTTOM", -1, 29)
-	WhoFrameEditBox:Size(326, 18)
+	WhoFrameEditBox:Point("BOTTOM", -1, E.PixelMode and 29 or 31)
+	WhoFrameEditBox:Size(E.PixelMode and 326 or 324, E.PixelMode and 18 or 16)
 
 	S:HandleButton(WhoFrameWhoButton)
 	WhoFrameWhoButton:Point("RIGHT", WhoFrameAddFriendButton, "LEFT", -2, 0)
@@ -152,10 +151,10 @@ local function LoadSkin()
 	S:HandleDropDownBox(WhoFrameDropDown)
 	WhoFrameDropDown:Point("TOPLEFT", -6, 4)
 
-	S:HandleScrollBar(WhoListScrollFrameScrollBar, 5)
+	S:HandleScrollBar(WhoListScrollFrameScrollBar)
 	WhoListScrollFrameScrollBar:ClearAllPoints()
-	WhoListScrollFrameScrollBar:Point("TOPRIGHT", WhoListScrollFrame, "TOPRIGHT", 26, -13)
-	WhoListScrollFrameScrollBar:Point("BOTTOMRIGHT", WhoListScrollFrame, "BOTTOMRIGHT", 0, 18)
+	WhoListScrollFrameScrollBar:Point("TOPRIGHT", WhoListScrollFrame, 26, -13)
+	WhoListScrollFrameScrollBar:Point("BOTTOMRIGHT", WhoListScrollFrame, 0, E.PixelMode and 18 or 20)
 
 	for i = 1, WHOS_TO_DISPLAY do
 		local button = _G["WhoFrameButton"..i]
@@ -164,8 +163,8 @@ local function LoadSkin()
 
 		button.icon = button:CreateTexture("$parentIcon", "ARTWORK")
 		button.icon:Point("LEFT", 45, 0)
-		button.icon:Size(14)
-		button.icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+		button.icon:Size(E.PixelMode and 14 or 12)
+		button.icon:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
 
 		button:CreateBackdrop("Default", true)
 		button.backdrop:SetAllPoints(button.icon)
@@ -174,16 +173,8 @@ local function LoadSkin()
 		button.handledHighlight:Point("TOPLEFT", 0, -1)
 		button.handledHighlight:Point("BOTTOMLEFT", 0, 1)
 
-		button.stripe = button:CreateTexture(nil, "BACKGROUND")
-		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")
-		button.stripe:SetInside()
-
 		level:ClearAllPoints()
-		if i == 1 then
-			level:Point("TOPLEFT", 11, -2)
-		else
-			level:Point("TOPLEFT", 12, -2)
-		end
+		level:Point("TOPLEFT", i == 1 and 11 or 12, -2)
 
 		name:Size(100, 14)
 		name:ClearAllPoints()
@@ -196,48 +187,30 @@ local function LoadSkin()
 		local whoOffset = FauxScrollFrame_GetOffset(WhoListScrollFrame)
 		local playerZone = GetRealZoneText()
 		local playerGuild = GetGuildInfo("player")
-		local playerRace = UnitRace("player")
+		local greenColor = "|cff00ff00 %s"
 
 		for i = 1, WHOS_TO_DISPLAY, 1 do
-			local index = whoOffset + i
 			local button = _G["WhoFrameButton"..i]
-			local nameText = _G["WhoFrameButton"..i.."Name"]
-			local levelText = _G["WhoFrameButton"..i.."Level"]
-			local variableText = _G["WhoFrameButton"..i.."Variable"]
-
-			local _, guild, level, race, _, zone, classFileName = GetWhoInfo(index)
-
-			local classTextColor = E:ClassColor(classFileName)
-			local levelTextColor = GetQuestDifficultyColor(level)
+			local _, guild, level, race, _, zone, classFileName = GetWhoInfo(whoOffset + i)
 
 			if classFileName then
 				button.icon:Show()
 				button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 
-				nameText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
-				levelText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
+				local classColor = E:ClassColor(classFileName)
+				_G["WhoFrameButton"..i.."Name"]:SetTextColor(classColor.r, classColor.g, classColor.b)
 
-				if zone == playerZone then
-					zone = "|cff00ff00"..zone
-				end
-				if guild == playerGuild then
-					guild = "|cff00ff00"..guild
-				end
-				if race == playerRace then
-					race = "|cff00ff00"..race
-				end
+				local levelColor = GetQuestDifficultyColor(level)
+				_G["WhoFrameButton"..i.."Level"]:SetTextColor(levelColor.r, levelColor.g, levelColor.b)
+
+				if guild == playerGuild then guild = format(greenColor, guild) end
+				if race == E.myrace then race = format(greenColor, race) end
+				if zone == playerZone then zone = format(greenColor, zone) end
 
 				local columnTable = {zone, guild, race}
-
-				variableText:SetText(columnTable[UIDropDownMenu_GetSelectedID(WhoFrameDropDown)])
+				_G["WhoFrameButton"..i.."Variable"]:SetText(columnTable[UIDropDownMenu_GetSelectedID(WhoFrameDropDown)])
 			else
 				button.icon:Hide()
-			end
-
-			if (i + whoOffset) % 2 == 1 then
-				button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998)
-			else
-				button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921)
 			end
 		end
 	end)
@@ -292,7 +265,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(ChannelRosterScrollFrameScrollBar, 5)
 
-	S:HandleCloseButton(ChannelFrameDaughterFrameDetailCloseButton,ChannelFrameDaughterFrame)
+	S:HandleCloseButton(ChannelFrameDaughterFrameDetailCloseButton, ChannelFrameDaughterFrame)
 
 	-- BN Frame
 	BNConversationInviteDialog:StripTextures()
@@ -305,9 +278,7 @@ local function LoadSkin()
 	S:HandleButton(BNConversationInviteDialogCancelButton)
 
 	for i = 1, BN_CONVERSATION_INVITE_NUM_DISPLAYED do
-		local button = _G["BNConversationInviteDialogListFriend"..i]
-
-		S:HandleCheckBox(button.checkButton)
+		S:HandleCheckBox(_G["BNConversationInviteDialogListFriend"..i].checkButton)
 	end
 
 	-- Ignore List
@@ -320,23 +291,14 @@ local function LoadSkin()
 
 	S:HandleScrollBar(FriendsFrameIgnoreScrollFrameScrollBar)
 	FriendsFrameIgnoreScrollFrameScrollBar:ClearAllPoints()
-	FriendsFrameIgnoreScrollFrameScrollBar:Point("TOPRIGHT", FriendsFrameIgnoreScrollFrame, "TOPRIGHT", 58, -1)
-	FriendsFrameIgnoreScrollFrameScrollBar:Point("BOTTOMRIGHT", FriendsFrameIgnoreScrollFrame, "BOTTOMRIGHT", 0, 29)
+	FriendsFrameIgnoreScrollFrameScrollBar:Point("TOPRIGHT", FriendsFrameIgnoreScrollFrame, 58, -1)
+	FriendsFrameIgnoreScrollFrameScrollBar:Point("BOTTOMRIGHT", FriendsFrameIgnoreScrollFrame, 0, 29)
 
 	for i = 1, IGNORES_TO_DISPLAY do
 		local button = _G["FriendsFrameIgnoreButton"..i]
 
 		button:Width(298)
 		S:HandleButtonHighlight(button)
-
-		button.stripe = button:CreateTexture(nil, "OVERLAY")
-		button.stripe:SetTexture("Interface\\GuildFrame\\GuildFrame")
-		if i % 2 == 1 then
-			button.stripe:SetTexCoord(0.362, 0.381, 0.958, 0.998)
-		else
-			button.stripe:SetTexCoord(0.516, 0.536, 0.882, 0.921)
-		end
-		button.stripe:SetAllPoints()
 	end
 
 	S:HandleScrollBar(FriendsFramePendingScrollFrameScrollBar, 4)

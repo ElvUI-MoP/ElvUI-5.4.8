@@ -54,6 +54,7 @@ local function LoadSkin()
 	GossipFramePortrait:Kill()
 
 	GossipGreetingScrollFrame:StripTextures()
+	GossipGreetingScrollFrame:SetTemplate("Transparent")
 
 	GossipFrameNpcNameText:ClearAllPoints()
 	GossipFrameNpcNameText:Point("TOP", GossipFrame, 1, -1)
@@ -66,7 +67,7 @@ local function LoadSkin()
 	GossipGreetingScrollFrameScrollBar:Point("BOTTOMRIGHT", GossipGreetingScrollFrame, 0, 18)
 
 	S:HandleButton(GossipFrameGreetingGoodbyeButton)
-	GossipFrameGreetingGoodbyeButton:Point("BOTTOMRIGHT", -54, 19)
+	GossipFrameGreetingGoodbyeButton:Point("BOTTOMRIGHT", -79, 19)
 
 	S:HandleCloseButton(GossipFrameCloseButton, GossipFrame.backdrop)
 

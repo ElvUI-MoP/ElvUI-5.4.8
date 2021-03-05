@@ -219,7 +219,7 @@ local function LoadSkin()
 			if glyphType and iconFilename then
 				self.icon:SetTexture(iconFilename)
 			else
-				self.icon:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune1")
+				self.icon:SetTexture([[Interface\Spellbook\UI-Glyph-Rune1]])
 			end
 		end
 	end)

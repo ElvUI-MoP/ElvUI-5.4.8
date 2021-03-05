@@ -154,7 +154,6 @@ local function LoadSkin()
 
 	for i = 1, LOOTFRAME_NUMBUTTONS do
 		local button = _G["LootButton"..i]
-		local nameFrame = _G["LootButton"..i.."NameFrame"]
 		local questTexture = _G["LootButton"..i.."IconQuestTexture"]
 
 		S:HandleItemButton(button, true)
@@ -170,7 +169,7 @@ local function LoadSkin()
 		questTexture:SetTexCoord(0, 1, 0, 1)
 		questTexture:SetInside()
 
-		nameFrame:Hide()
+		_G["LootButton"..i.."NameFrame"]:Hide()
 	end
 
 	local QuestColors = {

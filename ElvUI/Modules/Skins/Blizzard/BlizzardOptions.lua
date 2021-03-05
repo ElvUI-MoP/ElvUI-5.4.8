@@ -42,10 +42,10 @@ local function LoadSkin()
 
 			item:SetHighlightTexture(E.Media.Textures.Highlight)
 
-			local getHighlight = item:GetHighlightTexture()
-			getHighlight:SetVertexColor(1, 0.82, 0, 0.35)
-			getHighlight:Point("TOPLEFT", 0, 0)
-			getHighlight:Point("BOTTOMRIGHT", 0, 1)
+			local highlight = item:GetHighlightTexture()
+			highlight:SetVertexColor(1, 0.82, 0, 0.35)
+			highlight:Point("TOPLEFT", 0, 0)
+			highlight:Point("BOTTOMRIGHT", 0, 1)
 		end
 	end
 
@@ -55,10 +55,11 @@ local function LoadSkin()
 		local buttonToggle = _G["InterfaceOptionsFrameAddOnsButton"..i.."Toggle"]
 
 		button:SetHighlightTexture(E.Media.Textures.Highlight)
-		local getHighlight = button:GetHighlightTexture()
-		getHighlight:SetVertexColor(1, 0.82, 0, 0.35)
-		getHighlight:Point("TOPLEFT", 0, 0)
-		getHighlight:Point("BOTTOMRIGHT", 0, 1)
+
+		local highlight = button:GetHighlightTexture()
+		highlight:SetVertexColor(1, 0.82, 0, 0.35)
+		highlight:Point("TOPLEFT", 0, 0)
+		highlight:Point("BOTTOMRIGHT", 0, 1)
 
 		buttonToggle:SetNormalTexture(E.Media.Textures.Plus)
 		buttonToggle.SetNormalTexture = E.noop
@@ -480,7 +481,6 @@ local function LoadSkin()
 	ChatConfigFrameDefaultButton:Width(125)
 
 	ChatConfigFrameCancelButton:Point("BOTTOMRIGHT", -11, 8)
-
 	ChatConfigFrameOkayButton:Point("RIGHT", ChatConfigFrameCancelButton, "RIGHT", 0, 0)
 
 	S:SecureHook("ChatConfig_CreateCheckboxes", function(frame, checkBoxTable, checkBoxTemplate)
@@ -488,9 +488,11 @@ local function LoadSkin()
 
 		if checkBoxTemplate == "ChatConfigCheckBoxTemplate" then
 			frame:SetTemplate("Transparent")
+
 			for index in ipairs(checkBoxTable) do
 				local checkBoxName = checkBoxNameString..index
 				local checkbox = _G[checkBoxName]
+
 				if not checkbox.backdrop then
 					checkbox:StripTextures()
 					checkbox:CreateBackdrop()
@@ -501,12 +503,12 @@ local function LoadSkin()
 					S:HandleCheckBox(_G[checkBoxName.."Check"])
 				end
 			end
-		elseif (checkBoxTemplate == "ChatConfigCheckBoxWithSwatchTemplate") or (checkBoxTemplate == "ChatConfigCheckBoxWithSwatchAndClassColorTemplate") then
+		elseif checkBoxTemplate == "ChatConfigCheckBoxWithSwatchTemplate" or checkBoxTemplate == "ChatConfigCheckBoxWithSwatchAndClassColorTemplate" then
 			frame:SetTemplate("Transparent")
+
 			for index in ipairs(checkBoxTable) do
 				local checkBoxName = checkBoxNameString..index
 				local checkbox = _G[checkBoxName]
-				local colorSwatch = _G[checkBoxName.."ColorSwatch"]
 
 				if not checkbox.backdrop then
 					checkbox:StripTextures()
@@ -522,7 +524,7 @@ local function LoadSkin()
 						S:HandleCheckBox(_G[checkBoxName.."ColorClasses"])
 					end
 
-					S:HandleColorSwatch(colorSwatch)
+					S:HandleColorSwatch(_G[checkBoxName.."ColorSwatch"])
 				end
 			end
 		end
@@ -555,7 +557,6 @@ local function LoadSkin()
 		for index in ipairs(swatchTable) do
 			local swatchName = nameString..index
 			local swatch = _G[swatchName]
-			local colorSwatch = _G[swatchName.."ColorSwatch"]
 
 			if not swatch.backdrop then
 				swatch:StripTextures()
@@ -564,7 +565,7 @@ local function LoadSkin()
 				swatch.backdrop:Point("BOTTOMRIGHT", -3, 1)
 				swatch.backdrop:SetFrameLevel(swatch:GetParent():GetFrameLevel() + 1)
 
-				S:HandleColorSwatch(colorSwatch)
+				S:HandleColorSwatch(_G[swatchName.."ColorSwatch"])
 			end
 		end
 	end)

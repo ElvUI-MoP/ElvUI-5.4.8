@@ -13,11 +13,8 @@ local function LoadSkin()
 	BarberShopFrameBackground:Kill()
 
 	for i = 1, 4 do
-		local selectorPrev = _G["BarberShopFrameSelector"..i.."Prev"]
-		local selectorNext = _G["BarberShopFrameSelector"..i.."Next"]
-
-		S:HandleNextPrevButton(selectorPrev)
-		S:HandleNextPrevButton(selectorNext)
+		S:HandleNextPrevButton(_G["BarberShopFrameSelector"..i.."Prev"])
+		S:HandleNextPrevButton(_G["BarberShopFrameSelector"..i.."Next"])
 	end
 
 	BarberShopFrameMoneyFrame:StripTextures()

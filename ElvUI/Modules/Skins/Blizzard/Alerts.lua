@@ -164,7 +164,7 @@ local function LoadSkin()
 	end
 
 	DungeonCompletionAlertFrame1.instanceName:SetTextColor(1, 1, 1)
-	DungeonCompletionAlertFrame1.heroicIcon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-HEROIC")
+	DungeonCompletionAlertFrame1.heroicIcon:SetTexture([[Interface\LFGFrame\UI-LFG-ICON-HEROIC]])
 
 	ChallengeModeAlertFrame1.medalIcon:ClearAllPoints()
 	ChallengeModeAlertFrame1.medalIcon:Point("RIGHT", -2, 0)

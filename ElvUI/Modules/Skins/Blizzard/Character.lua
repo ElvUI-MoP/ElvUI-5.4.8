@@ -146,20 +146,15 @@ local function LoadSkin()
 
 	hooksecurefunc("EquipmentFlyout_DisplayButton", function(button)
 		if not button.isSkinned then
-			local name = button:GetName()
-
 			button:SetTemplate()
 			button:StyleButton()
 			button:GetNormalTexture():SetTexture(nil)
 
-			button.icon = _G[name.."IconTexture"]
+			button.icon = _G[button:GetName().."IconTexture"]
 			button.icon:SetTexCoord(unpack(E.TexCoords))
 			button.icon:SetInside()
 
-			local cooldown = _G[name.."Cooldown"]
-			if cooldown then
-				E:RegisterCooldown(cooldown)
-			end
+			E:RegisterCooldown(button.cooldown)
 
 			button.isSkinned = true
 		end
@@ -467,6 +462,7 @@ local function LoadSkin()
 
 				button.icon:SetTexCoord(unpack(E.TexCoords))
 				button.icon:SetParent(button.backdrop)
+				button.icon:Size(E.PixelMode and 16 or 12)
 
 				button.stripe:SetTexture(E.Media.Textures.Highlight)
 				button.stripe:SetAlpha(0.15)

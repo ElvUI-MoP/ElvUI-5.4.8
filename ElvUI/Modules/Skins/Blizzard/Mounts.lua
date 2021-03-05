@@ -191,7 +191,7 @@ local function LoadSkin()
 		button.dragButton.levelBG:SetAlpha(0)
 		button.dragButton.favorite:SetParent(button.backdrop)
 
-		button.isDead:SetTexture("Interface\\PetBattles\\DeadPetIcon")
+		button.isDead:SetTexture([[Interface\PetBattles\DeadPetIcon]])
 		button.isDead:SetParent(button.backdrop)
 
 		button.dragButton.level:SetTextColor(1, 1, 1)
@@ -280,7 +280,6 @@ local function LoadSkin()
 
 	for i = 1, 3 do
 		local frame = PetJournal.Loadout["Pet"..i]
-		local model = _G["PetJournalLoadoutPet"..i.."ModelFrame"]
 		local emptyTexture = _G["PetJournalLoadoutPet"..i.."HelpFrameHelpPlate"]
 
 		frame:Width(405)
@@ -331,7 +330,7 @@ local function LoadSkin()
 
 		frame.xpBar:Point("TOPLEFT", frame.healthFrame, "BOTTOMLEFT", 0, -8)
 
-		model:Point("TOPRIGHT", -5, -5)
+		frame.model:Point("TOPRIGHT", -5, -5)
 
 		for j = 1, 3 do
 			local button = frame["spell"..j]

@@ -78,9 +78,7 @@ local function LoadSkin()
 	end
 
 	for i = 1, 9 do
-		local button = _G["GuildUpdatesButton"..i]
-
-		S:HandleButtonHighlight(button)
+		S:HandleButtonHighlight(_G["GuildUpdatesButton"..i])
 	end
 
 	-- Perks/Rewards
@@ -90,13 +88,13 @@ local function LoadSkin()
 	GuildRewardsFrameVisitText:Point("TOP", GuildRewardsFrame, 0, 30)
 
 	GuildRewardsContainer:CreateBackdrop("Transparent")
-	GuildRewardsContainer.backdrop:Point("TOPLEFT", -1, 0)
-	GuildRewardsContainer.backdrop:Point("BOTTOMRIGHT", 0, -2)
+	GuildRewardsContainer.backdrop:Point("TOPLEFT", -1, E.PixelMode and 0 or 1)
+	GuildRewardsContainer.backdrop:Point("BOTTOMRIGHT", 0, E.PixelMode and -2 or -3)
 
 	S:HandleScrollBar(GuildRewardsContainerScrollBar)
 	GuildRewardsContainerScrollBar:ClearAllPoints()
-	GuildRewardsContainerScrollBar:Point("TOPRIGHT", GuildRewardsContainer, 23, -16)
-	GuildRewardsContainerScrollBar:Point("BOTTOMRIGHT", GuildRewardsContainer, 0, 14)
+	GuildRewardsContainerScrollBar:Point("TOPRIGHT", GuildRewardsContainer, 23, E.PixelMode and -16 or -15)
+	GuildRewardsContainerScrollBar:Point("BOTTOMRIGHT", GuildRewardsContainer, 0, E.PixelMode and 14 or 13)
 
 	for _, object in pairs({"Rewards", "Perks"}) do
 		for i = 1, 8 do
@@ -163,7 +161,7 @@ local function LoadSkin()
 		button.backdrop:SetAllPoints(button.icon)
 		S:HandleButtonHighlight(button)
 
-		button.icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+		button.icon:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
 		button.icon:SetParent(button.backdrop)
 		button.icon:Size(18)
 
@@ -255,9 +253,16 @@ local function LoadSkin()
 	-- Guild News
 	GuildNewsFrame:StripTextures()
 
+	GuildNewsSetFiltersButton:Point("RIGHT", GuildNewsFrameHeader, "RIGHT", -18, 2)
+
 	GuildNewsContainer:CreateBackdrop("Transparent")
-	GuildNewsContainer.backdrop:Point("TOPLEFT", -1, 2)
-	GuildNewsContainer.backdrop:Point("BOTTOMRIGHT", 1, -3)
+	GuildNewsContainer.backdrop:Point("TOPLEFT", -1, 1)
+	GuildNewsContainer.backdrop:Point("BOTTOMRIGHT", 1, -2)
+
+	S:HandleScrollBar(GuildNewsContainerScrollBar)
+	GuildNewsContainerScrollBar:ClearAllPoints()
+	GuildNewsContainerScrollBar:Point("TOPRIGHT", GuildNewsContainer, 26, -14)
+	GuildNewsContainerScrollBar:Point("BOTTOMRIGHT", GuildNewsContainer, 0, 13)
 
 	GuildNewsBossModel:StripTextures()
 	GuildNewsBossModel:CreateBackdrop("Transparent")
@@ -277,9 +282,6 @@ local function LoadSkin()
 		end
 	end
 
-	S:HandleScrollBar(GuildNewsContainerScrollBar, 4)
-	GuildNewsContainerScrollBar:Point("TOPLEFT", GuildNewsContainer, "TOPRIGHT", 4, -17)
-
 	-- Guild News Filter
 	GuildNewsFiltersFrame:StripTextures()
 	GuildNewsFiltersFrame:SetTemplate("Transparent")
@@ -295,26 +297,164 @@ local function LoadSkin()
 	GuildNewsFiltersFrameCloseButton:Point("TOPRIGHT", 2, 2)
 
 	-- Guild Info
+	for i = 1, 3 do
+		local tab = _G["GuildInfoFrameTab"..i]
+
+		tab:StripTextures()
+		tab.backdrop = CreateFrame("Frame", nil, tab)
+		tab.backdrop:SetTemplate("Default", true)
+		tab.backdrop:Point("TOPLEFT", 3, -7)
+		tab.backdrop:Point("BOTTOMRIGHT", -2, -1)
+		tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
+
+		if i == 1 then
+			tab:Point("TOPLEFT", 40, 40)
+		end
+
+		tab:HookScript("OnEnter", S.SetModifiedBackdrop)
+		tab:HookScript("OnLeave", S.SetOriginalBackdrop)
+	end
+
+	-- Info Tab
 	GuildInfoFrameInfo:StripTextures()
+
+	GuildInfoFrameInfoHeader1:Point("TOPLEFT", 4, -3)
+
+	GuildInfoFrameInfoHeader1.bg = CreateFrame("Frame", nil, GuildInfoFrameInfo)
+	GuildInfoFrameInfoHeader1.bg:SetTemplate("Transparent")
+	GuildInfoFrameInfoHeader1.bg:Point("TOPLEFT", 4, -25)
+	GuildInfoFrameInfoHeader1.bg:Point("BOTTOMRIGHT", -3, 197)
+
+	for i = 1, 5 do
+		S:HandleButtonHighlight(_G["GuildInfoFrameInfoChallenge"..i])
+	end
+
+	GuildInfoEditMOTDButton:Point("RIGHT", GuildInfoFrameInfoHeader2, -8, 2)
+
+	GuildInfoFrameInfoHeader2.bg = CreateFrame("Frame", nil, GuildInfoFrameInfo)
+	GuildInfoFrameInfoHeader2.bg:SetTemplate()
+	GuildInfoFrameInfoHeader2.bg:Point("TOPLEFT", 4, -160)
+	GuildInfoFrameInfoHeader2.bg:Point("BOTTOMRIGHT", -3, 118)
+
+	S:HandleScrollBar(GuildInfoFrameInfoMOTDScrollFrameScrollBar, 8)
+	GuildInfoFrameInfoMOTDScrollFrameScrollBar:ClearAllPoints()
+	GuildInfoFrameInfoMOTDScrollFrameScrollBar:Point("TOPRIGHT", GuildInfoFrameInfoMOTDScrollFrame, 22, -12)
+	GuildInfoFrameInfoMOTDScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildInfoFrameInfoMOTDScrollFrame, 0, 9)
+
+	GuildInfoEditDetailsButton:Point("RIGHT", GuildInfoFrameInfoHeader3, -8, 2)
+
+	GuildInfoFrameInfoHeader3.bg = CreateFrame("Frame", nil, GuildInfoFrameInfo)
+	GuildInfoFrameInfoHeader3.bg:SetTemplate()
+	GuildInfoFrameInfoHeader3.bg:Point("TOPLEFT", 4, -235)
+	GuildInfoFrameInfoHeader3.bg:Point("BOTTOMRIGHT", -3, 3)
+
+	S:HandleScrollBar(GuildInfoDetailsFrameScrollBar)
+	GuildInfoDetailsFrameScrollBar:ClearAllPoints()
+	GuildInfoDetailsFrameScrollBar:Point("TOPRIGHT", GuildInfoDetailsFrame, 22, -13)
+	GuildInfoDetailsFrameScrollBar:Point("BOTTOMRIGHT", GuildInfoDetailsFrame, 0, 11)
+
+	S:HandleButton(GuildAddMemberButton)
+	GuildAddMemberButton:Point("BOTTOMLEFT", 4, -22)
+	GuildAddMemberButton:Width(110)
+
+	S:HandleButton(GuildControlButton)
+	GuildControlButton:Point("BOTTOMRIGHT", -3, -22)
+	GuildControlButton:Width(110)
+
+	S:HandleButton(GuildViewLogButton)
+	GuildViewLogButton:Point("LEFT", GuildAddMemberButton, "RIGHT", 2, 0)
+	GuildViewLogButton:Point("RIGHT", GuildControlButton, "LEFT", -2, 0)
+
+	-- Text Edit Frame
+	GuildTextEditFrame:StripTextures()
+	GuildTextEditFrame:CreateBackdrop("Transparent")
+	GuildTextEditFrame.backdrop:Point("TOPLEFT", 12, 0)
+	GuildTextEditFrame.backdrop:Point("BOTTOMRIGHT", -20, 10)
+	GuildTextEditFrame:Point("TOPLEFT", GuildFrame, "TOPRIGHT", -11, 0)
+
+	GuildTextEditContainer:StripTextures()
+	GuildTextEditContainer:CreateBackdrop("Transparent")
+	GuildTextEditContainer.backdrop:Point("BOTTOMRIGHT", -28, 0)
+
+	S:HandleButton(GuildTextEditFrameAcceptButton)
+	GuildTextEditFrameAcceptButton:Point("BOTTOMLEFT", E.PixelMode and 21 or 20, 16)
+
+	S:HandleScrollBar(GuildTextEditScrollFrameScrollBar, 5)
+	GuildTextEditScrollFrameScrollBar:ClearAllPoints()
+	GuildTextEditScrollFrameScrollBar:Point("TOPRIGHT", GuildTextEditScrollFrame, 23, E.PixelMode and -10 or -9)
+	GuildTextEditScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildTextEditScrollFrame, 0, 11) 
+
+	for i = 1, GuildTextEditFrame:GetNumChildren() do
+		local child = select(i, GuildTextEditFrame:GetChildren())
+
+		if child:GetName() == "GuildTextEditFrameCloseButton" then
+			if child:GetWidth() < 33 then
+				S:HandleCloseButton(child, GuildTextEditFrame.backdrop)
+			else
+				S:HandleButton(child)
+				child:Point("BOTTOMRIGHT", -50, 16)
+			end
+		end
+	end
+
+	-- Recruitment Tab
+	GuildRecruitmentRolesFrame:StripTextures()
+	GuildRecruitmentLevelFrame:StripTextures()
+	GuildRecruitmentCommentFrame:StripTextures()
+	GuildRecruitmentInterestFrame:StripTextures()
+	GuildRecruitmentAvailabilityFrame:StripTextures()
+
+	GuildRecruitmentCommentInputFrame:StripTextures()
+	GuildRecruitmentCommentInputFrame:SetTemplate()
+
+	S:HandleScrollBar(GuildRecruitmentCommentInputFrameScrollFrameScrollBar)
+
+	S:HandleButton(GuildRecruitmentListGuildButton)
+
+	S:HandleCheckBox(GuildRecruitmentQuestButton)
+	S:HandleCheckBox(GuildRecruitmentDungeonButton)
+	S:HandleCheckBox(GuildRecruitmentRaidButton)
+	S:HandleCheckBox(GuildRecruitmentPvPButton)
+	S:HandleCheckBox(GuildRecruitmentRPButton)
+	S:HandleCheckBox(GuildRecruitmentWeekdaysButton)
+	S:HandleCheckBox(GuildRecruitmentWeekendsButton)
+	S:HandleCheckBox(GuildRecruitmentLevelAnyButton)
+	S:HandleCheckBox(GuildRecruitmentLevelMaxButton)
+
+	S:HandleRoleButton(GuildRecruitmentTankButton)
+	GuildRecruitmentTankButton:Point("TOPLEFT", 30, -37)
+
+	S:HandleRoleButton(GuildRecruitmentHealerButton)
+	GuildRecruitmentHealerButton:Point("TOP", 1, -37)
+
+	S:HandleRoleButton(GuildRecruitmentDamagerButton)
+	GuildRecruitmentDamagerButton:Point("TOPRIGHT", -30, -37)
+
+	-- Requests Tab
 	GuildInfoFrameApplicants:StripTextures()
 
 	GuildInfoFrameApplicantsContainer:StripTextures()
 	GuildInfoFrameApplicantsContainer:CreateBackdrop("Transparent")
+	GuildInfoFrameApplicantsContainer.backdrop:Point("TOPLEFT", 0, 0)
 	GuildInfoFrameApplicantsContainer.backdrop:Point("BOTTOMRIGHT", 0, -3)
 	GuildInfoFrameApplicantsContainer:Point("TOPLEFT", 1, 0)
 
 	S:HandleScrollBar(GuildInfoFrameApplicantsContainerScrollBar)
 	GuildInfoFrameApplicantsContainerScrollBar:ClearAllPoints()
-	GuildInfoFrameApplicantsContainerScrollBar:Point("TOPRIGHT", GuildInfoFrameApplicantsContainer, 24, -15)
+	GuildInfoFrameApplicantsContainerScrollBar:Point("TOPRIGHT", GuildInfoFrameApplicantsContainer, 24, -16)
 	GuildInfoFrameApplicantsContainerScrollBar:Point("BOTTOMRIGHT", GuildInfoFrameApplicantsContainer, 0, 13)
 	GuildInfoFrameApplicantsContainerScrollBar:Show()
 	GuildInfoFrameApplicantsContainerScrollBar.Hide = E.noop
 
-	S:HandleScrollBar(GuildInfoDetailsFrameScrollBar, 4)
+	S:HandleButton(GuildRecruitmentInviteButton)
+	GuildRecruitmentInviteButton:Point("BOTTOMLEFT", 1, -22)
 
-	S:HandleButton(GuildViewLogButton)
-	S:HandleButton(GuildControlButton)
-	S:HandleButton(GuildAddMemberButton)
+	S:HandleButton(GuildRecruitmentDeclineButton)
+	GuildRecruitmentDeclineButton:Point("BOTTOMRIGHT", -22, -22)
+
+	S:HandleButton(GuildRecruitmentMessageButton)
+	GuildRecruitmentMessageButton:Point("LEFT", GuildRecruitmentInviteButton, "RIGHT", 2, 0)
+	GuildRecruitmentMessageButton:Point("RIGHT", GuildRecruitmentDeclineButton, "LEFT", -2, 0)
 
 	for _, button in next, GuildInfoFrameApplicantsContainer.buttons do
 		button:StripTextures()
@@ -323,7 +463,7 @@ local function LoadSkin()
 		button.bg:SetTemplate(nil, true)
 		button.bg:SetOutside(button.class)
 
-		button.class:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+		button.class:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
 		button.class:SetParent(button.bg)
 
 		local highlight = button:GetHighlightTexture()
@@ -340,27 +480,21 @@ local function LoadSkin()
 		button.timeLeft:Point("TOPLEFT", 0, -10)
 
 		button.tankTex:SetTexture(E.Media.Textures.Tank)
-		button.tankTex:SetTexCoord(unpack(E.TexCoords))
-		button.tankTex:Size(20)
+		button.tankTex:SetTexCoord(0, 1, 0, 1)
 
 		button.healerTex:SetTexture(E.Media.Textures.Healer)
-		button.healerTex:SetTexCoord(unpack(E.TexCoords))
-		button.healerTex:Size(18)
+		button.healerTex:SetTexCoord(0, 1, 0, 1)
 
 		button.damageTex:SetTexture(E.Media.Textures.DPS)
-		button.damageTex:SetTexCoord(unpack(E.TexCoords))
-		button.damageTex:Size(16)
+		button.damageTex:SetTexCoord(0, 1, 0, 1)
 	end
 
 	local function SkinGuildApplicants()
-		local scrollFrame = GuildInfoFrameApplicantsContainer
-		local offset = HybridScrollFrame_GetOffset(scrollFrame)
-		local buttons = scrollFrame.buttons
-		local numButtons = #buttons
-		local _, level, class, button, index
-		local classColor, levelColor
+		local offset = HybridScrollFrame_GetOffset(GuildInfoFrameApplicantsContainer)
+		local buttons = GuildInfoFrameApplicantsContainer.buttons
+		local _, level, class, button, index, classColor, levelColor
 
-		for i = 1, numButtons do
+		for i = 1, #buttons do
 			button = buttons[i]
 			index = offset + i
 			_, level, class = GetGuildApplicantInfo(index)
@@ -384,74 +518,18 @@ local function LoadSkin()
 	hooksecurefunc("GuildInfoFrameApplicants_Update", SkinGuildApplicants)
 	hooksecurefunc("HybridScrollFrame_Update", SkinGuildApplicants)
 
-	for i = 1, 3 do
-		local tab = _G["GuildInfoFrameTab"..i]
-
-		tab:StripTextures()
-		tab.backdrop = CreateFrame("Frame", nil, tab)
-		tab.backdrop:SetTemplate("Default", true)
-		tab.backdrop:Point("TOPLEFT", 3, -7)
-		tab.backdrop:Point("BOTTOMRIGHT", -2, -1)
-		tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
-
-		if i == 1 then
-			tab:Point("TOPLEFT", 40, 40)
-		end
-
-		tab:HookScript("OnEnter", S.SetModifiedBackdrop)
-		tab:HookScript("OnLeave", S.SetOriginalBackdrop)
-	end
-
-	local backdrop1 = CreateFrame("Frame", nil, GuildInfoFrameInfo)
-	backdrop1:SetTemplate()
-	backdrop1:Point("TOPLEFT", 2, -22)
-	backdrop1:Point("BOTTOMRIGHT", 0, 200)
-	backdrop1:SetFrameLevel(GuildInfoFrameInfo:GetFrameLevel() - 1)
-
-	local backdrop2 = CreateFrame("Frame", nil, GuildInfoFrameInfo)
-	backdrop2:SetTemplate()
-	backdrop2:Point("TOPLEFT", 2, -160)
-	backdrop2:Point("BOTTOMRIGHT", 0, 118)
-	backdrop2:SetFrameLevel(GuildInfoFrameInfo:GetFrameLevel() - 1)
-
-	local backdrop3 = CreateFrame("Frame", nil, GuildInfoFrameInfo)
-	backdrop3:SetTemplate()
-	backdrop3:Point("TOPLEFT", 2, -235)
-	backdrop3:Point("BOTTOMRIGHT", 0, 3)
-	backdrop3:SetFrameLevel(GuildInfoFrameInfo:GetFrameLevel() - 1)
-
-	-- Text Edit Frame
-	GuildTextEditFrame:StripTextures()
-	GuildTextEditFrame:SetTemplate("Transparent")
-
-	GuildTextEditContainer:StripTextures()
-	GuildTextEditContainer:SetTemplate("Transparent")
-
-	S:HandleButton(GuildTextEditFrameAcceptButton)
-
-	S:HandleScrollBar(GuildTextEditScrollFrameScrollBar, 5)
-
-	for i = 1, GuildTextEditFrame:GetNumChildren() do
-		local child = select(i, GuildTextEditFrame:GetChildren())
-		if (child:GetName() == "GuildTextEditFrameCloseButton") and child:GetWidth() < 33 then
-			S:HandleCloseButton(child)
-		elseif child:GetName() == "GuildTextEditFrameCloseButton" then
-			S:HandleButton(child, true)
-		end
-	end
-
 	-- Guild Log
 	S:HandleScrollBar(GuildLogScrollFrameScrollBar, 4)
 
 	GuildLogScrollFrameScrollBar:ClearAllPoints()
-	GuildLogScrollFrameScrollBar:Point("TOPLEFT", GuildLogScrollFrame, "TOPRIGHT", 26, -13)
-	GuildLogScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildLogScrollFrame, "BOTTOMRIGHT", 0, 12)
+	GuildLogScrollFrameScrollBar:Point("TOPRIGHT", GuildLogScrollFrame, 26, -13)
+	GuildLogScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildLogScrollFrame, 0, 12)
 
 	GuildLogFrame:StripTextures()
 	GuildLogFrame:CreateBackdrop("Transparent")
 	GuildLogFrame.backdrop:Point("TOPLEFT", 15, 0)
 	GuildLogFrame.backdrop:Point("BOTTOMRIGHT", -15, 0)
-	GuildLogFrame:Point("TOPLEFT", GuildFrame, "TOPRIGHT", -10, 0)
+	GuildLogFrame:Point("TOPLEFT", GuildFrame, "TOPRIGHT", -14, 0)
 
 	GuildLogContainer:StripTextures()
 
@@ -461,50 +539,16 @@ local function LoadSkin()
 
 	for i = 1, GuildLogFrame:GetNumChildren() do
 		local child = select(i, GuildLogFrame:GetChildren())
-		if child:GetName() == "GuildLogFrameCloseButton" and child:GetWidth() < 33 then
-			S:HandleCloseButton(child)
-			child:Point("TOPRIGHT", -10, 5)
-		elseif child:GetName() == "GuildLogFrameCloseButton" then
-			S:HandleButton(child, true)
-			child:Point("BOTTOMRIGHT", -25, 16)
+
+		if child:GetName() == "GuildLogFrameCloseButton" then
+			if child:GetWidth() < 33 then
+				S:HandleCloseButton(child, GuildLogFrame.backdrop)
+			else
+				S:HandleButton(child)
+				child:Point("BOTTOMRIGHT", -47, 16)
+			end
 		end
 	end
-
-	-- Guild Recruitment
-	GuildRecruitmentRolesFrame:StripTextures()
-	GuildRecruitmentLevelFrame:StripTextures()
-	GuildRecruitmentCommentFrame:StripTextures()
-	GuildRecruitmentInterestFrame:StripTextures()
-	GuildRecruitmentAvailabilityFrame:StripTextures()
-
-	GuildRecruitmentCommentInputFrame:StripTextures()
-	GuildRecruitmentCommentInputFrame:SetTemplate()
-
-	S:HandleScrollBar(GuildRecruitmentCommentInputFrameScrollFrameScrollBar)
-
-	S:HandleButton(GuildRecruitmentInviteButton)
-	S:HandleButton(GuildRecruitmentMessageButton)
-	S:HandleButton(GuildRecruitmentDeclineButton)
-	S:HandleButton(GuildRecruitmentListGuildButton)
-
-	S:HandleCheckBox(GuildRecruitmentQuestButton)
-	S:HandleCheckBox(GuildRecruitmentDungeonButton)
-	S:HandleCheckBox(GuildRecruitmentRaidButton)
-	S:HandleCheckBox(GuildRecruitmentPvPButton)
-	S:HandleCheckBox(GuildRecruitmentRPButton)
-	S:HandleCheckBox(GuildRecruitmentWeekdaysButton)
-	S:HandleCheckBox(GuildRecruitmentWeekendsButton)
-	S:HandleCheckBox(GuildRecruitmentLevelAnyButton)
-	S:HandleCheckBox(GuildRecruitmentLevelMaxButton)
-
-	S:HandleRoleButton(GuildRecruitmentTankButton)
-	GuildRecruitmentTankButton:Point("TOPLEFT", 30, -37)
-
-	S:HandleRoleButton(GuildRecruitmentHealerButton)
-	GuildRecruitmentHealerButton:Point("TOP", 1, -37)
-
-	S:HandleRoleButton(GuildRecruitmentDamagerButton)
-	GuildRecruitmentDamagerButton:Point("TOPRIGHT", -30, -37)
 end
 
 S:AddCallbackForAddon("Blizzard_GuildUI", "Guild", LoadSkin)

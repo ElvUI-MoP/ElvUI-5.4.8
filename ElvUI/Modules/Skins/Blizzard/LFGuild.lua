@@ -71,8 +71,8 @@ local function LoadSkin()
 		button.selectedTex:SetTexCoord(0, 1, 0, 1)
 		button.selectedTex:SetInside()
 
-		button.name:Point("TOPLEFT", 75, -10)
-		button.level:Point("TOPLEFT", 58, -10)
+		button.name:Point("TOPLEFT", 64, -10)
+		button.level:Point("TOPLEFT", 52, -10)
 
 		button.PointsSpentBgGold:SetAlpha(0)
 		button.border:SetAlpha(0)

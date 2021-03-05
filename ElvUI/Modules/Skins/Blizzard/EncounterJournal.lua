@@ -342,7 +342,7 @@ local function LoadSkin()
 				if index == 1 then
 					button:Point("TOPLEFT", 3, -10)
 				elseif index == 2 then
-					button:Point("TOPLEFT", EncounterJournalBossButton1, "BOTTOMLEFT", 1, -15)
+					button:Point("TOPLEFT", EncounterJournalBossButton1, "BOTTOMLEFT", E.PixelMode and 1 or 0, -15)
 				end
 
 				button.creature:ClearAllPoints()

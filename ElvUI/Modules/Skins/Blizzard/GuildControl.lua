@@ -10,70 +10,28 @@ local hooksecurefunc = hooksecurefunc
 
 local function SkinGuildRanks()
 	for i = 1, GuildControlGetNumRanks() do
-		local rankFrame = _G["GuildControlUIRankOrderFrameRank"..i]
-		local deleteIcon = _G["GuildControlUIRankOrderFrameRank"..i.."DeleteButtonIcon"]
+		local frame = _G["GuildControlUIRankOrderFrameRank"..i]
 
-		if rankFrame and not rankFrame.isSkinned then
-			S:HandleNextPrevButton(rankFrame.downButton)
-			rankFrame.downButton:Size(26)
+		if frame and not frame.isSkinned then
+			S:HandleNextPrevButton(frame.downButton)
+			frame.downButton:Size(24)
 
-			S:HandleNextPrevButton(rankFrame.upButton)
-			rankFrame.upButton:Size(26)
+			S:HandleNextPrevButton(frame.upButton)
+			frame.upButton:Size(24)
 
-			S:HandleButton(rankFrame.deleteButton)
-			deleteIcon:SetTexture(E.Media.Textures.Close)
-			deleteIcon:SetTexCoord(0, 1, 0, 1)
+			S:HandleButton(frame.deleteButton)
+			frame.deleteButton:Size(24)
 
-			S:HandleEditBox(rankFrame.nameBox)
-			rankFrame.nameBox.backdrop:ClearAllPoints()
-			rankFrame.nameBox.backdrop:Point("TOPLEFT", -2, -4)
-			rankFrame.nameBox.backdrop:Point("BOTTOMRIGHT", -4, 4)
+			frame.deleteButton.icon:SetTexture(E.Media.Textures.Close)
+			frame.deleteButton.icon:SetTexCoord(0, 1, 0, 1)
 
-			rankFrame.isSkinned = true
+			S:HandleEditBox(frame.nameBox)
+			frame.nameBox.backdrop:ClearAllPoints()
+			frame.nameBox.backdrop:Point("TOPLEFT", -2, -4)
+			frame.nameBox.backdrop:Point("BOTTOMRIGHT", -4, 4)
+
+			frame.isSkinned = true
 		end
-	end
-end
-
-local function fixSkin(frame)
-	frame.backdrop:Hide()
-	if not E.PixelMode then
-		frame.bg1 = frame:CreateTexture(nil, "BACKGROUND")
-		frame.bg1:SetDrawLayer("BACKGROUND", 4)
-		frame.bg1:SetTexture(E.media.normTex)
-		E:RegisterStatusBar(frame.bg1)
-		frame.bg1:SetVertexColor(unpack(E.media.backdropcolor))
-		frame.bg1:Point("TOPLEFT", frame.backdrop, "TOPLEFT", E.mult*4, -E.mult*4)
-		frame.bg1:Point("BOTTOMRIGHT", frame.backdrop, "BOTTOMRIGHT", -E.mult*4, E.mult*4)
-
-		frame.bg2 = frame:CreateTexture(nil, "BACKGROUND")
-		frame.bg2:SetDrawLayer("BACKGROUND", 3)
-		frame.bg2:SetTexture(0, 0, 0)
-		frame.bg2:Point("TOPLEFT", frame.backdrop, "TOPLEFT", E.mult*3, -E.mult*3)
-		frame.bg2:Point("BOTTOMRIGHT", frame.backdrop, "BOTTOMRIGHT", -E.mult*3, E.mult*3)
-
-		frame.bg3 = frame:CreateTexture(nil, "BACKGROUND")
-		frame.bg3:SetDrawLayer("BACKGROUND", 2)
-		frame.bg3:SetTexture(unpack(E.media.bordercolor))
-		frame.bg3:Point("TOPLEFT", frame.backdrop, "TOPLEFT", E.mult*2, -E.mult*2)
-		frame.bg3:Point("BOTTOMRIGHT", frame.backdrop, "BOTTOMRIGHT", -E.mult*2, E.mult*2)
-
-		frame.bg4 = frame:CreateTexture(nil, "BACKGROUND")
-		frame.bg4:SetDrawLayer("BACKGROUND", 1)
-		frame.bg4:SetTexture(0, 0, 0)
-		frame.bg4:Point("TOPLEFT", frame.backdrop, "TOPLEFT", E.mult, -E.mult)
-		frame.bg4:Point("BOTTOMRIGHT", frame.backdrop, "BOTTOMRIGHT", -E.mult, E.mult)
-	else
-		frame.bg1 = frame:CreateTexture(nil, "BACKGROUND")
-		frame.bg1:SetDrawLayer("BACKGROUND", 4)
-		frame.bg1:SetTexture(E.media.normTex)
-		E:RegisterStatusBar(frame.bg1)
-		frame.bg1:SetVertexColor(unpack(E.media.backdropcolor))
-		frame.bg1:SetInside(frame.backdrop, E.mult)
-
-		frame.bg3 = frame:CreateTexture(nil, "BACKGROUND")
-		frame.bg3:SetDrawLayer("BACKGROUND", 2)
-		frame.bg3:SetTexture(unpack(E.media.bordercolor))
-		frame.bg3:SetAllPoints(frame.backdrop)
 	end
 end
 
@@ -82,81 +40,85 @@ local function LoadSkin()
 
 	GuildControlUI:StripTextures()
 	GuildControlUI:SetTemplate("Transparent")
-	GuildControlUI:Point("TOPLEFT", GuildFrame, "TOPRIGHT", 3, 0)
+	GuildControlUI:Point("TOPLEFT", GuildFrame, "TOPRIGHT", 1, 0)
 
 	GuildControlUIHbar:StripTextures()
 
-	GuildControlUIRankBankFrameInset:StripTextures()
-	GuildControlUIRankBankFrameInset:SetTemplate("Transparent", true)
+	S:HandleDropDownBox(GuildControlUINavigationDropDown, 210)
 
-	GuildControlUIRankBankFrameInsetScrollFrame:StripTextures()
+	S:HandleCloseButton(GuildControlUICloseButton)
+	GuildControlUICloseButton:Point("TOPRIGHT", 4, 6)
 
-	S:HandleScrollBar(GuildControlUIRankBankFrameInsetScrollFrameScrollBar)
+	-- Rank Tab
+	GuildControlUIRankOrderFrame:CreateBackdrop("Transparent")
 
 	hooksecurefunc("GuildControlUI_RankOrder_Update", SkinGuildRanks)
 
-	GuildControlUIRankOrderFrameNewButton:HookScript("OnClick", function()
-		E:Delay(0.6, SkinGuildRanks)
-	end)
+	S:HandleButton(GuildControlUIRankOrderFrameNewButton)
+	GuildControlUIRankOrderFrameNewButton:HookScript("OnClick", function() E:Delay(0.6, SkinGuildRanks) end)
 
-	S:HandleDropDownBox(GuildControlUINavigationDropDown, 210)
+	-- Permissions Tab
+	GuildControlUIRankSettingsFrame:CreateBackdrop("Transparent")
+
 	S:HandleDropDownBox(GuildControlUIRankSettingsFrameRankDropDown, 195)
 
-	GuildControlUINavigationDropDownButton:Width(20)
-	GuildControlUIRankSettingsFrameRankDropDownButton:Width(20)
-
 	for i = 1, NUM_RANK_FLAGS do
-		if _G["GuildControlUIRankSettingsFrameCheckbox"..i] then
-			S:HandleCheckBox(_G["GuildControlUIRankSettingsFrameCheckbox"..i])
-		end
+		local checkBox = _G["GuildControlUIRankSettingsFrameCheckbox"..i]
+		if checkBox then S:HandleCheckBox(checkBox) end
 	end
-
-	S:HandleButton(GuildControlUIRankOrderFrameNewButton)
-	GuildControlUIRankOrderFrameNewButton:Point("BOTTOMLEFT", 206, -5)
 
 	GuildControlUIRankSettingsFrameGoldBox:StripTextures()
 	S:HandleEditBox(GuildControlUIRankSettingsFrameGoldBox)
 	GuildControlUIRankSettingsFrameGoldBox.backdrop:Point("TOPLEFT", -2, -4)
 	GuildControlUIRankSettingsFrameGoldBox.backdrop:Point("BOTTOMRIGHT", 2, 4)
 
-	GuildControlUIRankBankFrame:StripTextures()
+	-- Bank Tab
+	GuildControlUIRankBankFrame:CreateBackdrop("Transparent")
+	GuildControlUIRankBankFrameInset:StripTextures()
+
+	S:HandleDropDownBox(GuildControlUIRankBankFrameRankDropDown)
+	GuildControlUIRankBankFrameRankDropDown:Point("TOPLEFT", 86, -10)
+
+	GuildControlUIRankBankFrameInsetScrollFrame:StripTextures()
+	GuildControlUIRankBankFrameInsetScrollFrame:CreateBackdrop("Transparent")
+
+	S:HandleScrollBar(GuildControlUIRankBankFrameInsetScrollFrameScrollBar)
+	GuildControlUIRankBankFrameInsetScrollFrameScrollBar:ClearAllPoints()
+	GuildControlUIRankBankFrameInsetScrollFrameScrollBar:Point("TOPRIGHT", GuildControlUIRankBankFrameInsetScrollFrame, 24, E.PixelMode and -17 or -16)
+	GuildControlUIRankBankFrameInsetScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildControlUIRankBankFrameInsetScrollFrame, 0, E.PixelMode and 17 or 16)
 
 	hooksecurefunc("GuildControlUI_BankTabPermissions_Update", function()
 		local numTabs = GetNumGuildBankTabs()
-		if numTabs < MAX_BUY_GUILDBANK_TABS then
-			numTabs = numTabs + 1
-		end
+		if numTabs < MAX_BUY_GUILDBANK_TABS then numTabs = numTabs + 1 end
+
 		for i = 1, numTabs do
-			local tab = _G["GuildControlBankTab"..i.."Owned"]
-			local icon = tab.tabIcon
-
-			tab:CreateBackdrop()
-			tab.backdrop:SetOutside(icon)
-
-			icon:SetTexCoord(unpack(E.TexCoords))
-			icon:SetParent(tab.backdrop)
+			local tab = _G["GuildControlBankTab"..i]
 
 			if not tab.isSkinned then
-				S:HandleButton(_G["GuildControlBankTab"..i.."BuyPurchaseButton"])
-				S:HandleEditBox(_G["GuildControlBankTab"..i.."OwnedStackBox"])
-				S:HandleCheckBox(_G["GuildControlBankTab"..i.."OwnedViewCheck"])
-				S:HandleCheckBox(_G["GuildControlBankTab"..i.."OwnedDepositCheck"])
-				S:HandleCheckBox(_G["GuildControlBankTab"..i.."OwnedUpdateInfoCheck"])
+				tab:StripTextures()
 
-				fixSkin(_G["GuildControlBankTab"..i.."OwnedStackBox"])
-				fixSkin(_G["GuildControlBankTab"..i.."OwnedViewCheck"])
-				fixSkin(_G["GuildControlBankTab"..i.."OwnedDepositCheck"])
-				fixSkin(_G["GuildControlBankTab"..i.."OwnedUpdateInfoCheck"])
+				tab.owned:CreateBackdrop()
+				tab.owned.backdrop:SetOutside(tab.owned.tabIcon)
+
+				tab.owned.tabIcon:SetTexCoord(unpack(E.TexCoords))
+				tab.owned.tabIcon:SetParent(tab.owned.backdrop)
+
+				S:HandleCheckBox(tab.owned.viewCB, true)
+				S:HandleCheckBox(tab.owned.depositCB, true)
+				S:HandleCheckBox(tab.owned.infoCB, true)
+
+				local editBoxName = tab.owned.editBox:GetName()
+				_G[editBoxName.."Left"]:Kill()
+				_G[editBoxName.."Middle"]:Kill()
+				_G[editBoxName.."Right"]:Kill()
+				tab.owned.editBox:SetTemplate("Default")
+
+				S:HandleButton(tab.buy)
+
 				tab.isSkinned = true
 			end
 		end
 	end)
-
-	S:HandleDropDownBox(GuildControlUIRankBankFrameRankDropDown, 193)
-	GuildControlUIRankBankFrameRankDropDownButton:Width(20)
-
-	S:HandleCloseButton(GuildControlUICloseButton)
-	GuildControlUICloseButton:Point("TOPRIGHT", GuildControlUI, "TOPRIGHT", 2, 2)
 end
 
 S:AddCallbackForAddon("Blizzard_GuildControlUI", "GuildControl", LoadSkin)

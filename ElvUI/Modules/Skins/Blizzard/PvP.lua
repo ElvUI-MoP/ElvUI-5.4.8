@@ -22,7 +22,7 @@ local function LoadSkin()
 		button:SetTemplate("Transparent")
 		button:CreateBackdrop()
 		button.backdrop:SetOutside(button.Icon)
-		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
+		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 3)
 		button:StyleButton()
 
 		button.Icon:Size(58)
@@ -51,6 +51,18 @@ local function LoadSkin()
 			button.CurrencyAmount:Point("LEFT", button.CurrencyIcon, "RIGHT", 7, 0)
 		end
 	end
+
+	hooksecurefunc("PVPQueueFrame_SelectButton", function(index)
+		for i = 1, 3 do
+			local button = PVPQueueFrame["CategoryButton"..i]
+			local border = i == index and E.media.rgbvaluecolor or E.media.bordercolor
+
+			button:SetBackdropBorderColor(unpack(border))
+			button.backdrop:SetBackdropBorderColor(unpack(border))
+		end
+	end)
+
+	PVPQueueFrame_ShowFrame()
 
 	-- Honor Frame
 	HonorFrame.Inset:StripTextures()
@@ -317,11 +329,11 @@ local function LoadSecondarySkin()
 
 	hooksecurefunc("PVPReadyDialog_Display", function(self, _, _, _, queueType, _, role)
 		if role == "DAMAGER" then
-			self.roleIcon.texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+			self.roleIcon.texture:SetTexture([[Interface\Icons\INV_Knife_1H_Common_B_01]])
 		elseif role == "TANK" then
-			self.roleIcon.texture:SetTexture("Interface\\Icons\\Ability_Defend")
+			self.roleIcon.texture:SetTexture([[Interface\Icons\Ability_Defend]])
 		elseif role == "HEALER" then
-			self.roleIcon.texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+			self.roleIcon.texture:SetTexture([[Interface\Icons\SPELL_NATURE_HEALINGTOUCH]])
 		end
 
 		if queueType == "ARENA" then

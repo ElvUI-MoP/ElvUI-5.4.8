@@ -47,15 +47,7 @@ local function LoadSkin()
 	end
 
 	for i = 1, 4 do
-		local tab = _G["PlayerTalentFrameTab"..i]
-
-		S:HandleTab(tab)
-
-		if i == 1 then
-			local point, anchor, anchorPoint, x = tab:GetPoint()
-
-			tab:Point(point, anchor, anchorPoint, x, -4)
-		end
+		S:HandleTab(_G["PlayerTalentFrameTab"..i])
 	end
 
 	hooksecurefunc("PlayerTalentFrame_UpdateTabs", function()
@@ -71,12 +63,11 @@ local function LoadSkin()
 	for _, frame in pairs({"PlayerTalentFrameSpecializationSpecButton", "PlayerTalentFramePetSpecializationSpecButton"}) do
 		for i = 1, 4 do
 			local button = _G[frame..i]
-			local highlight = button:GetHighlightTexture()
 
 			button:SetTemplate("Transparent")
 			button:CreateBackdrop()
 			button.backdrop:SetOutside(button.specIcon)
-			button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
+			button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 3)
 			button:StyleButton()
 
 			button.roleIcon:SetTexCoord(unpack(E.TexCoords))
@@ -198,6 +189,15 @@ local function LoadSkin()
 		local id, _, _, icon = GetSpecializationInfo(shownSpec, nil, self.isPet)
 		local role = GetSpecializationRole(shownSpec, nil, self.isPet)
 		local bonuses = self.isPet and {GetSpecializationSpells(shownSpec, nil, self.isPet)} or SPEC_SPELLS_DISPLAY[id]
+		local numSpecs = GetNumSpecializations(nil, self.isPet)
+
+		for i = 1, numSpecs do
+			local specButton = self["specButton"..i]
+			local border = specButton.selected and E.media.rgbvaluecolor or E.media.bordercolor
+
+			specButton:SetBackdropBorderColor(unpack(border))
+			specButton.backdrop:SetBackdropBorderColor(unpack(border))
+		end
 
 		if role == "DAMAGER" then
 			button.roleIcon:SetTexture(E.Media.Textures.DPS)
@@ -253,14 +253,14 @@ local function LoadSkin()
 						frame.name:Point("LEFT", frame.icon, "RIGHT", 7, 2)
 						frame.name:SetParent(frame.bg)
 
-						frame.subText:SetTextColor(1, 1, 1)
-						frame.subText.SetTextColor = E.noop
 						frame.subText:SetParent(frame.bg)
 
 						frame.ring:Hide()
 
 						frame.isSkinned = true
 					end
+
+					frame.subText:SetTextColor(1, 1, 1)
 				end
 
 				index = index + 1
@@ -304,7 +304,6 @@ local function LoadSkin()
 		for j = 1, NUM_TALENT_COLUMNS do
 			local button = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j]
 			local level = _G["PlayerTalentFrameTalentsTalentRow"..i.."Level"]
-			local leftCap = _G["PlayerTalentFrameTalentsTalentRow"..i.."LeftCap"]
 
 			button:StripTextures()
 			button:SetFrameLevel(button:GetFrameLevel() + 5)
@@ -337,7 +336,7 @@ local function LoadSkin()
 
 			level:SetParent(button.bg2)
 			level:FontTemplate(nil, 18)
-			level:Point("CENTER", leftCap, "RIGHT", 0, 0)
+			level:Point("CENTER", _G["PlayerTalentFrameTalentsTalentRow"..i.."LeftCap"], "RIGHT", 0, 0)
 		end
 	end
 
@@ -372,8 +371,8 @@ local function LoadSkin()
 	PlayerTalentFrameTalentsClearInfoFrame:CreateBackdrop()
 	PlayerTalentFrameTalentsClearInfoFrame.backdrop:SetAllPoints()
 	PlayerTalentFrameTalentsClearInfoFrame:StyleButton()
-	PlayerTalentFrameTalentsClearInfoFrame:Size(26)
-	PlayerTalentFrameTalentsClearInfoFrame:Point("TOPLEFT", PlayerTalentFrameTalents, "BOTTOMLEFT", 2, -3)
+	PlayerTalentFrameTalentsClearInfoFrame:Size(E.PixelMode and 26 or 24)
+	PlayerTalentFrameTalentsClearInfoFrame:Point("TOPLEFT", PlayerTalentFrameTalents, "BOTTOMLEFT", 2, E.PixelMode and -3 or -4)
 
 	PlayerTalentFrameTalentsClearInfoFrame.icon:SetTexCoord(unpack(E.TexCoords))
 	PlayerTalentFrameTalentsClearInfoFrame.icon:ClearAllPoints()

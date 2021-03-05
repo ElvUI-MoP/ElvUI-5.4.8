@@ -61,9 +61,6 @@ local function LoadSkin()
 
 	for i = 1, 42 do
 		local button = _G["CalendarDayButton"..i]
-		local eventTexture = _G["CalendarDayButton"..i.."EventTexture"]
-		local overlayFrame = _G["CalendarDayButton"..i.."OverlayFrame"]
-		local darkFrame = _G["CalendarDayButton"..i.."DarkFrame"]
 		local darkFrameTop = _G["CalendarDayButton"..i.."DarkFrameTop"]
 		local moreEventButton = _G["CalendarDayButton"..i.."MoreEventsButton"]
 		local highlight = button:GetHighlightTexture()
@@ -91,13 +88,13 @@ local function LoadSkin()
 		highlight.SetAlpha = E.noop
 		highlight:SetInside()
 
-		darkFrame:StripTextures()
+		_G["CalendarDayButton"..i.."DarkFrame"]:StripTextures()
 		darkFrameTop:SetTexture(E.media.glossTex)
 		darkFrameTop:SetVertexColor(0, 0, 0, 0.6)
 		darkFrameTop:SetInside()
 
-		eventTexture:SetInside()
-		overlayFrame:SetInside()
+		_G["CalendarDayButton"..i.."EventTexture"]:SetInside()
+		_G["CalendarDayButton"..i.."OverlayFrame"]:SetInside()
 
 		for j = 1, 4 do
 			local eventButton = _G["CalendarDayButton"..i.."EventButton"..j]
@@ -205,11 +202,12 @@ local function LoadSkin()
 			local button = _G["CalendarClassButton"..i]
 			local icon = button:GetNormalTexture()
 			local tcoords = CLASS_ICON_TCOORDS[class]
+
 			button:StripTextures()
 			button:CreateBackdrop()
 			button:Size(23)
 
-			icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
+			icon:SetTexture([[Interface\Glues\CharacterCreate\UI-CharacterCreate-Classes]])
 			icon:SetTexCoord(tcoords[1] + 0.015, tcoords[2] - 0.02, tcoords[3] + 0.018, tcoords[4] - 0.02)
 		end
 
@@ -224,9 +222,7 @@ local function LoadSkin()
 	CalendarInviteStatusContextMenu:SetTemplate("Transparent")
 
 	for i = 1, 32 do
-		local button = _G["CalendarInviteStatusContextMenuButton"..i]
-
-		S:HandleButtonHighlight(button, true)
+		S:HandleButtonHighlight(_G["CalendarInviteStatusContextMenuButton"..i], true)
 	end
 
 	-- Texture Picker Frame
@@ -239,9 +235,7 @@ local function LoadSkin()
 	CalendarTexturePickerTitleFrame:StripTextures()
 
 	for i = 1, 16 do
-		local button = _G["CalendarTexturePickerScrollFrameButton"..i]
-
-		S:HandleButtonHighlight(button)
+		S:HandleButtonHighlight(_G["CalendarTexturePickerScrollFrameButton"..i])
 	end
 
 	S:HandleScrollBar(CalendarTexturePickerScrollBar)

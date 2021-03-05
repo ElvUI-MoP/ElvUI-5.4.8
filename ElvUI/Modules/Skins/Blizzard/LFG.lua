@@ -33,7 +33,7 @@ local function SkinReadyDialogRewards(button, dungeonID)
 
 	local texturePath
 	if button.rewardType == "misc" then
-		texturePath = "Interface\\Icons\\inv_misc_coin_02"
+		texturePath = [[Interface\Icons\inv_misc_coin_02]]
 		button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 	elseif dungeonID and button.rewardType == "shortage" then
 		texturePath = select(2, GetLFGDungeonShortageRewardInfo(dungeonID, button.rewardArg, button.rewardID))
@@ -205,17 +205,29 @@ local function SkinLFG()
 
 		button:CreateBackdrop()
 		button.backdrop:SetOutside(button.icon)
-		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 2)
+		button.backdrop:SetFrameLevel(button.backdrop:GetFrameLevel() + 3)
 
+		button.icon:Size(58)
 		button.icon:SetTexCoord(unpack(E.TexCoords))
-		button.icon:Size(E.PixelMode and 58 or 56)
 		button.icon:Point("LEFT", button, 1, 0)
 		button.icon:SetParent(button.backdrop)
+		SetPortraitToTexture(button.icon, nil)
 	end
 
-	GroupFinderFrameGroupButton1.icon:SetTexture("Interface\\Icons\\INV_Helmet_08")
-	GroupFinderFrameGroupButton2.icon:SetTexture("Interface\\Icons\\inv_helmet_06")
-	GroupFinderFrameGroupButton3.icon:SetTexture("Interface\\Icons\\Icon_Scenarios")
+	GroupFinderFrameGroupButton1.icon:SetTexture([[Interface\Icons\INV_Helmet_08]])
+	GroupFinderFrameGroupButton2.icon:SetTexture([[Interface\Icons\Inv_Helmet_06]])
+	GroupFinderFrameGroupButton3.icon:SetTexture([[Interface\Icons\Icon_Scenarios]])
+	GroupFinderFrameGroupButton4.icon:SetTexture([[Interface\Icons\Achievement_General_StayClassy]])
+
+	hooksecurefunc("GroupFinderFrame_SelectGroupButton", function(index)
+		for i = 1, 4 do			
+			local button = GroupFinderFrame["groupButton"..i]
+			local border = i == index and E.media.rgbvaluecolor or E.media.bordercolor
+
+			button:SetBackdropBorderColor(unpack(border))
+			button.backdrop:SetBackdropBorderColor(unpack(border))
+		end
+	end)
 
 	-- Bottom Tabs
 	for i = 1, 2 do
@@ -320,7 +332,7 @@ local function SkinLFG()
 		item:CreateBackdrop()
 		item.backdrop:SetOutside(item.Icon)
 
-		item.Icon:SetTexture("Interface\\Icons\\pvecurrency-valor")
+		item.Icon:SetTexture([[Interface\Icons\pvecurrency-valor]])
 		item.Icon:SetTexCoord(unpack(E.TexCoords))
 		item.Icon:SetParent(item.backdrop)
 
@@ -419,11 +431,11 @@ local function SkinLFG()
 		local _, _, _, _, _, _, role = GetLFGProposal()
 
 		if role == "DAMAGER" then
-			LFGDungeonReadyDialogRoleIconTexture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+			LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\INV_Knife_1H_Common_B_01]])
 		elseif role == "TANK" then
-			LFGDungeonReadyDialogRoleIconTexture:SetTexture("Interface\\Icons\\Ability_Defend")
+			LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\Ability_Defend]])
 		elseif role == "HEALER" then
-			LFGDungeonReadyDialogRoleIconTexture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+			LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\SPELL_NATURE_HEALINGTOUCH]])
 		end
 	end)
 
@@ -444,8 +456,8 @@ local function SkinLFG()
 			roleButton.backdrop:Point("TOPLEFT", 3, -3)
 			roleButton.backdrop:Point("BOTTOMRIGHT", -3, 3)
 			roleButton.texture:SetTexture(E.Media.Textures.RoleIcons)
-			roleButton.texture:Point("TOPLEFT", roleButton.backdrop, "TOPLEFT", -8, 6)
-			roleButton.texture:Point("BOTTOMRIGHT", roleButton.backdrop, "BOTTOMRIGHT", 8, -10)
+			roleButton.texture:Point("TOPLEFT", roleButton.backdrop, -8, 6)
+			roleButton.texture:Point("BOTTOMRIGHT", roleButton.backdrop, 8, -9)
 			roleButton.statusIcon:SetDrawLayer("OVERLAY", 2)
 		end
 	end
@@ -494,13 +506,13 @@ local function SkinLFG()
 		if incentiveIndex then
 			local tex, r, g, b
 			if incentiveIndex == LFG_ROLE_SHORTAGE_PLENTIFUL then
-				tex = "Interface\\Icons\\INV_Misc_Coin_19"
+				tex = [[Interface\Icons\INV_Misc_Coin_19]]
 				r, g, b = 0.82, 0.45, 0.25
 			elseif incentiveIndex == LFG_ROLE_SHORTAGE_UNCOMMON then
-				tex = "Interface\\Icons\\INV_Misc_Coin_18"
+				tex = [[Interface\Icons\INV_Misc_Coin_18]]
 				r, g, b = 0.8, 0.8, 0.8
 			elseif incentiveIndex == LFG_ROLE_SHORTAGE_RARE then
-				tex = "Interface\\Icons\\INV_Misc_Coin_17"
+				tex = [[Interface\Icons\INV_Misc_Coin_17]]
 				r, g, b = 1, 0.82, 0.2
 			end
 
@@ -518,51 +530,60 @@ end
 local function SkinChallengeUI()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfg then return end
 
-	ChallengesFrameInset:StripTextures()
-	ChallengesFrameInsetBg:Hide()
+	ChallengesFrameInset:StripTextures(true)
+
+	local _, a, _, _, _, _, _, _, b, c, d = ChallengesFrameDetails:GetRegions()
+	a:Hide() b:Hide() c:Hide() d:Hide()
 	ChallengesFrameDetails.bg:Hide()
 
-	select(2, ChallengesFrameDetails:GetRegions()):Hide()
-	select(9, ChallengesFrameDetails:GetRegions()):Hide()
-	select(10, ChallengesFrameDetails:GetRegions()):Hide()
-	select(11, ChallengesFrameDetails:GetRegions()):Hide()
-
-	ChallengesFrameDungeonButton1:Point("TOPLEFT", ChallengesFrame, 8, -83)
-
-	S:HandleButton(ChallengesFrameLeaderboard)
+	ChallengesFrameDetails.MapName:ClearAllPoints()
+	ChallengesFrameDetails.MapName:Point("TOP", 0, -20)
 
 	for i = 1, 9 do
 		local button = ChallengesFrame["button"..i]
 
-		S:HandleButton(button)
-		button:StyleButton(nil, true)
-		button:SetHighlightTexture("")
+		button:CreateBackdrop("Transparent")
 
-		button.selectedTex:SetAlpha(0.20)
-		button.selectedTex:Point("TOPLEFT", 1, -1)
-		button.selectedTex:Point("BOTTOMRIGHT", -1, 1)
-
-		button.NoMedal:Kill()
-	end
-
-	for i = 10, 16 do
-		local button = ChallengesFrame["button"..i]
-
-		if button then
-			button:Hide()
+		if i == 1 then
+			button:Point("TOPLEFT", ChallengesFrame, 6, -40)
+		else
+			button:Point("TOP", ChallengesFrame["button"..i - 1], "BOTTOM", 0, -8)
 		end
+
+		local highlight = button:GetHighlightTexture()
+		highlight:SetTexture(E.Media.Textures.Highlight)
+		highlight:SetVertexColor(1, 1, 1, 0.35)
+		highlight:SetAllPoints()
+
+		button.selectedTex:SetTexture(E.Media.Textures.Highlight)
+		button.selectedTex:SetVertexColor(0, 0.7, 1, 0.35)
+		button.selectedTex:SetAllPoints()
 	end
 
 	for i = 1, 3 do
 		local rewardsRow = ChallengesFrame["RewardRow"..i]
 
+		rewardsRow.Bg:SetTexture(E.Media.Textures.Highlight)
+
+		if i == 1 then
+			rewardsRow.Bg:SetVertexColor(0.859, 0.545, 0.204, 0.3)
+		elseif i == 2 then
+			rewardsRow.Bg:SetVertexColor(0.780, 0.722, 0.741, 0.3)
+		else
+			rewardsRow.Bg:SetVertexColor(0.945, 0.882, 0.337, 0.3)
+		end
+
 		for j = 1, 2 do
 			local button = rewardsRow["Reward"..j]
 
 			button:CreateBackdrop()
+			S:HandleFrameHighlight(button, button.backdrop)
+
 			button.Icon:SetTexCoord(unpack(E.TexCoords))
 		end
 	end
+
+	S:HandleButton(ChallengesFrameLeaderboard)
 end
 
 local function SkinLFR()
@@ -721,15 +742,15 @@ local function SkinQueueStatus()
 
 		if not entry.isSkinned then
 			entry.TanksFound:CreateBackdrop()
-			entry.TanksFound.Texture:SetTexture("Interface\\Icons\\Ability_Defend")
+			entry.TanksFound.Texture:SetTexture([[Interface\Icons\Ability_Defend]])
 			entry.TanksFound.Texture:SetTexCoord(unpack(E.TexCoords))
 
 			entry.HealersFound:CreateBackdrop()
-			entry.HealersFound.Texture:SetTexture("Interface\\Icons\\SPELL_NATURE_HEALINGTOUCH")
+			entry.HealersFound.Texture:SetTexture([[Interface\Icons\SPELL_NATURE_HEALINGTOUCH]])
 			entry.HealersFound.Texture:SetTexCoord(unpack(E.TexCoords))
 
 			entry.DamagersFound:CreateBackdrop()
-			entry.DamagersFound.Texture:SetTexture("Interface\\Icons\\INV_Knife_1H_Common_B_01")
+			entry.DamagersFound.Texture:SetTexture([[Interface\Icons\INV_Knife_1H_Common_B_01]])
 			entry.DamagersFound.Texture:SetTexCoord(unpack(E.TexCoords))
 
 			entry.isSkinned = true
