@@ -33,13 +33,12 @@ local function LoadSkin()
 
 	-- Static Popups
 	for i = 1, 4 do
-		local staticPopup = _G["StaticPopup"..i]
 		local itemFrame = _G["StaticPopup"..i.."ItemFrame"]
 		local itemFrameBox = _G["StaticPopup"..i.."EditBox"]
 		local itemFrameTexture = _G["StaticPopup"..i.."ItemFrameIconTexture"]
 		local closeButton = _G["StaticPopup"..i.."CloseButton"]
 
-		staticPopup:SetTemplate("Transparent")
+		_G["StaticPopup"..i]:SetTemplate("Transparent")
 
 		S:HandleEditBox(itemFrameBox)
 		itemFrameBox.backdrop:Point("TOPLEFT", -2, -4)

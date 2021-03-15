@@ -14,10 +14,7 @@ local function LoadSkin()
 	SpellBookFrame:SetTemplate("Transparent")
 	SpellBookFrame:Width(460)
 
-	SpellBookFrameInset:StripTextures(true)
-	SpellBookSpellIconsFrame:StripTextures(true)
-	SpellBookSideTabsFrame:StripTextures(true)
-	SpellBookPageNavigationFrame:StripTextures(true)
+	SpellBookFrameInset:StripTextures()
 
 	SpellBookPageText:SetTextColor(1, 1, 1)
 	SpellBookPageText:Point("BOTTOMRIGHT", SpellBookFrame, -90, 15)
@@ -37,8 +34,6 @@ local function LoadSkin()
 	-- Spell Buttons
 	for i = 1, SPELLS_PER_PAGE do
 		local button = _G["SpellButton"..i]
-		local icon = _G["SpellButton"..i.."IconTexture"]
-		local cooldown = _G["SpellButton"..i.."Cooldown"]
 		local highlight = _G["SpellButton"..i.."Highlight"]
 
 		for j = 1, button:GetNumRegions() do
@@ -59,7 +54,7 @@ local function LoadSkin()
 		button.bg:Point("BOTTOMRIGHT", 170, -10)
 		button.bg:SetFrameLevel(button.bg:GetFrameLevel() - 2)
 
-		icon:SetTexCoord(unpack(E.TexCoords))
+		_G["SpellButton"..i.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
 
 		highlight:SetAllPoints()
 		hooksecurefunc(highlight, "SetTexture", function(self, texture)
@@ -68,7 +63,7 @@ local function LoadSkin()
 			end
 		end)
 
-		E:RegisterCooldown(cooldown)
+		E:RegisterCooldown(_G["SpellButton"..i.."Cooldown"])
 
 		if i == 1 then
 			button:Point("TOPLEFT", SpellBookSpellIconsFrame, 15, -75)

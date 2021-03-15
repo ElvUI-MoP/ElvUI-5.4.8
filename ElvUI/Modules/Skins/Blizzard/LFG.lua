@@ -428,14 +428,16 @@ local function SkinLFG()
 	LFGDungeonReadyDialogRoleIconTexture:SetParent(LFGDungeonReadyDialogRoleIcon.backdrop)
 
 	hooksecurefunc("LFGDungeonReadyPopup_Update", function()
-		local _, _, _, _, _, _, role = GetLFGProposal()
+		if LFGDungeonReadyDialogRoleIcon:IsShown() then
+			local _, _, _, _, _, _, role = GetLFGProposal()
 
-		if role == "DAMAGER" then
-			LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\INV_Knife_1H_Common_B_01]])
-		elseif role == "TANK" then
-			LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\Ability_Defend]])
-		elseif role == "HEALER" then
-			LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\SPELL_NATURE_HEALINGTOUCH]])
+			if role == "DAMAGER" then
+				LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\INV_Knife_1H_Common_B_01]])
+			elseif role == "TANK" then
+				LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\Ability_Defend]])
+			elseif role == "HEALER" then
+				LFGDungeonReadyDialogRoleIconTexture:SetTexture([[Interface\Icons\SPELL_NATURE_HEALINGTOUCH]])
+			end
 		end
 	end)
 

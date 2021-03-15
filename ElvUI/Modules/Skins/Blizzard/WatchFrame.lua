@@ -77,20 +77,18 @@ local function LoadSkin()
 
 			if button and not button.isSkinned then
 				local icon = _G["WatchFrameItem"..i.."IconTexture"]
-				local normal = _G["WatchFrameItem"..i.."NormalTexture"]
-				local cooldown = _G["WatchFrameItem"..i.."Cooldown"]
 
 				button:CreateBackdrop()
 				button.backdrop:SetAllPoints()
 				button:StyleButton()
 				button:Size(26)
 
-				normal:SetAlpha(0)
+				_G["WatchFrameItem"..i.."NormalTexture"]:SetAlpha(0)
 
 				icon:SetInside()
 				icon:SetTexCoord(unpack(E.TexCoords))
 
-				E:RegisterCooldown(cooldown)
+				E:RegisterCooldown(_G["WatchFrameItem"..i.."Cooldown"])
 
 				button.isSkinned = true
 			end

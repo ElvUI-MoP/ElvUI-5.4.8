@@ -104,14 +104,21 @@ local function LoadSkin()
 				tab.owned.tabIcon:SetParent(tab.owned.backdrop)
 
 				S:HandleCheckBox(tab.owned.viewCB, true)
+				tab.owned.viewCB:Size(14)
+				tab.owned.viewCB:Point("TOPRIGHT", -90, -3)
+
 				S:HandleCheckBox(tab.owned.depositCB, true)
+				tab.owned.depositCB:Size(14)
+
 				S:HandleCheckBox(tab.owned.infoCB, true)
+				tab.owned.infoCB:Size(14)
 
 				local editBoxName = tab.owned.editBox:GetName()
 				_G[editBoxName.."Left"]:Kill()
 				_G[editBoxName.."Middle"]:Kill()
 				_G[editBoxName.."Right"]:Kill()
-				tab.owned.editBox:SetTemplate("Default")
+				tab.owned.editBox:SetTemplate()
+				tab.owned.editBox:Height(18)
 
 				S:HandleButton(tab.buy)
 

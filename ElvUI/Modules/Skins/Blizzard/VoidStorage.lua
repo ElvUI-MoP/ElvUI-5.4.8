@@ -119,7 +119,7 @@ local function LoadSkin()
 				VoidQualityColors(_G["VoidStorageWithdrawButton"..i], GetVoidTransferWithdrawalInfo(i))
 			end
 
-			E:Delay(0.05, function()
+			E:Delay(0.1, function()
 				for i = 1, 80 do
 					VoidQualityColors(_G["VoidStorageStorageButton"..i], GetVoidItemInfo(i))
 				end
