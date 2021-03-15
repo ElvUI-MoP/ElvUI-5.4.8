@@ -279,7 +279,7 @@ function E:SetupLayout(layout, noDataReset, noDisplayMsg)
 			E.db.unitframe.units.player.buffs.perrow = 7
 			E.db.unitframe.units.player.castbar.height = 40
 			E.db.unitframe.units.player.castbar.insideInfoPanel = false
-			E.db.unitframe.units.player.castbar.width = 406
+			E.db.unitframe.units.player.castbar.width = 407
 			E.db.unitframe.units.player.classbar.height = 14
 			E.db.unitframe.units.player.debuffs.perrow = 7
 			E.db.unitframe.units.player.disableMouseoverGlow = true
@@ -295,7 +295,7 @@ function E:SetupLayout(layout, noDataReset, noDisplayMsg)
 			E.db.unitframe.units.target.buffs.perrow = 7
 			E.db.unitframe.units.target.castbar.height = 40
 			E.db.unitframe.units.target.castbar.insideInfoPanel = false
-			E.db.unitframe.units.target.castbar.width = 406
+			E.db.unitframe.units.target.castbar.width = 407
 			E.db.unitframe.units.target.combobar.height = 14
 			E.db.unitframe.units.target.debuffs.anchorPoint = "TOPLEFT"
 			E.db.unitframe.units.target.debuffs.attachTo = "FRAME"

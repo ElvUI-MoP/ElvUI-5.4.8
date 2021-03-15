@@ -178,12 +178,13 @@ local function CreateBackdrop(frame, template, glossTex, ignoreUpdates, forcePix
 	local backdrop = frame.backdrop or CreateFrame("Frame", nil, parent)
 	if not frame.backdrop then frame.backdrop = backdrop end
 
+	backdrop:SetTemplate(template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement)
+
 	if frame.forcePixelMode or forcePixelMode then
 		backdrop:SetOutside(frame, E.mult, E.mult)
 	else
 		backdrop:SetOutside(frame)
 	end
-	backdrop:SetTemplate(template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement)
 
 	local frameLevel = parent.GetFrameLevel and parent:GetFrameLevel()
 	local frameLevelMinusOne = frameLevel and (frameLevel - 1)

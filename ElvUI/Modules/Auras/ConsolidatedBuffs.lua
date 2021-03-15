@@ -149,7 +149,7 @@ function A:CreateButton(i)
 	button.cd.noCooldownCount = true
 
 	button.timer = button.cd:CreateFontString(nil, "OVERLAY")
-	button.timer:Point("CENTER")
+	button.timer:Point("CENTER", 2, 0)
 
 	local ButtonData = {
 		FloatingBG = nil,

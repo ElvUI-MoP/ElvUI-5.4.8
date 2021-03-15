@@ -880,11 +880,11 @@ function B:Layout(isBank)
 					f.Bags[bagID][slotID].bagID = bagID
 					f.Bags[bagID][slotID].slotID = slotID
 
-					f.Bags[bagID][slotID].itemLevel = f.Bags[bagID][slotID]:CreateFontString(nil, "OVERLAY")
+					f.Bags[bagID][slotID].itemLevel = f.Bags[bagID][slotID]:CreateFontString(nil, "ARTWORK")
 					f.Bags[bagID][slotID].itemLevel:Point("BOTTOMRIGHT", -1, 3)
 					f.Bags[bagID][slotID].itemLevel:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
 
-					f.Bags[bagID][slotID].bindType = f.Bags[bagID][slotID]:CreateFontString(nil, "OVERLAY")
+					f.Bags[bagID][slotID].bindType = f.Bags[bagID][slotID]:CreateFontString(nil, "ARTWORK")
 					f.Bags[bagID][slotID].bindType:Point("TOP", 0, -2)
 					f.Bags[bagID][slotID].bindType:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
 
@@ -1086,10 +1086,10 @@ function B:GetGraysValue()
 			local itemID = GetContainerItemID(bag, slot)
 			if itemID then
 				local _, _, rarity, _, _, iType, _, _, _, _, itemPrice = GetItemInfo(itemID)
-				if itemPrice then
+				if itemPrice and itemPrice > 0 then
 					local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
 					local stackPrice = itemPrice * stackCount
-					if (rarity and rarity == 0) and (iType and iType ~= "Quest") and (stackPrice > 0) then
+					if (rarity and rarity == 0) and (iType and iType ~= "Quest") then
 						value = value + stackPrice
 					end
 				end
@@ -1150,6 +1150,24 @@ function B:VendorGrayCheck()
 	else
 		B:VendorGrays()
 	end
+end
+
+function B:SetButtonTexture(button, texture)
+	button:SetNormalTexture(texture)
+	button:SetPushedTexture(texture)
+	button:SetDisabledTexture(texture)
+
+	local Normal, Pushed, Disabled = button:GetNormalTexture(), button:GetPushedTexture(), button:GetDisabledTexture()
+
+	Normal:SetTexCoord(unpack(E.TexCoords))
+	Normal:SetInside()
+
+	Pushed:SetTexCoord(unpack(E.TexCoords))
+	Pushed:SetInside()
+
+	Disabled:SetTexCoord(unpack(E.TexCoords))
+	Disabled:SetInside()
+	Disabled:SetDesaturated(true)
 end
 
 function B:ConstructContainerFrame(name, isBank)
@@ -1225,16 +1243,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.sortButton:Size(16 + E.Border)
 		f.sortButton:SetTemplate()
 		f.sortButton:Point("RIGHT", f.bagText, "LEFT", -5, E.Border * 2)
-		f.sortButton:SetNormalTexture("Interface\\ICONS\\INV_Pet_Broom")
-		f.sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetNormalTexture():SetInside()
-		f.sortButton:SetPushedTexture("Interface\\ICONS\\INV_Pet_Broom")
-		f.sortButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetPushedTexture():SetInside()
-		f.sortButton:SetDisabledTexture("Interface\\ICONS\\INV_Pet_Broom")
-		f.sortButton:GetDisabledTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetDisabledTexture():SetInside()
-		f.sortButton:GetDisabledTexture():SetDesaturated(true)
+		B:SetButtonTexture(f.sortButton, [[Interface\Icons\INV_Pet_Broom]])
 		f.sortButton:StyleButton(nil, true)
 		f.sortButton.ttText = L["Sort Bags"]
 		f.sortButton:SetScript("OnEnter", B.Tooltip_Show)
@@ -1255,12 +1264,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.bagsButton:Size(16 + E.Border)
 		f.bagsButton:SetTemplate()
 		f.bagsButton:Point("RIGHT", f.sortButton, "LEFT", -5, 0)
-		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
-		f.bagsButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.bagsButton:GetNormalTexture():SetInside()
-		f.bagsButton:SetPushedTexture("Interface\\Buttons\\Button-Backpack-Up")
-		f.bagsButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.bagsButton:GetPushedTexture():SetInside()
+		B:SetButtonTexture(f.bagsButton, [[Interface\Buttons\Button-Backpack-Up]])
 		f.bagsButton:StyleButton(nil, true)
 		f.bagsButton.ttText = L["Toggle Bags"]
 		f.bagsButton:SetScript("OnEnter", B.Tooltip_Show)
@@ -1280,12 +1284,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.purchaseBagButton:Size(16 + E.Border)
 		f.purchaseBagButton:SetTemplate()
 		f.purchaseBagButton:Point("RIGHT", f.bagsButton, "LEFT", -5, 0)
-		f.purchaseBagButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Coin_01")
-		f.purchaseBagButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.purchaseBagButton:GetNormalTexture():SetInside()
-		f.purchaseBagButton:SetPushedTexture("Interface\\ICONS\\INV_Misc_Coin_01")
-		f.purchaseBagButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.purchaseBagButton:GetPushedTexture():SetInside()
+		B:SetButtonTexture(f.purchaseBagButton, [[Interface\Icons\INV_Misc_Coin_01]])
 		f.purchaseBagButton:StyleButton(nil, true)
 		f.purchaseBagButton.ttText = L["Purchase Bags"]
 		f.purchaseBagButton:SetScript("OnEnter", B.Tooltip_Show)
@@ -1328,7 +1327,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.editBox:SetText(SEARCH)
 
 		f.editBox.searchIcon = f.editBox:CreateTexture(nil, "OVERLAY")
-		f.editBox.searchIcon:SetTexture("Interface\\Common\\UI-Searchbox-Icon")
+		f.editBox.searchIcon:SetTexture([[Interface\Common\UI-Searchbox-Icon]])
 		f.editBox.searchIcon:Point("LEFT", f.editBox.backdrop, "LEFT", E.Border + 1, -1)
 		f.editBox.searchIcon:Size(15)
 	else
@@ -1343,16 +1342,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.sortButton:Size(16 + E.Border)
 		f.sortButton:SetTemplate()
 		f.sortButton:Point("RIGHT", f.goldText, "LEFT", -5, E.Border * 2)
-		f.sortButton:SetNormalTexture("Interface\\ICONS\\INV_Pet_Broom")
-		f.sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetNormalTexture():SetInside()
-		f.sortButton:SetPushedTexture("Interface\\ICONS\\INV_Pet_Broom")
-		f.sortButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetPushedTexture():SetInside()
-		f.sortButton:SetDisabledTexture("Interface\\ICONS\\INV_Pet_Broom")
-		f.sortButton:GetDisabledTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetDisabledTexture():SetInside()
-		f.sortButton:GetDisabledTexture():SetDesaturated(true)
+		B:SetButtonTexture(f.sortButton, [[Interface\Icons\INV_Pet_Broom]])
 		f.sortButton:StyleButton(nil, true)
 		f.sortButton.ttText = L["Sort Bags"]
 		f.sortButton:SetScript("OnEnter", B.Tooltip_Show)
@@ -1371,12 +1361,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.bagsButton:Size(16 + E.Border)
 		f.bagsButton:SetTemplate()
 		f.bagsButton:Point("RIGHT", f.sortButton, "LEFT", -5, 0)
-		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
-		f.bagsButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.bagsButton:GetNormalTexture():SetInside()
-		f.bagsButton:SetPushedTexture("Interface\\Buttons\\Button-Backpack-Up")
-		f.bagsButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.bagsButton:GetPushedTexture():SetInside()
+		B:SetButtonTexture(f.bagsButton, [[Interface\Buttons\Button-Backpack-Up]])
 		f.bagsButton:StyleButton(nil, true)
 		f.bagsButton.ttText = L["Toggle Bags"]
 		f.bagsButton:SetScript("OnEnter", B.Tooltip_Show)
@@ -1388,12 +1373,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.vendorGraysButton:Size(16 + E.Border)
 		f.vendorGraysButton:SetTemplate()
 		f.vendorGraysButton:Point("RIGHT", f.bagsButton, "LEFT", -5, 0)
-		f.vendorGraysButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Coin_01")
-		f.vendorGraysButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.vendorGraysButton:GetNormalTexture():SetInside()
-		f.vendorGraysButton:SetPushedTexture("Interface\\ICONS\\INV_Misc_Coin_01")
-		f.vendorGraysButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.vendorGraysButton:GetPushedTexture():SetInside()
+		B:SetButtonTexture(f.vendorGraysButton, [[Interface\Icons\INV_Misc_Coin_01]])
 		f.vendorGraysButton:StyleButton(nil, true)
 		f.vendorGraysButton.ttText = L["Vendor / Delete Grays"]
 		f.vendorGraysButton.ttValue = B.GetGraysValue
@@ -1419,7 +1399,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.editBox:FontTemplate()
 
 		f.editBox.searchIcon = f.editBox:CreateTexture(nil, "OVERLAY")
-		f.editBox.searchIcon:SetTexture("Interface\\Common\\UI-Searchbox-Icon")
+		f.editBox.searchIcon:SetTexture([[Interface\Common\UI-Searchbox-Icon]])
 		f.editBox.searchIcon:Point("LEFT", f.editBox.backdrop, "LEFT", E.Border + 1, -1)
 		f.editBox.searchIcon:Size(15)
 

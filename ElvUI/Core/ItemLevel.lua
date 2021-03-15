@@ -23,18 +23,17 @@ local X2_INVTYPES = {
 	INVTYPE_RANGEDRIGHT = true,
 	INVTYPE_RANGED = true
 }
-local locale = GetLocale()
 local X2_EXCEPTIONS =
-locale == "deDE" and "Zauberstäbe" or
-locale == "ruRU" and "Жезлы" or
-locale == "frFR" and "Baguettes" or
-locale == "koKR" and "마법봉류" or
-locale == "zhCN" and "魔杖" or
-locale == "zhTW" and "魔杖" or
-locale == "esES" and "Varitas" or
-locale == "esMX" and "Varitas" or
-locale == "ptBR" and "Varinhas" or
-locale == "itIT" and "Bacchette" or
+E.locale == "deDE" and "Zauberstäbe" or
+E.locale == "ruRU" and "Жезлы" or
+E.locale == "frFR" and "Baguettes" or
+E.locale == "koKR" and "마법봉류" or
+E.locale == "zhCN" and "魔杖" or
+E.locale == "zhTW" and "魔杖" or
+E.locale == "esES" and "Varitas" or
+E.locale == "esMX" and "Varitas" or
+E.locale == "ptBR" and "Varinhas" or
+E.locale == "itIT" and "Bacchette" or
 "Wands"
 
 local ARMOR_SLOTS = {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}

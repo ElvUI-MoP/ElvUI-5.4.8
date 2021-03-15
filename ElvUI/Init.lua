@@ -31,6 +31,7 @@ E.Options = {
 }
 
 E.callbacks = E.callbacks or CallbackHandler:New(E)
+E.locale = GetLocale()
 
 Engine[1] = E
 Engine[2] = {}
@@ -65,10 +66,11 @@ E.TotemBar = E:NewModule("Totems", "AceEvent-3.0")
 E.UnitFrames = E:NewModule("UnitFrames", "AceTimer-3.0", "AceEvent-3.0", "AceHook-3.0")
 E.WorldMap = E:NewModule("WorldMap", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
 
-do
-	local locale = GetLocale()
+E.twoPixelsPlease = false
+
+do -- this is different from E.locale because we need to convert for ace locale files
 	local convert = {enGB = "enUS", esES = "esMX", itIT = "enUS"}
-	local gameLocale = convert[locale] or locale or "enUS"
+	local gameLocale = convert[E.locale] or E.locale or "enUS"
 
 	function E:GetLocale()
 		return gameLocale
@@ -165,7 +167,6 @@ function E:OnInitialize()
 		end
 	end
 
-	E.twoPixelsPlease = false
 	E.ScanTooltip = CreateFrame("GameTooltip", "ElvUI_ScanTooltip", UIParent, "GameTooltipTemplate")
 	E.PixelMode = E.twoPixelsPlease or E.private.general.pixelPerfect -- keep this over `UIScale`
 	E:UIScale(true)

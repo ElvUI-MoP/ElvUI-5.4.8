@@ -42,8 +42,7 @@ local timeFormat, showAMPM
 local realmDiffSeconds
 local lastPanel
 
-local locale = GetLocale()
-local krcntw = locale == "koKR" or locale == "zhCN" or locale == "zhTW"
+local krcntw = E.locale == "koKR" or E.locale == "zhCN" or E.locale == "zhTW"
 local difficultyTag = {
 	(krcntw and PLAYER_DIFFICULTY3) or utf8sub(PLAYER_DIFFICULTY3, 1, 1), -- Raid Finder
 	(krcntw and PLAYER_DIFFICULTY1) or utf8sub(PLAYER_DIFFICULTY1, 1, 1), -- Normal
