@@ -130,34 +130,37 @@ function NP:Configure_Glow(frame)
 	if glowStyle ~= "none" then
 		local color = NP.db.colors.glowColor
 		local r, g, b, a = color.r, color.g, color.b, color.a
-		local arrowTex = E.Media.Textures[NP.db.arrow]
+		local arrowTex, arrowSize, arrowSpacing = E.Media.Arrows[NP.db.arrow], NP.db.arrowSize, NP.db.arrowSpacing
 
 		-- Indicators
 		frame.TopIndicator:SetTexture(arrowTex)
+		frame.TopIndicator:SetSize(arrowSize, arrowSize)
 		frame.TopIndicator:SetVertexColor(r, g, b)
 		frame.TopIndicator:ClearAllPoints()
 
 		frame.LeftIndicator:SetTexture(arrowTex)
+		frame.LeftIndicator:SetSize(arrowSize, arrowSize)
 		frame.LeftIndicator:SetVertexColor(r, g, b)
 		frame.LeftIndicator:ClearAllPoints()
 
 		frame.RightIndicator:SetTexture(arrowTex)
+		frame.RightIndicator:SetSize(arrowSize, arrowSize)
 		frame.RightIndicator:SetVertexColor(r, g, b)
 		frame.RightIndicator:ClearAllPoints()
 
 		if glowStyle == "style3" or glowStyle == "style5" or glowStyle == "style6" then
 			if frame.IconOnlyChanged then
-				frame.TopIndicator:SetPoint("BOTTOM", frame.IconFrame, "TOP", -1, 6)
+				frame.TopIndicator:SetPoint("BOTTOM", frame.IconFrame, "TOP", -1, arrowSpacing)
 			else
-				frame.TopIndicator:SetPoint("BOTTOM", healthIsShown and frame.Health or frame.Name, "TOP", 0, healthIsShown and 6 or 8)
+				frame.TopIndicator:SetPoint("BOTTOM", healthIsShown and frame.Health or frame.Name, "TOP", 0, arrowSpacing)
 			end
 		elseif glowStyle == "style4" or glowStyle == "style7" or glowStyle == "style8" then
 			if frame.IconOnlyChanged then
-				frame.LeftIndicator:SetPoint("LEFT", frame.IconFrame, "RIGHT", -3, 0)
-				frame.RightIndicator:SetPoint("RIGHT", frame.IconFrame, "LEFT", 3, 0)
+				frame.LeftIndicator:SetPoint("LEFT", frame.IconFrame, "RIGHT", arrowSpacing, 0)
+				frame.RightIndicator:SetPoint("RIGHT", frame.IconFrame, "LEFT", -arrowSpacing, 0)
 			else
-				frame.LeftIndicator:SetPoint("LEFT", healthIsShown and frame.Health or frame.Name, "RIGHT", healthIsShown and -3 or 20, 0)
-				frame.RightIndicator:SetPoint("RIGHT", healthIsShown and frame.Health or frame.Name, "LEFT", healthIsShown and 3 or -20, 0)
+				frame.LeftIndicator:SetPoint("LEFT", healthIsShown and frame.Health or frame.Name, "RIGHT", arrowSpacing, 0)
+				frame.RightIndicator:SetPoint("RIGHT", healthIsShown and frame.Health or frame.Name, "LEFT", -arrowSpacing, 0)
 			end
 		end
 
@@ -196,7 +199,7 @@ function NP:Construct_Glow(frame)
 	end
 
 	frame.Spark:SetTexture(E.Media.Textures.Spark)
-	frame.TopIndicator:SetRotation(3.14)
-	frame.LeftIndicator:SetRotation(1.57)
-	frame.RightIndicator:SetRotation(-1.57)
+	frame.TopIndicator:SetTexCoord(1, 1, 1, 0, 0, 1, 0, 0) -- Rotates texture 180 degress (Up arrow to face down)
+	frame.LeftIndicator:SetTexCoord(1, 0, 0, 0, 1, 1, 0, 1) -- Rotates texture 90 degrees clockwise (Up arrow to face right)
+	frame.RightIndicator:SetTexCoord(1, 1, 0, 1, 1, 0, 0, 0) -- Flips texture horizontally (Right facing arrow to face left)
 end

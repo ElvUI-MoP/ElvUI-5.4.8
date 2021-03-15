@@ -3863,8 +3863,8 @@ E.Options.args.nameplate = {
 							type = "toggle",
 							name = L["Use Target Scale"],
 							desc = L["Enable/Disable the scaling of targetted nameplates."],
-							get = function(info) return E.db.nameplates.useTargetScale end,
-							set = function(info, value)
+							get = function() return E.db.nameplates.useTargetScale end,
+							set = function(_, value)
 								E.db.nameplates.useTargetScale = value
 								NP:ConfigureAll()
 							end
@@ -3876,8 +3876,8 @@ E.Options.args.nameplate = {
 							name = L["Target Scale"],
 							desc = L["Scale of the nameplate that is targetted."],
 							min = 0.3, max = 2, step = 0.01,
-							get = function(info) return E.db.nameplates.targetScale end,
-							set = function(info, value)
+							get = function() return E.db.nameplates.targetScale end,
+							set = function(_, value)
 								E.db.nameplates.targetScale = value
 								NP:ConfigureAll()
 							end,
@@ -3889,8 +3889,8 @@ E.Options.args.nameplate = {
 							isPercent = true,
 							name = L["Non-Target Alpha"],
 							min = 0, max = 1, step = 0.01,
-							get = function(info) return E.db.nameplates.nonTargetTransparency end,
-							set = function(info, value)
+							get = function() return E.db.nameplates.nonTargetTransparency end,
+							set = function(_, value)
 								E.db.nameplates.nonTargetTransparency = value
 								NP:ConfigureAll()
 							end
@@ -3900,8 +3900,19 @@ E.Options.args.nameplate = {
 							type = "description",
 							name = " "
 						},
-						glowStyle = {
+						alwaysShowTargetHealth = {
 							order = 5,
+							type = "toggle",
+							name = L["Always Show Target Health"],
+							get = function() return E.db.nameplates.alwaysShowTargetHealth end,
+							set = function(_, value)
+								E.db.nameplates.alwaysShowTargetHealth = value
+								NP:ConfigureAll()
+							end,
+							customWidth = 200
+						},
+						glowStyle = {
+							order = 6,
 							type = "select",
 							name = L["Target/Low Health Indicator"],
 							customWidth = 225,
@@ -3916,38 +3927,44 @@ E.Options.args.nameplate = {
 								["style7"] = L["Border Glow"].." + "..L["Side Arrows"],
 								["style8"] = L["Background Glow"].." + "..L["Side Arrows"]
 							},
-							get = function(info) return E.db.nameplates.glowStyle end,
-							set = function(info, value)
+							get = function() return E.db.nameplates.glowStyle end,
+							set = function(_, value)
 								E.db.nameplates.glowStyle = value
 								NP:ConfigureAll()
 							end
 						},
-						arrow = {
-							order = 6,
-							type = "select",
-							sortByValue = true,
-							name = L["Arrow Texture"],
-							values = {
-								ArrowUp = E:TextureString(E.Media.Textures.ArrowUp, ":14:14"),
-								Arrow1 = E:TextureString(E.Media.Textures.Arrow1, ":14:14"),
-								Arrow2 = E:TextureString(E.Media.Textures.Arrow2, ":14:14")
-							},
-							get = function(info) return E.db.nameplates.arrow end,
-							set = function(info, value)
-								E.db.nameplates.arrow = value
+						arrowSize = {
+							order = 7,
+							type = "range",
+							name = L["Arrow Size"],
+							min = 20, max = 100, step = 1,
+							get = function(_, value) return E.db.nameplates.arrowSize end,
+							set = function(_, value)
+								E.db.nameplates.arrowSize = value
 								NP:ConfigureAll()
 							end
 						},
-						alwaysShowTargetHealth = {
-							order = 7,
-							type = "toggle",
-							name = L["Always Show Target Health"],
-							get = function(info) return E.db.nameplates.alwaysShowTargetHealth end,
-							set = function(info, value)
-								E.db.nameplates.alwaysShowTargetHealth = value
+						arrowSpacing = {
+							order = 8,
+							type = "range",
+							name = L["Arrow Spacing"],
+							min = 0, max = 50, step = 1,
+							get = function(_, value) return E.db.nameplates.arrowSpacing end,
+							set = function(_, value)
+								E.db.nameplates.arrowSpacing = value
 								NP:ConfigureAll()
-							end,
-							customWidth = 200
+							end
+						},
+						arrow = {
+							order = 9,
+							type = "multiselect",
+							name = L["Arrow Texture"],
+							customWidth = 80,
+							get = function(_, value) return E.db.nameplates.arrow == value end,
+							set = function(_, value)
+								E.db.nameplates.arrow = value
+								NP:ConfigureAll()
+							end
 						}
 					}
 				},
@@ -4450,6 +4467,15 @@ E.Options.args.nameplate = {
 		}
 	}
 }
+
+do -- target arrow textures
+	local arrows = {}
+	E.Options.args.nameplate.args.generalGroup.args.targetGroup.args.arrow.values = arrows
+
+	for key, arrow in pairs(E.Media.Arrows) do
+		arrows[key] = E:TextureString(arrow, ":32:32")
+	end
+end
 
 for i = 1, 5 do
 	E.Options.args.nameplate.args.generalGroup.args.colorsGroup.args.comboPoints.args["COMBO_POINTS"..i] = {
