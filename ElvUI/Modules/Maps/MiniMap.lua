@@ -356,6 +356,8 @@ function M:UpdateSettings()
 		MiniMapMailFrame:ClearAllPoints()
 		MiniMapMailFrame:Point(pos, Minimap, pos, E.db.general.minimap.icons.mail.xOffset or 3, E.db.general.minimap.icons.mail.yOffset or 4)
 		MiniMapMailFrame:SetScale(scale)
+
+		MiniMapMailIcon:SetTexture(E.Media.Textures[E.db.general.minimap.icons.mail.texture] or E.Media.Textures.Mail)
 	end
 
 	if QueueStatusMinimapButton then
@@ -513,8 +515,6 @@ function M:Initialize()
 	end
 
 	QueueStatusFrame:SetClampedToScreen(true)
-
-	MiniMapMailIcon:SetTexture(E.Media.Textures.Mail)
 
 	MiniMapInstanceDifficulty:SetParent(Minimap)
 	GuildInstanceDifficulty:SetParent(Minimap)

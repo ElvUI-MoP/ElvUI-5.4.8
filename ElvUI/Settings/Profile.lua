@@ -79,7 +79,8 @@ P.general = {
 				scale = 1,
 				position = "TOPRIGHT",
 				xOffset = 3,
-				yOffset = 4
+				yOffset = 4,
+				texture = "Mail0"
 			},
 			lfgEye = {
 				scale = 1,

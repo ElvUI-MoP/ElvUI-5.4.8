@@ -99,12 +99,12 @@ E.Options.args.maps = {
 							set = function(info, value) E.global.general.WorldMapCoordinates.position = value WM:PositionCoords() end,
 							disabled = function() return not E.global.general.WorldMapCoordinates.enable end,
 							values = {
-								["TOP"] = L["Top"],
-								["BOTTOM"] = L["Bottom"],
-								["TOPLEFT"] = L["Top Left"],
-								["TOPRIGHT"] = L["Top Right"],
-								["BOTTOMLEFT"] = L["Bottom Left"],
-								["BOTTOMRIGHT"] = L["Bottom Right"]
+								TOP = L["Top"],
+								BOTTOM = L["Bottom"],
+								TOPLEFT = L["Top Left"],
+								TOPRIGHT = L["Top Right"],
+								BOTTOMLEFT = L["Bottom Left"],
+								BOTTOMRIGHT = L["Bottom Right"]
 							}
 						},
 						xOffset = {
@@ -175,9 +175,9 @@ E.Options.args.maps = {
 							get = function(info) return E.db.general.minimap.locationText end,
 							set = function(info, value) E.db.general.minimap.locationText = value MM:UpdateSettings() MM:Update_ZoneText() end,
 							values = {
-								["MOUSEOVER"] = L["Minimap Mouseover"],
-								["SHOW"] = L["Always Display"],
-								["HIDE"] = L["HIDE"]
+								MOUSEOVER = L["Minimap Mouseover"],
+								SHOW = L["Always Display"],
+								HIDE = L["HIDE"]
 							},
 							disabled = function() return not E.private.general.minimap.enable end
 						},
@@ -345,25 +345,36 @@ E.Options.args.maps = {
 							disabled = function() return not E.private.general.minimap.enable end,
 							args = {
 								position = {
-									order = 2,
+									order = 1,
 									type = "select",
 									name = L["Position"],
 									values = positionValues
 								},
-								scale = {
+								texture = {
+									order = 2,
+									type = "select",
+									name = L["Texture"],
+									values = {}
+								},
+								spacer = {
 									order = 3,
+									type = "description",
+									name = ""
+								},
+								scale = {
+									order = 4,
 									type = "range",
 									name = L["Scale"],
 									min = 0.5, max = 2, step = 0.05
 								},
 								xOffset = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = L["X-Offset"],
 									min = -50, max = 50, step = 1
 								},
 								yOffset = {
-									order = 5,
+									order = 6,
 									type = "range",
 									name = L["Y-Offset"],
 									min = -50, max = 50, step = 1
@@ -515,3 +526,12 @@ E.Options.args.maps = {
 		}
 	}
 }
+
+do -- mail icons
+	local mail = {}
+	E.Options.args.maps.args.minimap.args.icons.args.mail.args.texture.values = mail
+
+	for key, icon in pairs(E.Media.MailIcons) do
+		mail[key] = E:TextureString(icon, ":14:14")
+	end
+end
