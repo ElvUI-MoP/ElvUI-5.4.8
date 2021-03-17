@@ -116,6 +116,12 @@ function S:Ace3_EditBoxSetPoint(a, b, c, d, e)
 	if d == 7 then self:Point(a, b, c, 0, e) end
 end
 
+function S:Ace3_TabSetPoint(a, b, c, d, e, f)
+	if f ~= "ignore" and a == "TOPLEFT" then
+		self:SetPoint(a, b, c, d, e + 2, "ignore")
+	end
+end
+
 function S:Ace3_TabSetSelected(selected)
 	local bd = self.backdrop
 	if not bd then return end
@@ -492,6 +498,9 @@ function S:Ace3_RegisterAsContainer(widget)
 				tab.backdrop:Point("TOPLEFT", 10, -3)
 				tab.backdrop:Point("BOTTOMRIGHT", -10, 0)
 
+				if not E.PixelMode then
+					hooksecurefunc(tab, "SetPoint", S.Ace3_TabSetPoint)
+				end
 				hooksecurefunc(tab, "SetSelected", S.Ace3_TabSetSelected)
 
 				return tab

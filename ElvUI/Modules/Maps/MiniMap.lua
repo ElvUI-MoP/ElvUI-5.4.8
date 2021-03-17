@@ -273,7 +273,7 @@ function M:UpdateSettings()
 	E.MinimapSize = E.private.general.minimap.enable and E.db.general.minimap.size or mWidth
 
 	local numBuffs = E.db.auras.consolidatedBuffs.filter and 6 or 8
-	E.ConsolidatedBuffsWidth = E.db.auras.consolidatedBuffs.enable and (E.MinimapSize + ((E.Border * numBuffs) + (E.PixelMode and 2 or 1)) - (E.Spacing * numBuffs)) / numBuffs or E:Scale(E.PixelMode and 1 or -1)
+	E.ConsolidatedBuffsWidth = E.db.auras.consolidatedBuffs.enable and (E.MinimapSize + ((E.Border * numBuffs) + 1) - (E.Spacing * numBuffs)) / numBuffs or E:Scale(E.PixelMode and 1 or -1)
 
 	if E.private.general.minimap.enable then
 		Minimap:Size(E.MinimapSize, E.MinimapSize)

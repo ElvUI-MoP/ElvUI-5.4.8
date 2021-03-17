@@ -435,37 +435,37 @@ E.Options.args.chat = {
 								GUILD = {
 									type = "select", dialogControl = "LSM30_Sound",
 									name = L["GUILD"],
-									width = "double",
+									customWidth = 250,
 									values = AceGUIWidgetLSMlists.sound
 								},
 								OFFICER = {
 									type = "select", dialogControl = "LSM30_Sound",
 									name = L["OFFICER"],
-									width = "double",
+									customWidth = 250,
 									values = AceGUIWidgetLSMlists.sound
 								},
 								INSTANCE = {
 									type = "select", dialogControl = "LSM30_Sound",
 									name = L["INSTANCE"],
-									width = "double",
+									customWidth = 250,
 									values = AceGUIWidgetLSMlists.sound
 								},
 								PARTY = {
 									type = "select", dialogControl = "LSM30_Sound",
 									name = L["PARTY"],
-									width = "double",
+									customWidth = 250,
 									values = AceGUIWidgetLSMlists.sound
 								},
 								RAID = {
 									type = "select", dialogControl = "LSM30_Sound",
 									name = L["RAID"],
-									width = "double",
+									customWidth = 250,
 									values = AceGUIWidgetLSMlists.sound
 								},
 								WHISPER = {
 									type = "select", dialogControl = "LSM30_Sound",
 									name = L["WHISPER"],
-									width = "double",
+									customWidth = 250,
 									values = AceGUIWidgetLSMlists.sound
 								}
 							}
