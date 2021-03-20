@@ -23,7 +23,6 @@ local Masque = E.Libs.Masque
 local MasqueGroup = Masque and Masque:Group("ElvUI", "Pet Bar")
 
 local bar = CreateFrame("Frame", "ElvUI_BarPet", E.UIParent, "SecureHandlerStateTemplate")
-bar:SetFrameStrata("LOW")
 
 function AB:UpdatePet(event, unit)
 	if event == "UNIT_AURA" and unit ~= "pet" then return end
@@ -94,11 +93,11 @@ function AB:UpdatePet(event, unit)
 end
 
 function AB:PositionAndSizeBarPet()
-	local buttonSpacing = E:Scale(self.db.barPet.buttonspacing)
-	local backdropSpacing = E:Scale((self.db.barPet.backdropSpacing or self.db.barPet.buttonspacing))
+	local buttonSpacing = E:Scale(self.db.barPet.buttonSpacing)
+	local backdropSpacing = E:Scale((self.db.barPet.backdropSpacing or self.db.barPet.buttonSpacing))
 	local buttonsPerRow = self.db.barPet.buttonsPerRow
 	local numButtons = self.db.barPet.buttons
-	local size = E:Scale(self.db.barPet.buttonsize)
+	local size = E:Scale(self.db.barPet.buttonSize)
 	local autoCastSize = (size / 2) - (size / 7.5)
 	local point = self.db.barPet.point
 	local numColumns = ceil(numButtons / buttonsPerRow)
@@ -159,19 +158,11 @@ function AB:PositionAndSizeBarPet()
 		horizontalGrowth = "LEFT"
 	end
 
-	if bar.mouseover then
-		bar:SetAlpha(0)
-	else
-		bar:SetAlpha(bar.db.alpha)
-	end
-
-	if self.db.barPet.inheritGlobalFade then
-		bar:SetParent(self.fadeParent)
-	else
-		bar:SetParent(E.UIParent)
-	end
-
+	bar:SetParent(bar.db.inheritGlobalFade and self.fadeParent or E.UIParent)
 	bar:EnableMouse(not self.db.barPet.clickThrough)
+	bar:SetAlpha(bar.mouseover and 0 or bar.db.alpha)
+	bar:SetFrameStrata(bar.db.frameStrata or "LOW")
+	bar:SetFrameLevel(bar.db.frameLevel)
 
 	local button, lastButton, lastColumnButton, autoCast
 	local firstButtonSpacing = (self.db.barPet.backdrop and (E.Border + backdropSpacing) or E.Spacing)

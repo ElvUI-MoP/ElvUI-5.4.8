@@ -1391,6 +1391,34 @@ function E:DBConversions()
 	if E.db.nameplates.units.TARGET ~= nil then
 		E.db.nameplates.units.TARGET = nil
 	end
+
+	for i = 1, 10 do
+		local bar = E.db.actionbar["bar"..i]
+		if bar.buttonsize then
+			bar.buttonSize = bar.buttonsize
+			bar.buttonsize = nil
+		end
+		if bar.buttonspacing then
+			bar.buttonSpacing = bar.buttonspacing
+			bar.buttonspacing = nil
+		end
+	end
+	if E.db.actionbar.stanceBar.buttonsize then
+		E.db.actionbar.stanceBar.buttonSize = E.db.actionbar.stanceBar.buttonsize
+		E.db.actionbar.stanceBar.buttonsize = nil
+	end
+	if E.db.actionbar.stanceBar.buttonspacing then
+		E.db.actionbar.stanceBar.buttonSpacing = E.db.actionbar.stanceBar.buttonspacing
+		E.db.actionbar.stanceBar.buttonspacing = nil
+	end
+	if E.db.actionbar.barPet.buttonsize then
+		E.db.actionbar.barPet.buttonSize = E.db.actionbar.barPet.buttonsize
+		E.db.actionbar.barPet.buttonsize = nil
+	end
+	if E.db.actionbar.barPet.buttonspacing then
+		E.db.actionbar.barPet.buttonSpacing = E.db.actionbar.barPet.buttonspacing
+		E.db.actionbar.barPet.buttonspacing = nil
+	end
 end
 
 function E:RefreshModulesDB()

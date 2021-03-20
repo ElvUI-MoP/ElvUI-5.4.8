@@ -4870,10 +4870,12 @@ P.actionbar = {
 		backdrop = true,
 		heightMult = 1,
 		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
+		buttonSize = 32,
+		buttonSpacing = 2,
 		backdropSpacing = 2,
 		alpha = 1,
+		frameStrata = "LOW",
+		frameLevel = 1,
 		inheritGlobalFade = false,
 		visibility = "[petbattle] hide;[pet,novehicleui,nooverridebar,nopossessbar] show;hide"
 	},
@@ -4889,10 +4891,12 @@ P.actionbar = {
 		backdrop = false,
 		heightMult = 1,
 		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
+		buttonSize = 32,
+		buttonSpacing = 2,
 		backdropSpacing = 2,
 		alpha = 1,
+		frameStrata = "LOW",
+		frameLevel = 1,
 		inheritGlobalFade = false,
 		visibility = "[vehicleui] hide; [petbattle] hide;show"
 	},
@@ -4917,8 +4921,8 @@ P.actionbar = {
 	vehicleExitButton = {
 		enable = true,
 		size = 32,
-		level = 1,
-		strata = "MEDIUM"
+		frameStrata = "LOW",
+		frameLevel = 1
 	}
 }
 
@@ -4933,10 +4937,12 @@ for i = 1, 10 do
 		backdrop = false,
 		heightMult = 1,
 		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
+		buttonSize = 32,
+		buttonSpacing = 2,
 		backdropSpacing = 2,
 		alpha = 1,
+		frameStrata = "LOW",
+		frameLevel = 1,
 		inheritGlobalFade = false,
 		showGrid = true,
 		flyoutDirection = "AUTOMATIC",

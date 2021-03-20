@@ -120,11 +120,11 @@ AB.customExitButton = {
 function AB:PositionAndSizeBar(barName)
 	local db = AB.db[barName]
 
-	local buttonSpacing = E:Scale(db.buttonspacing)
-	local backdropSpacing = E:Scale(db.backdropSpacing or db.buttonspacing)
+	local buttonSpacing = E:Scale(db.buttonSpacing)
+	local backdropSpacing = E:Scale(db.backdropSpacing or db.buttonSpacing)
 	local buttonsPerRow = db.buttonsPerRow
 	local numButtons = db.buttons
-	local size = E:Scale(db.buttonsize)
+	local size = E:Scale(db.buttonSize)
 	local point = db.point
 	local numColumns = ceil(numButtons / buttonsPerRow)
 	local widthMult = db.widthMult
@@ -176,19 +176,11 @@ function AB:PositionAndSizeBar(barName)
 		horizontalGrowth = "LEFT"
 	end
 
-	if db.mouseover then
-		bar:SetAlpha(0)
-	else
-		bar:SetAlpha(db.alpha)
-	end
-
-	if db.inheritGlobalFade then
-		bar:SetParent(AB.fadeParent)
-	else
-		bar:SetParent(E.UIParent)
-	end
-
+	bar:SetParent(db.inheritGlobalFade and AB.fadeParent or E.UIParent)
 	bar:EnableMouse(not db.clickThrough)
+	bar:SetAlpha(db.mouseover and 0 or db.alpha)
+	bar:SetFrameStrata(db.frameStrata or "LOW")
+	bar:SetFrameLevel(db.frameLevel)
 
 	local button, lastButton, lastColumnButton
 	for i = 1, NUM_ACTIONBAR_BUTTONS do
@@ -276,7 +268,7 @@ function AB:PositionAndSizeBar(barName)
 		UnregisterStateDriver(bar, "visibility")
 	end
 
-	E:SetMoverSnapOffset("ElvAB_"..bar.id, db.buttonspacing / 2)
+	E:SetMoverSnapOffset("ElvAB_"..bar.id, db.buttonSpacing / 2)
 
 	if MasqueGroup and E.private.actionbar.masque.actionbars then
 		MasqueGroup:ReSkin()
@@ -289,7 +281,6 @@ function AB:CreateBar(id)
 	bar:Point(point, anchor, attachTo, x, y)
 	bar.id = id
 	bar:CreateBackdrop(AB.db.transparentBackdrops and "Transparent")
-	bar:SetFrameStrata("LOW")
 
 	--Use this method instead of :SetAllPoints, as the size of the mover would otherwise be incorrect
 	bar.backdrop:SetPoint("TOPLEFT", bar, "TOPLEFT", E.Spacing, -E.Spacing)
@@ -412,8 +403,8 @@ function AB:UpdateVehicleLeave()
 	local db = E.db.actionbar.vehicleExitButton
 
 	MainMenuBarVehicleLeaveButton:Size(db.size)
-	MainMenuBarVehicleLeaveButton:SetFrameStrata(db.strata)
-	MainMenuBarVehicleLeaveButton:SetFrameLevel(db.level)
+	MainMenuBarVehicleLeaveButton:SetFrameStrata(db.frameStrata)
+	MainMenuBarVehicleLeaveButton:SetFrameLevel(db.frameLevel)
 	VehicleLeaveButtonHolder:Size(db.size)
 end
 
