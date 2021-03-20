@@ -228,7 +228,7 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 	for i = 1, NUM_LE_RAID_BUFF_TYPES do
 		local button = frame[i]
 
-		button:SetSize(E.ConsolidatedBuffsWidth, E.ConsolidatedBuffsWidth)
+		button:SetSize(E:Scale(E.ConsolidatedBuffsWidth), E.ConsolidatedBuffsWidth)
 		button:SetShown(not ignoreIcons[i])
 		button:ClearAllPoints()
 
@@ -237,7 +237,7 @@ function A:Update_ConsolidatedBuffsSettings(isCallback)
 		elseif i == 8 then
 			button:Point("BOTTOM", frame, "BOTTOM", 0, 0)
 		else
-			button:Point("TOP", frame[ignoreIcons[i - 1] or (i - 1)], "BOTTOM", 0, E.Border - E.Spacing)
+			button:Point("TOP", frame[ignoreIcons[i - 1] or (i - 1)], "BOTTOM", 0, E.Border - E.Spacing * 3)
 		end
 
 		local font = LSM:Fetch("font", db.font)
