@@ -10,64 +10,32 @@ local hooksecurefunc = hooksecurefunc
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.gossip then return end
 
-	-- Item Text Frame
-	ItemTextFrame:StripTextures(true)
-	ItemTextFrame:SetTemplate("Transparent")
-
-	ItemTextFrameInset:Kill()
-
-	ItemTextTitleText:ClearAllPoints()
-	ItemTextTitleText:Point("TOP", 0, -8)
-
-	ItemTextPageText:SetTextColor(1, 1, 1)
-	ItemTextPageText.SetTextColor = E.noop
-
-	ItemTextCurrentPage:Point("TOP", 0, -35)
-
-	ItemTextScrollFrame:StripTextures()
-	ItemTextScrollFrame:Point("TOPRIGHT", -41, -63)
-	ItemTextScrollFrame:CreateBackdrop("Transparent")
-	ItemTextScrollFrame.backdrop:Point("TOPLEFT", -10, 0)
-	ItemTextScrollFrame.backdrop:Point("BOTTOMRIGHT", 10, 0)
-
-	S:HandleScrollBar(ItemTextScrollFrameScrollBar)
-	ItemTextScrollFrameScrollBar:ClearAllPoints()
-	ItemTextScrollFrameScrollBar:Point("TOPRIGHT", ItemTextScrollFrame, 33, -18)
-	ItemTextScrollFrameScrollBar:Point("BOTTOMRIGHT", ItemTextScrollFrame, 0, 18)
-
-	S:HandleNextPrevButton(ItemTextPrevPageButton, nil, nil, true)
-	ItemTextPrevPageButton:Point("CENTER", ItemTextFrame, "TOPLEFT", 18, -41)
-	ItemTextPrevPageButton:Size(28)
-
-	S:HandleNextPrevButton(ItemTextNextPageButton, nil, nil, true)
-	ItemTextNextPageButton:Point("CENTER", ItemTextFrame, "TOPRIGHT", -42, -41)
-	ItemTextNextPageButton:Size(28)
-
-	S:HandleCloseButton(ItemTextFrameCloseButton)
-
-	-- Gossip Frame
-	GossipFrameGreetingPanel:StripTextures()
 	GossipFrame:StripTextures()
-	GossipFrame:CreateBackdrop("Transparent")
+	GossipFrame:SetTemplate("Transparent")
 
 	GossipFrameInset:Kill()
 	GossipFramePortrait:Kill()
-
-	GossipGreetingScrollFrame:StripTextures()
-	GossipGreetingScrollFrame:SetTemplate("Transparent")
 
 	GossipFrameNpcNameText:ClearAllPoints()
 	GossipFrameNpcNameText:Point("TOP", GossipFrame, 1, -1)
 
 	GossipGreetingText:SetTextColor(1, 1, 1)
 
+	GossipFrameGreetingPanel:StripTextures()
+
+	GossipGreetingScrollFrame:StripTextures()
+	GossipGreetingScrollFrame:CreateBackdrop("Transparent")
+	GossipGreetingScrollFrame.backdrop:Point("TOPLEFT", 0, 1)
+	GossipGreetingScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -2)
+	GossipGreetingScrollFrame:Point("TOPLEFT", 6, -60)
+
 	S:HandleScrollBar(GossipGreetingScrollFrameScrollBar)
 	GossipGreetingScrollFrameScrollBar:ClearAllPoints()
-	GossipGreetingScrollFrameScrollBar:Point("TOPRIGHT", GossipGreetingScrollFrame, 24, -18)
-	GossipGreetingScrollFrameScrollBar:Point("BOTTOMRIGHT", GossipGreetingScrollFrame, 0, 18)
+	GossipGreetingScrollFrameScrollBar:Point("TOPRIGHT", GossipGreetingScrollFrame, 23, -17)
+	GossipGreetingScrollFrameScrollBar:Point("BOTTOMRIGHT", GossipGreetingScrollFrame, 0, 16)
 
 	S:HandleButton(GossipFrameGreetingGoodbyeButton)
-	GossipFrameGreetingGoodbyeButton:Point("BOTTOMRIGHT", -79, 19)
+	GossipFrameGreetingGoodbyeButton:Point("BOTTOMRIGHT", -78, 21)
 
 	S:HandleCloseButton(GossipFrameCloseButton, GossipFrame.backdrop)
 

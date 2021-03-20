@@ -175,7 +175,7 @@ local function LoadSkin()
 	end
 
 	-- Declension frame
-	if GetLocale() == "ruRU" then
+	if E.locale == "ruRU" then
 		DeclensionFrame:SetTemplate("Transparent")
 
 		S:HandleNextPrevButton(DeclensionFrameSetPrev)

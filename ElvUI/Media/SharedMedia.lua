@@ -198,7 +198,6 @@ E.Media = {
 		BagUpgradeIcon = M..[[Textures\BagUpgradeIcon.tga]],
 		Black8x8 = M..[[Textures\Black8x8.tga]],
 		White8x8 = [[Interface\BUTTONS\WHITE8X8]], -- not elvui
-		Broom = M..[[Textures\Broom.blp]],
 		ChatEmojis = M..[[Textures\ChatEmojis]],
 		ChatLogos = M..[[Textures\ChatLogos]],
 		Close = M..[[Textures\Close.tga]],

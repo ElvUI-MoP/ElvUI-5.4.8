@@ -3,6 +3,7 @@ local S = E:GetModule("Skins")
 
 local _G = _G
 local pairs, select, unpack = pairs, select, unpack
+local tconcat = table.concat
 
 local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
@@ -72,29 +73,45 @@ local function LoadSkin()
 		elseif i == 3 or i == 5 or i == 7 or i == 9 or i == 11 then
 			button:Point("TOPLEFT", _G["SpellButton"..i - 2], "BOTTOMLEFT", 0, -27)
 		end
+
+		button.SeeTrainerString:SetTextColor(1, 1, 1)
 	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function(self)
-		local name = self:GetName()
-		local spellName = _G[name.."SpellName"]
-		local spellSubName = _G[name.."SubSpellName"]
-		local spellLevel = _G[name.."RequiredLevelString"]
-		local r = spellName:GetTextColor()
+		local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
+		if not slot then return end
 
-		if r < 0.8 then
-			spellName:SetTextColor(0.6, 0.6, 0.6)
+		local _, subSpellName = GetSpellBookItemName(slot, SpellBookFrame.bookType)
+		local isOffSpec = self.offSpecID ~= 0 and SpellBookFrame.bookType == BOOKTYPE_SPELL
 
-			if spellSubName then
-				spellSubName:SetTextColor(0.6, 0.6, 0.6)
-			end
+		if slotType == "FUTURESPELL" then
+			local level = GetSpellAvailableLevel(slot, SpellBookFrame.bookType)
+
+			self.SpellName:Point("LEFT", self, "RIGHT", (level and level > E.mylevel) and 8 or 24, (subSpellName == "" and not self.isPassive) and 10 or 12)
+			self.SpellName:SetTextColor(0.6, 0.6, 0.6)
+			self.SpellSubName:SetTextColor(0.6, 0.6, 0.6)
 		else
-			if spellSubName then
-				spellSubName:SetTextColor(1, 1, 1)
+			local level = GetSpellLevelLearned(slotID)
+			local specName = tconcat({GetSpecsForSpell(slot, SpellBookFrame.bookType)}, PLAYER_LIST_DELIMITER)
+			local talentName = IsTalentSpell(slot, SpellBookFrame.bookType)
+			local offSpecLvL = (slotType == "SPELL" and isOffSpec) and (level and level > E.mylevel)
+
+			if (subSpellName == "" or subSpellName == nil) and (specName == "" or specName == nil) and talentName == nil and not self.isPassive then
+				self.SpellName:Point("LEFT", self, "RIGHT", 8, offSpecLvL and 10 or 0)
+			else
+				self.SpellName:Point("LEFT", self, "RIGHT", 8, offSpecLvL and 12 or 5)
 			end
+
+			self.SpellName:SetTextColor(1, 0.8, 0.1)
+			self.SpellSubName:SetTextColor(1, 1, 1)
 		end
 
-		if spellLevel then
-			spellLevel:SetTextColor(0.6, 0.6, 0.6)
+		self.RequiredLevelString:SetTextColor(1, 1, 1)
+
+		if isOffSpec then
+			self.SpellName:SetTextColor(0.6, 0.6, 0.6)
+			self.SpellSubName:SetTextColor(0.6, 0.6, 0.6)
+			self.RequiredLevelString:SetTextColor(0.6, 0.6, 0.6)
 		end
 	end)
 

@@ -25,6 +25,7 @@
 	<Script file="Gossip.lua"/>
 	<Script file="Help.lua"/>
 	<Script file="Inspect.lua"/>
+	<Script file="ItemText.lua"/>
 	<Script file="ItemUpgrade.lua"/>
 	<Script file="LFG.lua"/>
 	<Script file="LFGuild.lua"/>

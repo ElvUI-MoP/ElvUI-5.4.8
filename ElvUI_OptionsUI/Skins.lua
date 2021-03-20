@@ -184,6 +184,11 @@ E.Options.args.skins = {
 					name = L["INSPECT"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
+				itemText = {
+					type = "toggle",
+					name = L["Item Text Frame"],
+					desc = L["TOGGLESKIN_DESC"]
+				},
 				itemUpgrade = {
 					type = "toggle",
 					name = L["ITEM_UPGRADE"],

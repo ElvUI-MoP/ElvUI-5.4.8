@@ -188,7 +188,7 @@ function S:HandleScrollBar(frame, thumbTrimY, thumbTrimX)
 
 		if not thumbTrimY then thumbTrimY = 3 end
 		if not thumbTrimX then thumbTrimX = 2 end
-		Thumb.backdrop:Point("TOPLEFT", Thumb, "TOPLEFT", 2, -thumbTrimY)
+		Thumb.backdrop:Point("TOPLEFT", Thumb, "TOPLEFT", thumbTrimX, -thumbTrimY)
 		Thumb.backdrop:Point("BOTTOMRIGHT", Thumb, "BOTTOMRIGHT", -thumbTrimX, thumbTrimY)
 		Thumb.backdrop:SetFrameLevel(Thumb.backdrop:GetFrameLevel() + 2)
 		Thumb.backdrop.backdropTexture:SetVertexColor(0.6, 0.6, 0.6)

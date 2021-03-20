@@ -1,8 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
-local _G = _G
-
 local SetDressUpBackground = SetDressUpBackground
 
 local function LoadSkin()
@@ -44,7 +42,7 @@ local function LoadSkin()
 	S:HandleCloseButton(SideDressUpModelCloseButton)
 	SideDressUpModelCloseButton:Point("CENTER", SideDressUpFrame, "TOPRIGHT", -18, -2)
 
-	--Model Backgrounds
+	-- Model Backgrounds
 	hooksecurefunc("SetDressUpBackground", function(frame)
 		if frame.BGTopLeft then
 			frame.BGTopLeft:SetDesaturated(true)
