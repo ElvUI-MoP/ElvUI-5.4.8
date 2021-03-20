@@ -119,7 +119,9 @@ L["Fishy Loot"] = "Botín Sospechoso"
 L["Focus Aura Bars"] = true
 L["Focus Castbar"] = "Barra de Lanzamiento del Foco"
 L["Focus Frame"] = "Marco de Foco"
+L["Focus Powerbar"] = true
 L["FocusTarget Frame"] = "Marco de Objetivo del Foco"
+L["FocusTarget Powerbar"] = true
 L["For technical support visit us at https://github.com/ElvUI-MoP."] = "Para soporte técnico visítanos en https://github.com/ElvUI-MoP"
 L["Frame"] = "Marco"
 L["Friends List"] = "Lista de Amigos"
@@ -210,10 +212,12 @@ L["P"] = "G"
 L["Party Frames"] = "Marco de Grupo"
 L["Pending"] = "Pendiente"
 L["PetTarget Frame"] = "Marco de Objetivo de Mascota"
+L["PetTarget Powerbar"] = true
 L["Pet Aura Bars"] = true
 L["Pet Bar"] = "Barra de Mascota"
 L["Pet Castbar"] = "Barra de Lanzamiento de Mascota"
 L["Pet Frame"] = "Marco de Mascota"
+L["Pet Powerbar"] = true
 L["PL"] = "LG"
 L["Player Aura Bars"] = true
 L["Player Buffs"] = "Ventajas de Jugador"
@@ -283,7 +287,9 @@ L["Target Frame"] = "Marco de Objetivo"
 L["Target Powerbar"] = "Barra de Poder del Objetivo"
 L["Targeted By:"] = "Objetivo De:"
 L["TargetTarget Frame"] = "Marco de Objetivo de Objetivo"
+L["TargetTarget Powerbar"] = true
 L["TargetTargetTarget Frame"] = "Marco del Objetivo del Objetivo del Objetivo"
+L["TargetTargetTarget Powerbar"] = true
 L["Temporary Move"] = "Movimiento Temporal"
 L["The chat windows function the same as Blizzard standard chat windows, you can right click the tabs and drag them around, rename, etc. Please click the button below to setup your chat windows."] = "Las ventanas de chat funcionan igual que sus contrapartes estándar de Blizzard. Puedes hacer clic derecho en las pestañas y arrastrarlas, cambiarles el nombre, etc. Haz clic en el botón de abajo para configurar las ventanas de chat."
 L["The focus unit can be set by typing /focus when you are targeting the unit you want to focus. It is recommended you make a macro to do this."] = "El foco puede establecerse escribiendo /enfoque cuando tienes seleccionado al objetivo al cual quieres hacer foco. Es recomendable que hagas una macro para esto."
@@ -353,15 +359,15 @@ Opciones:
    Ctrl + Clic Derecho - Restablece la posición de los fijadores a los valores por defecto.
 ]=]
 
-L["EHELP_COMMANDS"] = ([=[Here is a list of all important *ElvUI|r commands:
- */ec|r or */elvui|r  -  Toggle the *OptionsUI|r.
- */moveui|r  -  Toggle anchors to reposition various elements.
- */kb|r  -  Toggle the keybind mode.
- */resetui|r  -  Reset all frames to their original positions.
- */bgstats|r  -  Toggle Battleground stats on your DataTexts.
- */estatus|r  -  Important informations for support questions.
- */egrid|r ^64|r or ^128|r or ^256|r  -  Toggle a pixel grid.
- */luaerror|r ^on|r or ^off|r  -  Disable all AddOns except ElvUI.
-  NOTE: */luaerror|r ^off|r will re-enable the addons disabled from
-  using */luaerror|r ^on|r within that session.
+L["EHELP_COMMANDS"] = ([=[Aquí hay una lista de todos los comandos importantes de *ElvUI|r:
+ */ec|r or */elvui|r  -  Mostrar/Ocultar el *OptionsUI|r.
+ */moveui|r  -  Mostrar/Ocultar los fijadores para reposicionar varios elementos.
+ */kb|r  -  Mostrar/Ocultar el modo atajos.
+ */resetui|r  -  Restablecer todos los marcos a sus posiciones originales.
+ */bgstats|r  -  Mostrar/Ocultar las estadísticas del campo de batalla en tus Textos de Datos.
+ */estatus|r  -  Información importante para preguntas de soporte.
+ */egrid|r ^64|r or ^128|r or ^256|r  -  Mostrar/Ocultar una cuadrícula de líneas.
+ */luaerror|r ^on|r or ^off|r  -  Deshabilitar todos los AddOns excepto ElvUI.
+  NOTA: */luaerror|r ^off|r volverá a habilitar los complementos deshabilitado
+  mediante el uso de */luaerror|r ^on|r dentro de esa sesión.
 ]=]):gsub("*", COLOR1):gsub("%^", COLOR2)
