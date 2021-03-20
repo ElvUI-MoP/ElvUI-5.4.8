@@ -94,7 +94,7 @@ local function SkinLFGRewards(button, dungeonID, index)
 		if index == 1 then
 			button:Point("TOPLEFT", _G[parentName.."RewardsDescription"], "BOTTOMLEFT", -5, -10)
 		else
-			button:Point("LEFT", _G[parentName.."Item1"], "RIGHT", 4, 0) 
+			button:Point("LEFT", _G[parentName.."Item1"], "RIGHT", 4, 0)
 		end
 
 		button.isSkinned = true
@@ -285,7 +285,7 @@ local function SkinLFG()
 
 	for i = 1, NUM_LFD_CHOICE_BUTTONS do
 		SkinSpecificList(_G["LFDQueueFrameSpecificListButton"..i])
- 	end
+	end
 
 	-- Scenarios
 	ScenarioFinderFrame:StripTextures()
@@ -645,7 +645,7 @@ local function SkinLFR()
 
 	for i = 1, NUM_LFR_CHOICE_BUTTONS do
 		SkinSpecificList(_G["LFRQueueFrameSpecificListButton"..i])
- 	end
+	end
 
 	-- LFR Browse Frame
 	LFRBrowseFrame:StripTextures()

@@ -6,7 +6,6 @@ local format = format
 local min = min
 
 local GetPetExperience, UnitXP, UnitXPMax = GetPetExperience, UnitXP, UnitXPMax
-local UnitLevel = UnitLevel
 local IsXPUserDisabled, GetXPExhaustion = IsXPUserDisabled, GetXPExhaustion
 local GetExpansionLevel = GetExpansionLevel
 local MAX_PLAYER_LEVEL_TABLE = MAX_PLAYER_LEVEL_TABLE

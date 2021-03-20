@@ -1282,7 +1282,7 @@ for i = 1, 10 do
 						end,
 						set = function(info, r, g, b)
 							local c = E.db.actionbar["bar"..i][info[#info]]
-							c.r, c.g, c.b, c.a = r, g, b, a
+							c.r, c.g, c.b = r, g, b
 							AB:UpdateButtonSettings()
 						end,
 						disabled = function() return not E.db.actionbar["bar"..i].useHotkeyColor or (not AB.db.hotkeytext or E.db.actionbar["bar"..i].hideHotkey) end
@@ -1308,7 +1308,7 @@ for i = 1, 10 do
 						end,
 						set = function(info, r, g, b)
 							local c = E.db.actionbar["bar"..i][info[#info]]
-							c.r, c.g, c.b, c.a = r, g, b, a
+							c.r, c.g, c.b = r, g, b
 							AB:UpdateButtonSettings()
 						end,
 						disabled = function() return not E.db.actionbar["bar"..i].useCountColor end
@@ -1335,7 +1335,7 @@ for i = 1, 10 do
 						end,
 						set = function(info, r, g, b)
 							local c = E.db.actionbar["bar"..i][info[#info]]
-							c.r, c.g, c.b, c.a = r, g, b, a
+							c.r, c.g, c.b = r, g, b
 							AB:UpdateButtonSettings()
 						end,
 						disabled = function() return not AB.db.macrotext or not E.db.actionbar["bar"..i].useMacroColor end

@@ -8,7 +8,7 @@ local Skins = E:GetModule("Skins")
 local _G = _G
 local pairs, type, unpack, assert = pairs, type, unpack, assert
 local tremove, tContains, tinsert, wipe = tremove, tContains, tinsert, wipe
-local strlower, format = strlower, string.format
+local format = string.format
 
 local CreateFrame = CreateFrame
 local IsAddOnLoaded = IsAddOnLoaded

@@ -382,7 +382,7 @@ local function LoadSkin()
 	S:HandleScrollBar(GuildTextEditScrollFrameScrollBar, 5)
 	GuildTextEditScrollFrameScrollBar:ClearAllPoints()
 	GuildTextEditScrollFrameScrollBar:Point("TOPRIGHT", GuildTextEditScrollFrame, 23, E.PixelMode and -10 or -9)
-	GuildTextEditScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildTextEditScrollFrame, 0, 11) 
+	GuildTextEditScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildTextEditScrollFrame, 0, 11)
 
 	for i = 1, GuildTextEditFrame:GetNumChildren() do
 		local child = select(i, GuildTextEditFrame:GetChildren())

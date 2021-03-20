@@ -7,7 +7,7 @@ local Search = E.Libs.ItemSearch
 local _G = _G
 local type, ipairs, pairs, tonumber, unpack, select, assert, pcall = type, ipairs, pairs, tonumber, unpack, select, assert, pcall
 local tinsert, tremove, twipe, tmaxn = table.insert, table.remove, table.wipe, table.maxn
-local floor, ceil, abs = math.floor, math.ceil, math.abs
+local floor, ceil = math.floor, math.ceil
 local format, sub, gsub, match = string.format, string.sub, string.gsub, string.match
 
 local BankFrameItemButton_Update = BankFrameItemButton_Update

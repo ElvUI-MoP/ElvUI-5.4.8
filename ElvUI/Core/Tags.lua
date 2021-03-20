@@ -5,7 +5,7 @@ local Translit = E.Libs.Translit
 local translitMark = "!"
 
 local _G = _G
-local tonumber, next, pairs, select, unpack = tonumber, next, pairs, select, unpack
+local tonumber, next, pairs, unpack = tonumber, next, pairs, unpack
 local ceil, floor = ceil, math.floor
 local gmatch, gsub, format = gmatch, gsub, format
 local strfind, strmatch, strlower, strsplit = strfind, strmatch, strlower, strsplit

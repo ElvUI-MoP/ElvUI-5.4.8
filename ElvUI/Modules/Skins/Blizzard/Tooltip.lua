@@ -2,7 +2,6 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 local TT = E:GetModule("Tooltip")
 
-local _G = _G
 local pairs = pairs
 
 local C_PetBattles_GetLevel = C_PetBattles.GetLevel

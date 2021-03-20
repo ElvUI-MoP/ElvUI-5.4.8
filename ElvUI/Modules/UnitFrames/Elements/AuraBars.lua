@@ -124,6 +124,7 @@ function UF:Configure_AuraBars(frame)
 		end
 
 		local attachTo = frame
+		local SPACING, yOffset
 		if db.aurabar.attachTo == "BUFFS" then
 			attachTo = frame.Buffs
 		elseif db.aurabar.attachTo == "DEBUFFS" then

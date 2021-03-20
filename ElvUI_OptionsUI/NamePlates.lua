@@ -1522,7 +1522,7 @@ local function UpdateFilterGroup()
 								if not (ids and next(ids)) then return vals end
 
 								for value in pairs(ids) do
-									local info = tonumber(value) 
+									local info = tonumber(value)
 									local mapName = GetMapNameByID(value)
 									if info and mapName then
 										info = "|cFF999999("..value..")|r "..mapName

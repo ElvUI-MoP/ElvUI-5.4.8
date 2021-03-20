@@ -8,7 +8,6 @@ if DongleStub then
 	AstrolabeMapMonitor = DongleStub("AstrolabeMapMonitor")
 end
 
-local _G = _G
 local unpack = unpack
 local format, match, utf8sub = string.format, string.match, string.utf8sub
 
