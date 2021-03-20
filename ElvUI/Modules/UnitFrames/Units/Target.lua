@@ -11,42 +11,42 @@ local IsAddOnLoaded = IsAddOnLoaded
 local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
 function UF:Construct_TargetFrame(frame)
-	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
+	frame.Health = UF:Construct_HealthBar(frame, true, true, "RIGHT")
 	frame.Health.frequentUpdates = true
-	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
+	frame.Power = UF:Construct_PowerBar(frame, true, true, "LEFT")
 	frame.Power.frequentUpdates = true
-	frame.Name = self:Construct_NameText(frame)
-	frame.Portrait3D = self:Construct_Portrait(frame, "model")
-	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
-	frame.Buffs = self:Construct_Buffs(frame)
-	frame.Debuffs = self:Construct_Debuffs(frame)
-	frame.ThreatIndicator = self:Construct_Threat(frame)
-	frame.Castbar = self:Construct_Castbar(frame, L["Target Castbar"])
+	frame.Name = UF:Construct_NameText(frame)
+	frame.Portrait3D = UF:Construct_Portrait(frame, "model")
+	frame.Portrait2D = UF:Construct_Portrait(frame, "texture")
+	frame.Buffs = UF:Construct_Buffs(frame)
+	frame.Debuffs = UF:Construct_Debuffs(frame)
+	frame.ThreatIndicator = UF:Construct_Threat(frame)
+	frame.Castbar = UF:Construct_Castbar(frame, L["Target Castbar"])
 	frame.Castbar.SafeZone = nil
 	frame.Castbar.LatencyTexture:Hide()
-	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
+	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 
 	frame.ComboPointsHolder = CreateFrame("Frame", nil, frame)
 	frame.ComboPointsHolder:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 200)
-	frame.ComboPoints = self:Construct_Combobar(frame)
+	frame.ComboPoints = UF:Construct_Combobar(frame)
 
-	frame.HealthPrediction = self:Construct_HealComm(frame)
-	frame.AuraHighlight = self:Construct_AuraHighlight(frame)
-	frame.GPS = self:Construct_GPS(frame)
-	frame.InfoPanel = self:Construct_InfoPanel(frame)
-	frame.MouseGlow = self:Construct_MouseGlow(frame)
-	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.HealthPrediction = UF:Construct_HealComm(frame)
+	frame.AuraHighlight = UF:Construct_AuraHighlight(frame)
+	frame.GPS = UF:Construct_GPS(frame)
+	frame.InfoPanel = UF:Construct_InfoPanel(frame)
+	frame.MouseGlow = UF:Construct_MouseGlow(frame)
+	frame.TargetGlow = UF:Construct_TargetGlow(frame)
 	frame.FocusGlow = UF:Construct_FocusGlow(frame)
-	frame.AuraBars = self:Construct_AuraBarHeader(frame)
-	frame.PhaseIndicator = self:Construct_PhaseIcon(frame)
+	frame.AuraBars = UF:Construct_AuraBarHeader(frame)
+	frame.PhaseIndicator = UF:Construct_PhaseIcon(frame)
 	frame.ResurrectIndicator = UF:Construct_ResurrectionIcon(frame)
 	frame.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(frame)
-	frame.PvPIndicator = self:Construct_PvPIcon(frame)
-	frame.Fader = self:Construct_Fader()
-	frame.Cutaway = self:Construct_Cutaway(frame)
+	frame.PvPIndicator = UF:Construct_PvPIcon(frame)
+	frame.Fader = UF:Construct_Fader()
+	frame.Cutaway = UF:Construct_Cutaway(frame)
 	frame.CombatIndicator = UF:Construct_CombatIndicator(frame)
-	frame.customTexts = {}
 
+	frame.customTexts = {}
 	frame:Point("BOTTOMRIGHT", E.UIParent, "BOTTOM", 413, 68)
 	E:CreateMover(frame, frame:GetName().."Mover", L["Target Frame"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,target,generalGroup")
 	frame.unitframeType = "target"
@@ -66,7 +66,7 @@ function UF:Update_TargetFrame(frame, db)
 		frame.USE_POWERBAR_OFFSET = (db.power.width == "offset" and db.power.offset ~= 0) and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
 		frame.POWERBAR_OFFSET = frame.USE_POWERBAR_OFFSET and db.power.offset or 0
 		frame.POWERBAR_HEIGHT = not frame.USE_POWERBAR and 0 or db.power.height
-		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER * 2)) / 2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2)))
+		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (UF.BORDER * 2)) / 2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((UF.BORDER + UF.SPACING) * 2)))
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT and (db.portrait.overlay or frame.ORIENTATION == "MIDDLE")
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
@@ -77,8 +77,8 @@ function UF:Update_TargetFrame(frame, db)
 		frame.CLASSBAR_DETACHED = db.combobar.detachFromFrame
 		frame.USE_MINI_CLASSBAR = db.combobar.fill == "spaced" and frame.USE_CLASSBAR
 		frame.CLASSBAR_HEIGHT = frame.USE_CLASSBAR and db.combobar.height or 0
-		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2) - frame.PORTRAIT_WIDTH - frame.POWERBAR_OFFSET
-		frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and (frame.SPACING + (frame.CLASSBAR_HEIGHT / 2)) or (frame.CLASSBAR_HEIGHT + frame.SPACING))
+		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((UF.BORDER + UF.SPACING) * 2) - frame.PORTRAIT_WIDTH - frame.POWERBAR_OFFSET
+		frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and (UF.SPACING + (frame.CLASSBAR_HEIGHT / 2)) or (frame.CLASSBAR_HEIGHT + UF.SPACING))
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)

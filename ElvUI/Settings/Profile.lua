@@ -1246,7 +1246,7 @@ P.unitframe = {
 		CTRL = "NONE",
 		ALT = "NONE"
 	},
-	thinBorders = false,
+	thinBorders = true,
 	targetSound = false,
 	cooldown = {
 		threshold = 4,
@@ -1991,7 +1991,8 @@ P.unitframe = {
 				xOffset = 0,
 				yOffset = 0,
 				onMouseOver = true,
-				outOfRange = true
+				outOfRange = true,
+				color = {r = 0.83, g = 0.16, b = 0.16}
 			},
 			cutaway = {
 				health = {
@@ -2044,6 +2045,7 @@ P.unitframe = {
 				position = "RIGHT",
 				xOffset = -2,
 				yOffset = 0,
+				attachTextTo = "Health",
 				reverseFill = false
 			},
 			fader = {
@@ -2074,7 +2076,17 @@ P.unitframe = {
 				position = "LEFT",
 				hideonnpc = false,
 				xOffset = 2,
-				yOffset = 0
+				yOffset = 0,
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
 			},
 			infoPanel = {
 				enable = false,
@@ -2188,6 +2200,7 @@ P.unitframe = {
 				position = "RIGHT",
 				xOffset = -2,
 				yOffset = 0,
+				attachTextTo = "Health",
 				reverseFill = false
 			},
 			fader = {
@@ -2218,7 +2231,17 @@ P.unitframe = {
 				position = "LEFT",
 				hideonnpc = false,
 				xOffset = 2,
-				yOffset = 0
+				yOffset = 0,
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
 			},
 			infoPanel = {
 				enable = false,
@@ -2368,7 +2391,16 @@ P.unitframe = {
 				hideonnpc = false,
 				xOffset = 2,
 				yOffset = 0,
-				attachTextTo = "Health"
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
 			},
 			infoPanel = {
 				enable = false,
@@ -2534,7 +2566,8 @@ P.unitframe = {
 				xOffset = 0,
 				yOffset = 0,
 				onMouseOver = true,
-				outOfRange = true
+				outOfRange = true,
+				color = {r = 0.83, g = 0.16, b = 0.16}
 			},
 			cutaway = {
 				health = {
@@ -2573,6 +2606,7 @@ P.unitframe = {
 				position = "RIGHT",
 				xOffset = -2,
 				yOffset = 0,
+				attachTextTo = "Health",
 				reverseFill = false
 			},
 			fader = {
@@ -2603,7 +2637,17 @@ P.unitframe = {
 				position = "LEFT",
 				hideonnpc = false,
 				xOffset = 2,
-				yOffset = 0
+				yOffset = 0,
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
 			},
 			infoPanel = {
 				enable = false,
@@ -2721,6 +2765,7 @@ P.unitframe = {
 				position = "RIGHT",
 				yOffset = 0,
 				xOffset = -2,
+				attachTextTo = "Health",
 				reverseFill = false
 			},
 			fader = {
@@ -2750,8 +2795,18 @@ P.unitframe = {
 				offset = 0,
 				position = "LEFT",
 				hideonnpc = false,
+				xOffset = 2,
 				yOffset = 0,
-				xOffset = 2
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
 			},
 			infoPanel = {
 				enable = false,
@@ -2911,6 +2966,14 @@ P.unitframe = {
 					forceBlankTexture = true
 				}
 			},
+			raidicon = {
+				enable = true,
+				size = 18,
+				attachTo = "TOP",
+				attachToObject = "Frame",
+				xOffset = 0,
+				yOffset = 8
+			},
 			strataAndLevel = {
 				useCustomStrata = false,
 				frameStrata = "LOW",
@@ -2934,6 +2997,7 @@ P.unitframe = {
 				position = "RIGHT",
 				yOffset = 0,
 				xOffset = -2,
+				attachTextTo = "Health",
 				reverseFill = false
 			},
 			fader = {
@@ -2963,8 +3027,18 @@ P.unitframe = {
 				offset = 0,
 				position = "LEFT",
 				hideonnpc = false,
+				xOffset = 2,
 				yOffset = 0,
-				xOffset = 2
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
 			},
 			infoPanel = {
 				enable = false,
@@ -3471,8 +3545,9 @@ P.unitframe = {
 			verticalSpacing = 3,
 			numGroups = 1,
 			groupsPerRowCol = 1,
-			groupBy = "GROUP",
+			groupBy = "INDEX",
 			sortDir = "ASC",
+			sortMethod = "INDEX",
 			raidWideSorting = false,
 			invertGroupingOrder = false,
 			startFromCenter = false,
@@ -3721,6 +3796,7 @@ P.unitframe = {
 				enable = false,
 				width = 100,
 				height = 22,
+				threatStyle = "GLOW",
 				anchorPoint = "TOPLEFT",
 				xOffset = -1,
 				yOffset = 0,
@@ -3729,12 +3805,26 @@ P.unitframe = {
 					text_format = "[namecolor][name:short]",
 					yOffset = 0,
 					xOffset = 0
+				},
+				healPrediction = {
+					enable = false,
+					showAbsorbAmount = false,
+					showOverAbsorbs = true
+				},
+				raidicon = {
+					enable = true,
+					size = 18,
+					attachTo = "TOP",
+					attachToObject = "Frame",
+					xOffset = 0,
+					yOffset = 8
 				}
 			},
 			targetsGroup = {
 				enable = false,
 				width = 100,
 				height = 22,
+				threatStyle = "GLOW",
 				anchorPoint = "TOPLEFT",
 				xOffset = -1,
 				yOffset = 0,
@@ -3767,7 +3857,8 @@ P.unitframe = {
 				xOffset = 0,
 				yOffset = 0,
 				onMouseOver = true,
-				outOfRange = true
+				outOfRange = true,
+				color = {r = 0.83, g = 0.16, b = 0.16}
 			},
 			readycheckIcon = {
 				enable = true,
@@ -3812,6 +3903,7 @@ P.unitframe = {
 			groupsPerRowCol = 1,
 			groupBy = "GROUP",
 			sortDir = "ASC",
+			sortMethod = "INDEX",
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
@@ -3999,7 +4091,8 @@ P.unitframe = {
 				xOffset = 0,
 				yOffset = 0,
 				onMouseOver = true,
-				outOfRange = true
+				outOfRange = true,
+				color = {r = 0.83, g = 0.16, b = 0.16}
 			},
 			readycheckIcon = {
 				enable = true,
@@ -4051,6 +4144,7 @@ P.unitframe = {
 			groupsPerRowCol = 1,
 			groupBy = "GROUP",
 			sortDir = "ASC",
+			sortMethod = "INDEX",
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
@@ -4238,7 +4332,8 @@ P.unitframe = {
 				xOffset = 0,
 				yOffset = 0,
 				onMouseOver = true,
-				outOfRange = true
+				outOfRange = true,
+				color = {r = 0.83, g = 0.16, b = 0.16}
 			},
 			readycheckIcon = {
 				enable = true,
@@ -4290,6 +4385,7 @@ P.unitframe = {
 			groupsPerRowCol = 1,
 			groupBy = "PETNAME",
 			sortDir = "ASC",
+			sortMethod = "INDEX",
 			raidWideSorting = true,
 			invertGroupingOrder = false,
 			startFromCenter = false,
@@ -4755,6 +4851,21 @@ P.unitframe = {
 		}
 	}
 }
+
+for i = 1, GetNumClasses() do
+	local classDisplayName, classTag = GetClassInfo(i)
+	P.unitframe.units.party["CLASS"..i] = classTag
+	P.unitframe.units.raid["CLASS"..i] = classTag
+	P.unitframe.units.raid40["CLASS"..i] = classTag
+	P.unitframe.units.raidpet["CLASS"..i] = classTag
+end
+
+for i, role in ipairs({"TANK", "HEALER", "DAMAGER"}) do
+	P.unitframe.units.party["ROLE"..i] = role
+	P.unitframe.units.raid["ROLE"..i] = role
+	P.unitframe.units.raid40["ROLE"..i] = role
+	P.unitframe.units.raidpet["ROLE"..i] = role
+end
 
 --Cooldown
 P.cooldown = {

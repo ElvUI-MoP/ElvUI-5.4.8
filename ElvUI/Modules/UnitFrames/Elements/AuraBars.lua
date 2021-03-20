@@ -1,7 +1,7 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 
-local unpack = unpack
+local ipairs, unpack = ipairs, unpack
 
 local CreateFrame = CreateFrame
 
@@ -35,36 +35,32 @@ function UF:Construct_AuraBars(statusBar)
 end
 
 function UF:AuraBars_SetPosition(from, to)
-	local height = self.height
-	local spacing = self.spacing
 	local anchor = self.initialAnchor
-	local growth = self.growth == "BELOW" and -1 or 1
-	local border = UF.thinBorders and E.mult or E.Border
+	local growth = (self.growth == "BELOW" and -1) or 1
+	local SPACING = UF.thinBorders and 1 or 5
 
 	for i = from, to do
 		local button = self[i]
 		if not button then break end
 
 		button:ClearAllPoints()
-		if i == 1 then
-			button:SetPoint(anchor, self, anchor, -border, 0)
-		else
-			button:SetPoint(anchor, self, anchor, -(border), growth * ((i - 1) * (height + spacing + 1)))
-		end
+		button:Point(anchor, self, anchor, SPACING, (i == 1 and 0) or (growth * ((i - 1) * (self.height + self.spacing + 1))))
+
+		button.icon:ClearAllPoints()
+		button.icon:Point("RIGHT", button, "LEFT", -SPACING, 0)
 	end
 end
 
 function UF:Construct_AuraBarHeader(frame)
-	local auraBar = CreateFrame("Frame", nil, frame)
+	local auraBar = CreateFrame("Frame", "$parent_AuraBars", frame)
 	auraBar:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 10)
-	auraBar:SetHeight(1)
+	auraBar:Height(1)
 	auraBar.PreSetPosition = UF.SortAuras
 	auraBar.PostCreateBar = UF.Construct_AuraBars
 	auraBar.PostUpdateBar = UF.PostUpdateBar_AuraBars
 	auraBar.CustomFilter = UF.AuraFilter
 	auraBar.SetPosition = UF.AuraBars_SetPosition
 
-	auraBar.gap = UF.thinBorders and 1 or 6
 	auraBar.sparkEnabled = true
 	auraBar.initialAnchor = "BOTTOMRIGHT"
 	auraBar.type = "aurabar"
@@ -83,26 +79,21 @@ function UF:Configure_AuraBars(frame)
 			frame:EnableElement("AuraBars")
 		end
 
+		auraBars.height = db.aurabar.height
+		auraBars.growth = db.aurabar.anchorPoint
+		auraBars.maxBars = db.aurabar.maxBars
+		auraBars.spacing = db.aurabar.spacing + (UF.thinBorders and 0 or 4)
+		auraBars.friendlyAuraType = db.aurabar.friendlyAuraType
+		auraBars.enemyAuraType = db.aurabar.enemyAuraType
+		auraBars.disableMouse = db.aurabar.clickThrough
+
 		for _, statusBar in ipairs(auraBars) do
 			statusBar.db = auraBars.db
 			UF:Update_FontString(statusBar.timeText)
 			UF:Update_FontString(statusBar.nameText)
 		end
 
-		auraBars:Show()
-
-		auraBars.height = db.aurabar.height
-		auraBars.growth = db.aurabar.anchorPoint
-		auraBars.friendlyAuraType = db.aurabar.friendlyAuraType
-		auraBars.enemyAuraType = db.aurabar.enemyAuraType
-		auraBars.disableMouse = db.aurabar.clickThrough
-		auraBars.maxBars = db.aurabar.maxBars
-		auraBars.spacing = db.aurabar.spacing
-		auraBars.width = frame.UNIT_WIDTH - auraBars.height - (frame.BORDER * 4) + (UF.thinBorders and 1 or -4)
-
-		local attachTo = frame
 		local colors = UF.db.colors.auraBarBuff
-
 		if E:CheckClassColor(colors.r, colors.g, colors.b) then
 			local classColor = E:ClassColor(E.myclass, true)
 			colors.r, colors.g, colors.b = classColor.r, classColor.g, classColor.b
@@ -114,10 +105,12 @@ function UF:Configure_AuraBars(frame)
 			colors.r, colors.g, colors.b = classColor.r, classColor.g, classColor.b
 		end
 
+		local BORDER = UF.BORDER + UF.SPACING
 		if not auraBars.Holder then
 			local holder = CreateFrame("Frame", nil, auraBars)
 			holder:Point("BOTTOM", frame, "TOP", 0, 0)
-			holder:Size(db.aurabar.detachedWidth, 20)
+			holder:Size(db.aurabar.detachedWidth, db.aurabar.height + (BORDER * 2))
+			auraBars.Holder = holder
 
 			if frame.unitframeType == "player" then
 				E:CreateMover(holder, "ElvUF_PlayerAuraMover", L["Player Aura Bars"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,player,aurabar")
@@ -128,26 +121,17 @@ function UF:Configure_AuraBars(frame)
 			elseif frame.unitframeType == "focus" then
 				E:CreateMover(holder, "ElvUF_FocusAuraMover", L["Focus Aura Bars"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,focus,aurabar")
 			end
-
-			auraBars.Holder = holder
 		end
 
-		auraBars.Holder:Size(db.aurabar.detachedWidth, 20)
-
-		if db.aurabar.attachTo ~= "DETACHED" then
-			E:DisableMover(auraBars.Holder.mover:GetName())
-		end
-
+		local attachTo = frame
 		if db.aurabar.attachTo == "BUFFS" then
 			attachTo = frame.Buffs
 		elseif db.aurabar.attachTo == "DEBUFFS" then
 			attachTo = frame.Debuffs
-		elseif db.aurabar.attachTo == "PLAYER_AURABARS" and ElvUF_Player then
-			attachTo = ElvUF_Player.AuraBars
 		elseif db.aurabar.attachTo == "DETACHED" then
 			attachTo = auraBars.Holder
-			E:EnableMover(auraBars.Holder.mover:GetName())
-			auraBars.width = db.aurabar.detachedWidth - db.aurabar.height
+		elseif db.aurabar.attachTo == "PLAYER_AURABARS" and ElvUF_Player then
+			attachTo = ElvUF_Player.AuraBars
 		end
 
 		local anchorPoint, anchorTo = "BOTTOM", "TOP"
@@ -155,22 +139,43 @@ function UF:Configure_AuraBars(frame)
 			anchorPoint, anchorTo = "TOP", "BOTTOM"
 		end
 
-		local yOffset
-		local spacing = (((db.aurabar.attachTo == "FRAME" and 3) or (db.aurabar.attachTo == "PLAYER_AURABARS" and 4) or 2) * frame.SPACING)
-		local border = (((db.aurabar.attachTo == "FRAME" or db.aurabar.attachTo == "PLAYER_AURABARS") and 0 or 1) * frame.BORDER)
+		if db.aurabar.attachTo == "DETACHED" then
+			E:EnableMover(auraBars.Holder.mover:GetName())
+			auraBars.Holder:Size(db.aurabar.detachedWidth, db.aurabar.height + (BORDER * 2))
+			SPACING = UF.thinBorders and 1 or 5
 
-		if db.aurabar.anchorPoint == "BELOW" then
-			yOffset = -spacing + border - (not db.aurabar.yOffset and 0 or db.aurabar.yOffset)
+			if db.aurabar.anchorPoint == "BELOW" then
+				yOffset = BORDER + (UF.BORDER - UF.SPACING)
+			else
+				yOffset = -(db.aurabar.height + BORDER)
+			end
 		else
-			yOffset = spacing - border + (not db.aurabar.yOffset and 0 or db.aurabar.yOffset)
+			E:DisableMover(auraBars.Holder.mover:GetName())
+			SPACING = UF.thinBorders and 1 or (db.aurabar.attachTo == "FRAME" and 5 or 4)
+
+			local offset = db.aurabar.yOffset + (UF.thinBorders and 0 or 2)
+			if db.aurabar.anchorPoint == "BELOW" then
+				yOffset = -(db.aurabar.height + offset)
+			else
+				yOffset = offset + 1 -- 1 is connecting pixel
+			end
 		end
-		local xOffset = (db.aurabar.attachTo == "FRAME" and frame.SPACING or 0)
-		local offsetLeft = xOffset + ((db.aurabar.attachTo == "FRAME" and ((anchorTo == "TOP" and frame.ORIENTATION ~= "LEFT") or (anchorTo == "BOTTOM" and frame.ORIENTATION == "LEFT"))) and frame.POWERBAR_OFFSET or 0)
-		local offsetRight = -xOffset - ((db.aurabar.attachTo == "FRAME" and ((anchorTo == "TOP" and frame.ORIENTATION ~= "RIGHT") or (anchorTo == "BOTTOM" and frame.ORIENTATION == "RIGHT"))) and frame.POWERBAR_OFFSET or 0)
+
+		local POWER_OFFSET = 0
+		if db.aurabar.attachTo ~= "DETACHED" and db.aurabar.attachTo ~= "FRAME" then
+			POWER_OFFSET = frame.POWERBAR_OFFSET
+
+			if frame.ORIENTATION == "MIDDLE" then
+				POWER_OFFSET = POWER_OFFSET * 2
+			end
+		end
 
 		auraBars:ClearAllPoints()
-		auraBars:Point(anchorPoint.."LEFT", attachTo, anchorTo.."LEFT", offsetLeft, db.aurabar.attachTo == "DETACHED" and 0 or yOffset)
-		auraBars:Point(anchorPoint.."RIGHT", attachTo, anchorTo.."RIGHT", offsetRight, db.aurabar.attachTo == "DETACHED" and 0 or yOffset)
+		auraBars:Point(anchorPoint.."LEFT", attachTo, anchorTo.."LEFT", -SPACING, yOffset)
+		auraBars:Point(anchorPoint.."RIGHT", attachTo, anchorTo.."RIGHT", -(SPACING + BORDER), yOffset)
+
+		auraBars.width = E:Scale((db.aurabar.attachTo == "DETACHED" and db.aurabar.detachedWidth or frame.UNIT_WIDTH) - (BORDER * 4) - auraBars.height - POWER_OFFSET + 1) -- 1 is connecting pixel
+		auraBars:Show()
 	elseif frame:IsElementEnabled("AuraBars") then
 		frame:DisableElement("AuraBars")
 

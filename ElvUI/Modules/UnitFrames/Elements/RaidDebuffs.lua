@@ -10,19 +10,18 @@ function UF:Construct_RaidDebuffs(frame)
 	rdebuff:SetTemplate("Default", nil, nil, UF.thinBorders, true)
 	rdebuff:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 20) --Make them appear above regular buffs or debuffs
 
-	local offset = UF.thinBorders and E.mult or E.Border
 	rdebuff.icon = rdebuff:CreateTexture(nil, "OVERLAY")
-	rdebuff.icon:SetInside(rdebuff, offset, offset)
+	rdebuff.icon:SetInside(rdebuff, UF.BORDER, UF.BORDER)
 
 	rdebuff.count = rdebuff:CreateFontString(nil, "OVERLAY")
 	rdebuff.count:FontTemplate(nil, 10, "OUTLINE")
 	rdebuff.count:Point("BOTTOMRIGHT", 0, 2)
-	rdebuff.count:SetTextColor(1, .9, 0)
+	rdebuff.count:SetTextColor(1, 0.9, 0)
 
 	rdebuff.time = rdebuff:CreateFontString(nil, "OVERLAY")
 	rdebuff.time:FontTemplate(nil, 10, "OUTLINE")
 	rdebuff.time:Point("CENTER")
-	rdebuff.time:SetTextColor(1, .9, 0)
+	rdebuff.time:SetTextColor(1, 0.9, 0)
 
 	return rdebuff
 end
@@ -45,7 +44,7 @@ function UF:Configure_RaidDebuffs(frame)
 		rdebuffs.onlyMatchSpellID = db.rdebuffs.onlyMatchSpellID
 		rdebuffs.forceShow = frame.forceShowAuras
 		rdebuffs:Size(db.rdebuffs.size)
-		rdebuffs:Point("BOTTOM", frame, "BOTTOM", db.rdebuffs.xOffset, db.rdebuffs.yOffset + frame.SPACING)
+		rdebuffs:Point("BOTTOM", frame, "BOTTOM", db.rdebuffs.xOffset, db.rdebuffs.yOffset + UF.SPACING)
 
 		rdebuffs.icon:SetTexCoord(unpack(E.TexCoords))
 

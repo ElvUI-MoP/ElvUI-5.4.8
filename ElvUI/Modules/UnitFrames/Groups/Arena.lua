@@ -125,7 +125,7 @@ function UF:Update_ArenaFrames(frame, db)
 		frame.USE_POWERBAR_OFFSET = (db.power.width == "offset" and db.power.offset ~= 0) and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
 		frame.POWERBAR_OFFSET = frame.USE_POWERBAR_OFFSET and db.power.offset or 0
 		frame.POWERBAR_HEIGHT = not frame.USE_POWERBAR and 0 or db.power.height
-		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER * 2)) / 2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2)))
+		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (UF.BORDER * 2)) / 2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((UF.BORDER + UF.SPACING) * 2)))
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
@@ -133,7 +133,7 @@ function UF:Update_ArenaFrames(frame, db)
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
-		frame.PVPINFO_WIDTH = (db.pvpSpecIcon and db.pvpSpecIcon.enable) and ((db.pvpSpecIcon.width > 0 and db.pvpSpecIcon.width or frame.UNIT_HEIGHT) + (frame.BORDER * 2)) or 0
+		frame.PVPINFO_WIDTH = (db.pvpSpecIcon and db.pvpSpecIcon.enable) and ((db.pvpSpecIcon.width > 0 and db.pvpSpecIcon.width or frame.UNIT_HEIGHT) + (UF.BORDER * 2)) or 0
 
 		frame.VARIABLES_SET = true
 	end

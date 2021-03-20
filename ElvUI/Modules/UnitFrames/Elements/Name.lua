@@ -11,22 +11,16 @@ function UF:Construct_NameText(frame)
 	return name
 end
 
-function UF:UpdateNameSettings(frame, childType)
+function UF:UpdateNameSettings(frame)
 	local db = frame.db
-	if childType == "pet" then
-		db = frame.db.petsGroup
-	elseif childType == "target" then
-		db = frame.db.targetsGroup
-	end
 
-	local name = frame.Name
 	if not db.power or not db.power.enable or not db.power.hideonnpc then
 		local attachPoint = self:GetObjectAnchorPoint(frame, db.name.attachTextTo)
-		name:ClearAllPoints()
-		name:Point(db.name.position, attachPoint, db.name.position, db.name.xOffset, db.name.yOffset)
+		frame.Name:ClearAllPoints()
+		frame.Name:Point(db.name.position, attachPoint, db.name.position, db.name.xOffset, db.name.yOffset)
 	end
 
-	frame:Tag(name, db.name.text_format)
+	frame:Tag(frame.Name, db.name.text_format)
 end
 
 function UF:PostNamePosition(frame, unit)

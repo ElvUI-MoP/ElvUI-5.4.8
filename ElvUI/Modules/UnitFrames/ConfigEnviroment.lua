@@ -124,7 +124,8 @@ function UF:ForceShow(frame)
 	frame:EnableMouse(false)
 
 	frame:Show()
-	if frame:IsVisible() and frame.Update then
+
+	if frame.Update then
 		frame:Update()
 	end
 
@@ -156,11 +157,6 @@ function UF:UnforceShow(frame)
 	end
 
 	frame.unit = frame.oldUnit or frame.unit
-	-- If we're visible force an update so everything is properly in a
-	-- non-config mode state
-	if frame:IsVisible() and frame.Update then
-		frame:Update()
-	end
 
 	if _G[frame:GetName().."Target"] then
 		self:UnforceShow(_G[frame:GetName().."Target"])
@@ -168,6 +164,10 @@ function UF:UnforceShow(frame)
 
 	if _G[frame:GetName().."Pet"] then
 		self:UnforceShow(_G[frame:GetName().."Pet"])
+	end
+
+	if frame.Update then
+		frame:Update()
 	end
 end
 
@@ -282,14 +282,16 @@ function UF:PLAYER_REGEN_DISABLED()
 	end
 
 	for i = 1, 5 do
-		if self["arena"..i] and self["arena"..i].isForced then
-			self:UnforceShow(self["arena"..i])
+		local arena = self["arena"..i]
+		if arena and arena.isForced then
+			self:UnforceShow(arena)
 		end
-	end
 
-	for i = 1, 4 do
-		if self["boss"..i] and self["boss"..i].isForced then
-			self:UnforceShow(self["boss"..i])
+		if i < 5 then
+			local boss = self["boss"..i]
+			if boss and boss.isForced then
+				self:UnforceShow(boss)
+			end
 		end
 	end
 end

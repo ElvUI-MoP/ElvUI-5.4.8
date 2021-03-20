@@ -42,17 +42,15 @@ function UF:Construct_RaidpetFrames()
 end
 
 function UF:Update_RaidpetHeader(header, db)
-	header.db = db
+	local parent = header:GetParent()
+	parent.db = db
 
-	local headerHolder = header:GetParent()
-	headerHolder.db = db
+	if not parent.positioned then
+		parent:ClearAllPoints()
+		parent:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 574)
+		E:CreateMover(parent, parent:GetName().."Mover", L["Raid Pet Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,groupUnits,raidpet,generalGroup")
 
-	if not headerHolder.positioned then
-		headerHolder:ClearAllPoints()
-		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 574)
-		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid Pet Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,groupUnits,raidpet,generalGroup")
-
-		headerHolder.positioned = true
+		parent.positioned = true
 	end
 end
 
@@ -61,17 +59,9 @@ function UF:Update_RaidpetFrames(frame, db)
 
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame.colors = ElvUF.colors
-	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
+	frame:RegisterForClicks(UF.db.targetOnMouseDown and "AnyDown" or "AnyUp")
 
 	do
-		if self.thinBorders then
-			frame.SPACING = 0
-			frame.BORDER = E.mult
-		else
-			frame.BORDER = E.Border
-			frame.SPACING = E.Spacing
-		end
-
 		frame.ORIENTATION = db.orientation
 		frame.SHADOW_SPACING = 3
 		frame.UNIT_WIDTH = db.width
@@ -115,4 +105,5 @@ function UF:Update_RaidpetFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
+--Added an additional argument at the end, specifying the header Template we want to use
 UF.headerstoload.raidpet = {nil, nil, "SecureGroupPetHeaderTemplate"}

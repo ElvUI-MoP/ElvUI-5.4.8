@@ -17,7 +17,7 @@ local UnitIsUnit = UnitIsUnit
 
 function UF:Construct_Buffs(frame)
 	local buffs = CreateFrame("Frame", frame:GetName().."Buffs", frame)
-	buffs.spacing = E.Spacing
+	buffs.spacing = UF.SPACING
 	buffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
 	buffs.PostCreateIcon = self.Construct_AuraIcon
 	buffs.PostUpdateIcon = self.PostUpdateAura
@@ -32,7 +32,7 @@ end
 
 function UF:Construct_Debuffs(frame)
 	local debuffs = CreateFrame("Frame", frame:GetName().."Debuffs", frame)
-	debuffs.spacing = E.Spacing
+	debuffs.spacing = UF.SPACING
 	debuffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
 	debuffs.PostCreateIcon = self.Construct_AuraIcon
 	debuffs.PostUpdateIcon = self.PostUpdateAura
@@ -64,13 +64,12 @@ function UF:Aura_OnClick()
 end
 
 function UF:Construct_AuraIcon(button)
-	local offset = UF.thinBorders and E.mult or E.Border
 	button:SetTemplate("Default", nil, nil, UF.thinBorders, true)
 
 	button.cd:SetReverse(true)
-	button.cd:SetInside(button, offset, offset)
+	button.cd:SetInside(button, UF.BORDER, UF.BORDER)
 
-	button.icon:SetInside(button, offset, offset)
+	button.icon:SetInside(button, UF.BORDER, UF.BORDER)
 	button.icon:SetDrawLayer("ARTWORK")
 
 	button.count:ClearAllPoints()
@@ -217,33 +216,39 @@ function UF:Configure_Auras(frame, which)
 	if auras.db.sizeOverride and auras.db.sizeOverride > 0 then
 		auras:Width(auras.db.perrow * auras.db.sizeOverride + ((auras.db.perrow - 1) * auras.spacing))
 	else
-		local totalWidth = frame.UNIT_WIDTH - frame.SPACING*2
-		if frame.USE_POWERBAR_OFFSET and not (auras.attachTo == "POWER" and frame.ORIENTATION == "MIDDLE") then
-			local powerOffset = ((frame.ORIENTATION == "MIDDLE" and 2 or 1) * frame.POWERBAR_OFFSET)
-			totalWidth = totalWidth - powerOffset
+		local xOffset = 0
+		if frame.USE_POWERBAR_OFFSET then
+			if frame.ORIENTATION == "MIDDLE" then
+				if auras.db.attachTo ~= "POWER" then
+					xOffset = frame.POWERBAR_OFFSET * 2
+				end -- if its middle and power we dont want an offset.
+			else
+				xOffset = frame.POWERBAR_OFFSET
+			end
 		end
-		auras:Width(totalWidth)
+
+		auras:Width((frame.UNIT_WIDTH - UF.SPACING * 2) - xOffset)
 	end
 
 	auras.num = auras.db.perrow * rows
-	auras.size = auras.db.sizeOverride ~= 0 and auras.db.sizeOverride or ((((auras:GetWidth() - (auras.spacing*(auras.num/rows - 1))) / auras.num)) * rows)
+	auras.size = auras.db.sizeOverride ~= 0 and auras.db.sizeOverride or ((((auras:GetWidth() - (auras.spacing * (auras.num / rows - 1))) / auras.num)) * rows)
 	auras.forceShow = frame.forceShowAuras
 	auras.disableMouse = auras.db.clickThrough
 	auras.anchorPoint = auras.db.anchorPoint
 	auras.initialAnchor = E.InversePoints[auras.anchorPoint]
 	auras["growth-y"] = strfind(auras.anchorPoint, "TOP") and "UP" or "DOWN"
-	auras["growth-x"] = auras.anchorPoint == "LEFT" and "LEFT" or  auras.anchorPoint == "RIGHT" and "RIGHT" or (strfind(auras.anchorPoint, "LEFT") and "RIGHT" or "LEFT")
+	auras["growth-x"] = auras.anchorPoint == "LEFT" and "LEFT" or auras.anchorPoint == "RIGHT" and "RIGHT" or (strfind(auras.anchorPoint, "LEFT") and "RIGHT" or "LEFT")
 
-	local x, y = E:GetXYOffset(auras.anchorPoint, frame.SPACING) --Use frame.SPACING override since it may be different from E.Spacing due to forced thin borders
-	if auras.attachTo == "FRAME" then
-		y = 0
-	elseif auras.attachTo == "HEALTH" or auras.attachTo == "POWER" then
-		x = E:GetXYOffset(auras.anchorPoint, -frame.BORDER)
-		y = select(2, E:GetXYOffset(auras.anchorPoint, (frame.BORDER + frame.SPACING)))
+	local x, y
+	if auras.db.attachTo == "HEALTH" or auras.db.attachTo == "POWER" then
+		x, y = E:GetXYOffset(auras.anchorPoint, -UF.BORDER, UF.BORDER)
+	elseif auras.db.attachTo == "FRAME" then
+		x, y = E:GetXYOffset(auras.anchorPoint, UF.SPACING, 0)
 	else
-		x = 0
+		x, y = E:GetXYOffset(auras.anchorPoint, 0, UF.SPACING)
 	end
-	auras.xOffset = x + auras.db.xOffset
+
+	auras.xOffset = x + auras.db.xOffset + (auras.db.attachTo == "FRAME" and frame.ORIENTATION ~= "LEFT" and frame.POWERBAR_OFFSET or 0)
 	auras.yOffset = y + auras.db.yOffset
 
 	local index = 1
@@ -261,12 +266,7 @@ function UF:Configure_Auras(frame, which)
 	auras:ClearAllPoints()
 	auras:Point(auras.initialAnchor, auras.attachTo, auras.anchorPoint, auras.xOffset, auras.yOffset)
 	auras:Height(auras.size * rows)
-
-	if auras.db.enable then
-		auras:Show()
-	else
-		auras:Hide()
-	end
+	auras:SetShown(auras.db.enable)
 end
 
 local function SortAurasByTime(a, b)

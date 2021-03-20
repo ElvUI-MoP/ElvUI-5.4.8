@@ -61,7 +61,6 @@ function UF:Update_AssistHeader(header, db)
 
 	header:SetAttribute("point", "BOTTOM")
 	header:SetAttribute("columnAnchorPoint", "LEFT")
-
 	header:SetAttribute("yOffset", db.verticalSpacing)
 
 	if not header.positioned then
@@ -81,16 +80,9 @@ end
 function UF:Update_AssistFrames(frame, db)
 	frame.db = db
 	frame.colors = ElvUF.colors
-	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
+	frame:RegisterForClicks(UF.db.targetOnMouseDown and "AnyDown" or "AnyUp")
 
 	do
-		if self.thinBorders then
-			frame.SPACING = 0
-			frame.BORDER = E.mult
-		else
-			frame.BORDER = E.Border
-			frame.SPACING = E.Spacing
-		end
 		frame.ORIENTATION = db.orientation
 		frame.SHADOW_SPACING = 3
 		frame.UNIT_WIDTH = db.width

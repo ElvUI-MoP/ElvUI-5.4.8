@@ -70,13 +70,13 @@ function UF:Configure_ComboPoints(frame)
 	if frame.USE_MINI_CLASSBAR and not frame.CLASSBAR_DETACHED then
 		CLASSBAR_WIDTH = CLASSBAR_WIDTH * (frame.MAX_CLASS_BAR - 1) / frame.MAX_CLASS_BAR
 	elseif frame.CLASSBAR_DETACHED then
-		CLASSBAR_WIDTH = db.combobar.detachedWidth - ((frame.BORDER + frame.SPACING) * 2)
+		CLASSBAR_WIDTH = db.combobar.detachedWidth - ((UF.BORDER + UF.SPACING) * 2)
 	end
 
 	local color = E.db.unitframe.colors.borderColor
 
 	ComboPoints:Width(CLASSBAR_WIDTH)
-	ComboPoints:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+	ComboPoints:Height(frame.CLASSBAR_HEIGHT - ((UF.BORDER + UF.SPACING) * 2))
 	if not ComboPoints.backdrop.ignoreBorderColors then
 		ComboPoints.backdrop:SetBackdropColor(color.r, color.g, color.b)
 	end
@@ -94,10 +94,10 @@ function UF:Configure_ComboPoints(frame)
 			if frame.CLASSBAR_DETACHED and db.combobar.orientation == "VERTICAL" then
 				ComboPoints[i]:Width(CLASSBAR_WIDTH)
 			else
-				ComboPoints[i]:Width((CLASSBAR_WIDTH - ((5 + (frame.BORDER * 2 + frame.SPACING * 2)) * (frame.MAX_CLASS_BAR - 1))) / frame.MAX_CLASS_BAR) --Width accounts for 5px spacing between each button, excluding borders
+				ComboPoints[i]:Width((CLASSBAR_WIDTH - ((5 + (UF.BORDER * 2 + UF.SPACING * 2)) * (frame.MAX_CLASS_BAR - 1))) / frame.MAX_CLASS_BAR) --Width accounts for 5px spacing between each button, excluding borders
 			end
 		elseif i ~= MAX_COMBO_POINTS then
-			ComboPoints[i]:Width((CLASSBAR_WIDTH - ((frame.MAX_CLASS_BAR - 1) * (frame.BORDER - frame.SPACING))) / frame.MAX_CLASS_BAR) --combobar width minus total width of dividers between each button, divided by number of buttons
+			ComboPoints[i]:Width((CLASSBAR_WIDTH - ((frame.MAX_CLASS_BAR - 1) * (UF.BORDER + UF.SPACING * 3))) / frame.MAX_CLASS_BAR) --combobar width minus total width of dividers between each button, divided by number of buttons
 		end
 
 		ComboPoints[i]:GetStatusBarTexture():SetHorizTile(false)
@@ -109,18 +109,18 @@ function UF:Configure_ComboPoints(frame)
 		else
 			if frame.USE_MINI_CLASSBAR then
 				if frame.CLASSBAR_DETACHED and db.combobar.orientation == "VERTICAL" then
-					ComboPoints[i]:Point("BOTTOM", ComboPoints[i - 1], "TOP", 0, (db.combobar.spacing + frame.BORDER * 2 + frame.SPACING * 2))
+					ComboPoints[i]:Point("BOTTOM", ComboPoints[i - 1], "TOP", 0, (db.combobar.spacing + UF.BORDER * 2 + UF.SPACING * 2))
 				elseif frame.CLASSBAR_DETACHED and db.combobar.orientation == "HORIZONTAL" then
-					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", (db.combobar.spacing + frame.BORDER * 2 + frame.SPACING * 2), 0) --5px spacing between borders of each button(replaced with Detached Spacing option)
+					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", (db.combobar.spacing + UF.BORDER * 2 + UF.SPACING * 2), 0) --5px spacing between borders of each button(replaced with Detached Spacing option)
 				else
-					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", (5 + frame.BORDER * 2 + frame.SPACING * 2), 0) --5px spacing between borders of each button
+					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", (5 + UF.BORDER * 2 + UF.SPACING * 2), 0) --5px spacing between borders of each button
 				end
 			else
 				if i == frame.MAX_CLASS_BAR then
-					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", frame.BORDER - frame.SPACING, 0)
+					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", UF.BORDER + UF.SPACING * 3, 0)
 					ComboPoints[i]:Point("RIGHT", ComboPoints)
 				else
-					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", frame.BORDER - frame.SPACING, 0)
+					ComboPoints[i]:Point("LEFT", ComboPoints[i - 1], "RIGHT", UF.BORDER + UF.SPACING * 3, 0)
 				end
 			end
 		end
@@ -136,8 +136,7 @@ function UF:Configure_ComboPoints(frame)
 		ComboPoints:SetFrameLevel(50) --RaisedElementParent uses 100, we want it lower than this
 
 		if ComboPoints.Holder and ComboPoints.Holder.mover then
-			ComboPoints.Holder.mover:SetScale(0.0001)
-			ComboPoints.Holder.mover:SetAlpha(0)
+			E:DisableMover(ComboPoints.Holder.mover:GetName())
 		end
 	elseif frame.CLASSBAR_DETACHED then
 		if frame.USE_MINI_CLASSBAR then
@@ -150,15 +149,13 @@ function UF:Configure_ComboPoints(frame)
 			ComboPoints.Holder:Size(db.combobar.detachedWidth, db.combobar.height)
 		end
 
+		ComboPoints:ClearAllPoints()
+		ComboPoints:Point("BOTTOMLEFT", ComboPoints.Holder, "BOTTOMLEFT", UF.BORDER + UF.SPACING, UF.BORDER + UF.SPACING)
+
 		if not ComboPoints.Holder.mover then
-			ComboPoints:ClearAllPoints()
-			ComboPoints:Point("BOTTOMLEFT", ComboPoints.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
 			E:CreateMover(ComboPoints.Holder, "ComboBarMover", L["Combobar"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,target,combobar")
 		else
-			ComboPoints:ClearAllPoints()
-			ComboPoints:Point("BOTTOMLEFT", ComboPoints.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
-			ComboPoints.Holder.mover:SetScale(1)
-			ComboPoints.Holder.mover:SetAlpha(1)
+			E:EnableMover(ComboPoints.Holder.mover:GetName())
 		end
 
 		ComboPoints:SetParent(db.combobar.parent == "UIPARENT" and E.UIParent or frame)
@@ -168,9 +165,9 @@ function UF:Configure_ComboPoints(frame)
 		ComboPoints:ClearAllPoints()
 
 		if frame.ORIENTATION == "RIGHT" then
-			ComboPoints:Point("BOTTOMRIGHT", frame.Health.backdrop, "TOPRIGHT", -frame.BORDER, frame.SPACING * 3)
+			ComboPoints:Point("BOTTOMRIGHT", frame.Health.backdrop, "TOPRIGHT", -UF.BORDER, UF.SPACING * 3)
 		else
-			ComboPoints:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING * 3)
+			ComboPoints:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", UF.BORDER, UF.SPACING * 3)
 		end
 
 		ComboPoints:SetParent(frame)
@@ -178,8 +175,7 @@ function UF:Configure_ComboPoints(frame)
 		ComboPoints:SetFrameLevel(frame:GetFrameLevel() + 10) --Health uses 10, Power uses (Health + 5) when attached
 
 		if ComboPoints.Holder and ComboPoints.Holder.mover then
-			ComboPoints.Holder.mover:SetScale(0.0001)
-			ComboPoints.Holder.mover:SetAlpha(0)
+			E:DisableMover(ComboPoints.Holder.mover:GetName())
 		end
 	end
 

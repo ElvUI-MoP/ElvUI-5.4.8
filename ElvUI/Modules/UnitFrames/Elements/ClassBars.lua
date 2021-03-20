@@ -45,11 +45,11 @@ function UF:Configure_ClassBar(frame)
 			CLASSBAR_WIDTH = CLASSBAR_WIDTH * (frame.MAX_CLASS_BAR - 1) / frame.MAX_CLASS_BAR
 		end
 	elseif frame.CLASSBAR_DETACHED then
-		CLASSBAR_WIDTH = db.classbar.detachedWidth - ((frame.BORDER + frame.SPACING) * 2)
+		CLASSBAR_WIDTH = db.classbar.detachedWidth - ((UF.BORDER + UF.SPACING) * 2)
 	end
 
 	bars:Width(CLASSBAR_WIDTH)
-	bars:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+	bars:Height(frame.CLASSBAR_HEIGHT - ((UF.BORDER + UF.SPACING) * 2))
 
 	local color = E.db.unitframe.colors.borderColor
 	if not bars.backdrop.ignoreBorderColors then
@@ -77,10 +77,10 @@ function UF:Configure_ClassBar(frame)
 					if frame.CLASSBAR_DETACHED and db.classbar.orientation == "VERTICAL" then
 						bars[i]:Width(CLASSBAR_WIDTH)
 					else
-						bars[i]:Width((CLASSBAR_WIDTH - ((5 + (frame.BORDER * 2 + frame.SPACING * 2)) * (frame.MAX_CLASS_BAR - 1))) / frame.MAX_CLASS_BAR) --Width accounts for 5px spacing between each button, excluding borders
+						bars[i]:Width((CLASSBAR_WIDTH - ((5 + (UF.BORDER * 2 + UF.SPACING * 2)) * (frame.MAX_CLASS_BAR - 1))) / frame.MAX_CLASS_BAR) --Width accounts for 5px spacing between each button, excluding borders
 					end
 				elseif i ~= frame.MAX_CLASS_BAR then
-					bars[i]:Width((CLASSBAR_WIDTH - ((frame.MAX_CLASS_BAR - 1) * (frame.BORDER - frame.SPACING))) / frame.MAX_CLASS_BAR) --classbar width minus total width of dividers between each button, divided by number of buttons
+					bars[i]:Width((CLASSBAR_WIDTH - ((frame.MAX_CLASS_BAR - 1) * (UF.BORDER + UF.SPACING * 3))) / frame.MAX_CLASS_BAR) --classbar width minus total width of dividers between each button, divided by number of buttons
 				end
 
 				bars[i]:GetStatusBarTexture():SetHorizTile(false)
@@ -92,17 +92,17 @@ function UF:Configure_ClassBar(frame)
 				else
 					if frame.USE_MINI_CLASSBAR then
 						if frame.CLASSBAR_DETACHED and db.classbar.orientation == "VERTICAL" then
-							bars[i]:Point("BOTTOM", bars[i - 1], "TOP", 0, (db.classbar.spacing + frame.BORDER * 2 + frame.SPACING * 2))
+							bars[i]:Point("BOTTOM", bars[i - 1], "TOP", 0, (db.classbar.spacing + UF.BORDER * 2 + UF.SPACING * 2))
 						elseif frame.CLASSBAR_DETACHED and db.classbar.orientation == "HORIZONTAL" then
-							bars[i]:Point("LEFT", bars[i - 1], "RIGHT", (db.classbar.spacing + frame.BORDER * 2 + frame.SPACING * 2), 0) --5px spacing between borders of each button(replaced with Detached Spacing option)
+							bars[i]:Point("LEFT", bars[i - 1], "RIGHT", (db.classbar.spacing + UF.BORDER * 2 + UF.SPACING * 2), 0) --5px spacing between borders of each button(replaced with Detached Spacing option)
 						else
-							bars[i]:Point("LEFT", bars[i - 1], "RIGHT", (5 + frame.BORDER * 2 + frame.SPACING * 2), 0) --5px spacing between borders of each button
+							bars[i]:Point("LEFT", bars[i - 1], "RIGHT", (5 + UF.BORDER * 2 + UF.SPACING * 2), 0) --5px spacing between borders of each button
 						end
 					elseif i == frame.MAX_CLASS_BAR then
-						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", frame.BORDER - frame.SPACING, 0)
+						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", UF.BORDER + UF.SPACING * 3, 0)
 						bars[i]:Point("RIGHT", bars)
 					else
-						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", frame.BORDER - frame.SPACING, 0)
+						bars[i]:Point("LEFT", bars[i - 1], "RIGHT", UF.BORDER + UF.SPACING * 3, 0)
 					end
 				end
 
@@ -126,13 +126,13 @@ function UF:Configure_ClassBar(frame)
 
 		bars.LunarBar:SetMinMaxValues(0, 0)
 		bars.LunarBar:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][1]))
-		bars.LunarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+		bars.LunarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((UF.BORDER + UF.SPACING) * 2))
 		bars.LunarBar:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
 		E:SetSmoothing(bars.LunarBar, UF.db.smoothbars)
 
 		bars.SolarBar:SetMinMaxValues(0, 0)
 		bars.SolarBar:SetStatusBarColor(unpack(ElvUF.colors.ClassBars[E.myclass][2]))
-		bars.SolarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING) * 2))
+		bars.SolarBar:Size(CLASSBAR_WIDTH, frame.CLASSBAR_HEIGHT - ((UF.BORDER + UF.SPACING) * 2))
 		bars.SolarBar:SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
 		bars.SolarBar:ClearAllPoints()
 		bars.SolarBar:Point(vertical and "BOTTOM" or "LEFT", lunarTex, vertical and "TOP" or "RIGHT")
@@ -156,8 +156,7 @@ function UF:Configure_ClassBar(frame)
 		bars:SetFrameLevel(50) --RaisedElementParent uses 100, we want it lower than this
 
 		if bars.Holder and bars.Holder.mover then
-			bars.Holder.mover:SetScale(0.0001)
-			bars.Holder.mover:SetAlpha(0)
+			E:DisableMover(bars.Holder.mover:GetName())
 		end
 	elseif frame.CLASSBAR_DETACHED then
 		if frame.USE_MINI_CLASSBAR and not (frame.MAX_CLASS_BAR == 1 or frame.ClassBar == "AdditionalPower" or frame.ClassBar == "EclipseBar") then
@@ -171,15 +170,13 @@ function UF:Configure_ClassBar(frame)
 			bars.Holder:Size(db.classbar.detachedWidth, db.classbar.height)
 		end
 
+		bars:ClearAllPoints()
+		bars:Point("BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", UF.BORDER + UF.SPACING, UF.BORDER + UF.SPACING)
+
 		if not bars.Holder.mover then
-			bars:ClearAllPoints()
-			bars:Point("BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
 			E:CreateMover(bars.Holder, "ClassBarMover", L["Classbar"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,player,classbar")
 		else
-			bars:ClearAllPoints()
-			bars:Point("BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
-			bars.Holder.mover:SetScale(1)
-			bars.Holder.mover:SetAlpha(1)
+			E:EnableMover(bars.Holder.mover:GetName())
 		end
 
 		bars:SetParent(db.classbar.parent == "UIPARENT" and E.UIParent or frame)
@@ -189,9 +186,9 @@ function UF:Configure_ClassBar(frame)
 		bars:ClearAllPoints()
 
 		if frame.ORIENTATION == "RIGHT" then
-			bars:Point("BOTTOMRIGHT", frame.Health.backdrop, "TOPRIGHT", -frame.BORDER, frame.SPACING * 3)
+			bars:Point("BOTTOMRIGHT", frame.Health.backdrop, "TOPRIGHT", -UF.BORDER, UF.SPACING * 3)
 		else
-			bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", frame.BORDER, frame.SPACING * 3)
+			bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", UF.BORDER, UF.SPACING * 3)
 		end
 
 		bars:SetParent(frame)
@@ -199,8 +196,7 @@ function UF:Configure_ClassBar(frame)
 		bars:SetFrameLevel(frame.Health:GetFrameLevel() + 10) --Health uses 10, Power uses (Health + 5) when attached
 
 		if bars.Holder and bars.Holder.mover then
-			bars.Holder.mover:SetScale(0.0001)
-			bars.Holder.mover:SetAlpha(0)
+			E:DisableMover(bars.Holder.mover:GetName())
 		end
 	end
 
@@ -278,7 +274,7 @@ local function ToggleResourceBar(bars, overrideVisibility)
 
 	local height = (db.classbar and db.classbar.height) or (db.combobar and db.combobar.height)
 	frame.CLASSBAR_HEIGHT = (frame.USE_CLASSBAR and (frame.CLASSBAR_SHOWN and height) or 0)
-	frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and ((frame.SPACING + (frame.CLASSBAR_HEIGHT / 2))) or (frame.CLASSBAR_HEIGHT - (frame.BORDER - frame.SPACING)))
+	frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and ((UF.SPACING + (frame.CLASSBAR_HEIGHT / 2))) or (frame.CLASSBAR_HEIGHT - (UF.BORDER - UF.SPACING)))
 
 	UF:Configure_CustomTexts(frame)
 	UF:Configure_HealthBar(frame, true)

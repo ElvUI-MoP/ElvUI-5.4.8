@@ -1392,6 +1392,16 @@ function E:DBConversions()
 		E.db.nameplates.units.TARGET = nil
 	end
 
+	if E.db.unitframe.units.party.groupBy == "ROLE2" or E.db.unitframe.units.party.groupBy == "CLASSROLE" then
+		E.db.unitframe.units.party.groupBy = "ROLE"
+	end
+	if E.db.unitframe.units.raid.groupBy == "ROLE2" or E.db.unitframe.units.raid.groupBy == "CLASSROLE" then
+		E.db.unitframe.units.raid.groupBy = "ROLE"
+	end
+	if E.db.unitframe.units.raid40.groupBy == "ROLE2" or E.db.unitframe.units.raid40.groupBy == "CLASSROLE" then
+		E.db.unitframe.units.raid40.groupBy = "ROLE"
+	end
+
 	for i = 1, 10 do
 		local bar = E.db.actionbar["bar"..i]
 		if bar.buttonsize then

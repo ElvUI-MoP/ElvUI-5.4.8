@@ -64,15 +64,15 @@ function UF:Update_TankHeader(header, db)
 	header:SetAttribute("yOffset", db.verticalSpacing)
 
 	if not header.positioned then
-		local width, height = header:GetSize()
-
-		header.dirtyWidth, header.dirtyHeight = width, max(height, 2 * db.height + db.verticalSpacing)
 		header:ClearAllPoints()
 		header:Point("TOPLEFT", E.UIParent, "TOPLEFT", 4, -186)
 
-		E:CreateMover(header, header:GetName().."Mover", L["MT Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,groupUnits,tank,generalGroup")
+		local width, height = header:GetSize()
+		header.dirtyWidth, header.dirtyHeight = width, max(height, 2 * db.height + db.verticalSpacing)
 		header:SetAttribute("minHeight", header.dirtyHeight)
 		header:SetAttribute("minWidth", header.dirtyWidth)
+
+		E:CreateMover(header, header:GetName().."Mover", L["MT Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,groupUnits,tank,generalGroup")
 		header.positioned = true
 	end
 end
@@ -80,16 +80,9 @@ end
 function UF:Update_TankFrames(frame, db)
 	frame.db = db
 	frame.colors = ElvUF.colors
-	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
+	frame:RegisterForClicks(UF.db.targetOnMouseDown and "AnyDown" or "AnyUp")
 
 	do
-		if self.thinBorders then
-			frame.SPACING = 0
-			frame.BORDER = E.mult
-		else
-			frame.BORDER = E.Border
-			frame.SPACING = E.Spacing
-		end
 		frame.ORIENTATION = db.orientation
 		frame.SHADOW_SPACING = 3
 		frame.UNIT_WIDTH = db.width

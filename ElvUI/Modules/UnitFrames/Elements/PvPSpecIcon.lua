@@ -32,11 +32,11 @@ function UF:Configure_PVPSpecIcon(frame)
 
 		specIcon.bg:ClearAllPoints()
 		if frame.ORIENTATION == "RIGHT" then
-			specIcon.bg:Point("BOTTOMRIGHT", anchor, "BOTTOMLEFT", -frame.BORDER + (frame.BORDER - frame.SPACING * 3), -frame.BORDER)
-			specIcon.bg:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.PVPINFO_WIDTH - frame.BORDER, frame.BORDER)
+			specIcon.bg:Point("BOTTOMRIGHT", anchor, "BOTTOMLEFT", -UF.BORDER + (UF.BORDER - UF.SPACING * 3), -UF.BORDER)
+			specIcon.bg:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.PVPINFO_WIDTH - UF.BORDER, UF.BORDER)
 		else
-			specIcon.bg:Point("BOTTOMLEFT", anchor, "BOTTOMRIGHT", frame.BORDER + (-frame.BORDER + frame.SPACING * 3), -frame.BORDER)
-			specIcon.bg:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.PVPINFO_WIDTH + frame.BORDER, frame.BORDER)
+			specIcon.bg:Point("BOTTOMLEFT", anchor, "BOTTOMRIGHT", UF.BORDER + (-UF.BORDER + UF.SPACING * 3), -UF.BORDER)
+			specIcon.bg:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.PVPINFO_WIDTH + UF.BORDER, UF.BORDER)
 		end
 	else
 		if frame:IsElementEnabled("PVPSpecIcon") then

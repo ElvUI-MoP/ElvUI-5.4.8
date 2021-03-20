@@ -11,7 +11,6 @@ function UF:Construct_GPS(frame)
 	gps.Texture = gps:CreateTexture("OVERLAY")
 	gps.Texture:SetTexture(E.Media.Textures.Arrow)
 	gps.Texture:SetBlendMode("BLEND")
-	gps.Texture:SetVertexColor(214/255, 41/255, 41/255)
 	gps.Texture:SetAllPoints()
 
 	return gps
@@ -30,6 +29,7 @@ function UF:Configure_GPS(frame)
 		GPS.outOfRange = frame.db.GPSArrow.outOfRange
 
 		GPS:Point("CENTER", frame, "CENTER", frame.db.GPSArrow.xOffset, frame.db.GPSArrow.yOffset)
+		GPS.Texture:SetVertexColor(frame.db.GPSArrow.color.r, frame.db.GPSArrow.color.g, frame.db.GPSArrow.color.b)
 
 		GPS.UpdateState(frame)
 	else

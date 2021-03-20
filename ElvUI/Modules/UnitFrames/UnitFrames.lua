@@ -3,6 +3,10 @@ local UF = E:GetModule("UnitFrames")
 local LSM = E.Libs.LSM
 UF.LSM = E.Libs.LSM
 
+local _, ns = ...
+local ElvUF = ns.oUF
+assert(ElvUF, "ElvUI was unable to locate oUF.")
+
 local _G = _G
 local select, pairs, type, unpack, assert, tostring = select, pairs, type, unpack, assert, tostring
 local min = math.min
@@ -30,10 +34,6 @@ local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES
 local hiddenParent = CreateFrame("Frame", nil, UIParent)
 hiddenParent:SetAllPoints()
 hiddenParent:Hide()
-
-local _, ns = ...
-local ElvUF = ns.oUF
-assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 UF.headerstoload = {}
 UF.unitgroupstoload = {}
@@ -68,23 +68,23 @@ UF.classMaxResourceBar = {
 
 UF.headerGroupBy = {
 	CLASS = function(header)
-		header:SetAttribute("groupingOrder", "DEATHKNIGHT,DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR,MONK")
-		header:SetAttribute("sortMethod", "NAME")
+		local groupingOrder = header.db and strjoin(",", header.db.CLASS1, header.db.CLASS2, header.db.CLASS3, header.db.CLASS4, header.db.CLASS5, header.db.CLASS6, header.db.CLASS7, header.db.CLASS8, header.db.CLASS9, header.db.CLASS10, header.db.CLASS11)
+		local sortMethod = header.db and header.db.sortMethod
+		header:SetAttribute("groupingOrder", groupingOrder or "DEATHKNIGHT,DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR,MONK")
+		header:SetAttribute("sortMethod", sortMethod or "NAME")
 		header:SetAttribute("groupBy", "CLASS")
 	end,
 	MTMA = function(header)
+		local sortMethod = header.db and header.db.sortMethod
 		header:SetAttribute("groupingOrder", "MAINTANK,MAINASSIST,NONE")
-		header:SetAttribute("sortMethod", "NAME")
+		header:SetAttribute("sortMethod", sortMethod or "NAME")
 		header:SetAttribute("groupBy", "ROLE")
 	end,
 	ROLE = function(header)
-		header:SetAttribute("groupingOrder", "TANK,HEALER,DAMAGER,NONE")
-		header:SetAttribute("sortMethod", "NAME")
-		header:SetAttribute("groupBy", "ASSIGNEDROLE")
-	end,
-	ROLE2 = function(header)
-		header:SetAttribute("groupingOrder", "TANK,DAMAGER,HEALER,NONE")
-		header:SetAttribute("sortMethod", "NAME")
+		local groupingOrder = header.db and strjoin(",", header.db.ROLE1, header.db.ROLE2, header.db.ROLE3, "NONE")
+		local sortMethod = header.db and header.db.sortMethod
+		header:SetAttribute("groupingOrder", groupingOrder or "TANK,HEALER,DAMAGER,NONE")
+		header:SetAttribute("sortMethod", sortMethod or "NAME")
 		header:SetAttribute("groupBy", "ASSIGNEDROLE")
 	end,
 	NAME = function(header)
@@ -93,20 +93,21 @@ UF.headerGroupBy = {
 		header:SetAttribute("groupBy", nil)
 	end,
 	GROUP = function(header)
+		local sortMethod = header.db and header.db.sortMethod
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
-		header:SetAttribute("sortMethod", "INDEX")
+		header:SetAttribute("sortMethod", sortMethod or "INDEX")
 		header:SetAttribute("groupBy", "GROUP")
-	end,
-	CLASSROLE = function(header)
-		header:SetAttribute("groupingOrder", "DEATHKNIGHT,WARRIOR,ROGUE,MONK,PALADIN,DRUID,SHAMAN,HUNTER,PRIEST,MAGE,WARLOCK")
-		header:SetAttribute("sortMethod", "NAME")
-		header:SetAttribute("groupBy", "CLASS")
 	end,
 	PETNAME = function(header)
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", nil)
 		header:SetAttribute("filterOnPet", true) --This is the line that matters. Without this, it sorts based on the owners name
+	end,
+	INDEX = function(header)
+		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
+		header:SetAttribute("sortMethod", "INDEX")
+		header:SetAttribute("groupBy", nil)
 	end
 }
 
@@ -224,14 +225,6 @@ function UF:Construct_UF(frame, unit)
 	frame:SetScript("OnEnter", UnitFrame_OnEnter)
 	frame:SetScript("OnLeave", UnitFrame_OnLeave)
 
-	if self.thinBorders then
-		frame.SPACING = 0
-		frame.BORDER = E.mult
-	else
-		frame.BORDER = E.Border
-		frame.SPACING = E.Spacing
-	end
-
 	frame.SHADOW_SPACING = 3
 	frame.CLASSBAR_YOFFSET = 0 --placeholder
 	frame.BOTTOM_OFFSET = 0 --placeholder
@@ -240,10 +233,10 @@ function UF:Construct_UF(frame, unit)
 	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 125)
 
-	if not self.groupunits[unit] then
-		UF["Construct_"..gsub(E:StringTitle(unit), "t(arget)", "T%1").."Frame"](self, frame, unit)
+	if not UF.groupunits[unit] then
+		UF["Construct_"..gsub(E:StringTitle(unit), "t(arget)", "T%1").."Frame"](UF, frame, unit)
 	else
-		UF["Construct_"..E:StringTitle(self.groupunits[unit]).."Frames"](self, frame, unit)
+		UF["Construct_"..E:StringTitle(UF.groupunits[unit]).."Frames"](UF, frame, unit)
 	end
 
 	self:Update_StatusBars()
@@ -463,9 +456,9 @@ function UF:Update_FontString(object)
 end
 
 function UF:Update_FontStrings()
-	local stringFont = LSM:Fetch("font", self.db.font)
-	for font in pairs(UF.fontstrings) do
-		font:FontTemplate(stringFont, self.db.fontSize, self.db.fontOutline)
+	local font, size, outline = LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline
+	for obj in pairs(UF.fontstrings) do
+		obj:FontTemplate(font, size, outline)
 	end
 end
 
@@ -600,9 +593,11 @@ function UF:CreateAndUpdateUFGroup(group, numGroup)
 end
 
 function UF:HeaderUpdateSpecificElement(group, elementName)
-	assert(self[group], "Invalid group specified.")
-	for i = 1, self[group]:GetNumChildren() do
-		local frame = select(i, self[group]:GetChildren())
+	local Header = self[group]
+	assert(Header, "Invalid group specified.")
+
+	for i = 1, Header:GetNumChildren() do
+		local frame = select(i, Header:GetChildren())
 		if frame and frame.Health then
 			frame:UpdateElement(elementName)
 		end
@@ -615,150 +610,154 @@ function UF.groupPrototype:GetAttribute(name)
 	return self.groups[1]:GetAttribute(name)
 end
 
-function UF.groupPrototype:Configure_Groups(frame)
-	local db = UF.db.units[frame.groupName]
-
-	local point
+function UF.groupPrototype:Configure_Groups(Header)
+	local db = UF.db.units[Header.groupName]
 	local width, height, newCols, newRows = 0, 0, 0, 0
+	Header.db = db
+
 	local direction = db.growthDirection
-	local xMult, yMult = DIRECTION_TO_HORIZONTAL_SPACING_MULTIPLIER[direction], DIRECTION_TO_VERTICAL_SPACING_MULTIPLIER[direction]
-	local UNIT_HEIGHT = db.infoPanel and db.infoPanel.enable and (db.height + db.infoPanel.height) or db.height
-	local groupSpacing = db.groupSpacing
+	local groupsPerRowCol = db.groupsPerRowCol
+	local invertGroupingOrder = db.invertGroupingOrder
+	local startFromCenter = db.startFromCenter
+	local raidWideSorting = db.raidWideSorting
+	local showPlayer = db.showPlayer
+	local groupBy = db.groupBy
+	local sortDir = db.sortDir
 
-	local numGroups = frame.numGroups
+	local dbWidth, dbHeight = db.width, db.height
+
+	local groupSpacing = E:Scale(db.groupSpacing)
+	local verticalSpacing = E:Scale(db.verticalSpacing)
+	local horizontalSpacing = E:Scale(db.horizontalSpacing)
+	local WIDTH = E:Scale(dbWidth) + horizontalSpacing
+	local HEIGHT = E:Scale(dbHeight + (db.infoPanel and db.infoPanel.enable and db.infoPanel.height or 0)) + verticalSpacing
+	local x, y = DIRECTION_TO_HORIZONTAL_SPACING_MULTIPLIER[direction], DIRECTION_TO_VERTICAL_SPACING_MULTIPLIER[direction]
+
+	local HEIGHT_FIVE = HEIGHT * 5
+	local WIDTH_FIVE = WIDTH * 5
+
+	local numGroups = Header.numGroups
 	for i = 1, numGroups do
-		local group = frame.groups[i]
-
-		point = DIRECTION_TO_POINT[direction]
+		local group = Header.groups[i]
+		local lastIndex = i - 1
+		local lastGroup = lastIndex % groupsPerRowCol
 
 		if group then
 			UF:ConvertGroupDB(group)
+			group:ClearAllPoints()
+			group:ClearChildPoints()
+			group.db = db
+
+			local point = DIRECTION_TO_POINT[direction]
+			group:SetAttribute("point", point)
+
 			if point == "LEFT" or point == "RIGHT" then
-				group:SetAttribute("xOffset", db.horizontalSpacing * DIRECTION_TO_HORIZONTAL_SPACING_MULTIPLIER[direction])
+				group:SetAttribute("xOffset", horizontalSpacing * x)
 				group:SetAttribute("yOffset", 0)
-				group:SetAttribute("columnSpacing", db.verticalSpacing)
+				group:SetAttribute("columnSpacing", verticalSpacing)
 			else
 				group:SetAttribute("xOffset", 0)
-				group:SetAttribute("yOffset", db.verticalSpacing * DIRECTION_TO_VERTICAL_SPACING_MULTIPLIER[direction])
-				group:SetAttribute("columnSpacing", db.horizontalSpacing)
+				group:SetAttribute("yOffset", verticalSpacing * y)
+				group:SetAttribute("columnSpacing", horizontalSpacing)
 			end
 
 			if not group.isForced then
 				if not group.initialized then
-					group:SetAttribute("startingIndex", db.raidWideSorting and (-min(numGroups * (db.groupsPerRowCol * 5), MAX_RAID_MEMBERS) + 1) or -4)
+					group:SetAttribute("startingIndex", raidWideSorting and (-min(numGroups * (groupsPerRowCol * 5), MAX_RAID_MEMBERS) + 1) or -4)
 					group:Show()
 					group.initialized = true
 				end
 				group:SetAttribute("startingIndex", 1)
 			end
 
-			group:ClearAllPoints()
-			if db.raidWideSorting and db.invertGroupingOrder then
+			if raidWideSorting and invertGroupingOrder then
 				group:SetAttribute("columnAnchorPoint", INVERTED_DIRECTION_TO_COLUMN_ANCHOR_POINT[direction])
 			else
 				group:SetAttribute("columnAnchorPoint", DIRECTION_TO_COLUMN_ANCHOR_POINT[direction])
 			end
 
-			group:ClearChildPoints()
-			group:SetAttribute("point", point)
-
 			if not group.isForced then
-				group:SetAttribute("maxColumns", db.raidWideSorting and numGroups or 1)
-				group:SetAttribute("unitsPerColumn", db.raidWideSorting and (db.groupsPerRowCol * 5) or 5)
-				UF.headerGroupBy[db.groupBy](group)
-				group:SetAttribute("sortDir", db.sortDir)
-				group:SetAttribute("showPlayer", db.showPlayer)
+				group:SetAttribute("maxColumns", raidWideSorting and numGroups or 1)
+				group:SetAttribute("unitsPerColumn", raidWideSorting and (groupsPerRowCol * 5) or 5)
+				group:SetAttribute("sortDir", sortDir)
+				group:SetAttribute("showPlayer", showPlayer)
+				UF.headerGroupBy[groupBy](group)
 			end
 
-			if i == 1 and db.raidWideSorting then
-				group:SetAttribute("groupFilter", "1,2,3,4,5,6,7,8")
-			else
-				group:SetAttribute("groupFilter", tostring(i))
-			end
+			local groupWide = i == 1 and raidWideSorting and strsub("1,2,3,4,5,6,7,8", 1, numGroups + numGroups - 1)
+			group:SetAttribute("groupFilter", groupWide or tostring(i))
 		end
 
 		--MATH!! WOOT
-		point = DIRECTION_TO_GROUP_ANCHOR_POINT[direction]
-		if db.raidWideSorting and db.startFromCenter then
+		local point = DIRECTION_TO_GROUP_ANCHOR_POINT[direction]
+		if raidWideSorting and startFromCenter then
 			point = DIRECTION_TO_GROUP_ANCHOR_POINT["OUT_"..direction]
 		end
-		if (i - 1) % db.groupsPerRowCol == 0 then
-			if DIRECTION_TO_POINT[direction] == "LEFT" or DIRECTION_TO_POINT[direction] == "RIGHT" then
-				if group then
-					group:Point(point, frame, point, 0, height * yMult)
-				end
-				height = height + UNIT_HEIGHT + db.verticalSpacing + groupSpacing
 
+		if lastGroup == 0 then
+			if DIRECTION_TO_POINT[direction] == "LEFT" or DIRECTION_TO_POINT[direction] == "RIGHT" then
+				if group then group:Point(point, Header, point, 0, height * y) end
+				height = height + HEIGHT + groupSpacing
 				newRows = newRows + 1
 			else
-				if group then
-					group:Point(point, frame, point, width * xMult, 0)
-				end
-				width = width + db.width + db.horizontalSpacing + groupSpacing
-
+				if group then group:Point(point, Header, point, width * x, 0) end
+				width = width + WIDTH + groupSpacing
 				newCols = newCols + 1
 			end
 		else
 			if DIRECTION_TO_POINT[direction] == "LEFT" or DIRECTION_TO_POINT[direction] == "RIGHT" then
 				if newRows == 1 then
-					if group then
-						group:Point(point, frame, point, width * xMult, 0)
-					end
-					width = width + ((db.width + db.horizontalSpacing) * 5) + groupSpacing
+					if group then group:Point(point, Header, point, width * x, 0) end
+					width = width + WIDTH_FIVE + groupSpacing
 					newCols = newCols + 1
 				elseif group then
-					group:Point(point, frame, point, ((((db.width + db.horizontalSpacing) * 5) * ((i - 1) % db.groupsPerRowCol))+((i-1) % db.groupsPerRowCol)*groupSpacing) * xMult, (((UNIT_HEIGHT + db.verticalSpacing+groupSpacing) * (newRows - 1))) * yMult)
+					group:Point(point, Header, point, ((WIDTH_FIVE * lastGroup) + lastGroup * groupSpacing) * x, ((HEIGHT + groupSpacing) * (newRows - 1)) * y)
 				end
 			else
 				if newCols == 1 then
-					if group then
-						group:Point(point, frame, point, 0, height * yMult)
-					end
-					height = height + ((UNIT_HEIGHT + db.verticalSpacing) * 5) + groupSpacing
+					if group then group:Point(point, Header, point, 0, height * y) end
+					height = height + HEIGHT_FIVE + groupSpacing
 					newRows = newRows + 1
 				elseif group then
-					group:Point(point, frame, point, (((db.width + db.horizontalSpacing +groupSpacing) * (newCols - 1))) * xMult, ((((UNIT_HEIGHT + db.verticalSpacing) * 5) * ((i-1) % db.groupsPerRowCol))+((i-1) % db.groupsPerRowCol)*groupSpacing) * yMult)
+					group:Point(point, Header, point, ((WIDTH + groupSpacing) * (newCols - 1)) * x, ((HEIGHT_FIVE * lastGroup) + lastGroup * groupSpacing) * y)
 				end
 			end
 		end
 
-		if height == 0 then
-			height = height + ((UNIT_HEIGHT + db.verticalSpacing) * 5) + groupSpacing
-		elseif width == 0 then
-			width = width + ((db.width + db.horizontalSpacing) * 5) + groupSpacing
-		end
+		if height == 0 then height = height + HEIGHT_FIVE + groupSpacing end
+		if width == 0 then width = width + WIDTH_FIVE + groupSpacing end
 	end
 
-	if not frame.isInstanceForced then
-		frame.dirtyWidth = width - db.horizontalSpacing -groupSpacing
-		frame.dirtyHeight = height - db.verticalSpacing -groupSpacing
+	if not Header.isInstanceForced then
+		Header.dirtyWidth = width - db.horizontalSpacing - groupSpacing
+		Header.dirtyHeight = height - db.verticalSpacing - groupSpacing
 	end
 
-	frame:Size(width - db.horizontalSpacing -groupSpacing, height - db.verticalSpacing - groupSpacing)
+	Header:Size(width - horizontalSpacing - groupSpacing, height - verticalSpacing - groupSpacing)
 end
 
-function UF.groupPrototype:Update(frame)
-	local group = frame.groupName
+function UF.groupPrototype:Update(Header)
+	local group = Header.groupName
 
 	UF[group].db = UF.db.units[group]
-	for i = 1, #frame.groups do
-		frame.groups[i].db = UF.db.units[group]
-		frame.groups[i]:Update()
+	for _, Group in ipairs(Header.groups) do
+		Group.db = UF.db.units[group]
+		Group:Update()
 	end
 end
 
-function UF.groupPrototype:AdjustVisibility(frame)
-	if not frame.isForced then
-		local numGroups = frame.numGroups
-		for i = 1, #frame.groups do
-			local group = frame.groups[i]
-			if (i <= numGroups) and ((frame.db.raidWideSorting and i <= 1) or not frame.db.raidWideSorting) then
+function UF.groupPrototype:AdjustVisibility(Header)
+	if not Header.isForced then
+		local numGroups = Header.numGroups
+		for i = 1, #Header.groups do
+			local group = Header.groups[i]
+			if i <= numGroups and ((Header.db.raidWideSorting and i <= 1) or not Header.db.raidWideSorting) then
 				group:Show()
 			else
 				if group.forceShow then
 					group:Hide()
-					UF:UnshowChildUnits(group, group:GetChildren())
 					group:SetAttribute("startingIndex", 1)
+					UF:UnshowChildUnits(group, group:GetChildren())
 				else
 					group:Reset()
 				end
@@ -769,9 +768,20 @@ end
 
 function UF.headerPrototype:ClearChildPoints()
 	for i = 1, self:GetNumChildren() do
-		local child = select(i, self:GetChildren())
-		child:ClearAllPoints()
+		select(i, self:GetChildren()):ClearAllPoints()
 	end
+end
+
+function UF.headerPrototype:UpdateChild(func, child, db)
+	func(UF, child, db)
+
+	local name = child:GetName()
+
+	local target = name.."Target"
+	if _G[target] then func(UF, _G[target], db) end
+
+	local pet = name.."Pet"
+	if _G[pet] then func(UF, _G[pet], db) end
 end
 
 function UF.headerPrototype:Update(isForced)
@@ -783,17 +793,10 @@ function UF.headerPrototype:Update(isForced)
 
 	local i = 1
 	local child = self:GetAttribute("child"..i)
+	local func = UF["Update_"..groupName.."Frames"]
 
 	while child do
-		UF["Update_"..groupName.."Frames"](UF, child, db)
-
-		if _G[child:GetName().."Pet"] then
-			UF["Update_"..groupName.."Frames"](UF, _G[child:GetName().."Pet"], db)
-		end
-
-		if _G[child:GetName().."Target"] then
-			UF["Update_"..groupName.."Frames"](UF, _G[child:GetName().."Target"], db)
-		end
+		self:UpdateChild(func, child, db)
 
 		i = i + 1
 		child = self:GetAttribute("child"..i)
@@ -801,14 +804,10 @@ function UF.headerPrototype:Update(isForced)
 end
 
 function UF.headerPrototype:Reset()
-	self:Hide()
-
 	self:SetAttribute("showPlayer", true)
-
 	self:SetAttribute("showSolo", true)
 	self:SetAttribute("showParty", true)
 	self:SetAttribute("showRaid", true)
-
 	self:SetAttribute("columnSpacing", nil)
 	self:SetAttribute("columnAnchorPoint", nil)
 	self:SetAttribute("groupBy", nil)
@@ -824,6 +823,7 @@ function UF.headerPrototype:Reset()
 	self:SetAttribute("unitsPerColumn", nil)
 	self:SetAttribute("xOffset", nil)
 	self:SetAttribute("yOffset", nil)
+	self:Hide()
 end
 
 function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName, headerTemplate)
@@ -842,114 +842,98 @@ function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName,
 	header:SetParent(parent)
 	header:Show()
 
-	for k, v in pairs(self.headerPrototype) do
+	for k, v in pairs(UF.headerPrototype) do
 		header[k] = v
 	end
 
 	return header
 end
 
-function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerTemplate)
-	local db = self.db.units[group]
+function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerTemplate, smart, skip)
+	local db = UF.db.units[group]
+	local Header = UF[group]
+
 	local numGroups = db.numGroups
+	local visibility = db.visibility
+	local enable = db.enable
+	local name = E:StringTitle(group)
 
-	if not self[group] then
-		local groupName = E:StringTitle(group)
-		ElvUF:RegisterStyle("ElvUF_"..groupName, UF["Construct_"..groupName.."Frames"])
-		ElvUF:SetActiveStyle("ElvUF_"..groupName)
+	if not Header then
+		ElvUF:RegisterStyle("ElvUF_"..name, UF["Construct_"..name.."Frames"])
+		ElvUF:SetActiveStyle("ElvUF_"..name)
 
-		if db.numGroups then
-			self[group] = CreateFrame("Frame", "ElvUF_"..groupName, ElvUF_Parent, "SecureHandlerStateTemplate")
-			self[group].groups = {}
-			self[group].groupName = group
-			self[group].template = self[group].template or template
-			self[group].headerTemplate = self[group].headerTemplate or headerTemplate
+		if numGroups then
+			Header = CreateFrame("Frame", "ElvUF_"..name, ElvUF_Parent, "SecureHandlerStateTemplate")
+			Header.groups = {}
+			Header.groupName = group
+			Header.template = Header.template or template
+			Header.headerTemplate = Header.headerTemplate or headerTemplate
 			if not UF.headerFunctions[group] then UF.headerFunctions[group] = {} end
 			for k, v in pairs(self.groupPrototype) do
 				UF.headerFunctions[group][k] = v
 			end
 		else
-			self[group] = self:CreateHeader(ElvUF_Parent, groupFilter, "ElvUF_"..groupName, template, group, headerTemplate)
+			Header = self:CreateHeader(ElvUF_Parent, groupFilter, "ElvUF_"..name, template, group, headerTemplate)
 		end
 
-		self[group].db = db
-		self.headers[group] = self[group]
-		self[group]:Show()
+		Header:Show()
+
+		self[group] = Header
+		self.headers[group] = Header
 	end
 
-	self[group].numGroups = numGroups
+	local groupsChanged = (Header.numGroups ~= numGroups)
+	local stateChanged = (Header.enableState ~= enable)
+	Header.enableState = enable
+	Header.numGroups = numGroups
+	Header.db = db
 
 	if numGroups then
-		local groupName = E:StringTitle(self[group].groupName)
 		if db.raidWideSorting then
-			if not self[group].groups[1] then
-				self[group].groups[1] = self:CreateHeader(self[group], nil, "ElvUF_"..groupName.."Group1", template or self[group].template, nil, headerTemplate or self[group].headerTemplate)
+			if not Header.groups[1] then
+				Header.groups[1] = self:CreateHeader(Header, nil, "ElvUF_"..name.."Group1", template or Header.template, nil, headerTemplate or Header.headerTemplate)
 			end
 		else
-			while numGroups > #self[group].groups do
-				local index = tostring(#self[group].groups + 1)
-				tinsert(self[group].groups, self:CreateHeader(self[group], index, "ElvUF_"..groupName.."Group"..index, template or self[group].template, nil, headerTemplate or self[group].headerTemplate))
+			while numGroups > #Header.groups do
+				local index = tostring(#Header.groups + 1)
+				tinsert(Header.groups, self:CreateHeader(Header, index, "ElvUF_"..name.."Group"..index, template or Header.template, nil, headerTemplate or Header.headerTemplate))
 			end
 		end
 
-		UF.headerFunctions[group]:AdjustVisibility(self[group])
-		UF.headerFunctions[group]:Configure_Groups(self[group])
-		UF.headerFunctions[group]:Update(self[group])
-
-		if db.enable then
-			if not self[group].isForced and not self[group].blockVisibilityChanges then
-				RegisterStateDriver(self[group], "visibility", db.visibility)
-			end
-			if self[group].mover then
-				E:EnableMover(self[group].mover:GetName())
-			end
-		else
-			UnregisterStateDriver(self[group], "visibility")
-			self[group]:Hide()
-			if self[group].mover then
-				E:DisableMover(self[group].mover:GetName())
-			end
+		if groupsChanged or not skip then
+			UF.headerFunctions[group]:AdjustVisibility(Header)
+			UF.headerFunctions[group]:Configure_Groups(Header)
 		end
 	else
-		self[group].db = db
-
-		local groupName = E:StringTitle(group)
-
 		if not UF.headerFunctions[group] then UF.headerFunctions[group] = {} end
 		if not UF.headerFunctions[group].Update then
 			UF.headerFunctions[group].Update = function()
-				UF["Update_"..groupName.."Header"](UF, UF[group], db)
+				local func = UF["Update_"..name.."Frames"]
+				UF["Update_"..name.."Header"](UF, Header, Header.db)
 
-				for i = 1, UF[group]:GetNumChildren() do
-					local child = select(i, UF[group]:GetChildren())
-					UF["Update_"..groupName.."Frames"](UF, child, UF.db.units[group])
-
-					if _G[child:GetName().."Target"] then
-						UF["Update_"..groupName.."Frames"](UF, _G[child:GetName().."Target"], UF.db.units[group])
-					end
-
-					if _G[child:GetName().."Pet"] then
-						UF["Update_"..groupName.."Frames"](UF, _G[child:GetName().."Pet"], UF.db.units[group])
-					end
+				for i = 1, Header:GetNumChildren() do
+					Header:UpdateChild(func, select(i, Header:GetChildren()), Header.db)
 				end
 			end
 		end
+	end
 
-		UF.headerFunctions[group]:Update(self[group])
+	if stateChanged or not skip then
+		UF.headerFunctions[group]:Update(Header)
+	end
 
-		if db.enable then
-			if not self[group].isForced then
-				RegisterStateDriver(self[group], "visibility", db.visibility)
-			end
-			if self[group].mover then
-				E:EnableMover(self[group].mover:GetName())
-			end
-		else
-			UnregisterStateDriver(self[group], "visibility")
-			self[group]:Hide()
-			if self[group].mover then
-				E:DisableMover(self[group].mover:GetName())
-			end
+	if enable then
+		if not Header.isForced then
+			RegisterStateDriver(Header, "visibility", visibility)
+		end
+		if Header.mover then
+			E:EnableMover(Header.mover:GetName())
+		end
+	else
+		UnregisterStateDriver(Header, "visibility")
+		Header:Hide()
+		if Header.mover then
+			E:DisableMover(Header.mover:GetName())
 		end
 	end
 end
@@ -1030,8 +1014,8 @@ function UF:UpdateAllHeaders()
 
 	self:RegisterRaidDebuffIndicator()
 
-	for group in pairs(self.headers) do
-		self:CreateAndUpdateHeaderGroup(group)
+	for group in pairs(UF.headers) do
+		UF:CreateAndUpdateHeaderGroup(group)
 
 		if group == "party" or group == "raid" or group == "raid40" then
 			--Update BuffIndicators on profile change as they might be using profile specific data
@@ -1103,7 +1087,7 @@ local HandleFrame = function(baseName)
 end
 
 function ElvUF:DisableBlizzard(unit)
-	if (not unit) then return end
+	if not unit then return end
 
 	if (unit == "player") and E.private.unitframe.disabledBlizzardFrames.player then
 		HandleFrame(PlayerFrame)
@@ -1193,7 +1177,7 @@ function UF:ADDON_LOADED(_, addon)
 end
 
 function UF:UnitFrameThreatIndicator_Initialize(_, unitFrame)
-	unitFrame:UnregisterAllEvents() --Arena Taint Fix
+	unitFrame:UnregisterAllEvents() -- Arena Taint Fix
 end
 
 function UF:ResetUnitSettings(unit)
@@ -1221,39 +1205,6 @@ function UF:ToggleForceShowGroupFrames(unitGroup, numGroup)
 end
 
 local Blacklist = {
-	arena = {
-		enable = true,
-		fader = true
-	},
-	assist = {
-		enable = true,
-		fader = true
-	},
-	boss = {
-		enable = true,
-		fader = true
-	},
-	focus = {
-		enable = true,
-		fader = true
-	},
-	focustarget = {
-		enable = true,
-		fader = true
-	},
-	party = {
-		enable = true,
-		visibility = true,
-		fader = true
-	},
-	pet = {
-		enable = true,
-		fader = true
-	},
-	pettarget = {
-		enable = true,
-		fader = true
-	},
 	player = {
 		enable = true,
 		aurabars = true,
@@ -1269,37 +1220,21 @@ local Blacklist = {
 			maxDuration = true
 		}
 	},
-	raid = {
-		enable = true,
-		fader = true,
-		visibility = true
-	},
-	raid40 = {
-		enable = true,
-		fader = true,
-		visibility = true
-	},
-	raidpet = {
-		enable = true,
-		fader = true,
-		visibility = true
-	},
-	tank = {
-		fader = true,
-		enable = true
-	},
-	target = {
-		fader = true,
-		enable = true
-	},
-	targettarget = {
-		fader = true,
-		enable = true
-	},
-	targettargettarget = {
-		fader = true,
-		enable = true
-	}
+	arena = {enable = true, fader = true},
+	assist = {enable = true, fader = true},
+	boss = {enable = true, fader = true},
+	focus = {enable = true, fader = true},
+	focustarget = {enable = true, fader = true},
+	pet = {enable = true, fader = true},
+	pettarget = {enable = true, fader = true},
+	tank = {enable = true, fader = true},
+	target = {enable = true, fader = true},
+	targettarget = {enable = true, fader = true},
+	targettargettarget = {enable = true, fader = true},
+	party = {enable = true, fader = true, visibility = true},
+	raid = {enable = true, fader = true, visibility = true},
+	raid40 = {enable = true, fader = true, visibility = true},
+	raidpet = {enable = true, fader = true, visibility = true}
 }
 
 function UF:MergeUnitSettings(from, to)
@@ -1337,9 +1272,9 @@ function UF:UpdateBackdropTextureColor(r, g, b)
 	local bg = self.bg or self.BG
 	if bg and bg:IsObjectType("Texture") and not bg.multiplier then
 		if self.custom_backdrop then
-			bg:SetVertexColor(self.custom_backdrop.r, self.custom_backdrop.g, self.custom_backdrop.b)
+			bg:SetVertexColor(self.custom_backdrop.r, self.custom_backdrop.g, self.custom_backdrop.b, self.custom_backdrop.a or 1)
 		else
-			bg:SetVertexColor(r * m, g * m, b * m)
+			bg:SetVertexColor(r * m, g * m, b * m, 1)
 		end
 	end
 end
@@ -1448,13 +1383,16 @@ end
 function UF:Initialize()
 	UF.db = E.db.unitframe
 	UF.thinBorders = UF.db.thinBorders or E.PixelMode
-	if not E.private.unitframe.enable then return end
 
+	UF.SPACING = UF.thinBorders and 0 or E.Spacing
+	UF.BORDER = UF.thinBorders and E.mult or E.Border
+
+	if not E.private.unitframe.enable then return end
 	UF.Initialized = true
 
 	E.ElvUF_Parent = CreateFrame("Frame", "ElvUF_Parent", E.UIParent, "SecureHandlerStateTemplate")
 	E.ElvUF_Parent:SetFrameStrata("LOW")
-	RegisterStateDriver(E.ElvUF_Parent, "visibility", "[petbattle] hide; show")
+	RegisterStateDriver(E.ElvUF_Parent, "visibility", "[petbattle] hide;show")
 
 	UF:UpdateColors()
 	ElvUF:RegisterStyle("ElvUF", function(frame, unit)

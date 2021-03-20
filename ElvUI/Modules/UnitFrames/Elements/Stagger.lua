@@ -52,10 +52,10 @@ function UF:Configure_Stagger(frame)
 
 		stagger:ClearAllPoints()
 		if frame.ORIENTATION == "RIGHT" then
-			stagger:Point("BOTTOMRIGHT", anchor, "BOTTOMLEFT", -frame.BORDER * 2 + (frame.BORDER - frame.SPACING * 3), 0)
+			stagger:Point("BOTTOMRIGHT", anchor, "BOTTOMLEFT", -UF.BORDER * 2 + (UF.BORDER - UF.SPACING * 3), 0)
 			stagger:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.STAGGER_WIDTH, 0)
 		else
-			stagger:Point("BOTTOMLEFT", anchor, "BOTTOMRIGHT", frame.BORDER * 2 + (-frame.BORDER + frame.SPACING * 3), 0)
+			stagger:Point("BOTTOMLEFT", anchor, "BOTTOMRIGHT", UF.BORDER * 2 + (-UF.BORDER + UF.SPACING * 3), 0)
 			stagger:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.STAGGER_WIDTH, 0)
 		end
 	elseif frame:IsElementEnabled("Stagger") then
@@ -73,7 +73,7 @@ function UF:ToggleStaggerBar()
 	end
 
 	frame.STAGGER_SHOWN = isShown
-	frame.STAGGER_WIDTH = frame.USE_STAGGER and frame.STAGGER_SHOWN and (frame.db.stagger.width + (frame.BORDER * 3)) or 0
+	frame.STAGGER_WIDTH = frame.USE_STAGGER and frame.STAGGER_SHOWN and (frame.db.stagger.width + (UF.BORDER * 3)) or 0
 
 	if stateChanged then
 		UF:Configure_Stagger(frame)

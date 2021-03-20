@@ -52,17 +52,15 @@ function UF:Construct_RaidFrames()
 end
 
 function UF:Update_RaidHeader(header, db)
-	header:GetParent().db = db
+	local parent = header:GetParent()
+	parent.db = db
 
-	local headerHolder = header:GetParent()
-	headerHolder.db = db
+	if not parent.positioned then
+		parent:ClearAllPoints()
+		parent:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
+		E:CreateMover(parent, parent:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,groupUnits,raid,generalGroup")
 
-	if not headerHolder.positioned then
-		headerHolder:ClearAllPoints()
-		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
-		E:CreateMover(headerHolder, headerHolder:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID", nil, "unitframe,groupUnits,raid,generalGroup")
-
-		headerHolder.positioned = true
+		parent.positioned = true
 	end
 end
 
@@ -74,14 +72,6 @@ function UF:Update_RaidFrames(frame, db)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
 
 	do
-		if self.thinBorders then
-			frame.SPACING = 0
-			frame.BORDER = E.mult
-		else
-			frame.BORDER = E.Border
-			frame.SPACING = E.Spacing
-		end
-
 		frame.ORIENTATION = db.orientation
 		frame.SHADOW_SPACING = 3
 		frame.UNIT_WIDTH = db.width
@@ -93,7 +83,7 @@ function UF:Update_RaidFrames(frame, db)
 		frame.USE_POWERBAR_OFFSET = (db.power.width == "offset" and db.power.offset ~= 0) and frame.USE_POWERBAR and not frame.POWERBAR_DETACHED
 		frame.POWERBAR_OFFSET = frame.USE_POWERBAR_OFFSET and db.power.offset or 0
 		frame.POWERBAR_HEIGHT = not frame.USE_POWERBAR and 0 or db.power.height
-		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER * 2)) / 2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2)))
+		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (UF.BORDER * 2)) / 2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((UF.BORDER + UF.SPACING) * 2)))
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT and (db.portrait.overlay or frame.ORIENTATION == "MIDDLE")
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
@@ -104,8 +94,8 @@ function UF:Update_RaidFrames(frame, db)
 		frame.CLASSBAR_DETACHED = false
 		frame.USE_MINI_CLASSBAR = db.classbar.fill == "spaced" and frame.USE_CLASSBAR
 		frame.CLASSBAR_HEIGHT = frame.USE_CLASSBAR and db.classbar.height or 0
-		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2) - frame.PORTRAIT_WIDTH - (frame.ORIENTATION == "MIDDLE" and (frame.POWERBAR_OFFSET * 2) or frame.POWERBAR_OFFSET)
-		frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and (frame.SPACING + (frame.CLASSBAR_HEIGHT / 2)) or (frame.CLASSBAR_HEIGHT - (frame.BORDER - frame.SPACING)))
+		frame.CLASSBAR_WIDTH = frame.UNIT_WIDTH - ((UF.BORDER + UF.SPACING) * 2) - frame.PORTRAIT_WIDTH - (frame.ORIENTATION == "MIDDLE" and (frame.POWERBAR_OFFSET * 2) or frame.POWERBAR_OFFSET)
+		frame.CLASSBAR_YOFFSET = (not frame.USE_CLASSBAR or not frame.CLASSBAR_SHOWN or frame.CLASSBAR_DETACHED) and 0 or (frame.USE_MINI_CLASSBAR and (UF.SPACING + (frame.CLASSBAR_HEIGHT / 2)) or (frame.CLASSBAR_HEIGHT - (UF.BORDER - UF.SPACING)))
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
