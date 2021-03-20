@@ -131,7 +131,14 @@ local function LoadSkin()
 	SendMailMoneyInset:StripTextures()
 
 	SendMailScrollFrame:StripTextures(true)
-	SendMailScrollFrame:SetTemplate()
+	SendMailScrollFrame:CreateBackdrop()
+	SendMailScrollFrame.backdrop:Point("TOPLEFT", 0, 0)
+	SendMailScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, -2)
+
+	S:HandleScrollBar(SendMailScrollFrameScrollBar)
+	SendMailScrollFrameScrollBar:ClearAllPoints()
+	SendMailScrollFrameScrollBar:Point("TOPRIGHT", SendMailScrollFrame, 24, -18)
+	SendMailScrollFrameScrollBar:Point("BOTTOMRIGHT", SendMailScrollFrame, 0, 16)
 
 	hooksecurefunc("SendMailFrame_Update", function()
 		for i = 1, ATTACHMENTS_MAX_SEND do
@@ -165,11 +172,6 @@ local function LoadSkin()
 	end)
 
 	SendMailBodyEditBox:SetTextColor(1, 1, 1)
-
-	S:HandleScrollBar(SendMailScrollFrameScrollBar)
-	SendMailScrollFrameScrollBar:ClearAllPoints()
-	SendMailScrollFrameScrollBar:Point("TOPRIGHT", SendMailScrollFrame, 20, -18)
-	SendMailScrollFrameScrollBar:Point("BOTTOMRIGHT", SendMailScrollFrame, 0, 18)
 
 	S:HandleEditBox(SendMailNameEditBox)
 	SendMailNameEditBox:Height(18)
@@ -253,12 +255,12 @@ local function LoadSkin()
 	S:HandleButton(OpenMailCancelButton)
 
 	OpenMailScrollFrame:StripTextures(true)
-	OpenMailScrollFrame:SetTemplate()
+	OpenMailScrollFrame:CreateBackdrop()
 
 	S:HandleScrollBar(OpenMailScrollFrameScrollBar)
 	OpenMailScrollFrameScrollBar:ClearAllPoints()
-	OpenMailScrollFrameScrollBar:Point("TOPRIGHT", OpenMailScrollFrame, 24, -18)
-	OpenMailScrollFrameScrollBar:Point("BOTTOMRIGHT", OpenMailScrollFrame, 0, 18)
+	OpenMailScrollFrameScrollBar:Point("TOPRIGHT", OpenMailScrollFrame, 25, -17)
+	OpenMailScrollFrameScrollBar:Point("BOTTOMRIGHT", OpenMailScrollFrame, 0, 17)
 
 	OpenMailBodyText:SetTextColor(1, 1, 1)
 	InvoiceTextFontNormal:SetFont(E.media.normFont, 13)

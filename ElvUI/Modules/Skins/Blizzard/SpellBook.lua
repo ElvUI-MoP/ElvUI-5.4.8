@@ -78,6 +78,8 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function(self)
+		if SpellBookFrame.bookType == BOOKTYPE_PROFESSION then return end
+
 		local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
 		if not slot then return end
 
@@ -95,13 +97,9 @@ local function LoadSkin()
 			local specName = tconcat({GetSpecsForSpell(slot, SpellBookFrame.bookType)}, PLAYER_LIST_DELIMITER)
 			local talentName = IsTalentSpell(slot, SpellBookFrame.bookType)
 			local offSpecLvL = (slotType == "SPELL" and isOffSpec) and (level and level > E.mylevel)
+			local noSubString = (subSpellName == "" or subSpellName == nil) and (specName == "" or specName == nil) and talentName == nil and not self.isPassive
 
-			if (subSpellName == "" or subSpellName == nil) and (specName == "" or specName == nil) and talentName == nil and not self.isPassive then
-				self.SpellName:Point("LEFT", self, "RIGHT", 8, offSpecLvL and 10 or 0)
-			else
-				self.SpellName:Point("LEFT", self, "RIGHT", 8, offSpecLvL and 12 or 5)
-			end
-
+			self.SpellName:Point("LEFT", self, "RIGHT", 8, noSubString and (offSpecLvL and 10 or 0) or (offSpecLvL and 12 or 5))
 			self.SpellName:SetTextColor(1, 0.8, 0.1)
 			self.SpellSubName:SetTextColor(1, 1, 1)
 		end
@@ -255,8 +253,6 @@ local function LoadSkin()
 
 	hooksecurefunc("SpellBook_UpdateCoreAbilitiesTab", function()
 		local buttons = SpellBookCoreAbilitiesFrame.Abilities
-		local tabs = SpellBookCoreAbilitiesFrame.SpecTabs
-
 		for i = 1, #buttons do
 			local button = buttons[i]
 			if not button then return end
@@ -308,21 +304,22 @@ local function LoadSkin()
 			end
 		end
 
+		local tabs = SpellBookCoreAbilitiesFrame.SpecTabs
 		for i = 1, #tabs do
 			local tab = tabs[i]
 
 			if tab and not tab.isSkinned then
 				tab:GetRegions():Hide()
 				tab:SetTemplate()
-
-				tab:GetNormalTexture():SetInside()
-				tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-
 				tab:StyleButton(nil, true)
 
 				if i == 1 then
 					tab:Point("TOPLEFT", SpellBookFrame, "TOPRIGHT", E.PixelMode and -1 or 1, -75)
 				end
+
+				local normal = tab:GetNormalTexture()
+				normal:SetInside()
+				normal:SetTexCoord(unpack(E.TexCoords))
 
 				tab.isSkinned = true
 			end

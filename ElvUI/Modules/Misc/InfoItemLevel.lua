@@ -281,7 +281,7 @@ function M:CreateSlotStrings(frame, which)
 			end
 
 			for u = 1, 10 do
-				local offset = 8 + (u * 16)
+				local offset = 8 + (u * (E.PixelMode and 16 or 20))
 				local newX = ((justify == "BOTTOMLEFT" or i == 17) and x + offset) or x - offset
 
 				slot["textureSlot"..u], slot["textureSlotBackdrop"..u] = M:CreateInspectTexture(slot, newX, --[[newY or]] y)
