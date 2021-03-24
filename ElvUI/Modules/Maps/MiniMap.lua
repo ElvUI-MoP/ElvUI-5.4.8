@@ -356,7 +356,7 @@ function M:UpdateSettings()
 		MiniMapMailFrame:Point(pos, Minimap, pos, E.db.general.minimap.icons.mail.xOffset or 3, E.db.general.minimap.icons.mail.yOffset or 4)
 		MiniMapMailFrame:SetScale(scale)
 
-		MiniMapMailIcon:SetTexture(E.Media.Textures[E.db.general.minimap.icons.mail.texture] or E.Media.Textures.Mail)
+		MiniMapMailIcon:SetTexture(E.Media.MailIcons[E.db.general.minimap.icons.mail.texture] or E.Media.MailIcons.Mail0)
 	end
 
 	if QueueStatusMinimapButton then
