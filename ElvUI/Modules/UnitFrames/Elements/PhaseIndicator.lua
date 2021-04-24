@@ -1,26 +1,23 @@
 local E, L, V, P, G = unpack(select(2, ...))
 local UF = E:GetModule("UnitFrames")
 
-local unpack = unpack
-
-local texCoords = {
-	[1] = {1/128, 33/128, 1/64, 33/64},
-	[2] = {34/128, 66/128, 1/64, 33/64}
-}
-
 function UF:PostUpdate_PhaseIcon(isInSamePhase)
-	if not isInSamePhase then
-		self:SetTexCoord(unpack(texCoords[E.myfaction == "Horde" and 2 or 1]))
-	end
+	self.Center:SetShown(not isInSamePhase)
 end
 
 function UF:Construct_PhaseIcon(frame)
-	local PhaseIndicator = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "ARTWORK", nil, 1)
-	PhaseIndicator:SetSize(30, 30)
-	PhaseIndicator:SetPoint("CENTER", frame.Health, "CENTER")
-	PhaseIndicator:SetTexture(E.Media.Textures.PhaseIcons)
-	PhaseIndicator:SetDrawLayer("OVERLAY", 7)
+	local PhaseIndicator = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY", nil, 6)
+	PhaseIndicator:SetTexture(E.Media.Textures.PhaseBorder)
+	PhaseIndicator:Point("CENTER", frame.Health)
+	PhaseIndicator:Size(32)
 
+	local Center = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY", nil, 7)
+	Center:SetTexture(E.Media.Textures.PhaseCenter)
+	Center:Point("CENTER", frame.Health)
+	Center:Size(32)
+	Center:Hide()
+
+	PhaseIndicator.Center = Center
 	PhaseIndicator.PostUpdate = UF.PostUpdate_PhaseIcon
 
 	return PhaseIndicator
@@ -31,12 +28,18 @@ function UF:Configure_PhaseIcon(frame)
 	PhaseIndicator:ClearAllPoints()
 	PhaseIndicator:Point(frame.db.phaseIndicator.anchorPoint, frame.Health, frame.db.phaseIndicator.anchorPoint, frame.db.phaseIndicator.xOffset, frame.db.phaseIndicator.yOffset)
 
-	local scale = frame.db.phaseIndicator.scale or 1
-	PhaseIndicator:Size(30 * scale)
+	local size = 32 * (frame.db.phaseIndicator.scale or 1)
+	PhaseIndicator:Size(size)
+
+	PhaseIndicator.Center:Size(size)
+	PhaseIndicator.Center:ClearAllPoints()
+	PhaseIndicator.Center:SetAllPoints(PhaseIndicator)
+	PhaseIndicator.Center:SetVertexColor(frame.db.phaseIndicator.color.r, frame.db.phaseIndicator.color.g, frame.db.phaseIndicator.color.b)
 
 	if frame.db.phaseIndicator.enable and not frame:IsElementEnabled("PhaseIndicator") then
 		frame:EnableElement("PhaseIndicator")
 	elseif not frame.db.phaseIndicator.enable and frame:IsElementEnabled("PhaseIndicator") then
 		frame:DisableElement("PhaseIndicator")
+		PhaseIndicator.Center:Hide()
 	end
 end

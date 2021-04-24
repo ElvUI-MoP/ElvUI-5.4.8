@@ -2083,39 +2083,54 @@ local function GetOptionsTable_PhaseIndicator(updateFunc, groupName, numGroup)
 		set = function(info, value) E.db.unitframe.units[groupName].phaseIndicator[info[#info]] = value updateFunc(UF, groupName, numGroup) end,
 		args = {
 			enable = {
-				order = 2,
+				order = 1,
 				type = "toggle",
 				name = L["ENABLE"]
 			},
 			scale = {
-				order = 3,
+				order = 2,
 				type = "range",
 				name = L["Scale"],
 				isPercent = true,
-				min = 0.5, max = 1.5, step = 0.01
+				min = 0.5, max = 1.5, step = 0.01,
+				disabled = function() return not E.db.unitframe.units[groupName].phaseIndicator.enable end
 			},
-			spacer = {
-				order = 4,
-				type = "description",
-				name = " "
+			color = {
+				order = 3,
+				type = "color",
+				name = L["COLOR"],
+				get = function(info)
+					local t = E.db.unitframe.units[groupName].phaseIndicator[info[#info]]
+					local d = P.unitframe.units[groupName].phaseIndicator[info[#info]]
+					return t.r, t.g, t.b, t.a, d.r, d.g, d.b
+				end,
+				set = function(info, r, g, b)
+					local t = E.db.unitframe.units[groupName].phaseIndicator[info[#info]]
+					t.r, t.g, t.b = r, g, b
+					updateFunc(UF, groupName)
+				end,
+				disabled = function() return not E.db.unitframe.units[groupName].phaseIndicator.enable end
 			},
 			anchorPoint = {
-				order = 5,
+				order = 4,
 				type = "select",
 				name = L["Anchor Point"],
-				values = positionValues
+				values = positionValues,
+				disabled = function() return not E.db.unitframe.units[groupName].phaseIndicator.enable end
 			},
 			xOffset = {
-				order = 6,
+				order = 5,
 				type = "range",
 				name = L["X-Offset"],
-				min = -100, max = 100, step = 1
+				min = -100, max = 100, step = 1,
+				disabled = function() return not E.db.unitframe.units[groupName].phaseIndicator.enable end
 			},
 			yOffset = {
-				order = 7,
+				order = 6,
 				type = "range",
 				name = L["Y-Offset"],
-				min = -100, max = 100, step = 1
+				min = -100, max = 100, step = 1,
+				disabled = function() return not E.db.unitframe.units[groupName].phaseIndicator.enable end
 			}
 		}
 	}

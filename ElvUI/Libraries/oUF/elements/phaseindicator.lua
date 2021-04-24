@@ -39,8 +39,8 @@ local function Update(self, event, unit)
 		element:PreUpdate()
 	end
 
-	local isInSamePhase = UnitInPhase(unit)
-	if(not isInSamePhase and UnitIsPlayer(unit) and UnitIsConnected(unit)) then
+	local isInSamePhase = UnitIsPlayer(unit) and UnitIsConnected(unit) and not UnitInPhase(unit) or nil
+	if(isInSamePhase) then
 		element:Show()
 	else
 		element:Hide()
@@ -53,7 +53,7 @@ local function Update(self, event, unit)
 	* isInSamePhase - indicates whether the unit is in the same phase as the player (boolean)
 	--]]
 	if(element.PostUpdate) then
-		return element:PostUpdate(isInSamePhase)
+		return element:PostUpdate(not isInSamePhase)
 	end
 end
 
@@ -80,8 +80,9 @@ local function Enable(self)
 
 		self:RegisterEvent('UNIT_PHASE', Path)
 
-		if(element:IsObjectType('Texture') and not element:GetTexture()) then
-			element:SetTexture([[Interface\TargetingFrame\UI-PhasingIcon]])
+		local icon = (element.Icon or element)
+		if(icon:IsObjectType('Texture') and not icon:GetTexture()) then
+			icon:SetTexture([[Interface\TargetingFrame\UI-PhasingIcon]])
 		end
 
 		return true

@@ -1813,7 +1813,8 @@ P.unitframe = {
 				anchorPoint = "CENTER",
 				xOffset = 0,
 				yOffset = 0,
-				scale = 0.8
+				scale = 0.8,
+				color = {r = 0.3, g = 0.5, b = 1}
 			},
 			CombatIcon = {
 				enable = true,
@@ -3622,7 +3623,8 @@ P.unitframe = {
 				anchorPoint = "CENTER",
 				xOffset = 0,
 				yOffset = 0,
-				scale = 0.8
+				scale = 0.8,
+				color = {r = 0.3, g = 0.5, b = 1}
 			},
 			portrait = {
 				enable = false,
@@ -4115,7 +4117,8 @@ P.unitframe = {
 				anchorPoint = "CENTER",
 				xOffset = 0,
 				yOffset = 0,
-				scale = 0.8
+				scale = 0.8,
+				color = {r = 0.3, g = 0.5, b = 1}
 			},
 			cutaway = {
 				health = {
@@ -4356,7 +4359,8 @@ P.unitframe = {
 				anchorPoint = "CENTER",
 				xOffset = 0,
 				yOffset = 0,
-				scale = 0.8
+				scale = 0.8,
+				color = {r = 0.3, g = 0.5, b = 1}
 			},
 			cutaway = {
 				health = {
