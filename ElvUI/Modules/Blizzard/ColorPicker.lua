@@ -160,8 +160,8 @@ function B:EnhanceColorPicker()
 
 	S:HandleButton(ColorPickerOkayButton)
 	ColorPickerOkayButton:ClearAllPoints()
-	ColorPickerOkayButton:Point("BOTTOMLEFT", ColorPickerFrame,"BOTTOMLEFT", 6, 6)
-	ColorPickerOkayButton:Point("RIGHT", ColorPickerCancelButton,"LEFT", -4, 0)
+	ColorPickerOkayButton:Point("BOTTOMLEFT", ColorPickerFrame, "BOTTOMLEFT", 6, 6)
+	ColorPickerOkayButton:Point("RIGHT", ColorPickerCancelButton, "LEFT", -4, 0)
 
 	S:HandleSliderFrame(OpacitySliderFrame)
 

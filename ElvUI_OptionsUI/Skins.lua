@@ -13,7 +13,7 @@ E.Options.args.skins = {
 			name = L["SKINS_DESC"]
 		},
 		general = {
-			order = 1,
+			order = 2,
 			type = "group",
 			name = L["General"],
 			guiInline = true,
@@ -45,7 +45,7 @@ E.Options.args.skins = {
 					type = "toggle",
 					name = L["Clean Boss Button"],
 					get = function(info) return E.private.skins.cleanBossButton end,
-					set = function(info, value) E.private.skins.cleanBossButton = value; E:StaticPopup_Show("PRIVATE_RL") end
+					set = function(info, value) E.private.skins.cleanBossButton = value E:StaticPopup_Show("PRIVATE_RL") end
 				}
 			}
 		},
@@ -54,7 +54,7 @@ E.Options.args.skins = {
 			type = "group",
 			name = "Blizzard",
 			get = function(info) return E.private.skins.blizzard[info[#info]] end,
-			set = function(info, value) E.private.skins.blizzard[info[#info]] = value E:StaticPopup_Show("CONFIG_RL") end,
+			set = function(info, value) E.private.skins.blizzard[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
 			disabled = function() return not E.private.skins.blizzard.enable end,
 			guiInline = true,
 			args = {

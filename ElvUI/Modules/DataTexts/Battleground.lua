@@ -40,7 +40,7 @@ function DT:UPDATE_BATTLEFIELD_SCORE()
 	local pointIndex = dataLayout[self:GetParent():GetName()][self.pointIndex]
 	for i = 1, GetNumBattlefieldScores() do
 		local name = GetBattlefieldScore(i)
-		if name == E.myname then
+		if name and name == E.myname then
 			local val = select(pointIndex, GetBattlefieldScore(i))
 			self.text:SetFormattedText(displayString, dataStrings[pointIndex], E:ShortValue(val))
 			break

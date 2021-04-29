@@ -291,14 +291,16 @@ function B:SetGuildBankSearch(query)
 end
 
 function B:UpdateItemLevelDisplay()
-	if E.private.bags.enable ~= true then return end
+	if not E.private.bags.enable then return end
+
+	local font = E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont)
 
 	for _, bagFrame in pairs(B.BagFrames) do
 		for _, bagID in ipairs(bagFrame.BagIDs) do
 			for slotID = 1, GetContainerNumSlots(bagID) do
 				local slot = bagFrame.Bags[bagID][slotID]
 				if slot and slot.itemLevel then
-					slot.itemLevel:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
+					slot.itemLevel:FontTemplate(font, E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
 				end
 			end
 		end
@@ -308,14 +310,16 @@ function B:UpdateItemLevelDisplay()
 end
 
 function B:UpdateCountDisplay()
-	if E.private.bags.enable ~= true then return end
+	if not E.private.bags.enable then return end
+
+	local font = E.Libs.LSM:Fetch("font", E.db.bags.countFont)
 
 	for _, bagFrame in pairs(B.BagFrames) do
 		for _, bagID in ipairs(bagFrame.BagIDs) do
 			for slotID = 1, GetContainerNumSlots(bagID) do
 				local slot = bagFrame.Bags[bagID][slotID]
 				if slot and slot.Count then
-					slot.Count:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.countFont), E.db.bags.countFontSize, E.db.bags.countFontOutline)
+					slot.Count:FontTemplate(font, E.db.bags.countFontSize, E.db.bags.countFontOutline)
 				end
 			end
 		end
@@ -664,8 +668,7 @@ end
 function B:SetSlotAlphaForBag(f)
 	for _, bagID in ipairs(f.BagIDs) do
 		if f.Bags[bagID] then
-			local numSlots = GetContainerNumSlots(bagID)
-			for slotID = 1, numSlots do
+			for slotID = 1, GetContainerNumSlots(bagID) do
 				if f.Bags[bagID][slotID] then
 					if bagID == self.id then
 						f.Bags[bagID][slotID]:SetAlpha(1)
@@ -681,8 +684,7 @@ end
 function B:ResetSlotAlphaForBags(f)
 	for _, bagID in ipairs(f.BagIDs) do
 		if f.Bags[bagID] then
-			local numSlots = GetContainerNumSlots(bagID)
-			for slotID = 1, numSlots do
+			for slotID = 1, GetContainerNumSlots(bagID) do
 				if f.Bags[bagID][slotID] then
 					f.Bags[bagID][slotID]:SetAlpha(1)
 				end
@@ -692,7 +694,7 @@ function B:ResetSlotAlphaForBags(f)
 end
 
 function B:Layout(isBank)
-	if E.private.bags.enable ~= true then return end
+	if not E.private.bags.enable then return end
 
 	local f = B:GetContainerFrame(isBank)
 	if not f then return end
@@ -1819,7 +1821,7 @@ function B:Initialize()
 
 	if not E.private.bags.enable then
 		-- Set a different default anchor
-		BagFrameHolder:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -(E.Border*2), 22 + E.Border*4 - E.Spacing*2)
+		BagFrameHolder:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -(E.Border * 2), 22 + E.Border * 4 - E.Spacing * 2)
 		E:CreateMover(BagFrameHolder, "ElvUIBagMover", L["Bag Mover"], nil, nil, B.PostBagMove, nil, nil, "bags,general")
 
 		B:SecureHook("UpdateContainerFrameAnchors")
@@ -1843,19 +1845,19 @@ function B:Initialize()
 	}
 
 	B.QuestColors = {
-		["questStarter"] = {B.db.colors.items.questStarter.r, B.db.colors.items.questStarter.g, B.db.colors.items.questStarter.b},
-		["questItem"] = {B.db.colors.items.questItem.r, B.db.colors.items.questItem.g, B.db.colors.items.questItem.b},
+		questStarter = {B.db.colors.items.questStarter.r, B.db.colors.items.questStarter.g, B.db.colors.items.questStarter.b},
+		questItem = {B.db.colors.items.questItem.r, B.db.colors.items.questItem.g, B.db.colors.items.questItem.b},
 	}
 
 	--Bag Mover: Set default anchor point and create mover
-	BagFrameHolder:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 22 + E.Border*4 - E.Spacing*2)
+	BagFrameHolder:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 22 + E.Border * 4 - E.Spacing * 2)
 	E:CreateMover(BagFrameHolder, "ElvUIBagMover", L["Bag Mover (Grow Up)"], nil, nil, B.PostBagMove, nil, nil, "bags,general")
 
 	--Bank Mover
 	local BankFrameHolder = CreateFrame("Frame", nil, E.UIParent)
 	BankFrameHolder:Width(200)
 	BankFrameHolder:Height(22)
-	BankFrameHolder:Point("BOTTOMLEFT", LeftChatPanel, "BOTTOMLEFT", 0, 22 + E.Border*4 - E.Spacing*2)
+	BankFrameHolder:Point("BOTTOMLEFT", LeftChatPanel, "BOTTOMLEFT", 0, 22 + E.Border * 4 - E.Spacing * 2)
 	BankFrameHolder:SetFrameLevel(BankFrameHolder:GetFrameLevel() + 400)
 	E:CreateMover(BankFrameHolder, "ElvUIBankMover", L["Bank Mover (Grow Up)"], nil, nil, B.PostBagMove, nil, nil, "bags,general")
 

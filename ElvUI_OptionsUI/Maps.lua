@@ -66,7 +66,7 @@ E.Options.args.maps = {
 						}
 					}
 				},
-				spacer  = {
+				spacer = {
 					order = 3,
 					type = "description",
 					name = "\n"
@@ -187,29 +187,29 @@ E.Options.args.maps = {
 							name = "\n"
 						},
 						locationFont = {
-						    order = 4,
-						    type = "select",
-						    dialogControl = "LSM30_Font",
-						    name = L["Font"],
-						    values = AceGUIWidgetLSMlists.font,
-						    set = function(info, value) E.db.general.minimap.locationFont = value MM:Update_ZoneText() end,
+							order = 4,
+							type = "select",
+							dialogControl = "LSM30_Font",
+							name = L["Font"],
+							values = AceGUIWidgetLSMlists.font,
+							set = function(info, value) E.db.general.minimap.locationFont = value MM:Update_ZoneText() end,
 							disabled = function() return not E.private.general.minimap.enable end
 						},
 						locationFontSize = {
-						    order = 5,
-						    type = "range",
-						    name = L["FONT_SIZE"],
-						    min = 6, max = 36, step = 1,
-						    set = function(info, value) E.db.general.minimap.locationFontSize = value MM:Update_ZoneText() end,
+							order = 5,
+							type = "range",
+							name = L["FONT_SIZE"],
+							min = 6, max = 36, step = 1,
+							set = function(info, value) E.db.general.minimap.locationFontSize = value MM:Update_ZoneText() end,
 							disabled = function() return not E.private.general.minimap.enable end
 						},
 						locationFontOutline = {
-						    order = 6,
-						    type = "select",
-						    name = L["Font Outline"],
-						    set = function(info, value) E.db.general.minimap.locationFontOutline = value MM:Update_ZoneText() end,
+							order = 6,
+							type = "select",
+							name = L["Font Outline"],
+							set = function(info, value) E.db.general.minimap.locationFontOutline = value MM:Update_ZoneText() end,
 							disabled = function() return not E.private.general.minimap.enable end,
-						    values = C.Values.FontFlags
+							values = C.Values.FontFlags
 						}
 					}
 				},

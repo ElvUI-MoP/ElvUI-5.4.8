@@ -23,7 +23,7 @@ function UF:Construct_TargetTargetFrame(frame)
 	frame.FocusGlow = UF:Construct_FocusGlow(frame)
 	frame.Fader = UF:Construct_Fader()
 	frame.Cutaway = UF:Construct_Cutaway(frame)
-	
+
 	frame.customTexts = {}
 	frame:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 75)
 	E:CreateMover(frame, frame:GetName().."Mover", L["TargetTarget Frame"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,individualUnits,targettarget,generalGroup")

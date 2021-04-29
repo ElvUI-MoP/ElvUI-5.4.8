@@ -71,10 +71,10 @@ function E:SetUpAnimGroup(obj, Type, ...)
 			obj.elastic[i] = anim
 		end
 
-		obj.elastic[1]:SetScript('OnFinished', function(anim) anim:Stop() obj.elastic[2]:Play() end)
-		obj.elastic[3]:SetScript('OnFinished', function(anim) anim:Stop() obj.elastic[4]:Play() end)
-		obj.elastic[2]:SetScript('OnFinished', function(anim) anim:Stop() if loop then obj.elastic[1]:Play() end end)
-		obj.elastic[4]:SetScript('OnFinished', function(anim) anim:Stop() if loop then obj.elastic[3]:Play() end end)
+		obj.elastic[1]:SetScript("OnFinished", function(anim) anim:Stop() obj.elastic[2]:Play() end)
+		obj.elastic[3]:SetScript("OnFinished", function(anim) anim:Stop() obj.elastic[4]:Play() end)
+		obj.elastic[2]:SetScript("OnFinished", function(anim) anim:Stop() if loop then obj.elastic[1]:Play() end end)
+		obj.elastic[4]:SetScript("OnFinished", function(anim) anim:Stop() if loop then obj.elastic[3]:Play() end end)
 	elseif Type == "Number" then
 		local endingNumber, duration = ...
 		obj.NumberAnimGroup = _G.CreateAnimationGroup(obj)

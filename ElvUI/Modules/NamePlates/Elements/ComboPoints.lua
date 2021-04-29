@@ -17,6 +17,7 @@ function NP:Update_CPoints(frame)
 
 	if numPoints and numPoints > 0 then
 		frame.CPoints:Show()
+
 		for i = 1, MAX_COMBO_POINTS do
 			if NP.db.units[frame.UnitType].comboPoints.hideEmpty then
 				frame.CPoints[i]:SetShown(i <= numPoints)

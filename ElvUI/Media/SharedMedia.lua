@@ -205,6 +205,7 @@ E.Media = {
 		Copy = M..[[Textures\Copy.tga]],
 		Cross = M..[[Textures\Cross.tga]],
 		DPS = M..[[Textures\DPS.tga]],
+		ExitVehicle = M..[[Textures\ExitVehicle.tga]],
 		GlowTex = M..[[Textures\GlowTex.tga]],
 		Healer = M..[[Textures\Healer.tga]],
 		HelloKitty = M..[[Textures\HelloKitty.tga]],
@@ -233,8 +234,7 @@ E.Media = {
 		SkullIcon = M..[[Textures\SkullIcon.tga]],
 		Smooth = M..[[Textures\Smooth.tga]],
 		Spark = M..[[Textures\Spark.tga]],
-		Tank = M..[[Textures\Tank.tga]],
-		ExitVehicle = M..[[Textures\ExitVehicle.tga]]
+		Tank = M..[[Textures\Tank.tga]]
 	}
 }
 

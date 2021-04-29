@@ -24,16 +24,19 @@ local FCF_SavePositionAndDimensions = FCF_SavePositionAndDimensions
 local FCF_SetWindowName = FCF_SetWindowName
 local FCF_StopDragging = FCF_StopDragging
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
+
 local CLASS, CONTINUE, PREVIOUS = CLASS, CONTINUE, PREVIOUS
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
 local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
 local GUILD_EVENT_LOG = GUILD_EVENT_LOG
+local STAT_CATEGORY_MELEE = STAT_CATEGORY_MELEE
+local STAT_CATEGORY_RANGED = STAT_CATEGORY_RANGED
 
 local CURRENT_PAGE = 0
 local MAX_PAGE = 8
 
 local function SetupChat(noDisplayMsg)
-	FCF_ResetChatWindows() -- Monitor this
+	FCF_ResetChatWindows()
 	FCF_SetLocked(ChatFrame1, 1)
 	FCF_DockFrame(ChatFrame2)
 	FCF_SetLocked(ChatFrame2, 1)
@@ -57,8 +60,6 @@ local function SetupChat(noDisplayMsg)
 
 		FCF_SavePositionAndDimensions(frame)
 		FCF_StopDragging(frame)
-
-		-- set default Elvui font size
 		FCF_SetChatWindowFontSize(nil, frame, 12)
 
 		-- rename windows general because moved to chat #3
@@ -166,6 +167,7 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.unitframe.colors.auraBarBuff = E:GetColor(0.31, 0.31, 0.31)
 		E.db.unitframe.colors.castColor = E:GetColor(0.31, 0.31, 0.31)
 		E.db.unitframe.colors.castClassColor = false
+		E.db.chat.tabSelectorColor = {r = 0.09, g = 0.51, b = 0.82}
 	elseif theme == "class" then
 		classColor = E:ClassColor(E.myclass, true)
 
@@ -176,6 +178,7 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.unitframe.colors.auraBarBuff = E:GetColor(classColor.r, classColor.g, classColor.b)
 		E.db.unitframe.colors.healthclass = true
 		E.db.unitframe.colors.castClassColor = true
+		E.db.chat.tabSelectorColor = E:GetColor(classColor.r, classColor.g, classColor.b)
 	else
 		E.db.general.bordercolor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(0.1, 0.1, 0.1))
 		E.db.general.backdropcolor = E:GetColor(0.1, 0.1, 0.1)
@@ -186,6 +189,7 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.unitframe.colors.health = E:GetColor(0.1, 0.1, 0.1)
 		E.db.unitframe.colors.castColor = E:GetColor(0.1, 0.1, 0.1)
 		E.db.unitframe.colors.castClassColor = false
+		E.db.chat.tabSelectorColor = {r = 0.09, g = 0.51, b = 0.82}
 	end
 
 	--Value Color
@@ -491,9 +495,6 @@ local function SetPage(PageNum)
 	InstallStatus.anim.progress:Play()
 	InstallStatus.text:SetText(CURRENT_PAGE.." / "..MAX_PAGE)
 
-	local r, g, b = E:ColorGradient(CURRENT_PAGE / MAX_PAGE, 1, 0, 0, 1, 1, 0, 0, 1, 0)
-	ElvUIInstallFrame.Status:SetStatusBarColor(r, g, b)
-
 	if PageNum == MAX_PAGE then
 		InstallNextButton:Disable()
 	else
@@ -507,6 +508,10 @@ local function SetPage(PageNum)
 	end
 
 	local f = ElvUIInstallFrame
+
+	local r, g, b = E:ColorGradient(CURRENT_PAGE / MAX_PAGE, 1, 0, 0, 1, 1, 0, 0, 1, 0)
+	f.Status:SetStatusBarColor(r, g, b)
+
 	if PageNum == 1 then
 		f.SubTitle:SetFormattedText(L["Welcome to ElvUI version %s!"], E.version)
 		f.Desc1:SetText(L["This install process will help you learn some of the features in ElvUI has to offer and also prepare your user interface for usage."])
@@ -520,6 +525,7 @@ local function SetPage(PageNum)
 		f.Desc1:SetText(L["This part of the installation process sets up your World of Warcraft default options it is recommended you should do this step for everything to behave properly."])
 		f.Desc2:SetText(L["Please click the button below to setup your CVars."])
 		f.Desc3:SetText(L["Importance: |cff07D400High|r"])
+
 		InstallOption1Button:Show()
 		InstallOption1Button:SetScript("OnClick", function() SetupCVars() end)
 		InstallOption1Button:SetText(L["Setup CVars"])
@@ -528,6 +534,7 @@ local function SetPage(PageNum)
 		f.Desc1:SetText(L["This part of the installation process sets up your chat windows names, positions and colors."])
 		f.Desc2:SetText(L["The chat windows function the same as Blizzard standard chat windows, you can right click the tabs and drag them around, rename, etc. Please click the button below to setup your chat windows."])
 		f.Desc3:SetText(L["Importance: |cffD3CF00Medium|r"])
+
 		InstallOption1Button:Show()
 		InstallOption1Button:SetScript("OnClick", function() SetupChat() end)
 		InstallOption1Button:SetText(L["Setup Chat"])
@@ -536,6 +543,7 @@ local function SetPage(PageNum)
 		f.Desc1:SetText(L["Choose a theme layout you wish to use for your initial setup."])
 		f.Desc2:SetText(L["You can always change fonts and colors of any element of ElvUI from the in-game configuration."])
 		f.Desc3:SetText(L["Importance: |cffFF0000Low|r"])
+
 		InstallOption1Button:Show()
 		InstallOption1Button:SetScript("OnClick", function() E:SetupTheme("classic") end)
 		InstallOption1Button:SetText(L["Classic"])
@@ -555,8 +563,8 @@ local function SetPage(PageNum)
 		local value = E.global.general.UIScale
 		InstallSlider:SetValue(value)
 		InstallSlider.Cur:SetText(value)
-		InstallSlider:SetScript("OnValueChanged", function(self)
-			local val = E:Round(self:GetValue(), 2)
+		InstallSlider:SetScript("OnValueChanged", function(slider)
+			local val = E:Round(slider:GetValue(), 2)
 			E.global.general.UIScale = val
 			InstallSlider.Cur:SetText(val)
 		end)
@@ -588,15 +596,16 @@ local function SetPage(PageNum)
 		f.Desc1:SetText(L["You can now choose what layout you wish to use based on your combat role."])
 		f.Desc2:SetText(L["This will change the layout of your unitframes and actionbars."])
 		f.Desc3:SetText(L["Importance: |cffD3CF00Medium|r"])
+
 		InstallOption1Button:Show()
 		InstallOption1Button:SetScript("OnClick", function() E.db.layoutSet = nil E:SetupLayout("tank") end)
-		InstallOption1Button:SetText(L["Tank / Physical DPS"])
+		InstallOption1Button:SetText(STAT_CATEGORY_MELEE)
 		InstallOption2Button:Show()
 		InstallOption2Button:SetScript("OnClick", function() E.db.layoutSet = nil E:SetupLayout("healer") end)
 		InstallOption2Button:SetText(L["Healer"])
 		InstallOption3Button:Show()
 		InstallOption3Button:SetScript("OnClick", function() E.db.layoutSet = nil E:SetupLayout("dpsCaster") end)
-		InstallOption3Button:SetText(L["Caster DPS"])
+		InstallOption3Button:SetText(STAT_CATEGORY_RANGED)
 	elseif PageNum == 7 then
 		f.SubTitle:SetText(L["Auras"])
 		f.Desc1:SetText(L["Select the type of aura system you want to use with ElvUI's unitframes. Set to Aura Bar & Icons to use both aura bars and icons, set to icons only to only see icons."])
@@ -851,10 +860,11 @@ function E:Install()
 		closeButton:SetScript("OnClick", function() f:Hide() end)
 		S:HandleCloseButton(closeButton)
 
-		f.tutorialImage = f:CreateTexture("InstallTutorialImage", "OVERLAY")
-		f.tutorialImage:Size(256, 128)
-		f.tutorialImage:SetTexture(E.Media.Textures.Logo)
-		f.tutorialImage:Point("BOTTOM", 0, 70)
+		local logo = f:CreateTexture("InstallTutorialImage", "OVERLAY")
+		logo:Size(256, 128)
+		logo:SetTexture(E.Media.Textures.Logo)
+		logo:Point("BOTTOM", 0, 70)
+		f.tutorialImage = logo
 	end
 
 	ElvUIInstallFrame:Show()

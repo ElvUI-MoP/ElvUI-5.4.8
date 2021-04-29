@@ -49,9 +49,9 @@ E.Options.args.tooltip = {
 					type = "select",
 					name = L["Cursor Anchor Type"],
 					values = {
-						["ANCHOR_CURSOR"] = L["ANCHOR_CURSOR"],
-						["ANCHOR_CURSOR_LEFT"] = L["ANCHOR_CURSOR_LEFT"],
-						["ANCHOR_CURSOR_RIGHT"] = L["ANCHOR_CURSOR_RIGHT"]
+						ANCHOR_CURSOR = L["ANCHOR_CURSOR"],
+						ANCHOR_CURSOR_LEFT = L["ANCHOR_CURSOR_LEFT"],
+						ANCHOR_CURSOR_RIGHT = L["ANCHOR_CURSOR_RIGHT"]
 					},
 					disabled = function() return (not E.db.tooltip.cursorAnchor) end
 				},
@@ -127,10 +127,10 @@ E.Options.args.tooltip = {
 					name = L["Item Count"],
 					desc = L["Display how many of a certain item you have in your possession."],
 					values = {
-						["BAGS_ONLY"] = L["Bags Only"],
-						["BANK_ONLY"] = L["Bank Only"],
-						["BOTH"] = L["Both"],
-						["NONE"] = L["NONE"]
+						BAGS_ONLY = L["Bags Only"],
+						BANK_ONLY = L["Bank Only"],
+						BOTH = L["Both"],
+						NONE = L["NONE"]
 					}
 				},
 				colorAlpha = {
@@ -201,11 +201,16 @@ E.Options.args.tooltip = {
 					guiInline = true,
 					args = {
 						useCustomFactionColors = {
-							order = 1,
+							order = 0,
 							type = "toggle",
 							name = L["Custom Faction Colors"],
 							get = function(info) return E.db.tooltip.useCustomFactionColors end,
 							set = function(info, value) E.db.tooltip.useCustomFactionColors = value end
+						},
+						spacer = {
+							order = 0.1,
+							type = "description",
+							name = ""
 						}
 					},
 					get = function(info)
@@ -273,9 +278,9 @@ E.Options.args.tooltip = {
 					type = "select",
 					name = L["Position"],
 					values = {
-						["TOP"] = L["Top"],
-						["BOTTOM"] = L["Bottom"],
-						["DISABLED"] = L["DISABLE"]
+						TOP = L["Top"],
+						BOTTOM = L["Bottom"],
+						DISABLED = L["DISABLE"]
 					}
 				},
 				text = {

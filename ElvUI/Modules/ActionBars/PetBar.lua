@@ -110,7 +110,7 @@ function AB:PositionAndSizeBarPet()
 	bar.mouseover = self.db.barPet.mouseover
 
 	if visibility and visibility:match("[\n\r]") then
-		visibility = visibility:gsub("[\n\r]","")
+		visibility = visibility:gsub("[\n\r]", "")
 	end
 
 	if numButtons < buttonsPerRow then
@@ -130,8 +130,8 @@ function AB:PositionAndSizeBarPet()
 		heightMult = 1
 	end
 
-	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult - 1)) + ((self.db.barPet.backdrop and (E.Border + backdropSpacing) or E.Spacing)*2)
-	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult - 1)) + ((self.db.barPet.backdrop and (E.Border + backdropSpacing) or E.Spacing)*2)
+	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult - 1)) + ((self.db.barPet.backdrop and (E.Border + backdropSpacing) or E.Spacing) * 2)
+	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult - 1)) + ((self.db.barPet.backdrop and (E.Border + backdropSpacing) or E.Spacing) * 2)
 	bar:Width(barWidth)
 	bar:Height(barHeight)
 
@@ -259,11 +259,7 @@ end
 function AB:CreateBarPet()
 	bar:CreateBackdrop(self.db.transparentBackdrops and "Transparent")
 	bar.backdrop:SetAllPoints()
-	if self.db.bar4.enabled then
-		bar:Point("RIGHT", ElvUI_Bar4, "LEFT", -4, 0)
-	else
-		bar:Point("RIGHT", E.UIParent, "RIGHT", -4, 0)
-	end
+	bar:Point("RIGHT", AB.db.bar4.enabled and ElvUI_Bar4 or E.UIParent, AB.db.bar4.enabled and "LEFT" or "RIGHT", -4, 0)
 
 	bar:SetAttribute("_onstate-show", [[
 		if newstate == "hide" then

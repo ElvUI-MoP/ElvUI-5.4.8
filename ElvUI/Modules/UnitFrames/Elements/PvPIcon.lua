@@ -3,8 +3,8 @@ local UF = E:GetModule("UnitFrames")
 
 function UF:Construct_PvPIcon(frame)
 	local PvPIndicator = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "ARTWORK", nil, 1)
-	PvPIndicator:SetSize(30, 30)
-	PvPIndicator:SetPoint("CENTER", frame, "CENTER")
+	PvPIndicator:Size(30)
+	PvPIndicator:Point("CENTER", frame, "CENTER")
 
 	PvPIndicator.Override = UF.PvPIconOverride
 

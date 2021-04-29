@@ -2,6 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local M = E:GetModule("Misc")
 
 local unpack, pairs = unpack, pairs
+local find, gsub = string.find, string.gsub
 local tinsert = table.insert
 local max = math.max
 
@@ -227,8 +228,8 @@ function M:LOOT_OPENED(_, autoLoot)
 			local texture, item, quantity, quality, _, isQuestItem, questId, isActive = GetLootSlotInfo(i)
 			local color = ITEM_QUALITY_COLORS[quality]
 
-			if texture and texture:find("INV_Misc_Coin") then
-				item = item:gsub("\n", ", ")
+			if texture and find(texture, "INV_Misc_Coin") then
+				item = gsub(item, "\n", ", ")
 			end
 
 			if quantity and (quantity > 1) then
@@ -348,7 +349,7 @@ function M:LoadLoot()
 		CloseDropDownMenus()
 	end
 
-	E.PopupDialogs.CONFIRM_LOOT_DISTRIBUTION.OnAccept = function(self, data)
+	E.PopupDialogs.CONFIRM_LOOT_DISTRIBUTION.OnAccept = function(_, data)
 		GiveMasterLoot(selectedID, data)
 	end
 	StaticPopupDialogs.CONFIRM_LOOT_DISTRIBUTION.preferredIndex = 3

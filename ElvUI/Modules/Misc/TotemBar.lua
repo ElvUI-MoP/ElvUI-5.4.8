@@ -99,13 +99,10 @@ function TOTEMS:PositionAndSize()
 		end
 	end
 
-	if self.db.growthDirection == "HORIZONTAL" then
-		self.bar:Width(self.db.size * (MAX_TOTEMS) + self.db.spacing * (MAX_TOTEMS) + self.db.spacing)
-		self.bar:Height(self.db.size + self.db.spacing * 2)
-	else
-		self.bar:Height(self.db.size * (MAX_TOTEMS) + self.db.spacing * (MAX_TOTEMS) + self.db.spacing)
-		self.bar:Width(self.db.size + self.db.spacing * 2)
-	end
+	local width, height = self.db.size * (MAX_TOTEMS) + self.db.spacing * (MAX_TOTEMS) + self.db.spacing, self.db.size + self.db.spacing * 2
+	self.bar:Width(self.db.growthDirection == "HORIZONTAL" and width or height)
+	self.bar:Height(self.db.growthDirection == "HORIZONTAL" and height or width)
+
 	self:Update()
 end
 

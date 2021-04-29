@@ -2507,65 +2507,65 @@ local function GetOptionsTable_RaidDebuff(updateFunc, groupName)
 		set = function(info, value) E.db.unitframe.units[groupName].rdebuffs[info[#info]] = value updateFunc(UF, groupName) end,
 		args = {
 			enable = {
-				order = 2,
+				order = 1,
 				type = "toggle",
 				name = L["ENABLE"]
 			},
 			showDispellableDebuff = {
-				order = 3,
+				order = 2,
 				type = "toggle",
 				name = L["Show Dispellable Debuffs"]
 			},
 			onlyMatchSpellID = {
-				order = 4,
+				order = 3,
 				type = "toggle",
 				name = L["Only Match SpellID"],
-				desc = L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."],
+				desc = L["When enabled it will only show spells that were added to the filter using a spell ID and not a name."]
 			},
 			size = {
-				order = 5,
+				order = 4,
 				type = "range",
 				name = L["Size"],
 				min = 8, max = 100, step = 1
 			},
-			font = {
-				order = 6,
-				type = "select", dialogControl = "LSM30_Font",
-				name = L["Font"],
-				values = AceGUIWidgetLSMlists.font
-			},
-			fontSize = {
-				order = 7,
-				type = "range",
-				name = L["FONT_SIZE"],
-				min = 7, max = 22, step = 1
-			},
-			fontOutline = {
-				order = 8,
-				type = "select",
-				name = L["Font Outline"],
-				values = C.Values.FontFlags
-			},
 			xOffset = {
-				order = 9,
+				order = 5,
 				type = "range",
 				name = L["X-Offset"],
 				min = -300, max = 300, step = 1
 			},
 			yOffset = {
-				order = 10,
+				order = 6,
 				type = "range",
 				name = L["Y-Offset"],
 				min = -300, max = 300, step = 1
 			},
+			font = {
+				order = 7,
+				type = "select", dialogControl = "LSM30_Font",
+				name = L["Font"],
+				values = AceGUIWidgetLSMlists.font
+			},
+			fontSize = {
+				order = 8,
+				type = "range",
+				name = L["FONT_SIZE"],
+				min = 7, max = 22, step = 1
+			},
+			fontOutline = {
+				order = 9,
+				type = "select",
+				name = L["Font Outline"],
+				values = C.Values.FontFlags
+			},
 			configureButton = {
-				order = 11,
+				order = 10,
 				type = "execute",
 				name = L["Configure Auras"],
 				func = function() E:SetToFilterConfig("RaidDebuffs") end
 			},
 			duration = {
-				order = 12,
+				order = 11,
 				type = "group",
 				guiInline = true,
 				name = L["Duration Text"],
@@ -2609,7 +2609,7 @@ local function GetOptionsTable_RaidDebuff(updateFunc, groupName)
 				}
 			},
 			stack = {
-				order = 13,
+				order = 12,
 				type = "group",
 				guiInline = true,
 				name = L["Stack Counter"],
@@ -3625,7 +3625,7 @@ local function GetOptionsTable_GeneralGroup(updateFunc, groupName, numUnits)
 			set = function(_, value) E.db.unitframe.units[groupName].power.hideonnpc = value updateFunc(UF, groupName, numUnits) end
 		}
 	end
-	
+
 	if groupName == "party" or groupName == "raid" or groupName == "raid40" or groupName == "raidpet" then
 		config.args.positionsGroup.args.spacer = {
 			order = 3,

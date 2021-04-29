@@ -148,7 +148,8 @@ function UF:Configure_Auras(frame, which)
 	local db = frame.db
 	local auras = frame[which]
 	local auraType = which:lower()
-	auras.db = db[auraType]
+	local settings = db[auraType]
+	auras.db = settings
 
 	local position = db.smartAuraPosition
 	if position == "BUFFS_ON_DEBUFFS" then
@@ -209,17 +210,17 @@ function UF:Configure_Auras(frame, which)
 		db.buffs.attachTo = "FRAME"
 	end
 
-	local rows = auras.db.numrows
-	auras.spacing = auras.db.spacing
-	auras.attachTo = self:GetAuraAnchorFrame(frame, auras.db.attachTo)
+	local rows = settings.numrows
+	auras.spacing = settings.spacing
+	auras.attachTo = self:GetAuraAnchorFrame(frame, settings.attachTo)
 
-	if auras.db.sizeOverride and auras.db.sizeOverride > 0 then
-		auras:Width(auras.db.perrow * auras.db.sizeOverride + ((auras.db.perrow - 1) * auras.spacing))
+	if settings.sizeOverride and settings.sizeOverride > 0 then
+		auras:Width(settings.perrow * settings.sizeOverride + ((settings.perrow - 1) * auras.spacing))
 	else
 		local xOffset = 0
 		if frame.USE_POWERBAR_OFFSET then
 			if frame.ORIENTATION == "MIDDLE" then
-				if auras.db.attachTo ~= "POWER" then
+				if settings.attachTo ~= "POWER" then
 					xOffset = frame.POWERBAR_OFFSET * 2
 				end -- if its middle and power we dont want an offset.
 			else
@@ -230,32 +231,32 @@ function UF:Configure_Auras(frame, which)
 		auras:Width((frame.UNIT_WIDTH - UF.SPACING * 2) - xOffset)
 	end
 
-	auras.num = auras.db.perrow * rows
-	auras.size = auras.db.sizeOverride ~= 0 and auras.db.sizeOverride or ((((auras:GetWidth() - (auras.spacing * (auras.num / rows - 1))) / auras.num)) * rows)
+	auras.num = settings.perrow * rows
+	auras.size = settings.sizeOverride ~= 0 and settings.sizeOverride or ((((auras:GetWidth() - (auras.spacing * (auras.num / rows - 1))) / auras.num)) * rows)
 	auras.forceShow = frame.forceShowAuras
-	auras.disableMouse = auras.db.clickThrough
-	auras.anchorPoint = auras.db.anchorPoint
+	auras.disableMouse = settings.clickThrough
+	auras.anchorPoint = settings.anchorPoint
 	auras.initialAnchor = E.InversePoints[auras.anchorPoint]
 	auras["growth-y"] = strfind(auras.anchorPoint, "TOP") and "UP" or "DOWN"
 	auras["growth-x"] = auras.anchorPoint == "LEFT" and "LEFT" or auras.anchorPoint == "RIGHT" and "RIGHT" or (strfind(auras.anchorPoint, "LEFT") and "RIGHT" or "LEFT")
 
 	local x, y
-	if auras.db.attachTo == "HEALTH" or auras.db.attachTo == "POWER" then
+	if settings.attachTo == "HEALTH" or settings.attachTo == "POWER" then
 		x, y = E:GetXYOffset(auras.anchorPoint, -UF.BORDER, UF.BORDER)
-	elseif auras.db.attachTo == "FRAME" then
+	elseif settings.attachTo == "FRAME" then
 		x, y = E:GetXYOffset(auras.anchorPoint, UF.SPACING, 0)
 	else
 		x, y = E:GetXYOffset(auras.anchorPoint, 0, UF.SPACING)
 	end
 
-	auras.xOffset = x + auras.db.xOffset + (auras.db.attachTo == "FRAME" and frame.ORIENTATION ~= "LEFT" and frame.POWERBAR_OFFSET or 0)
-	auras.yOffset = y + auras.db.yOffset
+	auras.xOffset = x + settings.xOffset + (settings.attachTo == "FRAME" and frame.ORIENTATION ~= "LEFT" and frame.POWERBAR_OFFSET or 0)
+	auras.yOffset = y + settings.yOffset
 
 	local index = 1
 	while auras[index] do
 		local button = auras[index]
 		if button then
-			button.db = auras.db
+			button.db = settings
 			UF:UpdateAuraSettings(auras, button)
 			button:SetBackdropBorderColor(unpack(E.media.unitframeBorderColor))
 		end
@@ -266,7 +267,7 @@ function UF:Configure_Auras(frame, which)
 	auras:ClearAllPoints()
 	auras:Point(auras.initialAnchor, auras.attachTo, auras.anchorPoint, auras.xOffset, auras.yOffset)
 	auras:Height(auras.size * rows)
-	auras:SetShown(auras.db.enable)
+	auras:SetShown(settings.enable)
 end
 
 local function SortAurasByTime(a, b)

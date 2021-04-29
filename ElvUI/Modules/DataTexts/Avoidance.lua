@@ -58,7 +58,7 @@ local function OnEvent(self)
 		dodge = (GetDodgeChance() + abs(levelDifference * AVD_DECAY_RATE))
 		parry = (GetParryChance() + abs(levelDifference * AVD_DECAY_RATE))
 		block = (GetBlockChance() + abs(levelDifference * AVD_DECAY_RATE))
-		baseMissChance = (baseMissChance+ abs(levelDifference * AVD_DECAY_RATE))
+		baseMissChance = (baseMissChance + abs(levelDifference * AVD_DECAY_RATE))
 	end
 
 	if dodge <= 0 then dodge = 0 end
@@ -80,7 +80,7 @@ local function OnEvent(self)
 
 	unhittableMax = unhittableMax + ((AVD_DECAY_RATE * levelDifference) * numAvoidances)
 
-	avoided = (dodge + parry+ baseMissChance)
+	avoided = (dodge + parry + baseMissChance)
 	blocked = (100 - avoided) * block / 100
 	avoidance = (avoided + blocked)
 	unhittable = avoidance - unhittableMax

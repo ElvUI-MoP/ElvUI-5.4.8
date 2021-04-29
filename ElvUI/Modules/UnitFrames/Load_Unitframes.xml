@@ -21,7 +21,7 @@
 
 	<Button name="ELVUI_UNITPET" inherits="SecureUnitButtonTemplate" virtual="true">
 		<Frames>
-			<Button name="$parentPet" inherits="SecureUnitButtonTemplate">	
+			<Button name="$parentPet" inherits="SecureUnitButtonTemplate">
 				<Anchors>
 					<Anchor point="BOTTOM" relativePoint="TOP" relativeTo="$parent">
 						<Offset>

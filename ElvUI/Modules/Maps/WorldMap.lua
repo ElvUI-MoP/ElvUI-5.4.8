@@ -76,15 +76,12 @@ function M:PositionCoords()
 
 	local db = E.global.general.WorldMapCoordinates
 	local position = db.position
-	local xOffset = db.xOffset
-	local yOffset = db.yOffset
 
-	local x, y = 5, 5
-	if find(position, "RIGHT") then x = -5 end
-	if find(position, "TOP") then y = -5 end
+	local x = find(position, "RIGHT") and -5 or 5
+	local y = find(position, "TOP") and -5 or 5
 
 	self.coordsHolder.playerCoords:ClearAllPoints()
-	self.coordsHolder.playerCoords:Point(position, WorldMapDetailFrame, position, x + xOffset, y + yOffset)
+	self.coordsHolder.playerCoords:Point(position, WorldMapDetailFrame, position, x + db.xOffset, y + db.yOffset)
 
 	self.coordsHolder.mouseCoords:ClearAllPoints()
 	self.coordsHolder.mouseCoords:Point(position, self.coordsHolder.playerCoords, INVERTED_POINTS[position], 0, y)
@@ -150,7 +147,7 @@ function M:Initialize()
 		coordsHolder.playerCoords:SetTextColor(1, 1, 0)
 		coordsHolder.playerCoords:SetFontObject(NumberFontNormal)
 		coordsHolder.playerCoords:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOMLEFT", 5, 5)
-		coordsHolder.playerCoords:SetText(PLAYER..":   0, 0")
+		coordsHolder.playerCoords:SetFormattedText("%s:   0, 0", PLAYER)
 
 		coordsHolder.mouseCoords = coordsHolder:CreateFontString(nil, "OVERLAY")
 		coordsHolder.mouseCoords:SetTextColor(1, 1, 0)

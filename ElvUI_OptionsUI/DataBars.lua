@@ -72,8 +72,8 @@ E.Options.args.databars = {
 					name = L["Statusbar Fill Orientation"],
 					desc = L["Direction the bar moves on gains/losses"],
 					values = {
-						["HORIZONTAL"] = L["Horizontal"],
-						["VERTICAL"] = L["Vertical"]
+						HORIZONTAL = L["Horizontal"],
+						VERTICAL = L["Vertical"]
 					}
 				},
 				width = {
@@ -158,7 +158,7 @@ E.Options.args.databars = {
 				reverseFill = {
 					order = 6,
 					type = "toggle",
-					name = L["Reverse Fill Direction"],
+					name = L["Reverse Fill Direction"]
 				},
 				spacer = {
 					order = 7,
@@ -171,8 +171,8 @@ E.Options.args.databars = {
 					name = L["Statusbar Fill Orientation"],
 					desc = L["Direction the bar moves on gains/losses"],
 					values = {
-						["HORIZONTAL"] = L["Horizontal"],
-						["VERTICAL"] = L["Vertical"]
+						HORIZONTAL = L["Horizontal"],
+						VERTICAL = L["Vertical"]
 					}
 				},
 				width = {

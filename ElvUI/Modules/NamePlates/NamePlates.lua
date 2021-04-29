@@ -689,6 +689,7 @@ function NP:OnCreated(frame)
 	self:QueueObject(Highlight)
 	self:QueueObject(CastBarShadow)
 	self:QueueObject(CastBarName)
+
 	CastBarIcon:SetParent(E.HiddenFrame)
 	BossIcon:SetAlpha(0)
 	EliteIcon:SetAlpha(0)
@@ -714,6 +715,7 @@ function NP:OnCreated(frame)
 
 	frame:HookScript("OnShow", self.OnShow)
 	frame:HookScript("OnHide", self.OnHide)
+
 	Health:HookScript("OnValueChanged", self.Update_HealthOnValueChanged)
 
 	CastBar:HookScript("OnShow", self.Update_CastBarOnShow)

@@ -48,6 +48,7 @@ local difficultyTag = {
 	(krcntw and PLAYER_DIFFICULTY1) or utf8sub(PLAYER_DIFFICULTY1, 1, 1), -- Normal
 	(krcntw and PLAYER_DIFFICULTY2) or utf8sub(PLAYER_DIFFICULTY2, 1, 1), -- Heroic
 }
+
 local function getRealmTimeDiff()
 	local hours, minutes = GetGameTime()
 	local systemTime = date("*t")
