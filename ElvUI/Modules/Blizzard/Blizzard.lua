@@ -37,6 +37,16 @@ function B:Initialize()
 		end
 	end)
 
+	QuestLogFrame:HookScript("OnShow", function()
+		local questFrame = QuestLogFrame:GetFrameLevel()
+		if questFrame >= QuestLogControlPanel:GetFrameLevel() then
+			QuestLogControlPanel:SetFrameLevel(questFrame + 1)
+		end
+		if questFrame >= QuestLogDetailScrollFrame:GetFrameLevel() then
+			QuestLogDetailScrollFrame:SetFrameLevel(questFrame + 1)
+		end
+	end)
+
 	ReadyCheckFrame:HookScript("OnShow", function(self)
 		if UnitIsUnit("player", self.initiator) then
 			self:Hide()

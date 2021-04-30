@@ -59,8 +59,8 @@ local function LoadSkin()
 
 	S:HandleScrollBar(WorldStateScoreScrollFrameScrollBar)
 	WorldStateScoreScrollFrameScrollBar:ClearAllPoints()
-	WorldStateScoreScrollFrameScrollBar:Point("TOPRIGHT", WorldStateScoreScrollFrame, "TOPRIGHT", 24, -17)
-	WorldStateScoreScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldStateScoreScrollFrame, "BOTTOMRIGHT", 0, 14)
+	WorldStateScoreScrollFrameScrollBar:Point("TOPRIGHT", WorldStateScoreScrollFrame, 24, -17)
+	WorldStateScoreScrollFrameScrollBar:Point("BOTTOMRIGHT", WorldStateScoreScrollFrame, 0, 14)
 
 	for i = 1, MAX_WORLDSTATE_SCORE_BUTTONS do
 		local button = _G["WorldStateScoreButton"..i]
@@ -78,7 +78,7 @@ local function LoadSkin()
 		button.factionLeft:Point("BOTTOMRIGHT", -24, 1)
 		button.factionLeft:SetTexture(E.Media.Textures.Highlight)
 		button.factionLeft:SetBlendMode("ADD")
-		button.factionLeft:SetAlpha(0.40)
+		button.factionLeft:SetAlpha(0.6)
 		button.factionLeft:Hide()
 
 		button.factionLeft._Show = button.factionLeft.Show
@@ -94,16 +94,27 @@ local function LoadSkin()
 
 		for i = 1, MAX_WORLDSTATE_SCORE_BUTTONS do
 			name, _, _, _, _, faction, _, _, class = GetBattlefieldScore(offset + i)
+
 			if name then
 				button = _G["WorldStateScoreButton"..i]
-				nameText, realmText = split("-", name, 2)
-				classColor = E:ClassColor(class)
 
 				if name == E.myname then
 					button.factionRight:Hide()
 					button.factionLeft:_Show()
-					button.factionLeft:SetVertexColor(1, 1, 1)
+
+					if inArena then
+						button.factionLeft:SetVertexColor(1, 1, 1)
+					else
+						if faction == 1 then
+							button.factionLeft:SetVertexColor(0.18, 0.6, 0.8)
+						else
+							button.factionLeft:SetVertexColor(0.85, 0.1, 0)
+						end
+					end
 				end
+
+				nameText, realmText = split("-", name, 2)
+				classColor = E:ClassColor(class)
 
 				if realmText then
 					if inArena then

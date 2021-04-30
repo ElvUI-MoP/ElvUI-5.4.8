@@ -20,13 +20,13 @@ local function LoadSkin()
 
 	TradeSkillFrame:StripTextures(true)
 	TradeSkillFrame:SetTemplate("Transparent")
-	TradeSkillFrame:SetAttribute("UIPanelLayout-width", E:Scale(670))
-	TradeSkillFrame:SetAttribute("UIPanelLayout-height", E:Scale(508))
 	TradeSkillFrame:Size(670, 508)
+
+	S:SetUIPanelWindowInfo(TradeSkillFrame, "width")
 
 	TradeSkillFrame.bg1 = CreateFrame("Frame", nil, TradeSkillFrame)
 	TradeSkillFrame.bg1:SetTemplate("Transparent")
-	TradeSkillFrame.bg1:Point("TOPLEFT", 7, -84)
+	TradeSkillFrame.bg1:Point("TOPLEFT", 6, -84)
 	TradeSkillFrame.bg1:Point("BOTTOMRIGHT", -367, 6)
 	TradeSkillFrame.bg1:SetFrameLevel(TradeSkillFrame.bg1:GetFrameLevel() - 1)
 
@@ -57,10 +57,16 @@ local function LoadSkin()
 
 	TradeSkillLinkFrame:Point("LEFT", TradeSkillRankFrame, "RIGHT", -18, -23)
 
+	S:HandleNextPrevButton(TradeSkillLinkButton, "right")
+	TradeSkillLinkButton:Size(22)
+	TradeSkillLinkButton:Point("LEFT", -3, -3)
+
 	TradeSkillListScrollFrame:StripTextures()
 	TradeSkillListScrollFrame:Size(285, 405)
 	TradeSkillListScrollFrame:ClearAllPoints()
 	TradeSkillListScrollFrame:Point("TOPLEFT", 17, -95)
+	TradeSkillListScrollFrame:Show()
+	TradeSkillListScrollFrame.Hide = E.noop
 
 	S:HandleScrollBar(TradeSkillListScrollFrameScrollBar)
 	TradeSkillListScrollFrameScrollBar:ClearAllPoints()
@@ -78,7 +84,7 @@ local function LoadSkin()
 	TradeSkillDetailScrollFrameScrollBar:Point("TOPRIGHT", TradeSkillDetailScrollFrame, 23, -7)
 	TradeSkillDetailScrollFrameScrollBar:Point("BOTTOMRIGHT", TradeSkillDetailScrollFrame, 0, 18)
 
-	for i = 9, 26 do
+	for i = 9, TRADE_SKILLS_DISPLAYED do
 		CreateFrame("Button", "TradeSkillSkill"..i, TradeSkillFrame, "TradeSkillSkillButtonTemplate"):Point("TOPLEFT", _G["TradeSkillSkill"..i - 1], "BOTTOMLEFT")
 	end
 
@@ -90,7 +96,7 @@ local function LoadSkin()
 
 	TradeSkillSkillIcon:SetTemplate()
 	TradeSkillSkillIcon:StyleButton(nil, true)
-	TradeSkillSkillIcon:Size(47)
+	TradeSkillSkillIcon:Size(48)
 	TradeSkillSkillIcon:Point("TOPLEFT", 6, -1)
 
 	S:HandleButton(TradeSkillCreateAllButton)
@@ -125,17 +131,12 @@ local function LoadSkin()
 
 	S:HandleCloseButton(TradeSkillFrameCloseButton)
 
-	S:HandleNextPrevButton(TradeSkillLinkButton, "right")
-	TradeSkillLinkButton:Size(22)
-	TradeSkillLinkButton:Point("LEFT", -3, -3)
-
 	TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
 
 	for i = 1, MAX_TRADE_SKILL_REAGENTS do
 		local reagent = _G["TradeSkillReagent"..i]
 		local icon = _G["TradeSkillReagent"..i.."IconTexture"]
 		local count = _G["TradeSkillReagent"..i.."Count"]
-		local name = _G["TradeSkillReagent"..i.."Name"]
 		local nameFrame = _G["TradeSkillReagent"..i.."NameFrame"]
 
 		reagent:SetTemplate()
@@ -149,14 +150,14 @@ local function LoadSkin()
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetDrawLayer("OVERLAY")
-		icon:Size(E.PixelMode and 38 or 34)
-		icon:Point("TOPLEFT", E.PixelMode and 1 or 3, -(E.PixelMode and 1 or 3))
+		icon:Size(E.PixelMode and 38 or 32)
+		icon:Point("TOPLEFT", E.PixelMode and 1 or 4, -(E.PixelMode and 1 or 4))
 		icon:SetParent(icon.backdrop)
 
 		count:SetParent(icon.backdrop)
 		count:SetDrawLayer("OVERLAY")
 
-		name:Point("LEFT", nameFrame, "LEFT", 20, 0)
+		_G["TradeSkillReagent"..i.."Name"]:Point("LEFT", nameFrame, "LEFT", 20, 0)
 
 		nameFrame:Kill()
 	end
@@ -208,20 +209,22 @@ local function LoadSkin()
 			end
 		end
 
-		local numReagents = GetTradeSkillNumReagents(id)
-		for i = 1, numReagents, 1 do
+		for i = 1, GetTradeSkillNumReagents(id), 1 do
 			local _, _, reagentCount, playerReagentCount = GetTradeSkillReagentInfo(id, i)
 			local reagentLink = GetTradeSkillReagentItemLink(id, i)
-			local reagent = _G["TradeSkillReagent"..i]
-			local icon = _G["TradeSkillReagent"..i.."IconTexture"]
-			local name = _G["TradeSkillReagent"..i.."Name"]
 
 			if reagentLink then
+				local reagent = _G["TradeSkillReagent"..i]
+				local icon = _G["TradeSkillReagent"..i.."IconTexture"]
 				local quality = select(3, GetItemInfo(reagentLink))
+
 				if quality then
+					local name = _G["TradeSkillReagent"..i.."Name"]
 					local r, g, b = GetItemQualityColor(quality)
+
 					icon.backdrop:SetBackdropBorderColor(r, g, b)
 					reagent:SetBackdropBorderColor(r, g, b)
+
 					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)
 					else

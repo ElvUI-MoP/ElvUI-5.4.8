@@ -100,8 +100,6 @@ local function LoadSkin()
 
 	AutoCompleteBox:SetTemplate("Transparent")
 
-	ConsolidatedBuffsTooltip:SetTemplate("Transparent")
-
 	StreamingIcon:ClearAllPoints()
 	StreamingIcon:Point("TOP", UIParent, "TOP", 0, -100)
 
@@ -290,14 +288,6 @@ local function LoadSkin()
 	-- Dropdown Menu
 	hooksecurefunc("UIDropDownMenu_CreateFrames", function(level, index)
 		local listFrameName = _G["DropDownList"..level]:GetName()
-		local expandArrow = _G[listFrameName.."Button"..index.."ExpandArrow"]
-
-		if expandArrow then
-			expandArrow:Size(16)
-			expandArrow:SetNormalTexture(E.Media.Textures.ArrowUp)
-			expandArrow:GetNormalTexture():SetRotation(S.ArrowRotation.right)
-			expandArrow:GetNormalTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
-		end
 
 		local Backdrop = _G[listFrameName.."Backdrop"]
 		if not Backdrop.template then Backdrop:StripTextures() end
@@ -306,6 +296,16 @@ local function LoadSkin()
 		local menuBackdrop = _G[listFrameName.."MenuBackdrop"]
 		if not menuBackdrop.template then menuBackdrop:StripTextures() end
 		menuBackdrop:SetTemplate("Transparent")
+
+		local expandArrow = _G[listFrameName.."Button"..index.."ExpandArrow"]
+		if expandArrow then
+			expandArrow:Size(16)
+			expandArrow:SetNormalTexture(E.Media.Textures.ArrowUp)
+
+			local normal = expandArrow:GetNormalTexture()
+			normal:SetRotation(S.ArrowRotation.right)
+			normal:SetVertexColor(unpack(E.media.rgbvaluecolor))
+		end
 	end)
 
 	local function dropDownButtonShow(self)
@@ -390,11 +390,14 @@ local function LoadSkin()
 
 		for i = 1, 32 do
 			local button = _G[frame.."Button"..i]
-			local r, g, b = unpack(E.media.rgbvaluecolor)
 
 			button:SetHighlightTexture(E.Media.Textures.Highlight)
-			button:GetHighlightTexture():SetVertexColor(r, g, b, 0.5)
-			button:GetHighlightTexture():SetInside()
+
+			local highlight = button:GetHighlightTexture()
+			local r, g, b = unpack(E.media.rgbvaluecolor)
+
+			highlight:SetVertexColor(r, g, b, 0.5)
+			highlight:SetInside()
 		end
 	end
 end

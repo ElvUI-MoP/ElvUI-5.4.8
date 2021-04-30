@@ -4,6 +4,10 @@ local S = E:GetModule("Skins")
 local _G = _G
 local unpack = unpack
 
+local GetBuybackItemInfo = GetBuybackItemInfo
+local GetItemInfo = GetItemInfo
+local GetItemQualityColor = GetItemQualityColor
+local GetMerchantNumItems = GetMerchantNumItems
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()

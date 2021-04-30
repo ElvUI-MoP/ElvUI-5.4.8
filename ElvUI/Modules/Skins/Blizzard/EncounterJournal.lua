@@ -21,7 +21,7 @@ local function LoadSkin()
 	EncounterJournal:SetTemplate("Transparent")
 
 	S:HookScript(EncounterJournal, "OnShow", function(self)
-		S:SetUIPanelWindowInfo(self, "width")
+		S:SetUIPanelWindowInfo(self, "width", nil, 20)
 		S:Unhook(self, "OnShow")
 	end)
 

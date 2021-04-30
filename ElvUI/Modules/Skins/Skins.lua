@@ -293,14 +293,16 @@ function S:HandleRotateButton(btn)
 	btn:SetTemplate()
 	btn:Size(btn:GetWidth() - 14, btn:GetHeight() - 14)
 
-	btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
-	btn:GetPushedTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
+	local normal, pushed, highlight = btn:GetNormalTexture(), btn:GetPushedTexture(), btn:GetHighlightTexture()
 
-	btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
+	normal:SetInside()
+	normal:SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
 
-	btn:GetNormalTexture():SetInside()
-	btn:GetPushedTexture():SetAllPoints(btn:GetNormalTexture())
-	btn:GetHighlightTexture():SetAllPoints(btn:GetNormalTexture())
+	pushed:SetAllPoints(normal)
+	pushed:SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
+
+	highlight:SetAllPoints(normal)
+	highlight:SetTexture(1, 1, 1, 0.3)
 end
 
 function S:HandleEditBox(frame)
@@ -316,6 +318,7 @@ function S:HandleEditBox(frame)
 			frame[Region]:SetAlpha(0)
 		end
 	end
+
 	frame:CreateBackdrop()
 	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
 
@@ -438,6 +441,7 @@ function S:HandleCheckBox(frame, noBackdrop, noReplaceTextures, forceSaturation)
 				end
 			end
 		end
+
 		frame:HookScript("OnDisable", function(checkbox)
 			if not checkbox.SetDisabledTexture then return end
 
@@ -476,6 +480,7 @@ end
 
 function S:HandleColorSwatch(frame, size)
 	if frame.isSkinned then return end
+
 	frame:StripTextures()
 	frame:CreateBackdrop()
 	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
@@ -685,6 +690,7 @@ function S:HandleIconSelectionFrame(frame, numIcons, buttonNameTemplate, frameNa
 
 	local frameName = frameNameOverride or frame:GetName() --We need override in case Blizzard fucks up the naming (guild bank)
 	local scrollFrame = _G[frameName.."ScrollFrame"]
+	local scrollBar = _G[frameName.."ScrollFrameScrollBar"]
 	local editBox = _G[frameName.."EditBox"]
 	local okayButton = _G[frameName.."OkayButton"] or _G[frameName.."Okay"]
 	local cancelButton = _G[frameName.."CancelButton"] or _G[frameName.."Cancel"]
@@ -693,20 +699,32 @@ function S:HandleIconSelectionFrame(frame, numIcons, buttonNameTemplate, frameNa
 	frame:SetTemplate("Transparent")
 
 	scrollFrame:StripTextures()
-	editBox:DisableDrawLayer("BACKGROUND") --Removes textures around it
+	scrollFrame:CreateBackdrop("Transparent")
+	scrollFrame.backdrop:Point("TOPLEFT", _G[buttonNameTemplate.."1"], -4, 4)
+	scrollFrame.backdrop:Point("BOTTOMRIGHT", _G[buttonNameTemplate..numIcons], 4, -4)
+
+	S:HandleScrollBar(scrollBar)
+	scrollBar:ClearAllPoints()
+	scrollBar:Point("TOPRIGHT", scrollFrame.backdrop, 24, -18)
+	scrollBar:Point("BOTTOMRIGHT", scrollFrame.backdrop, 0, 18)
+
+	editBox:DisableDrawLayer("BACKGROUND")
+	S:HandleEditBox(editBox)
+	editBox:ClearAllPoints()
+	editBox:Point("TOPLEFT", scrollFrame.backdrop, 1, 40)
+
+	S:HandleButton(cancelButton)
+	cancelButton:ClearAllPoints()
+	cancelButton:Point("BOTTOMRIGHT", scrollFrame.backdrop, 0, -27)
 
 	S:HandleButton(okayButton)
-	S:HandleButton(cancelButton)
-	S:HandleEditBox(editBox)
-
-	cancelButton:ClearAllPoints()
-	cancelButton:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
 
 	for i = 1, numIcons do
 		local button = _G[buttonNameTemplate..i]
 		local icon = _G[button:GetName().."Icon"]
+
 		button:StripTextures()
-		button:SetTemplate()
+		button:SetTemplate(nil, true)
 		button:StyleButton(nil, true)
 
 		icon:SetInside()

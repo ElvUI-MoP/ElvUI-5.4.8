@@ -34,7 +34,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(BlackMarketScrollFrameScrollBar)
 	BlackMarketScrollFrameScrollBar:ClearAllPoints()
-	BlackMarketScrollFrameScrollBar:Point("TOPRIGHT", BlackMarketScrollFrame, 30, -13)
+	BlackMarketScrollFrameScrollBar:Point("TOPRIGHT", BlackMarketScrollFrame, 31, -13)
 	BlackMarketScrollFrameScrollBar:Point("BOTTOMRIGHT", BlackMarketScrollFrame, 0, 13)
 
 	S:HandleEditBox(BlackMarketBidPriceGold)

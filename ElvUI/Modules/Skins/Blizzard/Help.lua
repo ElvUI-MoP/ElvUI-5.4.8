@@ -44,7 +44,7 @@ local function LoadSkin()
 
 		if button.text then
 			button.text:ClearAllPoints()
-			button.text:SetPoint("CENTER")
+			button.text:Point("CENTER")
 			button.text:SetJustifyH("CENTER")
 		end
 	end
@@ -61,7 +61,7 @@ local function LoadSkin()
 
 		S:HandleButton(button, true)
 		button.text:ClearAllPoints()
-		button.text:SetPoint("CENTER")
+		button.text:Point("CENTER")
 		button.text:SetJustifyH("CENTER")
 	end
 
@@ -78,9 +78,7 @@ local function LoadSkin()
 	S:HandleScrollBar(HelpFrameKnowledgebaseScrollFrameScrollBar)
 
 	for i = 1, HelpFrameKnowledgebaseScrollFrameScrollChild:GetNumChildren() do
-		local button = _G["HelpFrameKnowledgebaseScrollFrameButton"..i]
-
-		S:HandleButton(button)
+		S:HandleButton(_G["HelpFrameKnowledgebaseScrollFrameButton"..i])
 	end
 
 	S:HandleCloseButton(HelpFrameKnowledgebaseErrorFrameCloseButton, HelpFrameKnowledgebaseErrorFrame.backdrop)

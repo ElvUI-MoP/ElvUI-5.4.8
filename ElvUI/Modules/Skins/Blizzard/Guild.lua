@@ -38,8 +38,7 @@ local function LoadSkin()
 	GuildXPBarCap:SetTexture(E.media.normTex)
 
 	GuildXPBarCapMarker:Size(4, E.PixelMode and 14 or 12)
-	GuildXPBarCapMarker:SetTexture(E.media.blankTex)
-	GuildXPBarCapMarker:SetVertexColor(1, 1, 1, 0.40)
+	GuildXPBarCapMarker:SetTexture(1, 1, 1, 0.40)
 
 	-- Faction Bar
 	GuildFactionFrame:CreateBackdrop()
@@ -49,6 +48,13 @@ local function LoadSkin()
 	GuildFactionBar:StripTextures()
 	GuildFactionBar:SetAllPoints(GuildFactionFrame)
 	GuildFactionBar.progress:SetTexture(E.media.normTex)
+
+	GuildFactionBarCap:SetTexture(E.media.normTex)
+
+	GuildFactionBarCapMarker:Size(4, E.PixelMode and 14 or 12)
+	GuildFactionBarCapMarker:SetTexture(1, 1, 1, 0.40)
+
+	GuildFactionBarLabel:Point("CENTER")
 
 	-- Guild Latest/Next Perks/Updates
 	GuildNewPerksFrame:StripTextures()

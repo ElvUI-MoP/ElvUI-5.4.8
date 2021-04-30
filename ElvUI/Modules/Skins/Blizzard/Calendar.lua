@@ -26,8 +26,11 @@ local function LoadSkin()
 
 	S:HandleCloseButton(CalendarCloseButton, CalendarFrame.backdrop)
 
-	S:HandleArrowButton(CalendarPrevMonthButton, true, true)
-	S:HandleArrowButton(CalendarNextMonthButton, nil, true)
+	S:HandleNextPrevButton(CalendarPrevMonthButton, nil, nil, true)
+	CalendarPrevMonthButton:Size(32)
+
+	S:HandleNextPrevButton(CalendarNextMonthButton, nil, nil, true)
+	CalendarNextMonthButton:Size(32)
 
 	-- Filter Frame
 	CalendarFilterFrame:StripTextures()
@@ -199,24 +202,29 @@ local function LoadSkin()
 
 	CalendarClassButtonContainer:HookScript("OnShow", function()
 		for i, class in ipairs(CLASS_SORT_ORDER) do
-			local button = _G["CalendarClassButton"..i]
-			local icon = button:GetNormalTexture()
+			local icon = _G["CalendarClassButton"..i]:GetNormalTexture()
 			local tcoords = CLASS_ICON_TCOORDS[class]
-
-			button:StripTextures()
-			button:CreateBackdrop()
-			button:Size(23)
 
 			icon:SetTexture([[Interface\Glues\CharacterCreate\UI-CharacterCreate-Classes]])
 			icon:SetTexCoord(tcoords[1] + 0.015, tcoords[2] - 0.02, tcoords[3] + 0.018, tcoords[4] - 0.02)
 		end
-
-		CalendarClassButton1:Point("TOPLEFT", E.PixelMode and 2 or 5, 0)
-
-		CalendarClassTotalsButton:StripTextures()
-		CalendarClassTotalsButton:CreateBackdrop()
-		CalendarClassTotalsButton:Size(23)
 	end)
+
+	for i = 1, #CLASS_SORT_ORDER do
+		local button = _G["CalendarClassButton"..i]
+
+		button:StripTextures()
+		button:CreateBackdrop()
+		button:Size(24)
+
+		if i == 1 then
+			button:Point("TOPLEFT", E.PixelMode and 2 or 5, 0)
+		end
+	end
+
+	CalendarClassTotalsButton:StripTextures()
+	CalendarClassTotalsButton:CreateBackdrop()
+	CalendarClassTotalsButton:Size(24)
 
 	CalendarInviteStatusContextMenu:StripTextures()
 	CalendarInviteStatusContextMenu:SetTemplate("Transparent")

@@ -2,7 +2,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local S = E:GetModule("Skins")
 
 local _G = _G
-local unpack, select = unpack, select
+local pairs, unpack, select = pairs, unpack, select
 
 local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
@@ -15,8 +15,7 @@ local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.trade then return end
 
 	TradeFrame:StripTextures(true)
-	TradeFrame:CreateBackdrop("Transparent")
-	TradeFrame.backdrop:SetAllPoints()
+	TradeFrame:SetTemplate("Transparent")
 
 	TradeFrameInset:Kill()
 	TradeRecipientItemsInset:Kill()
@@ -34,7 +33,7 @@ local function LoadSkin()
 	S:HandleEditBox(TradePlayerInputMoneyFrameSilver)
 	S:HandleEditBox(TradePlayerInputMoneyFrameCopper)
 
-	S:HandleCloseButton(TradeFrameCloseButton, TradeFrame.backdrop)
+	S:HandleCloseButton(TradeFrameCloseButton, TradeFrame)
 
 	for _, frame in pairs({"TradePlayerItem", "TradeRecipientItem"}) do
 		for i = 1, MAX_TRADE_ITEMS do

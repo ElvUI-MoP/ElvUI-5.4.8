@@ -431,8 +431,6 @@ local function LoadSkin(event)
 			if mini and not mini.isSkinned then
 				local icon = _G["AchievementFrameMiniAchievement"..i.."Icon"]
 				local points = _G["AchievementFrameMiniAchievement"..i.."Points"]
-				local border = _G["AchievementFrameMiniAchievement"..i.."Border"]
-				local shield = _G["AchievementFrameMiniAchievement"..i.."Shield"]
 
 				mini:SetTemplate()
 				mini:SetBackdropColor(0, 0, 0, 0)
@@ -456,8 +454,8 @@ local function LoadSkin(event)
 				points:Point("BOTTOMRIGHT", -8, -15)
 				points:SetTextColor(1, 0.80, 0.10)
 
-				border:Kill()
-				shield:Kill()
+				_G["AchievementFrameMiniAchievement"..i.."Border"]:Kill()
+				_G["AchievementFrameMiniAchievement"..i.."Shield"]:Kill()
 
 				mini.isSkinned = true
 			end

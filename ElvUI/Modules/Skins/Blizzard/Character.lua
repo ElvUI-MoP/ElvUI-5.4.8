@@ -5,6 +5,7 @@ local _G = _G
 local unpack, pairs, select = unpack, pairs, select
 
 local CharacterFrameExpandButton = CharacterFrameExpandButton
+local GetFactionInfo = GetFactionInfo
 local GetNumFactions = GetNumFactions
 local hooksecurefunc = hooksecurefunc
 
@@ -71,7 +72,7 @@ local function LoadSkin()
 		local popout = _G["Character"..slot.."PopoutButton"]
 
 		button:StripTextures()
-		button:SetTemplate("Default", true, true)
+		button:SetTemplate()
 		button:StyleButton()
 		button:SetFrameLevel(PaperDollFrame:GetFrameLevel() + 2)
 		button.ignoreTexture:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-LeaveItem-Transparent]])
@@ -161,9 +162,12 @@ local function LoadSkin()
 
 		local location = button.location
 		if not location then return end
-		if location and location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then return end
 
-		button:SetBackdropBorderColor(GetItemQualityColor(select(3, GetItemInfo(EquipmentManager_GetItemInfoByLocation(location)))))
+		if location and location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+			button:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		else
+			button:SetBackdropBorderColor(GetItemQualityColor(select(3, GetItemInfo(EquipmentManager_GetItemInfoByLocation(location)))))
+		end
 	end)
 
 	hooksecurefunc("EquipmentFlyout_Show", function(self)
@@ -292,14 +296,8 @@ local function LoadSkin()
 
 	-- Equipement Manager Popup
 	S:HandleIconSelectionFrame(GearManagerDialogPopup, NUM_GEARSET_ICONS_SHOWN, "GearManagerDialogPopupButton")
-
-	S:HandleScrollBar(GearManagerDialogPopupScrollFrameScrollBar)
-
-	GearManagerDialogPopupScrollFrame:CreateBackdrop("Transparent")
-	GearManagerDialogPopupScrollFrame.backdrop:Point("TOPLEFT", 51, 2)
-	GearManagerDialogPopupScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, 4)
-
 	GearManagerDialogPopup:Point("TOPLEFT", PaperDollFrame, "TOPRIGHT", 1, 0)
+	GearManagerDialogPopup:Size(282, 246)
 
 	-- Bottom Tabs
 	for i = 1, 4 do
@@ -419,11 +417,12 @@ local function LoadSkin()
 				local _, _, _, _, _, _, atWarWith, canToggleAtWar, isHeader, isCollapsed = GetFactionInfo(factionIndex)
 
 				_G["ReputationBar"..i.."ExpandOrCollapseButton"]:GetNormalTexture():SetTexture(isCollapsed and E.Media.Textures.Plus or E.Media.Textures.Minus)
-				_G["ReputationBar"..i].War:SetShown(atWarWith and canToggleAtWar and (not isHeader))
+				_G["ReputationBar"..i].War:SetShown(atWarWith and canToggleAtWar and not isHeader)
 			end
 		end
 	end)
 
+	-- Reputation Detail Frame
 	ReputationDetailFrame:StripTextures()
 	ReputationDetailFrame:SetTemplate("Transparent")
 	ReputationDetailFrame:Point("TOPLEFT", ReputationFrame, "TOPRIGHT", 1, 0)

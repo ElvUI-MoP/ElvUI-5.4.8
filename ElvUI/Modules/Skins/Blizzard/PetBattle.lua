@@ -92,7 +92,7 @@ local function LoadSkin()
 
 		infoBar.FirstAttack = infoBar:CreateTexture(nil, "ARTWORK")
 		infoBar.FirstAttack:Size(30)
-		infoBar.FirstAttack:SetTexture("Interface\\PetBattles\\PetBattle-StatIcons")
+		infoBar.FirstAttack:SetTexture([[Interface\PetBattles\PetBattle-StatIcons]])
 
 		infoBar.HealthText:ClearAllPoints()
 		infoBar.HealthText:Point("CENTER", infoBar.HealthBarBackdrop, "CENTER")

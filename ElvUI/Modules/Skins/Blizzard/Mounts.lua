@@ -38,8 +38,8 @@ local function LoadSkin()
 	MountJournal.MountCount:Point("TOPLEFT", 4, -25)
 
     MountJournal.MountDisplay:CreateBackdrop()
-	MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 2, -32)
-	MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 0, 0)
+	MountJournal.MountDisplay.backdrop:Point("TOPLEFT", 3, -32)
+	MountJournal.MountDisplay.backdrop:Point("BOTTOMRIGHT", 1, 0)
 
 	MountJournal.MountDisplay.ShadowOverlay:SetInside(MountJournal.MountDisplay.backdrop)
 
@@ -56,9 +56,7 @@ local function LoadSkin()
 	MountJournal.MountDisplay.ModelFrame:Point("BOTTOMRIGHT", MountJournal.MountDisplay.backdrop, -2, 2)
 
 	S:HandleButton(MountJournalMountButton)
-	MountJournalMountButton:ClearAllPoints()
-	MountJournalMountButton:Point("BOTTOM", MountJournal.MountDisplay.backdrop, 0, -25)
-	MountJournalMountButton:Size(160, 22)
+	MountJournalMountButton:Width(160)
 
 	MountJournal.MountDisplay.Name:ClearAllPoints()
 	MountJournal.MountDisplay.Name:Point("TOP", MountJournal.MountDisplay.backdrop, 0, 22)
@@ -80,7 +78,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(MountJournalListScrollFrameScrollBar)
 	MountJournalListScrollFrameScrollBar:ClearAllPoints()
-	MountJournalListScrollFrameScrollBar:Point("TOPRIGHT", MountJournalListScrollFrame, 23, -15)
+	MountJournalListScrollFrameScrollBar:Point("TOPRIGHT", MountJournalListScrollFrame, 24, -15)
 	MountJournalListScrollFrameScrollBar:Point("BOTTOMRIGHT", MountJournalListScrollFrame, 0, 14)
 
 	for i = 1, #MountJournal.ListScrollFrame.buttons do
@@ -149,7 +147,7 @@ local function LoadSkin()
 	S:HandleButton(PetJournalSummonButton)
 
 	S:HandleButton(PetJournalFindBattle)
-	PetJournalFindBattle:Point("BOTTOMRIGHT", -9, 4)
+	PetJournalFindBattle:Point("BOTTOMRIGHT", -8, 4)
 
 	PetJournalTutorialButton:Kill()
 
@@ -179,7 +177,7 @@ local function LoadSkin()
 
 	S:HandleScrollBar(PetJournalListScrollFrameScrollBar)
 	PetJournalListScrollFrameScrollBar:ClearAllPoints()
-	PetJournalListScrollFrameScrollBar:Point("TOPRIGHT", PetJournalListScrollFrame, 23, -15)
+	PetJournalListScrollFrameScrollBar:Point("TOPRIGHT", PetJournalListScrollFrame, 24, -15)
 	PetJournalListScrollFrameScrollBar:Point("BOTTOMRIGHT", PetJournalListScrollFrame, 0, 14)
 
 	for i = 1, #PetJournal.listScroll.buttons do
@@ -189,7 +187,9 @@ local function LoadSkin()
 		button.pushed:SetInside(button.backdrop)
 
 		button.dragButton.levelBG:SetAlpha(0)
+
 		button.dragButton.favorite:SetParent(button.backdrop)
+		button.dragButton.favorite:Point("TOPLEFT", -3, 2)
 
 		button.isDead:SetTexture([[Interface\PetBattles\DeadPetIcon]])
 		button.isDead:SetParent(button.backdrop)
@@ -285,14 +285,14 @@ local function LoadSkin()
 		frame:Width(405)
 		frame:StripTextures()
 		frame:SetTemplate("Transparent")
-		frame:CreateBackdrop()
+		frame:CreateBackdrop(nil, true)
 		frame.backdrop:SetOutside(frame.icon)
 		frame.backdrop:SetFrameLevel(frame.backdrop:GetFrameLevel() + 1)
 
 		if i == 1 or i == 2 then
-			frame:Point("TOP", 1, i == 1 and 3 or -108)
+			frame:Point("TOP", 2, i == 1 and 3 or -108)
 		else
-			frame:Point("TOP", 1, -219)
+			frame:Point("TOP", 2, -219)
 		end
 
 		emptyTexture:Point("TOPLEFT", 1, -1)
@@ -394,6 +394,7 @@ local function LoadSkin()
 	-- Pet Card
 	PetJournalPetCard:StripTextures()
 	PetJournalPetCard:SetTemplate("Transparent")
+	PetJournalPetCard:Point("TOPLEFT", PetJournalPetCardInset, 4, -3)
 
 	PetJournalPetCardInset:StripTextures()
 
@@ -412,6 +413,7 @@ local function LoadSkin()
 	PetJournalPetCardPetInfo.level:SetParent(PetJournalPetCardPetInfo.backdrop)
 
 	PetJournalPetCardPetInfo.favorite:SetParent(PetJournalPetCardPetInfo.backdrop)
+	PetJournalPetCardPetInfo.favorite:Point("TOPLEFT", -3, 2)
 
 	PetJournalPetCardPetInfo.levelBG:SetAlpha(0)
 	PetJournalPetCardPetInfo.qualityBorder:SetAlpha(0)

@@ -46,7 +46,7 @@ local function LoadSkin()
 	S:HandleButton(VoidStorageTransferButton)
 
 	VoidStorageHelpBox:StripTextures()
-	VoidStorageHelpBox:SetTemplate()
+	VoidStorageHelpBox:SetTemplate("Transparent")
 
 	VoidItemSearchBox:StripTextures()
 	VoidItemSearchBox:CreateBackdrop()

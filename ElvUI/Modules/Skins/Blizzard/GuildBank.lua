@@ -208,18 +208,7 @@ local function LoadSkin()
 	-- Popup
 	S:HandleIconSelectionFrame(GuildBankPopupFrame, NUM_GUILDBANK_ICONS_SHOWN, "GuildBankPopupButton", "GuildBankPopup")
 	GuildBankPopupFrame:Point("TOPLEFT", GuildBankFrame, "TOPRIGHT", 37, 0)
-
-	GuildBankPopupScrollFrame:CreateBackdrop("Transparent")
-	GuildBankPopupScrollFrame.backdrop:Point("TOPLEFT", 92, 2)
-	GuildBankPopupScrollFrame.backdrop:Point("BOTTOMRIGHT", -5, 2)
-	GuildBankPopupScrollFrame:Point("TOPRIGHT", GuildBankPopupFrame, -30, -66)
-
-	S:HandleScrollBar(GuildBankPopupScrollFrameScrollBar)
-	GuildBankPopupScrollFrameScrollBar:ClearAllPoints()
-	GuildBankPopupScrollFrameScrollBar:Point("TOPRIGHT", GuildBankPopupScrollFrame, 19, -16)
-	GuildBankPopupScrollFrameScrollBar:Point("BOTTOMRIGHT", GuildBankPopupScrollFrame, 0, 20)
-
-	GuildBankPopupButton1:Point("TOPLEFT", GuildBankPopupFrame, 30, -86)
+	GuildBankPopupFrame:Size(228, 290)
 end
 
 S:AddCallbackForAddon("Blizzard_GuildBankUI", "GuildBank", LoadSkin)

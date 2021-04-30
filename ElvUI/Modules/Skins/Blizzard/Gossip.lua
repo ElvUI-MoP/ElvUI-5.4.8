@@ -41,11 +41,11 @@ local function LoadSkin()
 
 	for i = 1, NUMGOSSIPBUTTONS do
 		local button = _G["GossipTitleButton"..i]
-		local text = select(3, button:GetRegions())
 
 		S:HandleButtonHighlight(button)
+		button.handledHighlight:SetVertexColor(1, 0.80, 0.10)
 
-		text:SetTextColor(1, 1, 1)
+		select(3, button:GetRegions()):SetTextColor(1, 1, 1)
 	end
 
 	hooksecurefunc("GossipFrameUpdate", function()

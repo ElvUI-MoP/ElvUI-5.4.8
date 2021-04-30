@@ -10,7 +10,7 @@ local function LoadSkin()
 	MacroFrame:StripTextures()
 	MacroFrame:SetTemplate("Transparent")
 
-	MacroFrameInset:Kill()
+	MacroFrameInset:StripTextures()
 
 	for i = 1, 2 do
 		local Tab = _G["MacroFrameTab"..i]
@@ -32,6 +32,7 @@ local function LoadSkin()
 
 	S:HandleButton(MacroDeleteButton)
 	S:HandleButton(MacroExitButton)
+	S:HandleButton(MacroEditButton)
 	S:HandleButton(MacroSaveButton)
 	S:HandleButton(MacroCancelButton)
 
@@ -40,32 +41,23 @@ local function LoadSkin()
 
 	S:HandleCloseButton(MacroFrameCloseButton)
 
-	MacroFrameTextBackground:StripTextures()
-	MacroFrameTextBackground:CreateBackdrop("Default")
-	MacroFrameTextBackground.backdrop:Point("TOPLEFT", 5, -3)
-	MacroFrameTextBackground.backdrop:Point("BOTTOMRIGHT", -22, 4)
-
 	MacroButtonScrollFrame:StripTextures()
 	MacroButtonScrollFrame:CreateBackdrop("Transparent")
 
-	S:HandleButton(MacroEditButton)
-
-	S:HandleScrollBar(MacroButtonScrollFrame)
-
 	S:HandleScrollBar(MacroButtonScrollFrameScrollBar)
 	MacroButtonScrollFrameScrollBar:ClearAllPoints()
-	MacroButtonScrollFrameScrollBar:Point("TOPRIGHT", MacroButtonScrollFrame, "TOPRIGHT", 21, -17)
-	MacroButtonScrollFrameScrollBar:Point("BOTTOMRIGHT", MacroButtonScrollFrame, "BOTTOMRIGHT", 0, 17)
+	MacroButtonScrollFrameScrollBar:Point("TOPRIGHT", MacroButtonScrollFrame, 24, -17)
+	MacroButtonScrollFrameScrollBar:Point("BOTTOMRIGHT", MacroButtonScrollFrame, 0, 17)
+
+	MacroFrameTextBackground:StripTextures()
+	MacroFrameTextBackground:CreateBackdrop()
+	MacroFrameTextBackground.backdrop:Point("TOPLEFT", 5, -3)
+	MacroFrameTextBackground.backdrop:Point("BOTTOMRIGHT", -21, 4)
 
 	S:HandleScrollBar(MacroFrameScrollFrameScrollBar)
 	MacroFrameScrollFrameScrollBar:ClearAllPoints()
-	MacroFrameScrollFrameScrollBar:Point("TOPRIGHT", MacroFrameScrollFrame, "TOPRIGHT", 25, -16)
-	MacroFrameScrollFrameScrollBar:Point("BOTTOMRIGHT", MacroFrameScrollFrame, "BOTTOMRIGHT", 0, 17)
-
-	S:HandleScrollBar(MacroPopupScrollFrameScrollBar)
-	MacroPopupScrollFrameScrollBar:ClearAllPoints()
-	MacroPopupScrollFrameScrollBar:Point("TOPRIGHT", MacroPopupScrollFrame, "TOPRIGHT", 23, -16)
-	MacroPopupScrollFrameScrollBar:Point("BOTTOMRIGHT", MacroPopupScrollFrame, "BOTTOMRIGHT", 0, 22)
+	MacroFrameScrollFrameScrollBar:Point("TOPRIGHT", MacroFrameScrollFrame, 28, -15)
+	MacroFrameScrollFrameScrollBar:Point("BOTTOMRIGHT", MacroFrameScrollFrame, 0, 18)
 
 	MacroFrameSelectedMacroButton:StripTextures()
 	MacroFrameSelectedMacroButton:SetTemplate()
@@ -96,12 +88,8 @@ local function LoadSkin()
 	end
 
 	S:HandleIconSelectionFrame(MacroPopupFrame, NUM_MACRO_ICONS_SHOWN, "MacroPopupButton", "MacroPopup")
-
-	MacroPopupScrollFrame:CreateBackdrop("Transparent")
-	MacroPopupScrollFrame.backdrop:Point("TOPLEFT", 51, 2)
-	MacroPopupScrollFrame.backdrop:Point("BOTTOMRIGHT", 0, 4)
-
 	MacroPopupFrame:Point("TOPLEFT", MacroFrame, "TOPRIGHT", 1, 0)
+	MacroPopupFrame:Size(282, 290)
 end
 
 S:AddCallbackForAddon("Blizzard_MacroUI", "Macro", LoadSkin)

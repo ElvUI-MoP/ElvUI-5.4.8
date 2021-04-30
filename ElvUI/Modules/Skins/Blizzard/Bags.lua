@@ -44,11 +44,11 @@ local function LoadSkin()
 
 	db = E.db.bags.colors.items
 	local QuestColors = {
-		["questStarter"] = {db.questStarter.r, db.questStarter.g, db.questStarter.b},
-		["questItem"] =	{db.questItem.r, db.questItem.g, db.questItem.b}
+		questStarter = {db.questStarter.r, db.questStarter.g, db.questStarter.b},
+		questItem =	{db.questItem.r, db.questItem.g, db.questItem.b}
 	}
 
-	-- ContainerFrame
+	-- Container Frame
 	for i = 1, NUM_CONTAINER_FRAMES, 1 do
 		local frame = _G["ContainerFrame"..i]
 		local closeButton = _G["ContainerFrame"..i.."CloseButton"]
@@ -167,22 +167,29 @@ local function LoadSkin()
 			questIcon:Hide()
 
 			if ProfessionColors[bagType] then
-				item.newItemGlow:SetVertexColor(unpack(ProfessionColors[bagType]))
-				item:SetBackdropBorderColor(unpack(ProfessionColors[bagType]))
+				local profR, profG, profB = unpack(B.ProfessionColors[bagType])
+				item.newItemGlow:SetVertexColor(profR, profG, profB)
+				item:SetBackdropBorderColor(profR, profG, profB)
 				item.ignoreBorderColors = true
 			elseif link then
 				local isQuestItem, questId, isActive = GetContainerItemQuestInfo(id, item:GetID())
 				local quality = getQuality(link)
 
 				if questId and not isActive then
-					item:SetBackdropBorderColor(unpack(QuestColors.questStarter))
+					local starterR, starterG, starterB = unpack(QuestColors.questStarter)
+					item.newItemGlow:SetVertexColor(starterR, starterG, starterB)
+					item:SetBackdropBorderColor(starterR, starterG, starterB)
 					item.ignoreBorderColors = true
 					questIcon:Show()
 				elseif questId or isQuestItem then
-					item:SetBackdropBorderColor(unpack(QuestColors.questItem))
+					local questR, questG, questB = unpack(QuestColors.questItem)
+					item.newItemGlow:SetVertexColor(questR, questG, questB)
+					item:SetBackdropBorderColor(questR, questG, questB)
 					item.ignoreBorderColors = true
 				elseif quality and quality > 1 then
-					item:SetBackdropBorderColor(GetItemQualityColor(quality))
+					local qualityR, qualityG, qualityB = GetItemQualityColor(quality)
+					item.newItemGlow:SetVertexColor(qualityR, qualityG, qualityB)
+					item:SetBackdropBorderColor(qualityR, qualityG, qualityB)
 					item.ignoreBorderColors = true
 				else
 					item.newItemGlow:SetVertexColor(1, 1, 1)
@@ -191,7 +198,7 @@ local function LoadSkin()
 				end
 			else
 				item:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				item.ignoreBorderColors = true
+				item.ignoreBorderColors = nil
 			end
 
 			if C_NewItems_IsNewItem(id, item:GetID()) then
@@ -201,10 +208,11 @@ local function LoadSkin()
 				item.newItemGlow:Hide()
 				E:StopFlash(item.newItemGlow)
 			end
+
 		end
 	end)
 
-	-- BankFrame
+	-- Bank Frame
 	BankFrame:StripTextures(true)
 	BankFrame:SetTemplate("Transparent")
 
