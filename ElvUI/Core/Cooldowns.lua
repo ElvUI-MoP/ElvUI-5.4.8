@@ -1,5 +1,6 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...))
 local A = E:GetModule("Auras")
+local LSM = E.Libs.LSM
 
 local next, ipairs, pairs = next, ipairs, pairs
 local floor, tinsert = floor, tinsert
@@ -141,20 +142,22 @@ function E:Cooldown_Options(timer, db, parent)
 		timer.reverseToggle = nil
 	end
 
-	if (db ~= E.db.cooldown) and db.fonts and db.fonts.enable then
-		fonts = db.fonts -- custom fonts override default fonts
-	elseif E.db.cooldown.fonts and E.db.cooldown.fonts.enable then
-		fonts = E.db.cooldown.fonts -- default global font override
-	end
+	if timer.CooldownOverride ~= "auras" then
+		if (db ~= E.db.cooldown) and db.fonts and db.fonts.enable then
+			fonts = db.fonts -- custom fonts override default fonts
+		elseif E.db.cooldown.fonts and E.db.cooldown.fonts.enable then
+			fonts = E.db.cooldown.fonts -- default global font override
+		end
 
-	if fonts and fonts.enable then
-		timer.customFont = E.Libs.LSM:Fetch("font", fonts.font)
-		timer.customFontSize = fonts.fontSize
-		timer.customFontOutline = fonts.fontOutline
-	else
-		timer.customFont = nil
-		timer.customFontSize = nil
-		timer.customFontOutline = nil
+		if fonts and fonts.enable then
+			timer.customFont = LSM:Fetch("font", fonts.font)
+			timer.customFontSize = fonts.fontSize
+			timer.customFontOutline = fonts.fontOutline
+		else
+			timer.customFont = nil
+			timer.customFontSize = nil
+			timer.customFontOutline = nil
+		end
 	end
 end
 
@@ -195,7 +198,7 @@ end
 
 E.RegisteredCooldowns = {}
 function E:OnSetCooldown(start, duration)
-	if (not self.forceDisabled) and (start and duration) and (duration > MIN_DURATION) then
+	if not self.forceDisabled and (start and duration) and (duration > MIN_DURATION) then
 		local timer = self.timer or E:CreateCooldownTimer(self)
 		timer.start = start
 		timer.duration = duration
@@ -243,7 +246,7 @@ end
 
 function E:UpdateCooldownOverride(module)
 	local cooldowns = (module and E.RegisteredCooldowns[module])
-	if (not cooldowns) or not next(cooldowns) then return end
+	if not cooldowns or not next(cooldowns) then return end
 
 	for _, parent in ipairs(cooldowns) do
 		local db = (parent.CooldownOverride and E.db[parent.CooldownOverride]) or E.db
@@ -262,12 +265,9 @@ function E:UpdateCooldownOverride(module)
 					cd.text:FontTemplate(cd.customFont, cd.customFontSize, cd.customFontOutline)
 				elseif parent.CooldownOverride == "auras" then
 					-- parent.auraType defined in "A:UpdateHeader" and "A:CreateIcon"
-					local font = E.Libs.LSM:Fetch("font", db.font)
-					if font and parent.auraType then
-						local fontSize = db[parent.auraType] and db[parent.auraType].durationFontSize
-						if fontSize then
-							cd.text:FontTemplate(font, fontSize, db.fontOutline)
-						end
+					local fontDB = parent.auraType and db[parent.auraType]
+					if fontDB and fontDB.timeFont then
+						cd.text:FontTemplate(LSM:Fetch("font", fontDB.timeFont), fontDB.timeFontSize, fontDB.timeFontOutline)
 					end
 				end
 
