@@ -1,18 +1,18 @@
 --[[
-Copyright (c) 2010-2015, Hendrik "nevcairiel" Leppkes <h.leppkes@gmail.com>
+Copyright (c) 2010-2020, Hendrik "nevcairiel" Leppkes <h.leppkes@gmail.com>
 
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice, 
-      this list of conditions and the following disclaimer in the documentation 
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name of the developer nor the names of its contributors 
-      may be used to endorse or promote products derived from this software without 
+    * Neither the name of the developer nor the names of its contributors
+      may be used to endorse or promote products derived from this software without
       specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -28,8 +28,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
-local MAJOR_VERSION = "LibActionButton-1.0"
-local MINOR_VERSION = 66
+local MAJOR_VERSION = "LibActionButton-1.0-ElvUI"
+local MINOR_VERSION = 23 -- the real minor version is 79
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -117,6 +117,7 @@ local DefaultConfig = {
 	keyBoundTarget = false,
 	clickOnDown = false,
 	flyoutDirection = "UP",
+	handleOverlay = true
 }
 
 --- Create a new action button.
@@ -176,6 +177,10 @@ function lib:CreateButton(id, name, header, config)
 	-- adjust hotkey style for better readability
 	button.hotkey:SetFont(button.hotkey:GetFont(), 13, "OUTLINE")
 	button.hotkey:SetVertexColor(0.75, 0.75, 0.75)
+	button.hotkey:SetPoint("TOPLEFT", button, "TOPLEFT", -2, -4)
+
+	-- adjust count/stack size
+	button.count:SetFont(button.count:GetFont(), 16, "OUTLINE")
 
 	-- Store the button in the registry, needed for event and OnUpdate handling
 	if not next(ButtonRegistry) then
@@ -663,6 +668,7 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 	lib.eventFrame:RegisterEvent("UPDATE_BINDINGS")
 	lib.eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+	lib.eventFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
 
 	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_STATE")
 	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_USABLE")
@@ -670,23 +676,24 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	lib.eventFrame:RegisterEvent("TRADE_SKILL_SHOW")
 	lib.eventFrame:RegisterEvent("TRADE_SKILL_CLOSE")
-	lib.eventFrame:RegisterEvent("ARCHAEOLOGY_CLOSED")
 	lib.eventFrame:RegisterEvent("PLAYER_ENTER_COMBAT")
 	lib.eventFrame:RegisterEvent("PLAYER_LEAVE_COMBAT")
 	lib.eventFrame:RegisterEvent("START_AUTOREPEAT_SPELL")
 	lib.eventFrame:RegisterEvent("STOP_AUTOREPEAT_SPELL")
-	lib.eventFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-	lib.eventFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
-	lib.eventFrame:RegisterEvent("COMPANION_UPDATE")
 	lib.eventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
 	lib.eventFrame:RegisterEvent("LEARNED_SPELL_IN_TAB")
 	lib.eventFrame:RegisterEvent("PET_STABLE_UPDATE")
 	lib.eventFrame:RegisterEvent("PET_STABLE_SHOW")
+	lib.eventFrame:RegisterEvent("SPELL_UPDATE_CHARGES")
+	lib.eventFrame:RegisterEvent("ARCHAEOLOGY_CLOSED")
+	lib.eventFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+	lib.eventFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
+	lib.eventFrame:RegisterEvent("COMPANION_UPDATE")
 	lib.eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 	lib.eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+	lib.eventFrame:RegisterEvent("UPDATE_SUMMONPETS_ACTION")
 
 	-- With those two, do we still need the ACTIONBAR equivalents of them?
-	lib.eventFrame:RegisterEvent("SPELL_UPDATE_CHARGES")
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_USABLE")
 	lib.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
@@ -707,7 +714,7 @@ function OnEvent(frame, event, arg1, ...)
 				Update(button)
 			end
 		end
-	elseif event == "PLAYER_ENTERING_WORLD" or event == "UPDATE_SHAPESHIFT_FORM" then
+	elseif event == "PLAYER_ENTERING_WORLD" or event == "UPDATE_SHAPESHIFT_FORM" or event == "UPDATE_VEHICLE_ACTIONBAR" then
 		ForAllButtons(Update)
 	elseif event == "ACTIONBAR_PAGE_CHANGED" or event == "UPDATE_BONUS_ACTIONBAR" then
 		-- TODO: Are these even needed?
@@ -809,6 +816,18 @@ function OnEvent(frame, event, arg1, ...)
 		end
 	elseif event == "SPELL_UPDATE_CHARGES" then
 		ForAllButtons(UpdateCount, true)
+	elseif event == "UPDATE_SUMMONPETS_ACTION" then
+		for button in next, ActiveButtons do
+			if button._state_type == "action" then
+				local actionType, id = GetActionInfo(button._state_action)
+				if actionType == "summonpet" then
+					local texture = GetActionTexture(button._state_action)
+					if texture then
+						button.icon:SetTexture(texture)
+					end
+				end
+			end
+		end
 	end
 end
 
@@ -901,6 +920,7 @@ function UpdateRange(self, force) -- Sezz: moved from OnUpdate
 				hotkey:SetVertexColor(unpack(self.config.colors.usable))
 			end
 		end
+		lib.callbacks:Fire("OnUpdateRange", self)
 	end
 end
 
@@ -973,13 +993,13 @@ end
 --- button management
 
 function Generic:UpdateAction(force)
-	local type, action = self:GetAction()
-	if force or (type ~= self._state_type) or (action ~= self._state_action) then
+	local action_type, action = self:GetAction()
+	if force or (action_type ~= self._state_type) or (action ~= self._state_action) then
 		-- type changed, update the metatable
-		if force or (self._state_type ~= type) then
-			local meta = type_meta_map[type] or type_meta_map.empty
+		if force or (self._state_type ~= action_type) then
+			local meta = type_meta_map[action_type] or type_meta_map.empty
 			setmetatable(self, meta)
-			self._state_type = type
+			self._state_type = action_type
 		end
 		self._state_action = action
 		Update(self)
@@ -1008,7 +1028,7 @@ function Update(self, fromUpdateConfig)
 			self:SetAlpha(0.0)
 		end
 		self.cooldown:Hide()
-		self:SetChecked(0)
+		self:SetChecked(false)
 	end
 
 	-- Add a green border if button is an equipped item
@@ -1085,9 +1105,9 @@ end
 
 function UpdateButtonState(self)
 	if self:IsCurrentlyActive() or self:IsAutoRepeat() then
-		self:SetChecked(1)
+		self:SetChecked(true)
 	else
-		self:SetChecked(0)
+		self:SetChecked(false)
 	end
 	lib.callbacks:Fire("OnButtonState", self)
 end
@@ -1100,41 +1120,43 @@ function UpdateUsable(self)
 			local isUsable, notEnoughMana = self:IsUsable()
 			if isUsable then
 				self.icon:SetVertexColor(unpack(self.config.colors.usable))
-				--self.normalTexture:SetVertexColor(1.0, 1.0, 1.0)
 			elseif notEnoughMana then
 				self.icon:SetVertexColor(unpack(self.config.colors.mana))
-				--self.normalTexture:SetVertexColor(0.5, 0.5, 1.0)
 			else
 				self.icon:SetVertexColor(unpack(self.config.colors.notUsable))
-				--self.normalTexture:SetVertexColor(1.0, 1.0, 1.0)
 			end
 		end
 	else
 		self.icon:SetVertexColor(unpack(self.config.colors.usable))
- 	end
+	end
 	lib.callbacks:Fire("OnButtonUsable", self)
 end
 
 function UpdateCount(self)
-	local count, charges, maxCharges = 0, 0, 0
-	local isItemAction = false
-
-	if self._state_action and type(self._state_action) == "number" then
-		charges, maxCharges = GetActionCharges(self._state_action)
-		count = self:GetCount()
-		isItemAction = IsItemAction(self._state_action)
+	if not self:HasAction() then
+		self.count:SetText("")
+		return
 	end
 
-	if self:IsConsumableOrStackable() or (not isItemAction and count > 0) then
+	if self:IsConsumableOrStackable() then
+		local count = self:GetCount()
+
 		if count > (self.maxDisplayCount or 9999) then
 			self.count:SetText("*")
 		else
 			self.count:SetText(count)
 		end
-	elseif charges and maxCharges and maxCharges > 1 then
-		self.count:SetText(charges)
 	else
-		self.count:SetText("")
+		local charges, maxCharges = 0, 0
+		if self._state_action and type(self._state_action) == "number" then
+			charges, maxCharges = GetActionCharges(self._state_action)
+		end
+
+		if charges and maxCharges and maxCharges > 1 then
+			self.count:SetText(charges)
+		else
+			self.count:SetText("")
+		end
 	end
 end
 
@@ -1167,9 +1189,10 @@ end
 
 function UpdateTooltip(self)
 	if (GetCVar("UberTooltips") == "1") then
-		GameTooltip_SetDefaultAnchor(GameTooltip, self);
+		GameTooltip:ClearAllPoints()
+		GameTooltip_SetDefaultAnchor(GameTooltip, self)
 	else
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	end
 	if self:SetTooltip() then
 		self.UpdateTooltip = UpdateTooltip
@@ -1182,11 +1205,9 @@ function UpdateHotkeys(self)
 	local key = self:GetHotkey()
 	if not key or key == "" or self.config.hideElements.hotkey then
 		self.hotkey:SetText(RANGE_INDICATOR)
-		self.hotkey:SetPoint("TOPRIGHT", 0, -3);
 		self.hotkey:Hide()
 	else
 		self.hotkey:SetText(key)
-		self.hotkey:SetPoint("TOPRIGHT", 0, -3);
 		self.hotkey:Show()
 	end
 
@@ -1203,7 +1224,7 @@ local function OverlayGlow_OnHide(self)
 end
 
 function GetOverlayGlow()
-	local overlay = tremove(lib.unusedOverlayGlows);
+	local overlay = tremove(lib.unusedOverlayGlows)
 	if not overlay then
 		lib.numOverlays = lib.numOverlays + 1
 		overlay = CreateFrame("Frame", "LAB10ActionButtonOverlay"..lib.numOverlays, UIParent, "ActionBarButtonSpellActivationAlert")
@@ -1214,6 +1235,8 @@ function GetOverlayGlow()
 end
 
 function ShowOverlayGlow(self)
+	if not self.config.handleOverlay then return end
+
 	if self.overlay then
 		if self.overlay.animOut:IsPlaying() then
 			self.overlay.animOut:Stop()
@@ -1254,7 +1277,7 @@ function OverlayGlowAnimOutFinished(animGroup)
 end
 
 function UpdateOverlayGlow(self)
-	local spellId = self:GetSpellId()
+	local spellId = self.config.handleOverlay and self:GetSpellId()
 	if spellId and IsSpellOverlayed(spellId) then
 		ShowOverlayGlow(self)
 	else
@@ -1288,7 +1311,7 @@ function UpdateFlyout(self)
 			-- Update arrow
 			self.FlyoutArrow:Show()
 			self.FlyoutArrow:ClearAllPoints()
-			local direction = self:GetAttribute("flyoutDirection");
+			local direction = self:GetAttribute("flyoutDirection")
 			if direction == "LEFT" then
 				self.FlyoutArrow:SetPoint("LEFT", self, "LEFT", -arrowDistance, 0)
 				SetClampedTextureRotation(self.FlyoutArrow, 270)
@@ -1360,7 +1383,7 @@ Action.IsEquipped              = function(self) return IsEquippedAction(self._st
 Action.IsCurrentlyActive       = function(self) return IsCurrentAction(self._state_action) end
 Action.IsAutoRepeat            = function(self) return IsAutoRepeatAction(self._state_action) end
 Action.IsUsable                = function(self) return IsUsableAction(self._state_action) end
-Action.IsConsumableOrStackable = function(self) return IsConsumableAction(self._state_action) or IsStackableAction(self._state_action) end
+Action.IsConsumableOrStackable = function(self) return IsConsumableAction(self._state_action) or IsStackableAction(self._state_action) or (not IsItemAction(self._state_action) and GetActionCount(self._state_action) > 0) end
 Action.IsUnitInRange           = function(self, unit) return IsActionInRange(self._state_action, unit) end
 Action.SetTooltip              = function(self) return GameTooltip:SetAction(self._state_action) end
 Action.GetSpellId              = function(self)

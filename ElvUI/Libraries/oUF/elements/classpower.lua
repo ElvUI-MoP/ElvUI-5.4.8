@@ -1,3 +1,47 @@
+--[[
+# Element: ClassPower
+
+Handles the visibility and updating of the player's class resources (like Chi Orbs or Holy Power).
+
+## Widget
+
+ClassPower - An `table` consisting of as many StatusBars as the theoretical maximum return of [UnitPowerMax](http://wowprogramming.com/docs/api/UnitPowerMax.html).
+
+## Sub-Widgets
+
+.bg - A `Texture` used as a background. It will inherit the color of the main StatusBar.
+
+## Sub-Widget Options
+
+.multiplier - Used to tint the background based on the widget's R, G and B values. Defaults to 1 (number)[0-1]
+
+## Notes
+
+A default texture will be applied if the sub-widgets are StatusBars and don't have a texture set.
+If the sub-widgets are StatusBars, their minimum and maximum values will be set to 0 and 1 respectively.
+
+Supported class powers:
+  - Monk    - Chi Orbs
+  - Paladin - Holy Power
+  - Warlock - Shadow Orbs
+
+## Examples
+
+    local ClassPower = {}
+    for index = 1, 10 do
+        local Bar = CreateFrame('StatusBar', nil, self)
+
+        -- Position and size.
+        Bar:SetSize(16, 16)
+        Bar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', (index - 1) * Bar:GetWidth(), 0)
+
+        ClassPower[index] = Bar
+    end
+
+    -- Register with oUF
+    self.ClassPower = ClassPower
+--]]
+
 local _, ns = ...
 local oUF = ns.oUF
 
@@ -10,7 +54,7 @@ local SPEC_PRIEST_SHADOW = SPEC_PRIEST_SHADOW
 
 local ClassPowerID, ClassPowerType
 local ClassPowerEnable, ClassPowerDisable
-local RequireSpec, RequirePower, RequireSpell, RequireFormID
+local RequireSpec, RequirePower, RequireSpell
 
 local function UpdateColor(element, powerType)
 	local color = element.__owner.colors.power[powerType]
@@ -32,6 +76,11 @@ local function Update(self, event, unit, powerType)
 
 	local element = self.ClassPower
 
+	--[[ Callback: ClassPower:PreUpdate(event)
+	Called before the element has been updated.
+
+	* self  - the ClassPower element
+	]]
 	if(element.PreUpdate) then
 		element:PreUpdate()
 	end
@@ -64,13 +113,29 @@ local function Update(self, event, unit, powerType)
 			element.__max = max
 		end
 	end
+	--[[ Callback: ClassPower:PostUpdate(cur, max, hasMaxChanged, powerType)
+	Called after the element has been updated.
 
+	* self          - the ClassPower element
+	* cur           - the current amount of power (number)
+	* max           - the maximum amount of power (number)
+	* hasMaxChanged - indicates whether the maximum amount has changed since the last update (boolean)
+	* powerType     - the active power type (string)
+	--]]
 	if(element.PostUpdate) then
 		return element:PostUpdate(cur, max, oldMax ~= max, powerType)
 	end
 end
 
 local function Path(self, ...)
+	--[[ Override: ClassPower.Override(self, event, unit, ...)
+	Used to completely override the internal update function.
+
+	* self  - the parent object
+	* event - the event triggering the update (string)
+	* unit  - the unit accompanying the event (string)
+	* ...   - the arguments accompanying the event
+	--]]
 	return (self.ClassPower.Override or Update) (self, ...)
 end
 
@@ -93,12 +158,12 @@ local function Visibility(self, event, unit)
 	local powerType = ClassPowerType
 
 	if(shouldEnable) then
-		if(not UnitHasVehicleUI("player")) then
-			element:Show()
-		else
-			element:Hide()
-		end
+		--[[ Override: ClassPower:UpdateColor(powerType)
+		Used to completely override the internal function for updating the widgets' colors.
 
+		* self      - the ClassPower element
+		* powerType - the active power type (string)
+		--]]
 		(element.UpdateColor or UpdateColor) (element, powerType)
 	end
 
@@ -112,6 +177,13 @@ local function Visibility(self, event, unit)
 end
 
 local function VisibilityPath(self, ...)
+	--[[ Override: ClassPower.OverrideVisibility(self, event, unit)
+	Used to completely override the internal visibility function.
+
+	* self  - the parent object
+	* event - the event triggering the update (string)
+	* unit  - the unit accompanying the event (string)
+	--]]
 	return (self.ClassPower.OverrideVisibility or Visibility) (self, ...)
 end
 
@@ -152,6 +224,7 @@ do
 		ClassPowerID = SPELL_POWER_SHADOW_ORBS
 		ClassPowerType = 'SHADOW_ORBS'
 		RequireSpec = SPEC_PRIEST_SHADOW
+		RequireSpell = 95740 -- Shadow Orbs
 	end
 end
 

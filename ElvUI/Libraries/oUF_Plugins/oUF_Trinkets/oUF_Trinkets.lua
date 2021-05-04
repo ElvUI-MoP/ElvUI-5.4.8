@@ -1,12 +1,6 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
-assert(oUF, "oUF not loaded")
-
-local GetTime = GetTime
-local IsInInstance = IsInInstance
-local UnitExists = UnitExists
-local UnitFactionGroup = UnitFactionGroup
-local UnitIsPlayer = UnitIsPlayer
+assert(oUF, 'oUF not loaded')
 
 local trinketSpells = {
 	[59752] = 120,
@@ -34,7 +28,7 @@ local Update = function(self, event, ...)
 	if(self.Trinket.PreUpdate) then self.Trinket:PreUpdate(event) end
 
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, eventType, _, sourceGUID, _, _, _, _, _, _, _, spellID = ...
+		local _, eventType, _, sourceGUID, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID == UnitGUID(self.unit) and trinketSpells[spellID] then
 			CooldownFrame_SetTimer(self.Trinket.cooldownFrame, GetTime(), trinketSpells[spellID], 1)
 		end
@@ -59,7 +53,7 @@ local Enable = function(self)
 		self:RegisterEvent("PLAYER_ENTERING_WORLD", Update, true)
 
 		if not self.Trinket.cooldownFrame then
-			self.Trinket.cooldownFrame = CreateFrame("Cooldown", nil, self.Trinket)
+			self.Trinket.cooldownFrame = CreateFrame("Cooldown", nil, self.Trinket, "CooldownFrameTemplate")
 			self.Trinket.cooldownFrame:SetAllPoints(self.Trinket)
 			ElvUI[1]:RegisterCooldown(self.Trinket.cooldownFrame)
 		end

@@ -20,8 +20,6 @@ local pairs		= _G.pairs
 local type		= _G.type
 
 local band			= _G.bit.band
-
-local table_insert	= _G.table.insert
 local table_sort	= _G.table.sort
 
 local locale = GetLocale()
@@ -89,60 +87,63 @@ if not lib.MediaTable.font then lib.MediaTable.font = {} end
 local SML_MT_font = lib.MediaTable.font
 if locale == "koKR" then
 	LOCALE_MASK = lib.LOCALE_BIT_koKR
-
+--
 	SML_MT_font["굵은 글꼴"]		= [[Fonts\2002B.TTF]]
 	SML_MT_font["기본 글꼴"]		= [[Fonts\2002.TTF]]
 	SML_MT_font["데미지 글꼴"]		= [[Fonts\K_Damage.TTF]]
 	SML_MT_font["퀘스트 글꼴"]		= [[Fonts\K_Pagetext.TTF]]
-
+--
 	lib.DefaultMedia["font"] = "기본 글꼴" -- someone from koKR please adjust if needed
-
+--
 elseif locale == "zhCN" then
 	LOCALE_MASK = lib.LOCALE_BIT_zhCN
-
+--
 	SML_MT_font["伤害数字"]		= [[Fonts\ARKai_C.ttf]]
 	SML_MT_font["默认"]			= [[Fonts\ARKai_T.ttf]]
 	SML_MT_font["聊天"]			= [[Fonts\ARHei.ttf]]
-
+--
 	lib.DefaultMedia["font"] = "默认" -- someone from zhCN please adjust if needed
-
+--
 elseif locale == "zhTW" then
 	LOCALE_MASK = lib.LOCALE_BIT_zhTW
-
+--
 	SML_MT_font["提示訊息"]		= [[Fonts\bHEI00M.ttf]]
 	SML_MT_font["聊天"]			= [[Fonts\bHEI01B.ttf]]
 	SML_MT_font["傷害數字"]		= [[Fonts\bKAI00M.ttf]]
 	SML_MT_font["預設"]			= [[Fonts\bLEI00D.ttf]]
-
+--
 	lib.DefaultMedia["font"] = "預設" -- someone from zhTW please adjust if needed
 
 elseif locale == "ruRU" then
 	LOCALE_MASK = lib.LOCALE_BIT_ruRU
-
+--
 	SML_MT_font["Arial Narrow"]			= [[Fonts\ARIALN.TTF]]
 	SML_MT_font["Friz Quadrata TT"]		= [[Fonts\FRIZQT__.TTF]]
 	SML_MT_font["Morpheus"]				= [[Fonts\MORPHEUS.TTF]]
 	SML_MT_font["Nimrod MT"]			= [[Fonts\NIM_____.ttf]]
 	SML_MT_font["Skurri"]				= [[Fonts\SKURRI.TTF]]
-
+--
 	lib.DefaultMedia.font = "Friz Quadrata TT"
-
+--
 else
 	LOCALE_MASK = lib.LOCALE_BIT_western
 	locale_is_western = true
-
+--
 	SML_MT_font["Arial Narrow"]			= [[Fonts\ARIALN.TTF]]
 	SML_MT_font["Friz Quadrata TT"]		= [[Fonts\FRIZQT__.TTF]]
 	SML_MT_font["Morpheus"]				= [[Fonts\MORPHEUS.TTF]]
 	SML_MT_font["Skurri"]				= [[Fonts\SKURRI.TTF]]
-
+--
 	lib.DefaultMedia.font = "Friz Quadrata TT"
+--
 end
 
 -- STATUSBAR
 if not lib.MediaTable.statusbar then lib.MediaTable.statusbar = {} end
 lib.MediaTable.statusbar["Blizzard"]						= [[Interface\TargetingFrame\UI-StatusBar]]
 lib.MediaTable.statusbar["Blizzard Character Skills Bar"]	= [[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]]
+lib.MediaTable.statusbar["Blizzard Raid Bar"]				= [[Interface\RaidFrame\Raid-Bar-Hp-Fill]]
+lib.MediaTable.statusbar["Solid"]							= [[Interface\Buttons\WHITE8X8]]
 lib.DefaultMedia.statusbar = "Blizzard"
 
 -- SOUND
@@ -172,11 +173,15 @@ function lib:Register(mediatype, key, data, langmask)
 		error(MAJOR..":Register(mediatype, key, data, langmask) - key must be string, got "..type(key))
 	end
 	mediatype = mediatype:lower()
-	if mediatype == lib.MediaType.FONT and ((langmask and band(langmask, LOCALE_MASK) == 0) or not (langmask or locale_is_western)) then return false end
-	if mediatype == lib.MediaType.SOUND and type(data) == "string" then
+	if mediatype == lib.MediaType.FONT and ((langmask and band(langmask, LOCALE_MASK) == 0) or not (langmask or locale_is_western)) then
+		-- ignore fonts that aren't flagged as supporting local glyphs on non-western clients
+		return false
+	end
+	if type(data) == "string" and (mediatype == lib.MediaType.BACKGROUND or mediatype == lib.MediaType.BORDER or mediatype == lib.MediaType.STATUSBAR or mediatype == lib.MediaType.SOUND) then
 		local path = data:lower()
-		-- Only wav, ogg and mp3 are valid sounds.
-		if not path:find(".ogg", nil, true) and not path:find(".mp3", nil, true) and not path:find(".wav", nil, true) then
+		if mediatype == lib.MediaType.SOUND and not (path:find(".ogg", nil, true) or not path:find(".mp3", nil, true) or not path:find(".wav", nil, true)) then
+
+			-- Only wav, ogg and mp3 are valid sounds.
 			return false
 		end
 	end

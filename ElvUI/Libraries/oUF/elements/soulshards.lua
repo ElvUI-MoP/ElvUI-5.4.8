@@ -16,9 +16,8 @@ local function Update(self, event, unit, powerType)
 		element:PreUpdate()
 	end
 
-	local cur, max
-	cur = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
-	max = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
+	local cur = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
+	local max = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
 
 	for i = 1, max do
 		if i <= cur then
@@ -105,10 +104,6 @@ local function Enable(self, unit)
 				end
 
 				bar:SetMinMaxValues(0, 1)
-			end
-
-			if bar.bg then
-				bar.bg:SetAlpha(0.15)
 			end
 		end
 

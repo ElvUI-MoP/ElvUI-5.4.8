@@ -1,3 +1,83 @@
+--[[
+# Element: Health Prediction Bars
+
+Handles the visibility and updating of incoming heals and heal/damage absorbs.
+
+## Widget
+
+HealthPrediction - A `table` containing references to sub-widgets and options.
+
+## Sub-Widgets
+
+myBar          - A `StatusBar` used to represent incoming heals from the player.
+otherBar       - A `StatusBar` used to represent incoming heals from others.
+absorbBar      - A `StatusBar` used to represent damage absorbs.
+healAbsorbBar  - A `StatusBar` used to represent heal absorbs.
+overAbsorb     - A `Texture` used to signify that the amount of damage absorb is greater than the unit's missing health.
+overHealAbsorb - A `Texture` used to signify that the amount of heal absorb is greater than the unit's current health.
+
+## Notes
+
+A default texture will be applied to the StatusBar widgets if they don't have a texture set.
+A default texture will be applied to the Texture widgets if they don't have a texture or a color set.
+
+## Options
+
+.maxOverflow - The maximum amount of overflow past the end of the health bar. Set this to 1 to disable the overflow.
+               Defaults to 1.05 (number)
+
+## Examples
+
+    -- Position and size
+    local myBar = CreateFrame('StatusBar', nil, self.Health)
+    myBar:SetPoint('TOP')
+    myBar:SetPoint('BOTTOM')
+    myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+    myBar:SetWidth(200)
+
+    local otherBar = CreateFrame('StatusBar', nil, self.Health)
+    otherBar:SetPoint('TOP')
+    otherBar:SetPoint('BOTTOM')
+    otherBar:SetPoint('LEFT', myBar:GetStatusBarTexture(), 'RIGHT')
+    otherBar:SetWidth(200)
+
+    local absorbBar = CreateFrame('StatusBar', nil, self.Health)
+    absorbBar:SetPoint('TOP')
+    absorbBar:SetPoint('BOTTOM')
+    absorbBar:SetPoint('LEFT', otherBar:GetStatusBarTexture(), 'RIGHT')
+    absorbBar:SetWidth(200)
+
+    local healAbsorbBar = CreateFrame('StatusBar', nil, self.Health)
+    healAbsorbBar:SetPoint('TOP')
+    healAbsorbBar:SetPoint('BOTTOM')
+    healAbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture())
+    healAbsorbBar:SetWidth(200)
+    healAbsorbBar:SetReverseFill(true)
+
+    local overAbsorb = self.Health:CreateTexture(nil, "OVERLAY")
+    overAbsorb:SetPoint('TOP')
+    overAbsorb:SetPoint('BOTTOM')
+    overAbsorb:SetPoint('LEFT', self.Health, 'RIGHT')
+    overAbsorb:SetWidth(10)
+
+	local overHealAbsorb = self.Health:CreateTexture(nil, "OVERLAY")
+    overHealAbsorb:SetPoint('TOP')
+    overHealAbsorb:SetPoint('BOTTOM')
+    overHealAbsorb:SetPoint('RIGHT', self.Health, 'LEFT')
+    overHealAbsorb:SetWidth(10)
+
+    -- Register with oUF
+    self.HealthPrediction = {
+        myBar = myBar,
+        otherBar = otherBar,
+        absorbBar = absorbBar,
+        healAbsorbBar = healAbsorbBar,
+        overAbsorb = overAbsorb,
+        overHealAbsorb = overHealAbsorb,
+        maxOverflow = 1.05,
+    }
+--]]
+
 local _, ns = ...
 local oUF = ns.oUF
 
@@ -6,6 +86,12 @@ local function Update(self, event, unit)
 
 	local element = self.HealthPrediction
 
+	--[[ Callback: HealthPrediction:PreUpdate(unit)
+	Called before the element has been updated.
+
+	* self - the HealthPrediction element
+	* unit - the unit for which the update has been triggered (string)
+	--]]
 	if(element.PreUpdate) then
 		element:PreUpdate(unit)
 	end
@@ -91,12 +177,31 @@ local function Update(self, event, unit)
 		end
 	end
 
+	--[[ Callback: HealthPrediction:PostUpdate(unit, myIncomingHeal, otherIncomingHeal, absorb, healAbsorb, hasOverAbsorb, hasOverHealAbsorb)
+	Called after the element has been updated.
+
+	* self              - the HealthPrediction element
+	* unit              - the unit for which the update has been triggered (string)
+	* myIncomingHeal    - the amount of incoming healing done by the player (number)
+	* otherIncomingHeal - the amount of incoming healing done by others (number)
+	* absorb            - the amount of damage the unit can absorb without losing health (number)
+	* healAbsorb        - the amount of healing the unit can absorb without gaining health (number)
+	* hasOverAbsorb     - indicates if the amount of damage absorb is higher than the unit's missing health (boolean)
+	* hasOverHealAbsorb - indicates if the amount of heal absorb is higher than the unit's current health (boolean)
+	--]]
 	if(element.PostUpdate) then
 		return element:PostUpdate(unit, myIncomingHeal, otherIncomingHeal, absorb, healAbsorb, hasOverAbsorb, hasOverHealAbsorb)
 	end
 end
 
 local function Path(self, ...)
+	--[[ Override: HealthPrediction.Override(self, event, unit)
+	Used to completely override the internal update function.
+
+	* self  - the parent object
+	* event - the event triggering the update (string)
+	* unit  - the unit accompanying the event
+	--]]
 	return (self.HealthPrediction.Override or Update) (self, ...)
 end
 
@@ -110,12 +215,7 @@ local function Enable(self)
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
-		if(element.frequentUpdates) then
-			self:RegisterEvent('UNIT_HEALTH_FREQUENT', Path)
-		else
-			self:RegisterEvent('UNIT_HEALTH', Path)
-		end
-
+		self:RegisterEvent('UNIT_HEALTH_FREQUENT', Path)
 		self:RegisterEvent('UNIT_MAXHEALTH', Path)
 		self:RegisterEvent('UNIT_HEAL_PREDICTION', Path)
 		self:RegisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', Path)
@@ -194,9 +294,8 @@ local function Disable(self)
 			element.overHealAbsorb:Hide()
 		end
 
-		self:UnregisterEvent('UNIT_HEALTH', Path)
-		self:UnregisterEvent('UNIT_MAXHEALTH', Path)
 		self:UnregisterEvent('UNIT_HEALTH_FREQUENT', Path)
+		self:UnregisterEvent('UNIT_MAXHEALTH', Path)
 		self:UnregisterEvent('UNIT_HEAL_PREDICTION', Path)
 		self:UnregisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', Path)
 		self:UnregisterEvent('UNIT_HEAL_ABSORB_AMOUNT_CHANGED', Path)
