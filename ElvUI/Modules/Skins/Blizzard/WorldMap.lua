@@ -142,7 +142,7 @@ local function LoadSkin()
 		WorldMapDetailFrame.backdrop:Point("BOTTOMRIGHT", 2, -1)
 
 		WorldMapShowDropDown:ClearAllPoints()
-		WorldMapShowDropDown:Point("BOTTOMRIGHT", 9, -53)
+		WorldMapShowDropDown:Point("BOTTOMRIGHT", WorldMapDetailFrame, 10, -30)
 
 		WorldMapFrameAreaPetLevels:FontTemplate(nil, 25)
 		WorldMapFrameAreaPetLevels:SetShadowOffset(2, -2)
@@ -158,7 +158,7 @@ local function LoadSkin()
 		WorldMapDetailFrame.backdrop:Point("BOTTOMRIGHT", 2, -1)
 
 		WorldMapShowDropDown:ClearAllPoints()
-		WorldMapShowDropDown:Point("BOTTOMRIGHT", 9, -53)
+		WorldMapShowDropDown:Point("BOTTOMRIGHT", WorldMapDetailFrame, 322, -237)
 
 		WorldMapFrameAreaPetLevels:FontTemplate(nil, 36)
 		WorldMapFrameAreaPetLevels:SetShadowOffset(2, -2)
